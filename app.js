@@ -28,45 +28,64 @@ function logEvent(msg) {
   while (ul.children.length > 60) ul.removeChild(ul.lastChild);
 }
 
-// --- データ取得 ---
-// exchangerate.host: USDベースで複数通貨を一括取得 (CORS可、APIキー不要)
-async function fetchSpot() {
-  const url = 'https://api.exchangerate.host/latest?base=USD&symbols=JPY,EUR,GBP,CHF';
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('rate fetch failed');
-  const j = await res.json();
-  const r = j.rates || {};
-  // EURUSD等への変換
-  const usdjpy = r.JPY;
-  const usdeur = r.EUR; const eurusd = usdeur ? 1 / usdeur : null;
-  const usdgbp = r.GBP; const gbpusd = usdgbp ? 1 / usdgbp : null;
-  const usdchf = r.CHF;
-  const eurjpy = (eurusd && usdjpy) ? eurusd * usdjpy : null;
-  const gbpjpy = (gbpusd && usdjpy) ? gbpusd * usdjpy : null;
-  return { t: Date.now(), usdjpy, eurusd, gbpusd, usdchf, eurjpy, gbpjpy };
+// --- データ取得 (キー不要のフリーAPIをフォールバックで多重化) ---
+// 1) open.er-api.com — 比較的更新頻度高め
+// 2) fawazahmed0/currency-api (jsdelivr CDN) — 安定、毎日更新
+// 3) frankfurter.app — ECB毎営業日
+async function fetchFromOpenErApi() {
+  const r = await fetch('https://open.er-api.com/v6/latest/USD');
+  if (!r.ok) throw new Error('open.er-api status ' + r.status);
+  const j = await r.json();
+  if (j.result !== 'success' || !j.rates) throw new Error('open.er-api bad payload');
+  return { JPY: j.rates.JPY, EUR: j.rates.EUR, GBP: j.rates.GBP, CHF: j.rates.CHF, _src: 'open.er-api' };
 }
 
-// 直近金曜の引け値を時系列APIから取得
-async function fetchFridayClose() {
-  // 2026-05-08 (金) の引けに相当する終値
-  const url = 'https://api.exchangerate.host/2026-05-08?base=USD&symbols=JPY,EUR,GBP,CHF';
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw 0;
-    const j = await res.json();
-    const usdjpy = j.rates?.JPY;
-    if (usdjpy) {
-      state.fridayClose = {
-        usdjpy,
-        eurusd: j.rates.EUR ? 1/j.rates.EUR : null,
-        gbpusd: j.rates.GBP ? 1/j.rates.GBP : null,
-        usdchf: j.rates.CHF,
-      };
-      logEvent(`金曜引け取得: USDJPY=${fmt(usdjpy,3)}`);
-    }
-  } catch (e) {
-    logEvent('金曜引け取得失敗 → 初回ティックを基準にします');
+async function fetchFromFawaz() {
+  const url = 'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json';
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('fawaz status ' + r.status);
+  const j = await r.json();
+  const u = j.usd;
+  if (!u) throw new Error('fawaz bad payload');
+  return { JPY: u.jpy, EUR: u.eur, GBP: u.gbp, CHF: u.chf, _src: 'fawazahmed0' };
+}
+
+async function fetchFromFrankfurter() {
+  const r = await fetch('https://api.frankfurter.app/latest?from=USD&to=JPY,EUR,GBP,CHF');
+  if (!r.ok) throw new Error('frankfurter status ' + r.status);
+  const j = await r.json();
+  if (!j.rates) throw new Error('frankfurter bad payload');
+  return { JPY: j.rates.JPY, EUR: j.rates.EUR, GBP: j.rates.GBP, CHF: j.rates.CHF, _src: 'frankfurter' };
+}
+
+async function fetchRatesUSD() {
+  const sources = [fetchFromOpenErApi, fetchFromFawaz, fetchFromFrankfurter];
+  let lastErr;
+  for (const fn of sources) {
+    try {
+      const r = await fn();
+      if (r.JPY && r.EUR && r.GBP && r.CHF) return r;
+    } catch (e) { lastErr = e; console.warn('[claudefinance] source failed', e); }
   }
+  throw lastErr || new Error('全データソース取得失敗');
+}
+
+async function fetchSpot() {
+  const r = await fetchRatesUSD();
+  const usdjpy = r.JPY;
+  const eurusd = 1 / r.EUR;
+  const gbpusd = 1 / r.GBP;
+  const usdchf = r.CHF;
+  const eurjpy = eurusd * usdjpy;
+  const gbpjpy = gbpusd * usdjpy;
+  return { t: Date.now(), usdjpy, eurusd, gbpusd, usdchf, eurjpy, gbpjpy, _src: r._src };
+}
+
+// 金曜引け値: open.er-api には日付指定がないのでスキップ。
+// 初回ティックを暫定基準にし、市場クローズ時はそれが「金曜引け」とほぼ同義。
+async function fetchFridayClose() {
+  // フリー&キー不要で過去日付対応のAPIが乏しいため、初回ティックを基準として採用。
+  logEvent('金曜引け: 初回ティックを基準値として採用します (週末は値が動かないため近似)');
 }
 
 // --- マーケットステート ---
@@ -352,9 +371,16 @@ async function tick() {
     const t = await fetchSpot();
     state.ticks.push(t);
     if (state.ticks.length > HISTORY_MAX) state.ticks.shift();
+    if (!state.fridayClose) {
+      state.fridayClose = {
+        usdjpy: t.usdjpy, eurusd: t.eurusd, gbpusd: t.gbpusd, usdchf: t.usdchf,
+      };
+      logEvent(`基準値セット: USDJPY=${fmt(t.usdjpy,3)} (source: ${t._src || '?'})`);
+    }
     render();
   } catch (e) {
-    logEvent(`取得失敗: ${e.message || e}`);
+    logEvent(`取得失敗: ${e.message || e} — ブラウザのコンソール (F12) で詳細確認可`);
+    console.error('[claudefinance] fetch failed', e);
   }
 }
 
