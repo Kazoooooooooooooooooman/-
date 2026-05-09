@@ -10,6 +10,7 @@ const HISTORY_MAX = 240; // 約2時間ぶん (30sティック)
 const state = {
   ticks: [],            // [{t, usdjpy, eurusd, gbpusd, usdchf, eurjpy, gbpjpy}]
   fridayClose: null,    // 直近金曜の引け推定値
+  history: [],          // frankfurter から取得した過去2週間の日次データ
   lastDirection: null,
 };
 
@@ -81,11 +82,43 @@ async function fetchSpot() {
   return { t: Date.now(), usdjpy, eurusd, gbpusd, usdchf, eurjpy, gbpjpy, _src: r._src };
 }
 
-// 金曜引け値: open.er-api には日付指定がないのでスキップ。
-// 初回ティックを暫定基準にし、市場クローズ時はそれが「金曜引け」とほぼ同義。
-async function fetchFridayClose() {
-  // フリー&キー不要で過去日付対応のAPIが乏しいため、初回ティックを基準として採用。
-  logEvent('金曜引け: 初回ティックを基準値として採用します (週末は値が動かないため近似)');
+// 過去14日分の日次データ (frankfurter, ECB営業日, キー不要)
+async function fetchHistory() {
+  const today = new Date();
+  const end = today.toISOString().slice(0, 10);
+  const startD = new Date(today.getTime() - 21 * 86400 * 1000);
+  const start = startD.toISOString().slice(0, 10);
+  const url = `https://api.frankfurter.app/${start}..${end}?from=USD&to=JPY,EUR,GBP,CHF`;
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('frankfurter status ' + r.status);
+    const j = await r.json();
+    if (!j.rates) throw new Error('frankfurter no rates');
+    const days = Object.keys(j.rates).sort();
+    state.history = days.map(d => {
+      const x = j.rates[d];
+      return {
+        date: d,
+        t: new Date(d + 'T22:00:00Z').getTime(),
+        usdjpy: x.JPY,
+        eurusd: x.EUR ? 1 / x.EUR : null,
+        gbpusd: x.GBP ? 1 / x.GBP : null,
+        usdchf: x.CHF,
+        eurjpy: x.EUR && x.JPY ? (1 / x.EUR) * x.JPY : null,
+        gbpjpy: x.GBP && x.JPY ? (1 / x.GBP) * x.JPY : null,
+      };
+    });
+    if (state.history.length) {
+      const last = state.history[state.history.length - 1];
+      state.fridayClose = {
+        usdjpy: last.usdjpy, eurusd: last.eurusd, gbpusd: last.gbpusd, usdchf: last.usdchf,
+      };
+      logEvent(`過去 ${state.history.length} 営業日取得 (${state.history[0].date}〜${last.date}) / 直近引け USDJPY=${fmt(last.usdjpy,3)}`);
+    }
+  } catch (e) {
+    logEvent(`履歴取得失敗: ${e.message} → ライブティックのみで動作`);
+    console.error(e);
+  }
 }
 
 // --- マーケットステート ---
@@ -116,78 +149,103 @@ function stdev(xs) {
   return Math.sqrt(v);
 }
 
+// 履歴（日次）とライブティックを結合した時系列を返す
+function combinedSeries() {
+  return [...state.history, ...state.ticks];
+}
+
 // 各シグナルは [-1, +1] のスコアを返す。+ = 円安 (USDJPY上), - = 円高 (USDJPY下)
-function signalMomentum(ticks) {
-  if (ticks.length < 6) return { score: 0, label: '--', cls: 'flat' };
-  const last = ticks[ticks.length - 1].usdjpy;
-  // 5 / 15 / 60 ティック前との比較
-  const refs = [5, 15, 60].map(n => ticks[Math.max(0, ticks.length - 1 - n)]?.usdjpy);
-  const dirs = refs.map(r => Math.sign((last - r) || 0));
+function signalMomentum() {
+  const series = combinedSeries();
+  if (series.length < 4) return { score: 0, label: 'データ不足', cls: 'flat' };
+  const last = series[series.length - 1].usdjpy;
+  // 1日 / 3日 / 5日 前との比較 (履歴は日次、ティックは秒〜分)
+  const offsets = [1, 3, 5];
+  const refs = offsets.map(n => series[Math.max(0, series.length - 1 - n)]?.usdjpy);
+  const diffs = refs.map(r => last - r);
+  const dirs = diffs.map(d => Math.sign(d));
   const agree = dirs.reduce((s, d) => s + d, 0) / dirs.length;
-  const cls = agree > 0.3 ? 'up' : agree < -0.3 ? 'down' : 'flat';
+  const avgPct = diffs.reduce((s, d, i) => s + d / refs[i], 0) / diffs.length;
+  const score = Math.max(-1, Math.min(1, avgPct / 0.005));
+  const cls = score > 0.2 ? 'up' : score < -0.2 ? 'down' : 'flat';
+  const arrow = agree > 0 ? '↑' : agree < 0 ? '↓' : '→';
   return {
-    score: Math.max(-1, Math.min(1, agree)),
-    label: agree > 0 ? `↑ +${(agree*100).toFixed(0)}%一致` :
-           agree < 0 ? `↓ ${(agree*100).toFixed(0)}%一致` : '中立',
+    score,
+    label: `${arrow} ${pct(avgPct)} (5日)`,
     cls,
   };
 }
 
 function signalFriClose(ticks, fri) {
+  // 履歴がある場合: 引け値 vs 5日平均からの乖離 (週末の引けがどれだけ偏った位置か)
+  if (state.history.length >= 5) {
+    const last = state.history[state.history.length - 1].usdjpy;
+    const recent = state.history.slice(-5).map(h => h.usdjpy);
+    const ma = recent.reduce((s, x) => s + x, 0) / recent.length;
+    const diff = last - ma;
+    const pctDiff = diff / ma;
+    const score = Math.max(-1, Math.min(1, pctDiff / 0.005));
+    const cls = score > 0.2 ? 'up' : score < -0.2 ? 'down' : 'flat';
+    return {
+      score,
+      label: `${sign(diff)}${diff.toFixed(3)} vs MA5 (${pct(pctDiff)})`,
+      cls,
+    };
+  }
+  // フォールバック: ティックベース
   if (!fri || !ticks.length) return { score: 0, label: '--', cls: 'flat' };
   const last = ticks[ticks.length - 1].usdjpy;
   const diff = last - fri.usdjpy;
   const pctDiff = diff / fri.usdjpy;
-  // 0.3% を 1.0スコアに正規化
   const score = Math.max(-1, Math.min(1, pctDiff / 0.003));
   const cls = score > 0.2 ? 'up' : score < -0.2 ? 'down' : 'flat';
-  return {
-    score,
-    label: `${sign(diff)}${diff.toFixed(3)} (${pct(pctDiff)})`,
-    cls,
-  };
+  return { score, label: `${sign(diff)}${diff.toFixed(3)} (${pct(pctDiff)})`, cls };
 }
 
-function signalDXY(ticks, fri) {
-  // USDが他通貨に対して強い → USDJPY上 (円安)
-  if (!fri || ticks.length < 2) return { score: 0, label: '--', cls: 'flat' };
-  const t = ticks[ticks.length - 1];
-  // EURUSD↓, GBPUSD↓, USDCHF↑ なら USD強
-  const a = pctChange(fri.eurusd, t.eurusd);  // 反転: EURUSD下落 → 値は正
-  const b = pctChange(fri.gbpusd, t.gbpusd);
-  const c = pctChange(t.usdchf, fri.usdchf);
-  const arr = [a, b, c].filter(v => v != null);
+function signalDXY() {
+  // 過去5営業日でUSDが対EUR/GBP/CHFでどう動いたか
+  const series = combinedSeries();
+  if (series.length < 4) return { score: 0, label: 'データ不足', cls: 'flat' };
+  const last = series[series.length - 1];
+  const ref = series[Math.max(0, series.length - 1 - 5)];
+  // EURUSD↓, GBPUSD↓, USDCHF↑ → USD強
+  const a = (ref.eurusd - last.eurusd) / ref.eurusd;
+  const b = (ref.gbpusd - last.gbpusd) / ref.gbpusd;
+  const c = (last.usdchf - ref.usdchf) / ref.usdchf;
+  const arr = [a, b, c].filter(v => Number.isFinite(v));
   if (!arr.length) return { score: 0, label: '--', cls: 'flat' };
   const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
-  const score = Math.max(-1, Math.min(1, avg / 0.003));
+  const score = Math.max(-1, Math.min(1, avg / 0.005));
   const cls = score > 0.2 ? 'up' : score < -0.2 ? 'down' : 'flat';
-  return { score, label: `USD ${pct(avg)}`, cls };
+  return { score, label: `USD ${pct(avg)} (5日)`, cls };
 }
 
-function signalJpyCross(ticks, fri) {
-  // EURJPY/GBPJPYが上 → 円全面安 → USDJPY上の整合
-  if (!fri || ticks.length < 2) return { score: 0, label: '--', cls: 'flat' };
-  const t = ticks[ticks.length - 1];
-  const friEurJpy = fri.eurusd * fri.usdjpy;
-  const friGbpJpy = fri.gbpusd * fri.usdjpy;
-  const a = pctChange(t.eurjpy, friEurJpy);
-  const b = pctChange(t.gbpjpy, friGbpJpy);
-  const arr = [a, b].filter(v => v != null);
+function signalJpyCross() {
+  const series = combinedSeries();
+  if (series.length < 4) return { score: 0, label: 'データ不足', cls: 'flat' };
+  const last = series[series.length - 1];
+  const ref = series[Math.max(0, series.length - 1 - 5)];
+  const a = (last.eurjpy - ref.eurjpy) / ref.eurjpy;
+  const b = (last.gbpjpy - ref.gbpjpy) / ref.gbpjpy;
+  const arr = [a, b].filter(v => Number.isFinite(v));
   if (!arr.length) return { score: 0, label: '--', cls: 'flat' };
   const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
-  const score = Math.max(-1, Math.min(1, avg / 0.003));
+  const score = Math.max(-1, Math.min(1, avg / 0.005));
   const cls = score > 0.2 ? 'up' : score < -0.2 ? 'down' : 'flat';
-  return { score, label: `JPYクロス ${pct(avg)}`, cls };
+  return { score, label: `JPYクロス ${pct(avg)} (5日)`, cls };
 }
 
-function signalVol(ticks) {
-  const xs = rolling(ticks, 120, 'usdjpy');
-  if (!xs || xs.length < 5) return { score: 0, label: '--', cls: 'flat' };
-  const sd = stdev(xs);
+function signalVol() {
+  // 履歴から日次変動率を計算
+  const xs = state.history.map(h => h.usdjpy).filter(Number.isFinite);
+  if (xs.length < 3) return { score: 0, label: 'データ不足', cls: 'flat' };
+  const rets = [];
+  for (let i = 1; i < xs.length; i++) rets.push((xs[i] - xs[i-1]) / xs[i-1]);
+  const sd = stdev(rets);
   const range = Math.max(...xs) - Math.min(...xs);
   return {
-    score: 0, // ボラ自体は方向に寄与させない、確信度の重みづけに使う
-    label: `σ=${fmt(sd, 4)} / R=${fmt(range,3)}`,
+    score: 0,
+    label: `日次σ=${(sd*100).toFixed(2)}% / R=${fmt(range,3)}`,
     cls: 'flat',
     sd, range,
   };
@@ -256,12 +314,12 @@ function render() {
 
   // シグナル
   const sigs = {
-    momentum: signalMomentum(state.ticks),
+    momentum: signalMomentum(),
     friclose: signalFriClose(state.ticks, state.fridayClose),
-    dxy:      signalDXY(state.ticks, state.fridayClose),
-    jpy:      signalJpyCross(state.ticks, state.fridayClose),
+    dxy:      signalDXY(),
+    jpy:      signalJpyCross(),
   };
-  const vol = signalVol(state.ticks);
+  const vol = signalVol();
   sigs.bias = signalWeekendBias(state.ticks, state.fridayClose, sigs.momentum, sigs.friclose);
 
   paintSignal('sig-momentum', sigs.momentum);
@@ -319,8 +377,10 @@ function drawChart() {
   const h = c.height = 280 * devicePixelRatio;
   ctx.scale(1,1);
   ctx.clearRect(0,0,w,h);
-  const xs = state.ticks.map(t => t.usdjpy);
+  const series = combinedSeries();
+  const xs = series.map(t => t.usdjpy).filter(Number.isFinite);
   if (!xs.length) return;
+  const histLen = state.history.length;
   const min = Math.min(...xs, state.fridayClose?.usdjpy ?? Infinity);
   const max = Math.max(...xs, state.fridayClose?.usdjpy ?? -Infinity);
   const pad = (max - min) * 0.1 || 0.05;
@@ -386,7 +446,7 @@ async function tick() {
 
 async function main() {
   logEvent(`起動: ClaudeFinance — 対象週末 ${TARGET_WEEKEND.join(' / ')}`);
-  await fetchFridayClose();
+  await fetchHistory();
   await tick();
   setInterval(tick, REFRESH_MS);
   window.addEventListener('resize', drawChart);
