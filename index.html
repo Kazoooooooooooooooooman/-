@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ClaudeFinance — USD/JPY 週末方向検出</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="logo">◆</span>
+      <h1>ClaudeFinance</h1>
+      <span class="sub">USD/JPY Weekend Direction Detector</span>
+    </div>
+    <div class="status">
+      <span id="market-state" class="badge">--</span>
+      <span id="last-update" class="ts">最終更新: --</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="price-card">
+        <div class="label">USD/JPY (現在 / 最終気配)</div>
+        <div class="price" id="usdjpy">---.---</div>
+        <div class="delta">
+          <span id="delta-fri">vs 金曜引け: --</span>
+          <span id="delta-1h">1H: --</span>
+        </div>
+      </div>
+
+      <div class="verdict-card" id="verdict">
+        <div class="label">週末ギャップ予測</div>
+        <div class="dir" id="dir">判定中…</div>
+        <div class="score">確信度 <span id="conf">--</span></div>
+        <div class="targets">
+          <span>想定レンジ</span>
+          <span id="target-range">-- 〜 --</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="signals">
+      <h2>シグナル内訳</h2>
+      <div class="grid">
+        <div class="signal" id="sig-momentum">
+          <div class="t">モメンタム</div>
+          <div class="v">--</div>
+          <div class="d">5/15/60分の方向一致度</div>
+        </div>
+        <div class="signal" id="sig-friclose">
+          <div class="t">金曜引け乖離</div>
+          <div class="v">--</div>
+          <div class="d">引け値からの距離(σ)</div>
+        </div>
+        <div class="signal" id="sig-dxy">
+          <div class="t">USD強弱</div>
+          <div class="v">--</div>
+          <div class="d">EUR/GBP/CHF 平均</div>
+        </div>
+        <div class="signal" id="sig-jpy">
+          <div class="t">円クロス</div>
+          <div class="v">--</div>
+          <div class="d">EURJPY/GBPJPY 整合性</div>
+        </div>
+        <div class="signal" id="sig-vol">
+          <div class="t">ボラティリティ</div>
+          <div class="v">--</div>
+          <div class="d">直近24Hレンジ</div>
+        </div>
+        <div class="signal" id="sig-bias">
+          <div class="t">週末バイアス</div>
+          <div class="v">--</div>
+          <div class="d">残存ポジション偏り推定</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="chart">
+      <h2>USD/JPY 直近推移</h2>
+      <canvas id="chart" width="1100" height="280"></canvas>
+      <div class="legend">
+        <span class="dot live"></span>Live ティック
+        <span class="dot fri"></span>金曜引け基準
+        <span class="dot tgt"></span>想定オープン水準
+      </div>
+    </section>
+
+    <section class="log">
+      <h2>イベントログ</h2>
+      <ul id="log"></ul>
+    </section>
+  </main>
+
+  <footer>
+    <div>
+      対象日: <b>2026-05-09 (土)</b> / <b>2026-05-10 (日)</b> ―
+      週末は外為市場クローズのため、「次のオープン (NZ/シドニー = 月曜早朝)」の
+      ギャップ方向を、休場前後のスポット・USD強弱・円クロスから推定します。
+    </div>
+    <div class="muted">data: exchangerate.host (free, no-key) ／ refresh: 30s</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
