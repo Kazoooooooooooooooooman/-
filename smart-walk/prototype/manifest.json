@@ -1,0 +1,15 @@
+{
+  "name": "スマートウォーク",
+  "short_name": "スマートウォーク",
+  "description": "外出促進・デジタルデトックスアプリ（プロトタイプ）",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1c1c1e",
+  "theme_color": "#34c759",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

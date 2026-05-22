@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>スマートウォーク</title>
+  <meta name="theme-color" content="#34c759">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="スマートウォーク">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="phone">
+    <header>
+      <h1>スマートウォーク</h1>
+      <p class="tagline">外に出るまで、アプリは開けない。</p>
+    </header>
+
+    <section class="status" id="statusCard">
+      <div class="status-icon" id="statusIcon">🔒</div>
+      <div class="status-text" id="statusText">ロック中</div>
+      <div class="status-detail" id="statusDetail">解除スポットへ向かってください</div>
+    </section>
+
+    <section class="panel">
+      <h2>解除スポットを選ぶ</h2>
+      <div id="spotList" class="spot-list"></div>
+    </section>
+
+    <section class="panel">
+      <h2>位置情報</h2>
+      <button id="trackBtn" class="btn">現在地の追跡を開始</button>
+      <p class="dist" id="distance">距離: —</p>
+      <details class="sim">
+        <summary>シミュレーション（GPSなしで試す）</summary>
+        <button id="simArrive" class="btn small">目的地に到着したことにする</button>
+        <button id="simLeave" class="btn small">目的地から離れたことにする</button>
+      </details>
+    </section>
+
+    <section class="panel">
+      <h2>ロック対象アプリ</h2>
+      <div class="apps" id="appGrid"></div>
+    </section>
+  </div>
+
+  <div class="shield" id="shield" hidden>
+    <div class="shield-inner">
+      <div class="shield-icon">🚶</div>
+      <h2>外に出よう</h2>
+      <p id="shieldMsg">解除スポットに着くとロックが外れます</p>
+      <button class="btn" id="shieldClose">目的地を確認</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
