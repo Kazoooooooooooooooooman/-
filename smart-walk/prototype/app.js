@@ -1,6 +1,6 @@
 // スマートウォーク プロトタイプ
-// GPS到着判定のロジック検証用。iOSアプリの LocationManager に相当する部分を
-// ブラウザの Geolocation API で再現している。
+// GPS到着判定 + 滞在判定のロジック検証用。iOSアプリの LocationManager /
+// AppModel に相当する部分を、ブラウザの Geolocation API で再現している。
 
 const SPOTS = [
   { id: "shibuya",  name: "サンプルスーパー渋谷店",  lat: 35.6595, lng: 139.7005, radius: 80, sponsored: true },
@@ -15,10 +15,15 @@ const LOCKED_APPS = [
   { name: "ニュース", icon: "📰", color: "#ff9500" },
 ];
 
+// 解除に必要な連続滞在秒数（実機と同じ3分）。
+const DWELL_SECONDS = 180;
+
 const state = {
   selectedSpot: null,
-  locked: true,
+  phase: "locked", // "locked" | "dwelling" | "unlocked"
   watchId: null,
+  dwellRemaining: 0,
+  dwellInterval: null,
 };
 
 // --- 距離計算（Haversine） -------------------------------------------------
@@ -35,24 +40,59 @@ function distanceMeters(a, b) {
   return 2 * R * Math.asin(Math.sqrt(h));
 }
 
-// --- ロック状態の適用（iOS の RestrictionManager 相当） ---------------------
-function applyLockState(locked) {
-  if (state.locked === locked) return;
-  state.locked = locked;
+// --- 滞在判定（iOS の AppModel.startDwell 相当） ----------------------------
+// スポット圏内に入ると滞在カウント開始。連続 DWELL_SECONDS 滞在で解除。
+// 途中で圏外に出るとリセットして再ロック。
+function onRegionChange(isInside) {
+  if (isInside) {
+    startDwell();
+  } else {
+    cancelDwell();
+    setPhase("locked");
+  }
+}
+
+function startDwell() {
+  if (state.phase !== "locked") return; // 既に滞在中/解除中なら何もしない
+  setPhase("dwelling");
+  state.dwellRemaining = DWELL_SECONDS;
+  state.dwellInterval = setInterval(tickDwell, 1000);
   render();
 }
 
+function tickDwell() {
+  state.dwellRemaining -= 1;
+  if (state.dwellRemaining <= 0) {
+    clearInterval(state.dwellInterval);
+    state.dwellInterval = null;
+    setPhase("unlocked");
+  }
+  render();
+}
+
+function cancelDwell() {
+  if (state.dwellInterval) {
+    clearInterval(state.dwellInterval);
+    state.dwellInterval = null;
+  }
+  state.dwellRemaining = 0;
+}
+
+function setPhase(phase) {
+  state.phase = phase;
+  render();
+}
+
+// --- 位置評価（iOS の LocationManager 相当） -------------------------------
 function evaluatePosition(pos) {
   if (!state.selectedSpot) return;
   const here = { lat: pos.coords.latitude, lng: pos.coords.longitude };
   const dist = distanceMeters(here, state.selectedSpot);
   document.getElementById("distance").textContent =
     `距離: 約 ${Math.round(dist)} m`;
-  // ジオフェンス: 半径内なら解除、外なら再ロック
-  applyLockState(dist > state.selectedSpot.radius);
+  onRegionChange(dist <= state.selectedSpot.radius);
 }
 
-// --- 位置追跡 --------------------------------------------------------------
 function startTracking() {
   if (!navigator.geolocation) {
     alert("この端末/ブラウザは位置情報に対応していません。");
@@ -74,36 +114,46 @@ function startTracking() {
   document.getElementById("trackBtn").textContent = "追跡中…";
 }
 
-// --- 描画 ------------------------------------------------------------------
+// --- 表示 ------------------------------------------------------------------
+function formatTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
 function render() {
   const card = document.getElementById("statusCard");
   const icon = document.getElementById("statusIcon");
   const text = document.getElementById("statusText");
   const detail = document.getElementById("statusDetail");
 
-  if (state.locked) {
-    card.classList.remove("unlocked");
+  card.classList.remove("unlocked", "dwelling");
+
+  if (state.phase === "locked") {
     icon.textContent = "🔒";
     text.textContent = "ロック中";
     detail.textContent = state.selectedSpot
       ? `「${state.selectedSpot.name}」へ向かってください`
       : "解除スポットを選んでください";
+  } else if (state.phase === "dwelling") {
+    card.classList.add("dwelling");
+    icon.textContent = "⏳";
+    text.textContent = "滞在中";
+    detail.textContent =
+      `解除まで ${formatTime(state.dwellRemaining)}（スポットを出るとリセット）`;
   } else {
     card.classList.add("unlocked");
     icon.textContent = "🔓";
     text.textContent = "解除中";
-    detail.textContent = "到着しました。アプリを使えます。";
+    detail.textContent = "到着確認。アプリを使えます。";
   }
 
+  const locked = state.phase !== "unlocked";
   document.querySelectorAll(".app").forEach((el) => {
-    el.classList.toggle("locked", state.locked);
+    el.classList.toggle("locked", locked);
   });
-
   document.querySelectorAll(".spot").forEach((el) => {
-    el.classList.toggle(
-      "selected",
-      el.dataset.id === state.selectedSpot?.id
-    );
+    el.classList.toggle("selected", el.dataset.id === state.selectedSpot?.id);
   });
 }
 
@@ -121,7 +171,8 @@ function renderSpots() {
       <span>›</span>`;
     div.addEventListener("click", () => {
       state.selectedSpot = spot;
-      render();
+      cancelDwell();
+      setPhase("locked");
     });
     list.appendChild(div);
   });
@@ -137,31 +188,34 @@ function renderApps() {
       <div class="icon" style="background:${app.color}">${app.icon}</div>
       ${app.name}`;
     div.addEventListener("click", () => {
-      if (state.locked) showShield();
+      if (state.phase !== "unlocked") showShield();
     });
     grid.appendChild(div);
   });
 }
 
-// --- シールド画面（ロック中アプリを開いたとき） ------------------------------
 function showShield() {
-  document.getElementById("shieldMsg").textContent = state.selectedSpot
-    ? `「${state.selectedSpot.name}」に着くとロックが外れます`
-    : "解除スポットを選んでください";
+  let msg = "解除スポットを選んでください";
+  if (state.selectedSpot) {
+    msg =
+      state.phase === "dwelling"
+        ? `滞在中。あと ${formatTime(state.dwellRemaining)} でロックが外れます`
+        : `「${state.selectedSpot.name}」に着いて3分滞在するとロックが外れます`;
+  }
+  document.getElementById("shieldMsg").textContent = msg;
   document.getElementById("shield").hidden = false;
 }
 
-// --- 初期化 ----------------------------------------------------------------
 function init() {
   renderSpots();
   renderApps();
   render();
   document.getElementById("trackBtn").addEventListener("click", startTracking);
   document.getElementById("simArrive").addEventListener("click", () =>
-    applyLockState(false)
+    onRegionChange(true)
   );
   document.getElementById("simLeave").addEventListener("click", () =>
-    applyLockState(true)
+    onRegionChange(false)
   );
   document.getElementById("shieldClose").addEventListener("click", () => {
     document.getElementById("shield").hidden = true;

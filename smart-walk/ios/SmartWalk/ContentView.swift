@@ -25,6 +25,12 @@ struct ContentView: View {
                 Text(model.isLocked ? "ロック中" : "解除中")
                     .font(.headline)
             }
+            if model.dwellRemaining > 0 {
+                Label("滞在中: 解除まで \(formatTime(model.dwellRemaining))",
+                      systemImage: "hourglass")
+                    .font(.subheadline)
+                    .foregroundStyle(.orange)
+            }
             if let spot = model.selectedSpot {
                 Text("目的地: \(spot.name)")
                     .font(.subheadline)
@@ -72,5 +78,10 @@ struct ContentView: View {
                 .tint(.primary)
             }
         }
+    }
+
+    private func formatTime(_ seconds: TimeInterval) -> String {
+        let total = Int(seconds)
+        return String(format: "%d:%02d", total / 60, total % 60)
     }
 }
