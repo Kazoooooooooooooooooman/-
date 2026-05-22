@@ -17,10 +17,15 @@
 
 ## 2. ソースの取り込み
 
-`ios/SmartWalk/` の `.swift` 6ファイルをアプリターゲットに追加:
-`SmartWalkApp.swift` `AppModel.swift` `AuthorizationManager.swift`
-`RestrictionManager.swift` `LocationManager.swift` `ContentView.swift` `UnlockSpot.swift`
+`ios/SmartWalk/` の `.swift` 全ファイルをアプリターゲットに追加:
+`SmartWalkApp.swift` `ContentView.swift` `OnboardingView.swift` `HomeView.swift`
+`SpotListView.swift` `SettingsView.swift` `AppModel.swift` `AuthorizationManager.swift`
+`RestrictionManager.swift` `LocationManager.swift` `NotificationManager.swift`
+`UnlockSpot.swift`
 （自動生成された `ContentView.swift` `SmartWalkApp.swift` は置き換える）
+
+MapKit / UserNotifications は標準フレームワークのため追加のCapabilityは不要
+（`import` するだけ）。通知はアプリ内で `requestAuthorization` を呼ぶ。
 
 ## 3. Capability 追加（アプリターゲット）
 

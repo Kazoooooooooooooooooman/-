@@ -13,6 +13,19 @@
 
 ## プロトタイプの動かし方
 
+### A. スマホで開く（PWA / 推奨）
+
+GitHub Pages で配信し、iPhoneのSafariで開ける。初回だけリポジトリ設定が必要:
+
+1. GitHub → リポジトリ → Settings → Pages
+2. 「Build and deployment」→ Source を **GitHub Actions** に設定
+3. `claude/bold-hypatia-qNjbv` への push で自動デプロイ（`.github/workflows/deploy-pages.yml`）
+4. 公開URL: **https://kazoooooooooooooooooman.github.io/-/**
+5. iPhoneのSafariでそのURLを開き、共有ボタン →「ホーム画面に追加」で
+   アプリのように起動できる（`manifest.json` + `sw.js` でPWA化済み）
+
+### B. Macのローカルで開く
+
 ```
 cd smart-walk/prototype
 python3 -m http.server 8000

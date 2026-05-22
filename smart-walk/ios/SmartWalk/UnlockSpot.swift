@@ -20,6 +20,12 @@ struct UnlockSpot: Identifiable, Codable, Hashable {
         region.notifyOnExit = true
         return region
     }
+
+    /// 指定地点からこのスポットまでの距離(m)。location が nil なら nil。
+    func distance(from location: CLLocation?) -> CLLocationDistance? {
+        guard let location else { return nil }
+        return location.distance(from: CLLocation(latitude: latitude, longitude: longitude))
+    }
 }
 
 extension UnlockSpot {

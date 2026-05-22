@@ -1,10 +1,11 @@
 import CoreLocation
 
-/// 解除スポットのジオフェンスを監視する。
+/// 解除スポットのジオフェンス監視と、距離表示用の現在地取得を行う。
 /// 領域監視はアプリがバックグラウンド・終了状態でも動作し、出入りで再起動される。
 final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var insideSpot = false
     @Published var authorizationStatus: CLAuthorizationStatus = .notDetermined
+    @Published var currentLocation: CLLocation?
 
     /// スポット圏内に入った/出たときに呼ばれる。
     var onRegionChange: ((_ isInside: Bool) -> Void)?
@@ -15,12 +16,20 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
     override init() {
         super.init()
         manager.delegate = self
+        manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+        manager.distanceFilter = 25
         manager.allowsBackgroundLocationUpdates = true
         manager.pausesLocationUpdatesAutomatically = false
+        authorizationStatus = manager.authorizationStatus
     }
 
     func requestAuthorization() {
         manager.requestAlwaysAuthorization()
+    }
+
+    /// 距離表示のための現在地取得を開始する。
+    func startUpdatingLocation() {
+        manager.startUpdatingLocation()
     }
 
     func startMonitoring(spot: UnlockSpot) {
@@ -42,6 +51,12 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
 
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         authorizationStatus = manager.authorizationStatus
+    }
+
+    func locationManager(_ manager: CLLocationManager,
+                         didUpdateLocations locations: [CLLocation]) {
+        guard let latest = locations.last else { return }
+        DispatchQueue.main.async { self.currentLocation = latest }
     }
 
     func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
