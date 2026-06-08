@@ -1,0 +1,109 @@
+<h2 class="chapter"><span class="num">3</span>エラーメッセージを読む技術</h2>
+
+<div class="lead">
+これは本書で<strong>最も価値のある章</strong>です。なぜなら、エラーの9割は、メッセージ自身が答えを書いているからです。
+読めないのは、英語が読めないからではありません。<em>どこを、どの順で読むかを知らない</em>だけです。
+順番さえ覚えれば、長い赤文字は「事件現場の地図」に変わります。
+</div>
+
+<h3>エラーメッセージは「3つの情報」でできている</h3>
+<p>言語が違っても、エラーはほぼ必ず次の3点を含みます。まずこの3つを拾うことだけ考えてください。</p>
+<table>
+<tr><th>拾う情報</th><th>意味</th><th>探し方</th></tr>
+<tr><td>① 種類（Type）</td><td>何系の問題か（名前が無い／型が違う／構文ミス…）</td><td>多くは行頭の <code>○○Error</code></td></tr>
+<tr><td>② 場所（Where）</td><td>どのファイルの何行目か</td><td><code>file.py</code> や <code>line 42</code> の表記</td></tr>
+<tr><td>③ 説明（Message）</td><td>具体的に何が起きたか（人間向けの一文）</td><td>Error名のすぐ後ろ／一番下の行</td></tr>
+</table>
+
+<div class="box key">
+<span class="box-title">読む順番（これだけ覚える）</span>
+<strong>① 一番下から読む。 ② エラーの種類と説明文を拾う。 ③ 自分のファイル名がある行を探す。</strong><br>
+上から順に全部読もうとすると挫折します。多くの言語で、<em>結論は一番下</em>にあります。
+</div>
+
+<h3>実例で読んでみる（Python）</h3>
+<pre>Traceback (most recent call last):
+  File "app.py", line 3, in &lt;module&gt;
+    print(user_name)
+<span class="r">NameError: name 'user_name' is not defined</span></pre>
+<p>一番下から読みます。</p>
+<ul>
+<li><strong>説明：</strong> <code>name 'user_name' is not defined</code> ＝「<code>user_name</code> という名前が定義されていない」</li>
+<li><strong>種類：</strong> <code>NameError</code> ＝ 名前（変数）まわりの問題</li>
+<li><strong>場所：</strong> <code>app.py</code> の <code>line 3</code></li>
+</ul>
+<p>
+つまり「app.pyの3行目で、<code>user_name</code> という変数を使おうとしたが、そんな変数は作られていない」。
+原因はたいてい <em>タイプミス</em>（<code>username</code> と書くべきだった）か、<em>定義し忘れ</em>。これで対処は決まります。
+</p>
+
+<h3>よく出るエラーの「翻訳辞書」</h3>
+<p>初学者が出会うエラーの大半は、次の顔ぶれの繰り返しです。これは<strong>そのまま使える早見表</strong>です。</p>
+<table>
+<tr><th>エラー表記（言語）</th><th>日本語の意味</th><th>まず疑うこと</th></tr>
+<tr><td><code>NameError</code> / <code>ReferenceError</code> (Py/JS)</td><td>その名前が見つからない</td><td>スペルミス・定義忘れ・スコープ外</td></tr>
+<tr><td><code>SyntaxError</code></td><td>文法が壊れている</td><td>括弧 <code>()</code> や <code>{}</code> の閉じ忘れ、コロン・カンマ</td></tr>
+<tr><td><code>TypeError</code></td><td>型が想定と違う</td><td>文字列と数値の混同、<code>None</code>/<code>undefined</code> を操作</td></tr>
+<tr><td><code>IndentationError</code> (Py)</td><td>字下げがおかしい</td><td>スペースとタブの混在、ずれ</td></tr>
+<tr><td><code>ModuleNotFoundError</code> / <code>Cannot find module</code></td><td>ライブラリが見つからない</td><td>インストール忘れ（第8章）、名前間違い</td></tr>
+<tr><td><code>KeyError</code> / <code>undefined (is not ...)</code></td><td>その鍵・属性が存在しない</td><td>データの形が想定と違う、綴り違い</td></tr>
+<tr><td><code>IndexError</code> / <code>out of range</code></td><td>範囲外を取りに行った</td><td>リストの数え方（0始まり）、空リスト</td></tr>
+<tr><td><code>Permission denied</code></td><td>権限がない</td><td>実行権限、書き込み禁止の場所</td></tr>
+<tr><td><code>Connection refused</code> / <code>ECONNREFUSED</code></td><td>接続を断られた</td><td>サーバが起動してない、ポート違い</td></tr>
+<tr><td><code>404 / 500</code> (Web)</td><td>404=見つからない／500=サーバ側で爆発</td><td>404=URL/パス、500=サーバのコード・ログを見る</td></tr>
+</table>
+
+<h3>スタックトレースの「自分の行」を探す</h3>
+<p>
+長いエラー（スタックトレース）は、プログラムが通った道のりを上から並べたものです。
+その多くは<em>ライブラリ内部の行</em>で、あなたが直す場所ではありません。コツは一つ。
+</p>
+<div class="box tip">
+<span class="box-title">魔法の一手</span>
+長いトレースの中から、<strong>自分が書いた／AIが書いたファイル名</strong>（例：<code>app.py</code>, <code>main.js</code>）が
+出てくる<em>一番下の行</em>を探す。そこが、あなたが手を入れるべき現場です。
+ライブラリの奥深く（<code>site-packages/...</code> や <code>node_modules/...</code>）は、たいてい通り道にすぎません。
+</div>
+
+<h3>エラーが「出ない」不具合の見つけ方</h3>
+<p>
+やっかいなのは、エラーは出ないのに結果がおかしいケースです。こういうときは、自分でエラーの代わりを作ります。
+最も原始的で、最も効く道具が <em>途中経過の表示</em> です。
+</p>
+<pre><span class="c"># 値が想定どおりか、要所要所で「のぞき見」する</span>
+print("ここまで来た。userの中身は:", user)        <span class="c"># Python</span>
+console.log("calcの結果:", result);              <span class="c"># JavaScript</span></pre>
+<p>
+「思っていた値」と「実際に表示された値」がズレた地点 ── そこと、その直前が犯人です。
+プロも日常的にこれをやります。恥ずかしいことではありません。第4章でこの考え方を「二分探索」として体系化します。
+</p>
+
+<h3>エラーをそのまま検索・質問する技術</h3>
+<p>意味が分かっても解けないときは、調べる・聞く。その<em>渡し方</em>で結果が大きく変わります。</p>
+<ul>
+<li><strong>検索するなら：</strong> エラーメッセージの<em>固有の部分</em>（自分のファイル名や具体値）を消し、
+一般的な部分だけをコピーして検索する。例：<code>TypeError: cannot read properties of undefined reading map</code>。</li>
+<li><strong>AIに聞くなら：</strong> エラー全文を<em>省略せず</em>そのまま貼る。一番下だけでなく全体を。
+さらに「何をしようとして」「何が起きたか」を添える（テンプレは第10章）。</li>
+</ul>
+
+<div class="box warn">
+<span class="box-title">やりがちなNG</span>
+エラーの一部だけスクショして「これ直して」と渡す。AIは場所も文脈も分からず、当てずっぽうで返してくる。
+<strong>テキストで全文</strong>＋<strong>直前にやったこと</strong>。これだけで返答の精度が跳ね上がる。
+</div>
+
+<div class="box key">
+<span class="box-title">この章の核</span>
+エラーは「種類・場所・説明」の3点セット。読むのは<strong>一番下から</strong>。
+長いトレースは<strong>自分のファイル名の最下行</strong>が現場。エラーが出ない不具合は<strong>print/console.logでのぞく</strong>。
+</div>
+
+<h4>章末チェック</h4>
+<ul class="checklist">
+<li>エラーを見たら、まず一番下の行から読む習慣がついた</li>
+<li>「種類・場所・説明」の3点を拾えるようになった</li>
+<li>早見表で、よく出るエラーの大意がつかめる</li>
+<li>長いトレースから「自分のファイル名の行」を探せる</li>
+<li>エラーが出ない不具合に <code>print</code> / <code>console.log</code> を使える</li>
+</ul>

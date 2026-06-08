@@ -1,0 +1,81 @@
+<h2 class="chapter"><span class="num">6</span>コードを「読める」最低限</h2>
+
+<div class="lead">
+直すために、コードを<em>書ける</em>必要はありません。必要なのは、AIが出したコードを見て
+<strong>「だいたい何が起きているか」を追える</strong>こと。全文の翻訳ではなく、流れを追う「速読」です。
+ここでは、言語が違っても共通する“読みの骨格”だけを、最短で渡します。
+</div>
+
+<h3>プログラムは「上から下へ」流れる</h3>
+<p>
+ほとんどのコードは、<em>上から順に、一行ずつ</em>実行されます。まずこの感覚を持つだけで、
+「どこまで進んで、どこで止まったか」が追えます。エラーの行番号が効くのも、この性質のおかげです。
+</p>
+
+<h3>どの言語にもある「5つの部品」</h3>
+<p>言語が違っても、コードは結局この5部品の組み合わせです。これさえ見分けられれば、流れは追えます。</p>
+<table>
+<tr><th>部品</th><th>役割</th><th>見た目（例）</th></tr>
+<tr><td>変数</td><td>値に名前をつけて入れる箱</td><td><code>name = "佐藤"</code> / <code>let count = 0</code></td></tr>
+<tr><td>関数</td><td>処理のまとまり。呼ぶと動く</td><td><code>def save(x):</code> / <code>function save(x){}</code></td></tr>
+<tr><td>条件分岐</td><td>「もし〜なら」で道を分ける</td><td><code>if age &gt;= 18:</code></td></tr>
+<tr><td>繰り返し</td><td>同じ処理を何度も回す</td><td><code>for item in list:</code></td></tr>
+<tr><td>呼び出し</td><td>他の機能を使う</td><td><code>save(user)</code> / <code>print(x)</code></td></tr>
+</table>
+
+<div class="box ex">
+<span class="box-title">5部品で読んでみる</span>
+<pre>total = 0                      <span class="c"># 変数：合計を入れる箱、最初は0</span>
+for price in cart:             <span class="c"># 繰り返し：カートの各値段について</span>
+    total = total + price      <span class="c">#   合計に足していく</span>
+if total &gt;= 5000:              <span class="c"># 条件：もし合計が5000以上なら</span>
+    print("送料無料")          <span class="c">#   送料無料と表示</span></pre>
+日本語にすると「カートの値段を全部足して、5000以上なら送料無料と出す」。
+一語一語の文法を知らなくても、<em>流れ</em>は読めます。これで十分です。
+</div>
+
+<h3>「名前」を信じて読む</h3>
+<p>
+良いコードは、変数や関数の<em>名前</em>が中身を語ります。<code>send_email</code> はメールを送る、
+<code>is_valid</code> は正しいかどうかを表す。細部が分からなくても、<strong>名前から役割を推測</strong>して流れを追えます。
+逆に、AIが付けた名前と動きが食い違っていたら、それ自体がバグのサインです。
+</p>
+
+<h3>分からない一行は「AIに通訳させる」</h3>
+<p>
+読めない行が出てきたら、止まらずにこう聞きます ──
+<em>「この行が何をしているか、初心者向けに1文で説明して」</em>。
+これを繰り返すうちに、同じパターンが読めるようになり、聞く回数は自然に減っていきます。
+</p>
+<div class="box tip">
+<span class="box-title">読みの3点セット質問</span>
+<p>① 「このコード全体を、3行で要約して」（地図をもらう）</p>
+<p>② 「<code>○○</code> の行は何のため？」（気になる所だけ深掘り）</p>
+<p>③ 「もしこの行を消したら何が起きる？」（その行の存在理由を知る）</p>
+</div>
+
+<h3>「データの形」を意識する</h3>
+<p>
+不具合の多くは、<em>データの形の思い違い</em>から生まれます。
+一個の値なのか、リスト（並び）なのか、辞書（鍵と値の対）なのか。これを取り違えると <code>TypeError</code> 系が出ます。
+読むときは「今この変数には、どんな形のデータが入っている？」を常に意識します。迷ったら表示して確かめる（第3章）。
+</p>
+<pre>user = "佐藤"                          <span class="c"># 1個の文字列</span>
+users = ["佐藤", "鈴木"]               <span class="c"># リスト（並び）。users[0] が "佐藤"</span>
+user = {"name": "佐藤", "age": 30}     <span class="c"># 辞書。user["name"] が "佐藤"</span></pre>
+
+<div class="box key">
+<span class="box-title">この章の核</span>
+コードは<strong>上から下へ</strong>流れる。中身は<strong>5部品</strong>（変数・関数・条件・繰り返し・呼び出し）。
+<strong>名前から役割を推測</strong>し、分からない行は<strong>AIに通訳</strong>させる。<strong>データの形</strong>を常に意識する。
+書けなくても、これで「追える」。
+</div>
+
+<h4>章末チェック</h4>
+<ul class="checklist">
+<li>コードが上から順に実行されると理解した</li>
+<li>5部品（変数・関数・条件・繰り返し・呼び出し）を見分けられる</li>
+<li>名前から関数や変数の役割を推測できる</li>
+<li>分からない行をAIに1文で説明させられる</li>
+<li>変数に入っているデータの「形」を意識できる</li>
+</ul>

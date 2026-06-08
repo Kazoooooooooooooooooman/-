@@ -1,0 +1,314 @@
+/* ===== バイブコーディング実践教科書 スタイル ===== */
+
+@page {
+  size: A4;
+  margin: 22mm 18mm 20mm 18mm;
+  @bottom-center {
+    content: counter(page);
+    font-family: "IPAGothic", sans-serif;
+    font-size: 9pt;
+    color: #8a94a6;
+  }
+  @top-right {
+    content: "バイブコーディング実践教科書";
+    font-family: "IPAGothic", sans-serif;
+    font-size: 8pt;
+    color: #b8c0cf;
+  }
+}
+
+@page :first {
+  margin: 0;
+  @bottom-center { content: none; }
+  @top-right { content: none; }
+}
+
+@page cover { margin: 0; @bottom-center { content: none; } @top-right { content: none; } }
+
+* { box-sizing: border-box; }
+
+html {
+  font-family: "IPAGothic", "IPAPGothic", sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.85;
+  color: #1f2733;
+  -weasy-hyphens: none;
+}
+
+body { margin: 0; padding: 0; }
+
+/* ===== 表紙 ===== */
+.cover {
+  page: cover;
+  width: 210mm;
+  height: 297mm;
+  background: linear-gradient(150deg, #0d1b3e 0%, #16306b 45%, #1d4ed8 100%);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  page-break-after: always;
+}
+.cover .glow {
+  position: absolute;
+  width: 420mm; height: 420mm;
+  top: -200mm; right: -180mm;
+  background: radial-gradient(circle, rgba(56,189,248,0.30) 0%, rgba(56,189,248,0) 60%);
+}
+.cover .glow2 {
+  position: absolute;
+  width: 300mm; height: 300mm;
+  bottom: -150mm; left: -120mm;
+  background: radial-gradient(circle, rgba(168,85,247,0.25) 0%, rgba(168,85,247,0) 60%);
+}
+.cover-inner {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  padding: 40mm 26mm;
+  display: flex;
+  flex-direction: column;
+}
+.cover .eyebrow {
+  font-size: 11pt;
+  letter-spacing: 0.35em;
+  color: #7dd3fc;
+  margin-bottom: 8mm;
+}
+.cover h1 {
+  font-size: 34pt;
+  line-height: 1.35;
+  margin: 0 0 6mm 0;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+.cover h1 .accent { color: #38bdf8; }
+.cover .subtitle {
+  font-size: 15pt;
+  line-height: 1.7;
+  color: #dbeafe;
+  font-weight: 400;
+  margin-bottom: auto;
+}
+.cover .promise {
+  border-left: 3px solid #38bdf8;
+  padding-left: 6mm;
+  margin: 14mm 0 0 0;
+}
+.cover .promise p { margin: 2mm 0; font-size: 11pt; color: #e0f2fe; }
+.cover .footer-meta {
+  margin-top: 12mm;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  padding-top: 6mm;
+  font-size: 9.5pt;
+  color: #cbd5e1;
+}
+.cover .badge {
+  display: inline-block;
+  background: rgba(56,189,248,0.15);
+  border: 1px solid rgba(56,189,248,0.5);
+  border-radius: 999px;
+  padding: 2mm 6mm;
+  font-size: 10pt;
+  color: #bae6fd;
+  margin-bottom: 5mm;
+}
+
+/* ===== 見出し ===== */
+h2.chapter {
+  font-size: 21pt;
+  color: #0d1b3e;
+  border-bottom: 3px solid #1d4ed8;
+  padding-bottom: 3mm;
+  margin: 0 0 7mm 0;
+  page-break-before: always;
+  page-break-after: avoid;
+  line-height: 1.4;
+}
+h2.chapter .num {
+  display: inline-block;
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 13pt;
+  border-radius: 6px;
+  padding: 1mm 4mm;
+  margin-right: 4mm;
+  vertical-align: middle;
+}
+h3 {
+  font-size: 14pt;
+  color: #16306b;
+  margin: 9mm 0 3mm 0;
+  padding-left: 3.5mm;
+  border-left: 5px solid #38bdf8;
+  page-break-after: avoid;
+  line-height: 1.5;
+}
+h4 {
+  font-size: 11.5pt;
+  color: #1d4ed8;
+  margin: 6mm 0 2mm 0;
+  page-break-after: avoid;
+}
+p { margin: 0 0 3mm 0; text-align: justify; }
+strong { color: #0d1b3e; font-weight: 700; }
+em { font-style: normal; background: linear-gradient(transparent 62%, #fde68a 62%); font-weight: 700; padding: 0 1px; }
+
+ul, ol { margin: 2mm 0 4mm 0; padding-left: 6mm; }
+li { margin: 1.5mm 0; }
+
+/* ===== コードブロック ===== */
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 7px;
+  padding: 4mm 5mm;
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 8.6pt;
+  line-height: 1.6;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin: 3mm 0;
+  page-break-inside: avoid;
+}
+pre .c { color: #64748b; }        /* コメント */
+pre .g { color: #4ade80; }        /* 良い例/緑 */
+pre .r { color: #f87171; }        /* エラー/赤 */
+pre .y { color: #fbbf24; }        /* 強調/黄 */
+pre .b { color: #60a5fa; }        /* 青 */
+code {
+  font-family: "DejaVu Sans Mono", monospace;
+  font-size: 9pt;
+  background: #eef2ff;
+  color: #1e3a8a;
+  border-radius: 4px;
+  padding: 0.3mm 1.5mm;
+}
+
+/* ===== コールアウト ===== */
+.box {
+  border-radius: 8px;
+  padding: 4mm 5mm 4mm 5mm;
+  margin: 4mm 0;
+  page-break-inside: avoid;
+  border: 1px solid;
+}
+.box .box-title {
+  font-weight: 800;
+  font-size: 10.5pt;
+  margin-bottom: 1.5mm;
+  display: block;
+}
+.box p:last-child, .box ul:last-child, .box ol:last-child { margin-bottom: 0; }
+.box.key   { background: #eff6ff; border-color: #93c5fd; }
+.box.key   .box-title { color: #1d4ed8; }
+.box.warn  { background: #fef2f2; border-color: #fca5a5; }
+.box.warn  .box-title { color: #dc2626; }
+.box.tip   { background: #ecfdf5; border-color: #6ee7b7; }
+.box.tip   .box-title { color: #059669; }
+.box.ex    { background: #f8fafc; border-color: #cbd5e1; }
+.box.ex    .box-title { color: #475569; }
+.box.quote { background: #faf5ff; border-color: #d8b4fe; }
+.box.quote .box-title { color: #7c3aed; }
+
+/* ===== テーブル ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 4mm 0;
+  font-size: 9.3pt;
+  page-break-inside: avoid;
+}
+th {
+  background: #1d4ed8;
+  color: #fff;
+  padding: 2.5mm 3mm;
+  text-align: left;
+  font-weight: 700;
+}
+td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 2.5mm 3mm;
+  vertical-align: top;
+}
+tr:nth-child(even) td { background: #f8fafc; }
+
+/* ===== チェックリスト ===== */
+.checklist { list-style: none; padding-left: 0; }
+.checklist li {
+  padding-left: 8mm;
+  position: relative;
+  margin: 2mm 0;
+}
+.checklist li::before {
+  content: "☐";
+  position: absolute;
+  left: 0;
+  font-size: 13pt;
+  color: #1d4ed8;
+  top: -1mm;
+}
+
+/* ===== 番号付きステップ ===== */
+.steps { counter-reset: step; list-style: none; padding-left: 0; }
+.steps > li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 11mm;
+  margin: 4mm 0;
+}
+.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0; top: -0.5mm;
+  width: 7mm; height: 7mm;
+  background: #1d4ed8;
+  color: #fff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 7mm;
+  font-weight: 800;
+  font-size: 10pt;
+}
+
+/* ===== 目次 ===== */
+.toc { page-break-after: always; }
+.toc h2 {
+  font-size: 20pt; color: #0d1b3e;
+  border-bottom: 3px solid #1d4ed8; padding-bottom: 3mm; margin-bottom: 6mm;
+}
+.toc ol { list-style: none; padding-left: 0; counter-reset: tocnum; }
+.toc > ol > li {
+  counter-increment: tocnum;
+  margin: 3mm 0;
+  font-size: 11.5pt;
+  font-weight: 700;
+  color: #16306b;
+}
+.toc > ol > li::before {
+  content: counter(tocnum) "  ";
+  color: #1d4ed8;
+  font-weight: 800;
+}
+.toc .desc { font-size: 9pt; color: #64748b; font-weight: 400; margin: 0.5mm 0 0 7mm; }
+
+/* ===== セクション扉/その他 ===== */
+.lead {
+  font-size: 11pt;
+  color: #475569;
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 4mm 5mm;
+  margin: 0 0 7mm 0;
+}
+.kicker { color: #1d4ed8; font-weight: 800; font-size: 9.5pt; letter-spacing: 0.1em; }
+hr.soft { border: none; border-top: 1px dashed #cbd5e1; margin: 7mm 0; }
+.small { font-size: 9pt; color: #64748b; }
+.center { text-align: center; }
+.tag {
+  display: inline-block; background: #eef2ff; color: #1d4ed8;
+  border-radius: 4px; padding: 0.5mm 2mm; font-size: 8.5pt; font-weight: 700;
+  margin-right: 1mm;
+}
