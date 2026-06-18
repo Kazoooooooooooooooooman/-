@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4; margin: 20mm 18mm; }
+  body { font-family: "IPAGothic", sans-serif; color: #1a1a1a; line-height: 1.6; font-size: 10.5pt; }
+  h1 { font-size: 24pt; color: #14532d; margin: 0 0 4px; }
+  .sub { color: #555; font-size: 11pt; margin-bottom: 4px; }
+  .note { color: #666; font-size: 9pt; margin-bottom: 24px; }
+  h2 { font-size: 15pt; color: #14532d; border-bottom: 2px solid #86b694; padding-bottom: 4px; margin-top: 30px; page-break-after: avoid; }
+  h3 { font-size: 12pt; color: #1f3d2b; margin-top: 16px; page-break-after: avoid; }
+  ul, ol { margin: 5px 0; padding-left: 20px; }
+  li { margin-bottom: 3px; }
+  table { border-collapse: collapse; width: 100%; margin: 9px 0; font-size: 9.3pt; }
+  th { background: #14532d; color: #fff; text-align: left; padding: 5px 8px; }
+  td { border: 1px solid #cfe0d4; padding: 5px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f4f9f5; }
+  .box { background: #f4f9f5; border-left: 4px solid #14532d; padding: 9px 13px; margin: 11px 0; }
+  .tip { background: #eef5ff; border-left: 4px solid #2a5fc0; padding: 9px 13px; margin: 11px 0; }
+  .pagebreak { page-break-before: always; }
+  .q { background:#fafafa; border:1px solid #e0e0e0; border-radius:4px; padding:8px 12px; margin:7px 0; }
+  .muted { color:#666; font-size:9pt; }
+  .ex-good { color:#14532d; } .ex-bad { color:#9a2a2a; }
+</style>
+</head>
+<body>
+
+<h1>Audio Annotation QA — Self-Study Guide</h1>
+<div class="sub">話者分離（Diarization）と音声キャプション（Audio Captioning）の品質保証</div>
+<div class="note">独自に作成した学習用教材。一般に公開された音響・言語学・アノテーションの知識に基づき、特定プロジェクトの機密情報は含みません。 — Kazuma Sasaki</div>
+
+<h3>目次</h3>
+<ol>
+  <li>QAの基本姿勢（マインドセット）</li>
+  <li>Diarization の原理とチェック観点</li>
+  <li>Audio Captioning の原理とチェック観点</li>
+  <li>話者・声の記述</li>
+  <li>感情・声の届け方タグ</li>
+  <li>採点の考え方（Major / Minor）</li>
+  <li>クイック・チェックリスト</li>
+  <li>用語集（声・音の記述語）</li>
+  <li>自己テスト</li>
+</ol>
+
+<!-- 1 -->
+<h2>1. QAの基本姿勢</h2>
+<p>音声アノテーションのQAは「なんとなく変」を排除し、<strong>誰が読んでも同じ判断に至る客観的な基準</strong>で良し悪しを決める仕事。指摘は必ず「どのルールに、どう違反し、どう直すか」までセットにする。</p>
+<div class="box">
+<strong>3つの原則</strong>
+<ul>
+  <li><strong>耳を最優先する：</strong>映像の見た目に引っ張られない。聞こえた事実だけを扱う。</li>
+  <li><strong>推測しない：</strong>確信が持てないものは「不明」と印を付ける。当て推量はモデルの幻覚（hallucination）の原因になる。</li>
+  <li><strong>一貫性：</strong>同じ現象は最初から最後まで同じルールで処理する。</li>
+</ul>
+</div>
+
+<!-- 2 -->
+<h2 class="pagebreak">2. Diarization の原理とチェック観点</h2>
+<p>Diarization＝「いつ・誰が・何を話したか」を時間軸に沿って正確に書き起こす作業。QAは次の4点を見る。</p>
+
+<h3>2-1. 転写の正確さ</h3>
+<ul>
+  <li>実際に発話された語と一致しているか（短縮形・省略・言い淀みの扱いが一貫しているか）</li>
+  <li><strong>幻覚</strong>（聞こえていない語の捏造）が無いか／明らかに聞こえる語の<strong>欠落</strong>が無いか</li>
+  <li>笑い・咳などの<strong>非言語音</strong>が、決めたルールで一貫して記述されているか</li>
+  <li>本当に聞き取れない箇所は、推測せず「不明瞭」として印を付けているか</li>
+</ul>
+<div class="tip"><strong>判断の閾値：</strong>数回聞いても語として高い確信が持てないなら「不明瞭」。背景で何か聞こえる気がする程度なら、そもそも転写しない（＝幻覚を作らない）。</div>
+
+<h3>2-2. タイムスタンプの精度</h3>
+<ul>
+  <li><strong>映像のフレームではなく「音」に合わせる</strong>。口の動きと音はズレることがある</li>
+  <li>開始・終了の両方を厳密に。業界の実務では概ね <strong>±100ms 程度</strong>の精度が求められる</li>
+  <li><strong>スキュー（全体が一定量ずれる現象）</strong>に注意。1箇所直すだけでなく全体を点検する</li>
+  <li>同一話者の区間は重ならない（意図的なミックスを除く）</li>
+</ul>
+
+<h3>2-3. 話者・発話源の帰属</h3>
+<ul>
+  <li>各発話が正しい話者に、最初から最後まで一貫して割り当てられているか</li>
+  <li><strong>画面内 / 画面外（同じ空間にいる）/ ナレーション（別空間からの声）</strong>を区別できているか</li>
+  <li>誰の声か特定できない群衆・同時発話は、決めたルール（例：「割り当て不可」）で処理しているか</li>
+</ul>
+<div class="box"><strong>画面内・外の見分け方（一例）：</strong>「今カメラをその場で一回転させたら、この話者は映るか？」→ 映る＝同じ空間の画面外、映らない＝別空間のナレーション。</div>
+
+<h3>2-4. Diarization のよくある間違い</h3>
+<table>
+  <tr><th>間違い</th><th>なぜ問題か</th></tr>
+  <tr><td>映像（口の動き）にタイムスタンプを合わせる</td><td>音とテキストがズレ、学習信号が劣化</td></tr>
+  <tr><td>聞こえない語を推測で埋める</td><td>幻覚を教え込む</td></tr>
+  <tr><td>非言語音の表記がバラバラ（laughs / laughing 混在）</td><td>一貫性が崩れる</td></tr>
+  <tr><td>話者の割り当てが途中で入れ替わる</td><td>話者識別の学習を壊す</td></tr>
+  <tr><td>不明瞭区間を細切れに分割</td><td>連続した不明瞭は一塊で扱うべき</td></tr>
+</table>
+
+<!-- 3 -->
+<h2 class="pagebreak">3. Audio Captioning の原理とチェック観点</h2>
+<p>Audio Captioning＝動画内の<strong>あらゆる音（音楽・効果音・環境音・無音）</strong>を、聞こえた通りに構造化して記述する作業。発話はdiarization側で扱い、こちらには混ぜない。</p>
+
+<h3>3-1. 区切りの原則</h3>
+<ul>
+  <li><strong>1つの「distinct sound（独立した音）」につき1キャプション</strong></li>
+  <li>連続音（途切れない太鼓のロール等）は1つ。同じ音でも別々に2回鳴れば2つ</li>
+  <li>複数の音が重なるなら、それぞれにキャプションを作る（タイムスタンプは重なってよい）。開始時刻順に並べる</li>
+</ul>
+
+<h3>3-2. 「源を名指す前に、音そのものを描く」</h3>
+<p>最優先は<strong>音の性質・質感・振る舞い</strong>の描写。源（source）が分かれば名指すが、名詞は描写の<strong>入口</strong>であって結論ではない。「銃声」と書くだけでは不十分——どう鳴ったかを描く。</p>
+<div class="tip"><strong>聞く手順：</strong>①映像より先に音だけを聞く ②複数回聞く（初回で細部は聞き逃す） ③下の5次元のうち、意味のあるものだけを使って描写する（全項目を埋めるのが目的ではない）。</div>
+
+<h3>3-3. 音を描く5つの次元</h3>
+<table>
+  <tr><th>次元</th><th>見るもの</th><th>語の例</th></tr>
+  <tr><td>Pitch / Frequency</td><td>高さ。音程がある音は pitch、無い音（衝撃音・ノイズ）は周波数帯で</td><td>high, mid, low, rising, falling</td></tr>
+  <tr><td>Volume</td><td>音量と、その変化の有無</td><td>soft, moderate, loud, consistent, variable</td></tr>
+  <tr><td>Behaviour / Movement</td><td>時間的にどう始まり・続き・終わるか。反復・リズム</td><td>constant, swells, fades, pulses, sharp onset, sustained</td></tr>
+  <tr><td>Spatial position</td><td>近い/遠い、乾いた/反響、定位</td><td>dry, reverberant, echoey, close, distant</td></tr>
+  <tr><td>Overall quality</td><td>録音の劣化や不自然な加工（良いときは書かない）</td><td>distorted, clipped, muffled, tinny, glitchy</td></tr>
+</table>
+
+<h3>3-4. 良い記述・悪い記述（自作例）</h3>
+<div class="box">
+題材：オフカメラのガラスが割れる音<br>
+<span class="ex-bad">✗ 少なすぎ：</span> 「画面外でガラスが割れる音、中音量」<br>
+<span class="ex-good">✓ 良い：</span> 「画面外で鋭く明るい破砕音が一度鳴り、続いて細かな破片が散らばる短い余韻。中音量で、わずかに反響する」<br>
+<span class="ex-bad">✗ 多すぎ：</span> 周波数やdB、RT60など技術数値の羅列（過剰で読み手に役立たない）
+</div>
+
+<h3>3-5. 発生源（Primary Source）の特定</h3>
+<ul>
+  <li>すべての音の源を判定し、<strong>画面内 / 画面外 / 環境音（ambient）</strong>を明示する</li>
+  <li>音楽も同様に、源が見えるか（ラジオ・ピアノ等）/見えないか/背景かを示す</li>
+  <li>過度に具体化しない（ネットが見えるからと「バレーボール」と断定せず「ボール」で留める等）</li>
+  <li>個々を特定できない多数の音は「群衆／集合」として環境音的に扱う</li>
+</ul>
+
+<h3>3-6. タイムスタンプと無音</h3>
+<ul>
+  <li>音が聞こえ始めた時点から、聞こえなくなる時点まで。フェードインは<strong>フェードの開始</strong>から</li>
+  <li>実務では概ね <strong>±200ms 程度</strong>の精度</li>
+  <li>「コンピュータテスト」：音量を上げた静かな環境でも聞こえない音は、小さすぎるので注釈しない（幻覚回避）</li>
+  <li>無音は「予期に反する無音」のときだけ注釈する</li>
+</ul>
+
+<!-- 4 -->
+<h2 class="pagebreak">4. 話者・声の記述</h2>
+<h3>4-1. 視覚的記述（見える話者）</h3>
+<ul>
+  <li>目的は「人を区別できること」。年齢層・性別・身体的特徴・服装が基本要素</li>
+  <li>断定できない属性（性別・人種など）は<strong>推測せず</strong>、他の特徴で区別する</li>
+  <li>肌の色は段階表現（淡い〜濃い）で。人種カテゴリの決めつけはしない</li>
+  <li>場所・位置は、それが識別に本当に役立つときだけ使う</li>
+</ul>
+<h3>4-2. 声の記述（見えない話者でも可）</h3>
+<ul>
+  <li>できる限り<strong>ピッチ</strong>と<strong>アクセント／地域</strong>を含める</li>
+  <li>同じ記述を2人に使わない。似た声はピッチや質感で差をつける</li>
+  <li><strong>声の記述に感情を混ぜない</strong>（「がっかりした声」は感情側のタグ）</li>
+  <li>知らない情報を書かない（「アクセント不明」等の空振りを避ける）</li>
+</ul>
+
+<!-- 5 -->
+<h2>5. 感情・声の届け方タグ</h2>
+<ul>
+  <li><strong>声を分析する。映像で判断しない</strong>（見た目が怒っていても、声が平静ならNeutral）</li>
+  <li><strong>デフォルトはNeutral。</strong>明確に支持できないなら付けない（過剰タグを避ける）</li>
+  <li>1つのタグの付けすぎに注意。タスク全体で一貫させる</li>
+  <li>感情（happy, angry, sad…）と、声の届け方（whispering, shouting, flat…）は別物として扱う</li>
+</ul>
+
+<!-- 6 -->
+<h2>6. 採点の考え方</h2>
+<p>欠陥を<strong>Major</strong>と<strong>Minor</strong>に分け、Majorが無く、Minorが無視できる水準のときだけ合格とする。</p>
+<table>
+  <tr><th>区分</th><th>例</th></tr>
+  <tr><td><strong>Major</strong>（学習信号を壊す）</td><td>タイムスタンプの誤り、話者の誤割り当て、明確に聞こえる語の欠落／捏造、源の取り違え、誤訳</td></tr>
+  <tr><td><strong>Minor</strong>（軽微）</td><td>文法・句読点の小さな誤り、記述の軽い過剰、タグのわずかな付けすぎ</td></tr>
+</table>
+
+<!-- 7 -->
+<h2 class="pagebreak">7. クイック・チェックリスト</h2>
+<table>
+  <tr><th>領域</th><th>確認</th></tr>
+  <tr><td>転写</td><td>□ 幻覚なし □ 欠落なし □ 非言語音が一貫 □ 不明瞭は推測せず印</td></tr>
+  <tr><td>時刻</td><td>□ 音基準 □ ±100ms □ スキューなし □ 同一話者の重なりなし</td></tr>
+  <tr><td>話者</td><td>□ 帰属が一貫 □ 画面内/外/ナレーション区別 □ 群衆ルール適用</td></tr>
+  <tr><td>音記述</td><td>□ 1音1キャプション □ 5次元のうち必要なもので描写 □ 源と ambient を明示</td></tr>
+  <tr><td>音時刻</td><td>□ フェード開始から □ ±200ms □ 小さすぎる音は注釈しない</td></tr>
+  <tr><td>記述</td><td>□ 話者を区別可能 □ 声に感情を混ぜない □ 曖昧語・推測なし</td></tr>
+  <tr><td>タグ</td><td>□ 声で判断 □ 既定Neutral □ 過剰タグなし</td></tr>
+</table>
+
+<!-- 8 -->
+<h2>8. 用語集（声・音の記述語）</h2>
+<table>
+  <tr><th>カテゴリ</th><th>語</th></tr>
+  <tr><td>ピッチ</td><td>high / mid / low / monotone（変化が乏しい）/ varied</td></tr>
+  <tr><td>速さ・区切り</td><td>fast / slow / choppy（途切れる）/ smooth / hesitant</td></tr>
+  <tr><td>音色・質</td><td>breathy（息混じり）/ hoarse（しゃがれ）/ nasal（鼻に抜ける）/ resonant（よく響く）/ raspy（ざらつく）/ booming（轟く）/ squeaky（甲高い）/ warm（温かい）</td></tr>
+  <tr><td>滑舌</td><td>well-enunciated / mumbled（こもる）/ crisp（明瞭）/ slurred（不明瞭）</td></tr>
+  <tr><td>抑揚</td><td>rising / falling / flat / melodic</td></tr>
+  <tr><td>その他</td><td>paused / vocal fry（きしむ低音）/ tremulous（震える）</td></tr>
+  <tr><td>音の振る舞い</td><td>constant / swells / fades / pulses / builds / sharp onset / sustained</td></tr>
+  <tr><td>空間</td><td>dry / reverberant / echoey / close / distant</td></tr>
+</table>
+<p class="muted">※ falsetto 等の音楽用語は声の記述に使わないのが一般的。</p>
+
+<!-- 9 -->
+<h2 class="pagebreak">9. 自己テスト</h2>
+<div class="q">Q1. 口の動きと音がわずかにズレている。タイムスタンプはどちらに合わせる？</div>
+<div class="q">Q2. 背景で何か言っている気がするが、語として聞き取れない。どう扱う？（2パターン：語だと分かるが内容不明 / そもそも語か不明）</div>
+<div class="q">Q3. 同じドアのノック音が、間を置いて2回鳴った。キャプションはいくつ？</div>
+<div class="q">Q4. 「画面外でガラスが割れる音、大きい」——このキャプションの問題点は？</div>
+<div class="q">Q5. 話者は見た目が怒っているが、声は淡々としている。感情タグは？</div>
+<div class="q">Q6. 「がっかりした低い声」——声の記述としてどこが不適切？</div>
+<div class="q">Q7. Major と Minor、それぞれ2つずつ挙げよ。</div>
+
+<div class="box" style="margin-top:14px;">
+<strong>解答の要点</strong><br>
+A1. 音。 A2. 語と分かるが内容不明＝「不明瞭」と印／語か不明＝注釈しない（幻覚回避）。 A3. 2つ（連続でないため）。
+A4. 源の描写止まりで、音そのもの（質感・余韻・反響）が描けていない。 A5. Neutral（声で判断）。
+A6. 「がっかり」は感情で、声の記述に混ぜてはいけない。 A7. Major＝時刻ズレ/話者誤り 等、Minor＝句読点/軽い過剰記述 等。
+</div>
+
+<p class="muted" style="margin-top:26px;">© Kazuma Sasaki — 学習用。内容はすべて独自に作成し、守秘義務のある第三者プロジェクトの機密情報を含みません。</p>
+
+</body>
+</html>
