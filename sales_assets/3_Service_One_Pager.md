@@ -1,6 +1,6 @@
-# Kazuma Sasaki — Audio Data Quality
+# Kazuma Sasaki — Multilingual Audio Data
 
-**Speaker diarization · Audio captioning · Multilingual annotation QA**
+**Speech data creation · Speaker diarization · Audio captioning · Annotation QA**
 kazmike.s@gmail.com · linkedin.com/in/kazumasasaki · Tokyo
 
 ---
@@ -9,51 +9,62 @@ kazmike.s@gmail.com · linkedin.com/in/kazumasasaki · Tokyo
 
 2+ years in AI training data. Most recently a QA lead on a frontier AI lab's
 multimodal audio project, where I grew from trainer → pre-completion reviewer →
-post-completion reviewer → QA lead. I've reviewed at frontier-lab quality bars,
+post-completion reviewer → QA lead. I've worked to frontier-lab quality bars,
 trained annotators, and built review pipelines from scratch — in Japanese and
 English.
 
+I specialize in the part of the market that is hardest to source: **high-quality
+audio data in Japanese and other Asian languages.**
+
 ## What I do
 
-**1. Data QA (audit + report)**
-I review your audio/video annotation data and return a structured report:
+**1. Multilingual speech data creation** *(core service)*
+Full annotation of audio/video, built from scratch: accurate transcription,
+word-level speaker diarization, speaker & voice profiling, and emotion / delivery
+tagging. Production-ready training data for ASR, TTS, and voice agents.
+
+**2. Audio captioning** *(specialty)*
+Detailed description of every non-speech sound — music, sound effects, ambient,
+silence — for multimodal models that need to understand audio, not just words.
+Few suppliers can do this at frontier-lab quality.
+
+**3. Data QA (audit + report)**
+Review of your existing annotation data, returned as a structured report:
 per-item findings, the rule each one breaks, and the exact fix. Fewer review
 rounds, cleaner training signal.
 
-**2. Annotation pipeline consulting**
-I help you design the system itself — guidelines, error taxonomy, scoring
-rubric, reviewer workflow, and annotator onboarding — so quality is built in,
-not inspected in afterwards.
-
-**3. Gold / eval set creation**
-High-accuracy reference data (diarization + audio captioning) to benchmark your
-models or your vendors against.
+**4. Pipeline consulting & gold sets**
+Design of your guidelines, error taxonomy, scoring rubric and reviewer workflow;
+plus high-accuracy reference sets to benchmark your models or vendors.
 
 ## Where I'm strongest
 
+- Multilingual coverage — **Japanese & Asian languages** (the scarce, high-demand gap)
 - Speaker diarization — word-level, ~100ms timestamp accuracy
 - Audio captioning — music, sound effects, ambient sound, silence
 - Speaker & voice profiling — pitch, accent, vocal texture
 - Emotion / delivery tagging — conservative, audio-grounded
-- Multilingual review (Japanese, English)
 
 ## How we'd start
 
-A **free QA audit** on a small sample of your data. You see exactly what I
-catch and how I report it, then decide if it's worth scoping further. No
-commitment.
+A **free sample** on a small batch of your data — either a QA audit of what you
+have, or a short annotated sample built to your spec. You see the quality
+first-hand, then decide whether to scope further. No commitment.
 
 ## Engagement options
 
-| Model | Best for | Indicative rate |
+| Service | Best for | Indicative rate |
 |---|---|---|
-| Per-minute QA | Ongoing batch review | from $1–3 / audio-minute |
-| Hourly consulting | Pipeline / guideline design | from $100 / hour |
-| Project / retainer | Standing up or running a QA function | scoped per engagement |
+| **Full annotation + QA** | Training data for ASR / TTS / voice agents | **from $30 / audio-minute** |
+| Audio captioning | Multimodal audio understanding | scoped (premium specialty) |
+| QA / review only | Checking an existing pipeline | from $1–6 / audio-minute |
+| Pipeline consulting | Guideline & rubric design | from $100 / hour |
+| Project / retainer | Large or ongoing programs | scoped per engagement |
 
-*Rates are starting points and depend on language mix, turnaround, and volume.*
+*Rates are starting points and depend on language mix, turnaround, and volume.
+Asian-language work is priced at a premium.*
 
 ---
 
-**Let's start with a free sample audit — send me a few minutes of data and I'll
-show you what I find.**
+**Let's start with a free sample — send me a few minutes of audio and I'll show
+you the quality you'd get.**
