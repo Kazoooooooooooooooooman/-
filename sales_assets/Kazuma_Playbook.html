@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4; margin: 22mm 20mm; }
+  body { font-family: "Noto Sans CJK JP", "IPAGothic", "TakaoGothic", sans-serif;
+         color: #1a1a1a; line-height: 1.6; font-size: 10.5pt; }
+  h1 { font-size: 26pt; color: #14532d; margin: 0 0 4px; }
+  .sub { color: #555; font-size: 11pt; margin-bottom: 2px; }
+  .contact { color: #14532d; font-size: 10pt; margin-bottom: 28px; }
+  h2 { font-size: 16pt; color: #14532d; border-bottom: 2px solid #86b694;
+       padding-bottom: 4px; margin-top: 34px; page-break-after: avoid; }
+  h3 { font-size: 12.5pt; color: #1f3d2b; margin-top: 18px; page-break-after: avoid; }
+  ul { margin: 6px 0 6px 0; padding-left: 20px; }
+  li { margin-bottom: 3px; }
+  table { border-collapse: collapse; width: 100%; margin: 10px 0; font-size: 9.5pt; }
+  th { background: #14532d; color: #fff; text-align: left; padding: 6px 8px; }
+  td { border: 1px solid #cfe0d4; padding: 6px 8px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f4f9f5; }
+  .box { background: #f4f9f5; border-left: 4px solid #14532d; padding: 10px 14px; margin: 12px 0; }
+  .warn { background: #fff6f0; border-left: 4px solid #c0612a; padding: 10px 14px; margin: 12px 0; }
+  code, pre { font-family: "DejaVu Sans Mono", monospace; font-size: 9pt; }
+  pre { background: #f5f5f5; border: 1px solid #ddd; padding: 10px; white-space: pre-wrap; border-radius: 4px; }
+  .pagebreak { page-break-before: always; }
+  .toc li { margin-bottom: 5px; }
+  .muted { color: #666; font-size: 9pt; }
+</style>
+</head>
+<body>
+
+<h1>Kazuma Sasaki — Playbook</h1>
+<div class="sub">Audio Data Quality · Diarization &amp; Audio Captioning · Multilingual Annotation QA</div>
+<div class="contact">kazmike.s@gmail.com&nbsp;·&nbsp;linkedin.com/in/kazumasasaki&nbsp;·&nbsp;Tokyo</div>
+
+<div class="box">
+このドキュメントは、自分の事業を組み立てるための個人用マスター資料です。<br>
+Part&nbsp;1〜2（プロフィール／サービス）は<strong>顧客に見せる用</strong>、Part&nbsp;3〜4（戦略／ツール）は<strong>自分用</strong>。<br>
+中身はすべてオリジナル。守秘義務のある特定プロジェクトの内容・形式・事例は一切含みません。
+</div>
+
+<h3>目次</h3>
+<ol class="toc">
+  <li>Professional Profile &amp; QA Methodology（顧客用）</li>
+  <li>Service Offering &amp; Pricing（顧客用）</li>
+  <li>事業戦略 &amp; ¥1億ロードマップ（自分用）</li>
+  <li>営業ツールキット：LinkedIn / DM / レポート雛形 / ターゲット（自分用）</li>
+</ol>
+
+<!-- ============ PART 1 ============ -->
+<h2 class="pagebreak">1. Professional Profile &amp; QA Methodology</h2>
+
+<h3>Who I am</h3>
+<p>2+ years in AI training data. Most recently a QA lead on a frontier AI lab's multimodal
+audio project, where I grew from trainer → pre-completion reviewer → post-completion
+reviewer → QA lead. I have reviewed at frontier-lab quality bars, trained annotators,
+and built review pipelines from scratch — in Japanese and English.</p>
+
+<h3>How I audit audio/video annotation — five layers</h3>
+<p>Each layer has a clear pass/fail bar, so feedback is specific and actionable — never
+"this feels off."</p>
+
+<p><strong>1. Transcription accuracy</strong></p>
+<ul>
+  <li>Words match what is actually said; contractions, elisions and fillers handled consistently</li>
+  <li>No invented words (hallucinations); no dropped words that are clearly audible</li>
+  <li>Non-speech sounds handled by a consistent rule, not ad hoc</li>
+  <li>Genuinely unclear audio marked as such rather than guessed</li>
+</ul>
+
+<p><strong>2. Timestamp precision</strong></p>
+<ul>
+  <li>Start/end times aligned to the audio, not the video frame</li>
+  <li>Tight tolerance (~100ms on speech, ~200ms on sound events)</li>
+  <li>No drift / skew accumulating across a clip</li>
+  <li>Same-speaker segments never overlap unless intentionally mixed</li>
+</ul>
+
+<p><strong>3. Speaker / source attribution</strong></p>
+<ul>
+  <li>Every utterance attributed to the correct speaker, consistently across the clip</li>
+  <li>On-screen vs. off-screen vs. narration distinguished correctly</li>
+  <li>Sound sources identified (which object, instrument or person produced it)</li>
+  <li>Crowds / un-attributable sounds handled by a defined rule, not a guess</li>
+</ul>
+
+<p><strong>4. Descriptions (speaker + sound)</strong></p>
+<ul>
+  <li>Speaker profiles distinct enough to tell people apart unambiguously</li>
+  <li>Voice descriptions capture pitch, accent/region and texture — without smuggling in emotion</li>
+  <li>Sound descriptions convey how the sound actually is (character, volume, movement, space), not just a one-word label</li>
+  <li>Descriptions avoid hedging and unverifiable claims</li>
+</ul>
+
+<p><strong>5. Tags (emotion + delivery)</strong></p>
+<ul>
+  <li>Tags supported by the audio, not by what the speaker looks like on screen</li>
+  <li>Conservative by default — neutral unless the signal is clear</li>
+  <li>No over-tagging of any single category; consistent across the whole task</li>
+</ul>
+
+<h3>How I score</h3>
+<p>I separate <strong>major</strong> issues (things that corrupt the training signal — wrong
+timestamps, wrong speaker, missing/invented words) from <strong>minor</strong> issues
+(grammar, light over-description). A task passes only when there are no major issues and
+minor ones are negligible.</p>
+
+<h3>What you get</h3>
+<p>A structured report per batch: per-item findings, the rule each one violated, and the
+specific fix — written so an annotator can act on it without a meeting. Fewer review
+rounds, a measurably cleaner dataset.</p>
+
+<!-- ============ PART 2 ============ -->
+<h2 class="pagebreak">2. Service Offering &amp; Pricing</h2>
+
+<h3>What I do</h3>
+<ul>
+  <li><strong>Data QA (audit + report)</strong> — review your annotation data, return a structured report of findings, rules and fixes.</li>
+  <li><strong>Annotation pipeline consulting</strong> — design the system itself: guidelines, error taxonomy, scoring rubric, reviewer workflow, annotator onboarding.</li>
+  <li><strong>Gold / eval set creation</strong> — high-accuracy reference data (diarization + audio captioning) to benchmark models or vendors.</li>
+</ul>
+
+<h3>Where I'm strongest</h3>
+<ul>
+  <li>Speaker diarization — word-level, ~100ms timestamp accuracy</li>
+  <li>Audio captioning — music, sound effects, ambient sound, silence</li>
+  <li>Speaker &amp; voice profiling — pitch, accent, vocal texture</li>
+  <li>Emotion / delivery tagging — conservative, audio-grounded</li>
+  <li>Multilingual review (Japanese, English)</li>
+</ul>
+
+<h3>How we start</h3>
+<p>A <strong>free QA audit</strong> on a small sample of your data. You see exactly what I catch
+and how I report it, then decide whether to scope further. No commitment.</p>
+
+<h3>Engagement options</h3>
+<table>
+  <tr><th>Model</th><th>Best for</th><th>Indicative rate</th></tr>
+  <tr><td>Per-minute QA</td><td>Ongoing batch review</td><td>from $1–3 / audio-minute</td></tr>
+  <tr><td>Hourly consulting</td><td>Pipeline / guideline design</td><td>from $100 / hour</td></tr>
+  <tr><td>Project / retainer</td><td>Standing up or running a QA function</td><td>scoped per engagement</td></tr>
+</table>
+<p class="muted">Rates are starting points and depend on language mix, turnaround and volume.</p>
+
+<!-- ============ PART 3 ============ -->
+<h2 class="pagebreak">3. 事業戦略 &amp; ¥1億ロードマップ <span class="muted">（自分用）</span></h2>
+
+<h3>バリューチェーンのどこに立つか</h3>
+<pre>OpenAI / Anthropic / Google      ← お金を出す本丸（フロンティアラボ）
+        ↓ 契約（¥億単位）
+micro1 / Scale / Surge / Mercor   ← ベンダー（取りまとめ）
+        ↓ 仕事を流す
+自分                              ← 今ここ（一作業者）→ これを上に動かす</pre>
+
+<div class="box">
+<strong>核心：</strong>OpenAI直は現実的に無理（実績ある法人ベンダーとしか契約しない）。
+<strong>そして、OpenAI直でなくても¥1億は作れる。</strong>だからそこに固執しない。
+</div>
+
+<h3>「誰から受けるか」— 実現可能な順</h3>
+<table>
+  <tr><th>段階</th><th>受注元</th><th>なぜ</th></tr>
+  <tr><td>① 今すぐ</td><td>ラボを通さない直接客（音声AIスタートアップ／国産AI企業／国策AIデータ事業）</td><td>小規模だから個人・小法人とも契約してくれる。実績を作る場所</td></tr>
+  <tr><td>② 中期</td><td>大手ベンダーの下請け（Scale / Surge / Mercor）</td><td>既に¥億のラボ契約を持ち、高品質な多言語キャパを常に欲しがる。日本語スライスを取る</td></tr>
+  <tr><td>③ 長期</td><td>フロンティアラボと直接</td><td>"次のmicro1" になる。法人・実績・キャパが揃って初めて</td></tr>
+</table>
+
+<h3>単発¥1億の本命：日本の国策AIデータ事業</h3>
+<ul>
+  <li>政府が国産LLM・日本語AIに資金を流しており、<strong>「高品質な日本語音声データ」はまさに発注対象</strong></li>
+  <li>自分の武器（日本語ネイティブ × フロンティア品質）に構造的にド直撃</li>
+  <li>¥1億は普通の契約サイズ／日本法人と契約する／公募・RFP・コンソーシアムという入口がある</li>
+</ul>
+
+<h3>¥1億までの階段</h3>
+<table>
+  <tr><th>段</th><th>やること</th><th>規模</th><th>目安</th></tr>
+  <tr><td>1（今）</td><td>個人事業主でソロの有料契約・実績作り</td><td>〜数十万円</td><td>〜3ヶ月</td></tr>
+  <tr><td>2</td><td>業務委託で2〜3人・継続バッチ受注</td><td>数百万円</td><td>〜1年</td></tr>
+  <tr><td>3</td><td>法人化・10人規模のバンク</td><td>〜数千万円</td><td>1〜2年</td></tr>
+  <tr><td>4</td><td>下請け or 国策案件で¥1億</td><td>¥1億</td><td>2〜3年</td></tr>
+</table>
+
+<h3>チームの作り方（人を抱え込まない）</h3>
+<ul>
+  <li>正社員を雇うのではなく <strong>「業務委託のバンク（名簿）」</strong> を作る</li>
+  <li>自分＝唯一の常設メンバー（脳）。作業者＝案件のときだけ呼ぶ外注（手）</li>
+  <li>客に請求 → そこから外注に払う。<strong>契約が無い間は人件費ゼロ</strong></li>
+  <li>採用元：バイリンガルのフリーランス、元翻訳者・テープ起こし経験者、国際系大学のネットワーク、クラウドソーシングの実績者。<strong>自分のオリジナル教材で育てる</strong></li>
+</ul>
+
+<h3>自分の役割の再定義</h3>
+<table>
+  <tr><th>自分がやる（常設・1人でいい）</th><th>外注に任せる（案件ごと）</th></tr>
+  <tr><td>営業・契約／品質基準の設計・研修／最終QA・レビュー／プロジェクト管理</td><td>実際のアノテーション作業／一次処理</td></tr>
+</table>
+
+<h3>法人化の判断</h3>
+<ul>
+  <li>業務委託で働きながら自分の会社を持つのは原則OK（契約の競業避止・専属条項は要確認）</li>
+  <li><strong>タイミングが命</strong>：「法人じゃないと発注できない」と相手が言った瞬間が引き金。それまで作らない</li>
+  <li>順番：①開業届（個人事業主・無料）→ ②必要になったら合同会社（安い）→ ③拡大したら株式会社</li>
+</ul>
+
+<div class="warn">
+<strong>⚠ ガードレール（これを破ると全部吹き飛ぶ）</strong>
+<ul>
+  <li>守秘義務のあるプロジェクトの<strong>具体内容・ガイドライン・事例・分類・基準を、加工しても流用しない</strong>。教材も営業資料も<strong>ゼロから自分の言葉で</strong></li>
+  <li>現契約の<strong>競業避止・勧誘禁止</strong>を必ず確認。元同僚の引き抜きはNG。下請け自体はOKでも競合行為は要注意</li>
+  <li>実クライアント名（ラボ名）は出さない。<strong>"a frontier AI lab"</strong> で止める</li>
+  <li>現在の収入（床）は、副業売上が超えるまで手放さない</li>
+</ul>
+</div>
+
+<!-- ============ PART 4 ============ -->
+<h2 class="pagebreak">4. 営業ツールキット <span class="muted">（自分用）</span></h2>
+
+<h3>LinkedIn — Headline</h3>
+<pre>Audio Annotation QA Lead | Speaker Diarization &amp; Audio Captioning | Multilingual AI Training Data</pre>
+
+<h3>LinkedIn — About</h3>
+<pre>I lead quality assurance for multilingual audio and video annotation used to
+train and evaluate AI models.
+
+I've spent 2+ years in AI training data — working with Outlier, Mercor, and
+most recently as a QA lead on a frontier AI lab's audio project, where I grew
+from trainer to pre-completion reviewer, post-completion reviewer, and QA lead.
+My work covers:
+
+- Speaker diarization (word-level, 100ms-accurate timestamps)
+- Audio captioning (music, sound effects, ambient sound, silence)
+- Speaker profiling (visual, vocal, accent, emotion/delivery tagging)
+- Training annotators and building review pipelines from scratch
+
+I work to frontier-lab quality standards across multiple languages
+(Japanese, English).
+
+Open to data QA contracts and annotation pipeline consulting.
+kazmike.s@gmail.com</pre>
+
+<h3>LinkedIn 申請メモ（200字以内・コールド用）</h3>
+<pre>Hi [Name] — I do QA for multilingual audio annotation &amp; diarization.
+2+ yrs in AI training data, recently QA lead at a frontier AI lab.
+Happy to run a free sample audit on your audio.</pre>
+
+<h3>Email — 件名＆本文（直接営業用）</h3>
+<pre>Subject: Free QA audit for [Company]'s multilingual audio data
+
+Hi [Name],
+
+I came across [Company]'s work on multilingual voice agents. The quality of
+the underlying audio annotation is make-or-break for that kind of product —
+and that's exactly what I do.
+
+For the past 2+ years I've worked in AI training data, most recently as a QA
+lead on a frontier AI lab's multimodal audio project: speaker diarization,
+audio captioning, and vocal/emotion tagging across multiple languages
+(including Japanese and English).
+
+I'd be glad to run a free QA audit on a small sample of your audio data — no
+strings attached. You'd get a concrete report of what I catch, and you can
+decide if it's useful from there.
+
+Would you be open to that?
+
+Best,
+Kazuma Sasaki
+linkedin.com/in/kazumasasaki · kazmike.s@gmail.com</pre>
+
+<h3>Sample QA Report — 雛形（無料監査の成果物）</h3>
+<pre>Sample QA Audit — [Client]
+Reviewer: Kazuma Sasaki   Batch: [id]   Items: [n]   Date: [date]
+Languages: [Japanese, English]
+
+SUMMARY
+  Items reviewed / Pass / Needs fixes / Major / Minor
+  Headline takeaway: [the single highest-impact fix for the whole batch]
+
+FINDINGS  (per item)
+  Item [id] — [timestamp]
+    Layer:    Transcription / Timestamp / Speaker / Description / Tags
+    Severity: Major / Minor
+    Issue:    [what is wrong]
+    Fix:      [the specific correction]
+
+RECURRING PATTERNS
+  1. [Pattern] — ~[n] items. [Why it matters + rule to apply]
+
+RECOMMENDATIONS
+  - [Process / guideline change that prevents this class of error]</pre>
+
+<h3>ターゲットリスト</h3>
+<table>
+  <tr><th>会社 / 領域</th><th>狙う相手</th><th>メモ</th></tr>
+  <tr><td>Samora AI（多言語ボイスエージェント・YC W26）</td><td>Kartik Sawhney (CEO) / Vineeth Kumar / Shakul Sonker</td><td>17人規模・創業者が直接読む。DM送信済み</td></tr>
+  <tr><td>PyannoteAI（話者分離AI・仏）</td><td>CTO / Founder</td><td>diarizationがコア＝品質が命</td></tr>
+  <tr><td>Mundo AI（多言語学習データ）</td><td>Founder / Head of Data</td><td>競合かつ協業先候補</td></tr>
+  <tr><td>国産AI / LLM</td><td>Sakana AI, Preferred Networks, rinna, NTT, SoftBank</td><td>日本語データ品質に課題</td></tr>
+  <tr><td>国策AIデータ事業</td><td>GENIAC / NEDO 系プログラム</td><td>単発¥1億の本命ルート</td></tr>
+</table>
+
+<h3>次のアクション</h3>
+<ul>
+  <li>現契約（競業避止・勧誘禁止）の確認 ← 下請けルートの可否を決める</li>
+  <li>ソロで最初の有料案件を「継続バッチレビュー」の形で取る</li>
+  <li>PyannoteAI / Mundo AI へDM</li>
+  <li>国策AIデータ事業の公募状況を調べる</li>
+</ul>
+
+<p class="muted" style="margin-top:30px;">© Kazuma Sasaki — 個人用資料。本書の内容はすべて独自に作成したもので、守秘義務のある第三者プロジェクトの機密情報を含みません。</p>
+
+</body>
+</html>
