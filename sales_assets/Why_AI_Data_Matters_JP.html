@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page{size:A4;margin:18mm 17mm}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"IPAGothic",sans-serif;color:#1d2a22;line-height:1.75;font-size:11.5pt}
+  h1{font-size:20pt;color:#14532d;line-height:1.4;margin-bottom:4px}
+  .lead{font-size:11pt;color:#46574d;margin-bottom:18px}
+  h2{font-size:14pt;color:#14532d;margin:20px 0 8px;padding-left:10px;border-left:5px solid #1f7a45}
+  p{margin:7px 0}
+  .em{background:#fff7d6;padding:0 3px;font-weight:bold}
+  .green{color:#14532d;font-weight:bold}
+  .box{background:#f4f9f5;border:1px solid #cfe0d4;border-radius:10px;padding:14px 18px;margin:12px 0}
+  .flow{display:flex;align-items:center;gap:0;margin:14px 0;text-align:center}
+  .fb{flex:1;background:#fff;border:1.5px solid #86b694;border-radius:10px;padding:11px 6px}
+  .fb .big{font-size:22pt}
+  .fb .t{font-size:9.5pt;font-weight:bold;color:#14532d;margin-top:3px;line-height:1.3}
+  .fa{width:26px;color:#14532d;font-size:17pt;font-weight:bold}
+  .fb.smart{background:#14532d}
+  .fb.smart .t{color:#fff}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:10.5pt}
+  th{background:#14532d;color:#fff;text-align:left;padding:7px 10px}
+  td{border:1px solid #cfe0d4;padding:7px 10px}
+  tr:nth-child(even) td{background:#f4f9f5}
+  .market{display:flex;align-items:flex-end;gap:8px;height:90px;margin:14px 0 6px}
+  .mbar{flex:1;background:#cfe0d4;border-radius:6px 6px 0 0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding-bottom:4px}
+  .mbar.b2{background:#86b694}.mbar.b3{background:#1f7a45}.mbar.b4{background:#14532d}
+  .mbar .y{font-size:8pt;color:#3a4a40;margin-top:4px}
+  .mbar .v{font-size:9pt;font-weight:bold;color:#fff}
+  .muted{color:#7a8a80;font-size:8.5pt}
+</style>
+</head>
+<body>
+
+<h1>「AIの教材づくり」という仕事<br><span style="font-size:13pt;color:#1f7a45">― なぜ必要で、なぜ今チャンスなのか ―</span></h1>
+<div class="lead">AIにくわしくない方へ。専門用語をできるだけ使わずに説明します。</div>
+
+<h2>1. AIは「とてもまじめな新人」です</h2>
+<p>AIは、生まれつき賢いわけではありません。<span class="em">大量の「お手本」を見せて、はじめて仕事を覚える新人</span>のようなものです。
+たとえば人間の新人なら、先輩が「これはこういう意味だよ」と教えながら育てますよね。AIもまったく同じで、
+<span class="green">良いお手本を見せれば賢く育ち、雑なお手本を見せれば雑に育ちます。</span></p>
+
+<h2>2. その「お手本」を作るのが、私たちの仕事です</h2>
+<p>たとえば1本の動画の音声。人間が聞けば「誰が・何を・どんな気持ちで話しているか」「後ろで何の音が鳴っているか」が分かります。
+でもAIにとっては、ただの「音のかたまり」。意味がわかりません。</p>
+<p>そこで私たちが、その音声に<span class="em">ひとつひとつ正確な印（しるし）をつけていきます</span>
+――「ここは女性が話している」「この言葉はこういう発音」「これは笑い声」「後ろの音は群衆のざわめき」。
+これが、<span class="green">AIにとっての“答え付きの教材”</span>になります。この作業を「ラベリング（注釈付け）」と呼びます。</p>
+
+<div class="flow">
+  <div class="fb"><div class="big">🎧</div><div class="t">ナマの音声<br>（AIには意味不明）</div></div>
+  <div class="fa">→</div>
+  <div class="fb"><div class="big">✍️</div><div class="t">人が印をつける<br>（誰が・何を・感情・音）</div></div>
+  <div class="fa">→</div>
+  <div class="fb"><div class="big">📘</div><div class="t">AIの教材<br>（答え付き）</div></div>
+  <div class="fa">→</div>
+  <div class="fb smart"><div class="big">🤖</div><div class="t">賢いAIが<br>育つ</div></div>
+</div>
+
+<h2>3. ここが肝心 ―「教材の質」がAIの質を決めます</h2>
+<div class="box">
+教材がいいかげんだと、AIは間違ったことを覚えてしまいます。逆に、<span class="green">教材が正確で丁寧なほど、AIは賢く・信頼できるものに育ちます。</span>
+世界中のAI企業が、今いちばん欲しがっているのが、この「<span class="em">質の高い教材</span>」です。質の悪い教材はいくらでもありますが、
+本当に高品質なものを作れる人は、世界的にも多くありません。
+</div>
+
+<h2>4. なぜ「今」なのか</h2>
+<p>ここ数年で、AIは一気に実用化しました。とくに<span class="green">「声で対話するAI」</span>――電話の自動応対、議事録の自動作成、AIによる翻訳・吹き替え――が爆発的に増えています。
+新しく生まれるスタートアップの<span class="em">約4社に1社が「音声AI」</span>に取り組んでいるほどです。</p>
+<p>その全部が、土台として「質の高い音声の教材」を必要としています。<span class="green">AIが増えれば増えるほど、教材づくりの仕事も増える</span>――今まさにその波の入り口です。</p>
+
+<h2>5. 市場規模と将来性</h2>
+<p>AIの「教材（学習データ）」を作る市場は、世界で急成長しています。</p>
+<div class="market">
+  <div class="mbar" style="height:32%"><span class="v">約0.4兆円</span></div>
+  <div class="mbar b2" style="height:55%"><span class="v">約1兆円</span></div>
+  <div class="mbar b3" style="height:78%"><span class="v">約2兆円</span></div>
+  <div class="mbar b4" style="height:100%"><span class="v">約3兆円</span></div>
+</div>
+<div style="display:flex;gap:8px;text-align:center"><div style="flex:1" class="muted">2024年</div><div style="flex:1" class="muted">2027年ごろ</div><div style="flex:1" class="muted">2030年ごろ</div><div style="flex:1" class="muted">2030年代前半</div></div>
+<p style="margin-top:10px">AI学習データの市場は、<span class="green">毎年25〜30%という猛スピードで拡大</span>し、2030年代前半には<span class="em">数兆円規模</span>に達すると予測されています。
+これはAI全体（数十兆円規模）を足元で支える、いわば<span class="green">“インフラ”の部分</span>です。AIが社会に広がるほど、必ず必要になります。</p>
+<p class="muted">※ 数字は各種業界調査にもとづく概算です。</p>
+
+<h2>6. その中で、私が狙う場所</h2>
+<table>
+  <tr><th>ポイント</th><th>なぜ強いか</th></tr>
+  <tr><td><b>日本語・アジア言語</b></td><td>英語の教材は世界にあふれているが、日本語など高品質なものは深刻に不足。希少＝高値がつく</td></tr>
+  <tr><td><b>最高品質の経験</b></td><td>世界最先端のAI研究所と同じ品質基準で、2年間プロとして経験を積んだ</td></tr>
+  <tr><td><b>品質を保つ仕組み</b></td><td>作って終わりではなく、複数人で何重にもチェックする体制で、品質を構造的に保証する</td></tr>
+</table>
+
+<div class="box" style="background:#14532d;color:#fff;border:none;margin-top:16px">
+<b style="font-size:12.5pt">ひとことで言うと:</b><br>
+AIという「まじめな新人」を賢く育てるための“教材”を、日本語で、世界最高品質で作る仕事。
+AIが広がる限り需要は伸び続ける、これからのインフラ産業です。
+</div>
+
+<p class="muted" style="margin-top:14px;text-align:right">Kazuma Sasaki ・ kazmike.s@gmail.com</p>
+
+</body>
+</html>
