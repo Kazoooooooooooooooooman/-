@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page { size: A4 landscape; margin: 12mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "IPAGothic", sans-serif; color: #16241c; margin: 0; }
+  .title { font-size: 19pt; font-weight: bold; color: #14532d; }
+  .one { font-size: 11pt; color: #2c3e34; margin: 2px 0 10px; }
+  .row { display: flex; align-items: stretch; gap: 0; margin: 7px 0; }
+  .lab { font-size: 8.5pt; font-weight: bold; color:#14532d; letter-spacing:.5px; margin: 9px 0 3px; text-transform: uppercase; }
+
+  /* problem strip */
+  .prob { background:#fff6f0; border:1px solid #e6c3a8; border-left:5px solid #c0612a;
+          padding:7px 12px; font-size:9.5pt; border-radius:5px; }
+  .prob b { color:#9a3d12; }
+
+  /* flow boxes */
+  .step { flex:1; background:#f4f9f5; border:1.5px solid #86b694; border-radius:7px;
+          padding:8px 7px; text-align:center; display:flex; flex-direction:column; justify-content:center; }
+  .step .n { font-size:8pt; color:#5b8a6b; font-weight:bold; }
+  .step .t { font-size:9.5pt; font-weight:bold; color:#14532d; margin-top:2px; line-height:1.25; }
+  .step .d { font-size:7.5pt; color:#435a4c; margin-top:3px; line-height:1.2; }
+  .arrow { display:flex; align-items:center; justify-content:center; width:22px; color:#14532d; font-size:15pt; font-weight:bold; }
+
+  /* QA layer (dark) */
+  .qa { flex:1; background:#14532d; color:#fff; border-radius:7px; padding:8px 6px; text-align:center;
+        display:flex; flex-direction:column; justify-content:center; }
+  .qa .t { font-size:9.5pt; font-weight:bold; line-height:1.2; }
+  .qa .d { font-size:7.5pt; color:#cfe6d6; margin-top:2px; }
+  .qa.me { background:#0c3a20; border:2px solid #f0c040; }
+  .arrow-w { color:#14532d; }
+
+  /* three-col sections */
+  .cols { display:flex; gap:9px; }
+  .card { flex:1; border:1px solid #cfe0d4; border-radius:7px; padding:8px 11px; background:#fff; }
+  .card h4 { margin:0 0 5px; font-size:9.5pt; color:#14532d; }
+  .card ul { margin:0; padding-left:15px; }
+  .card li { font-size:8.5pt; margin-bottom:2px; color:#2c3e34; line-height:1.3; }
+
+  /* growth */
+  .grow { display:flex; align-items:center; gap:0; }
+  .gstep { flex:1; text-align:center; background:#eef5ef; border:1px solid #b9d4c1; border-radius:6px; padding:6px 4px; }
+  .gstep .g1 { font-size:9pt; font-weight:bold; color:#14532d; }
+  .gstep .g2 { font-size:7.5pt; color:#4a6354; }
+  .garrow { width:20px; text-align:center; color:#14532d; font-weight:bold; font-size:13pt; }
+  .foot { font-size:7.5pt; color:#7a8a80; margin-top:8px; text-align:right; }
+</style>
+</head>
+<body>
+
+<div class="title">佐々木和真 — やりたいこと <span style="font-weight:normal;font-size:12pt;color:#5b8a6b;">| Managed Audio Data Pipeline</span></div>
+<div class="one">AIに必要な「高品質な音声データ」を、要望ヒアリングから育成・品質管理・納品まで<b>丸ごと請け負う</b>事業。フロンティアラボ水準の品質を、日本語・アジア言語で。</div>
+
+<div class="prob">
+<b>課題：</b> AIモデルは大量の音声データで学習する。でも<b>データ品質が最大のボトルネック</b>——話者分離・アクセント・感情・雑音・エッジケース。
+特に<b>日本語・アジア言語の高品質データは深刻な供給不足</b>。ここを埋める人がいない。
+</div>
+
+<div class="lab">What I do — 5ステップで丸ごと納品</div>
+<div class="row">
+  <div class="step"><div class="n">STEP 1</div><div class="t">要望ヒアリング</div><div class="d">何を・どの品質で・何語・量・納期</div></div>
+  <div class="arrow">→</div>
+  <div class="step"><div class="n">STEP 2</div><div class="t">ガイドライン作成</div><div class="d">要望を実行可能な品質基準に翻訳</div></div>
+  <div class="arrow">→</div>
+  <div class="step"><div class="n">STEP 3</div><div class="t">チーム招集・育成</div><div class="d">人数を量×納期で決定／研修</div></div>
+  <div class="arrow">→</div>
+  <div class="step"><div class="n">STEP 4</div><div class="t">4層QA で品質担保</div><div class="d">下の多段レビュー（核）</div></div>
+  <div class="arrow">→</div>
+  <div class="step" style="background:#e7f3ea;border-color:#14532d;"><div class="n">STEP 5</div><div class="t">高品質データ納品</div><div class="d">仕上がったデータを返す</div></div>
+</div>
+
+<div class="lab">The Moat — 4層QA（フロンティアラボと同じ品質構造）</div>
+<div class="row">
+  <div class="qa"><div class="t">AI Expert</div><div class="d">一次アノテーション</div></div>
+  <div class="arrow arrow-w">→</div>
+  <div class="qa"><div class="t">Pre-Reviewer</div><div class="d">完成前レビュー</div></div>
+  <div class="arrow arrow-w">→</div>
+  <div class="qa"><div class="t">Post-Reviewer</div><div class="d">完成後レビュー</div></div>
+  <div class="arrow arrow-w">→</div>
+  <div class="qa me"><div class="t">最終チェック（俺）</div><div class="d">Slackで常時運用・管理</div></div>
+</div>
+
+<div class="lab" style="margin-top:11px;">なぜ勝てる / 誰が買う</div>
+<div class="cols">
+  <div class="card">
+    <h4>強み（Moat）</h4>
+    <ul>
+      <li>フロンティアラボで2年・QAリードの実体験</li>
+      <li>日本語・アジア言語に特化（供給不足の高需要ゾーン）</li>
+      <li>4層QA＝構造的に高品質を担保</li>
+      <li>東京拠点・対面でも動ける</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>顧客（Who pays）</h4>
+    <ul>
+      <li>音声AIスタートアップ（TTS・音声エージェント）</li>
+      <li>国産AI・LLM（Sakana, PFN, rinna 等）</li>
+      <li>大手データベンダーの下請け（Scale, Mercor）</li>
+      <li>国策AIデータ事業（NICT, GENIAC）</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>稼ぎ方（Model）</h4>
+    <ul>
+      <li>“時間”でなく<b>“仕上がったデータ”</b>を売る</li>
+      <li>音声1分あたり／プロジェクト一括で請求</li>
+      <li>人を増やすほど<b>利益が伸びる</b>（マージン型）</li>
+      <li>未経験者を育てて高品質化＝再現可能</li>
+    </ul>
+  </div>
+</div>
+
+<div class="lab" style="margin-top:11px;">成長の道筋 — 単発¥1億へ</div>
+<div class="grow">
+  <div class="gstep"><div class="g1">ソロ</div><div class="g2">無料監査で実績</div></div>
+  <div class="garrow">→</div>
+  <div class="gstep"><div class="g1">小チーム</div><div class="g2">継続バッチ受注</div></div>
+  <div class="garrow">→</div>
+  <div class="gstep"><div class="g1">10人体制＋法人化</div><div class="g2">バンク方式で伸縮</div></div>
+  <div class="garrow">→</div>
+  <div class="gstep" style="background:#14532d;"><div class="g1" style="color:#fff;">単発 ¥1億</div><div class="g2" style="color:#cfe6d6;">下請け／国策案件</div></div>
+</div>
+
+<div class="foot">Kazuma Sasaki · kazmike.s@gmail.com · linkedin.com/in/kazumasasaki — 本図は独自作成。守秘義務のある第三者の機密情報は含みません。</div>
+
+</body>
+</html>
