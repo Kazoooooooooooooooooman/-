@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page{size:A4;margin:15mm 14mm}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"IPAGothic",sans-serif;color:#1d2a22;font-size:10pt;line-height:1.5}
+  h1{font-size:19pt;color:#14532d;margin-bottom:2px}
+  .lead{font-size:10pt;color:#46574d;margin-bottom:14px}
+  .goal{background:#14532d;color:#fff;border-radius:10px;padding:11px 15px;margin-bottom:16px;font-size:10pt}
+  .goal b{font-size:11pt}
+  .phase{font-size:12pt;font-weight:800;color:#14532d;margin:16px 0 7px;padding:5px 12px;background:#e7f3ea;border-radius:7px;border-left:5px solid #1f7a45}
+  .wk{border:1px solid #d8e4dc;border-radius:9px;padding:9px 12px;margin-bottom:8px;page-break-inside:avoid}
+  .wktop{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+  .chk{width:17px;height:17px;border:2px solid #1f7a45;border-radius:4px;flex-shrink:0}
+  .wno{font-weight:800;color:#14532d;font-size:10.5pt;white-space:nowrap}
+  .wttl{font-weight:700;font-size:10.5pt}
+  .wrow{display:flex;gap:8px;font-size:9.3pt;margin:2px 0 2px 26px;color:#33433a}
+  .tag{display:inline-block;min-width:42px;font-weight:700;color:#1f7a45}
+  .build{color:#14532d}
+  .build .tag{color:#c0612a}
+  .foot{margin-top:14px;font-size:8.5pt;color:#7a8a80;text-align:right}
+  .mini{margin-left:26px;font-size:8.7pt;color:#7a8a80}
+</style>
+</head>
+<body>
+
+<h1>Python × LLM 自動QA — 12週間プラン</h1>
+<div class="lead">本当の初心者から、3ヶ月で「LLMがアノテーションを自動採点するツール」を作るまで。週10時間ペース。</div>
+
+<div class="goal">
+<b>🎯 ゴール：</b> 自分のガイドラインに照らして、LLMがアノテーションの品質を自動採点するツールを完成させる。<br>
+これは <b>① 学習のゴール × ② 就職の証拠（Mercor等）× ③ 自分の事業の道具</b> を全部兼ねる。
+</div>
+
+<div class="phase">🟢 フェーズ1：Pythonの土台（1〜3週）</div>
+
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 1</span><span class="wttl">基本のキ</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>変数・文字列・リスト・print（Colabの使い方）</div>
+  <div class="wrow build"><span class="tag">作る</span>レッスン1の自動QAチェックに、自分で例を足して動かす</div>
+  <div class="mini">📘 Python for Everybody（Ch.1–5）</div>
+</div>
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 2</span><span class="wttl">繰り返しと条件</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>for ループ・if文・関数（def）</div>
+  <div class="wrow build"><span class="tag">作る</span>check(caption) と書いたら問題を返す「ミニQA関数」</div>
+  <div class="mini">📘 Python for Everybody（Ch.6–8）</div>
+</div>
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 3</span><span class="wttl">データのまとめ方</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>辞書（dict）・リストの中に辞書</div>
+  <div class="wrow build"><span class="tag">作る</span>1件を {"id":.., "caption":..} で扱い、複数件を一括チェック</div>
+  <div class="mini">📘 Python for Everybody（Ch.9–10）＋ Kaggle「Python」</div>
+</div>
+
+<div class="phase">🟡 フェーズ2：本物っぽいデータを扱う（4〜6週）</div>
+
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 4</span><span class="wttl">pandas入門</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>表（DataFrame）の読み込み・表示・列の操作</div>
+  <div class="wrow build"><span class="tag">作る</span>CSVのデータを読んで、件数や平均文字数を集計</div>
+  <div class="mini">📘 Kaggle「Pandas」コース</div>
+</div>
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 5</span><span class="wttl">集計とフィルタ</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>絞り込み・グループ集計・並べ替え</div>
+  <div class="wrow build"><span class="tag">作る</span>「担当者ごとの問題件数」「短すぎる一覧」を自動出力</div>
+  <div class="mini">📘 Kaggle 続き</div>
+</div>
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 6</span><span class="wttl">SQL入門</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>SELECT・WHERE・JOIN・GROUP BY</div>
+  <div class="wrow build"><span class="tag">作る</span>同じ集計をSQLでも（DBから品質指標を引く感覚）</div>
+  <div class="mini">📘 SQLBolt（全部）＋ Mode SQL Tutorial</div>
+</div>
+
+<div class="phase">🟠 フェーズ3：LLMに仕事をさせる（7〜9週）</div>
+
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 7</span><span class="wttl">LLM APIに触る</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>APIキー・LLMにメッセージを送って返事をもらう仕組み</div>
+  <div class="wrow build"><span class="tag">作る</span>Pythonから「このキャプションを評価して」とLLMに聞く</div>
+  <div class="mini">📘 Anthropic（Claude）公式ドキュメント＋Cookbook</div>
+</div>
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 8</span><span class="wttl">プロンプト設計</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>指示の書き方・構造化出力（JSONで返させる）</div>
+  <div class="wrow build"><span class="tag">作る</span>「スコア(1-5)と理由をJSONで返して」と頼むスクリプト</div>
+  <div class="mini">📘 Anthropic プロンプトガイド</div>
+</div>
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 9</span><span class="wttl">LLM-as-a-judge</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>ガイドラインをプロンプトに入れて基準で採点させる</div>
+  <div class="wrow build"><span class="tag">作る</span>自分のGLを渡して、キャプションを自動採点（事業の心臓部）</div>
+  <div class="mini">📘 DeepLearning.AI のLLM評価系ショートコース</div>
+</div>
+
+<div class="phase">🔵 フェーズ4：本物のツールに仕上げる（10〜12週）</div>
+
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 10</span><span class="wttl">つなげる</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>pandas × LLM を組み合わせる</div>
+  <div class="wrow build"><span class="tag">作る</span>CSVを読む → 1行ずつLLM採点 → 結果を新しい列に保存</div>
+</div>
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 11</span><span class="wttl">レポート化</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>集計＋簡単なグラフ（matplotlib）</div>
+  <div class="wrow build"><span class="tag">作る</span>平均スコア・低スコアTOP10・よくある問題を自動レポート</div>
+</div>
+<div class="wk">
+  <div class="wktop"><span class="chk"></span><span class="wno">Week 12</span><span class="wttl">仕上げ＆ポートフォリオ化</span></div>
+  <div class="wrow"><span class="tag">学ぶ</span>コードを整理・READMEを書く</div>
+  <div class="wrow build"><span class="tag">作る</span>「LLM自動QAツール」完成 → GitHubに公開、見せられる形に</div>
+</div>
+
+<div class="foot">Kazuma Sasaki — 詰まったら毎回その週の結果やエラーを貼って、一緒に進めよう。</div>
+
+</body>
+</html>
