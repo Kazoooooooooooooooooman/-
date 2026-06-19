@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AudioForge — 管理ダッシュボード</title>
+<style>
+  :root{
+    --green:#14532d; --green2:#1f7a45; --green-l:#e7f3ea; --green-ll:#f4f9f5;
+    --ink:#16241c; --muted:#6b7d72; --line:#e2e9e4; --bg:#f5f8f6; --amber:#c0612a; --blue:#2a5fc0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"Hiragino Sans","Noto Sans JP",sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+  .app{display:flex;min-height:100vh}
+
+  /* sidebar */
+  .side{width:212px;background:var(--green);color:#fff;flex-shrink:0;padding:18px 12px;position:sticky;top:0;height:100vh}
+  .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;padding:4px 8px 18px}
+  .logo .mark{width:26px;height:26px;background:#fff;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--green);font-weight:900}
+  .nav{display:flex;flex-direction:column;gap:2px}
+  .nav a{color:#cfe6d6;text-decoration:none;padding:9px 11px;border-radius:8px;display:flex;align-items:center;gap:9px;font-weight:600;cursor:pointer;font-size:13.5px}
+  .nav a:hover{background:rgba(255,255,255,.08);color:#fff}
+  .nav a.active{background:#fff;color:var(--green)}
+  .nav .ico{width:17px;text-align:center}
+  .side .foot{position:absolute;bottom:16px;left:12px;right:12px;font-size:11px;color:#9cc4a9;padding:0 8px}
+
+  /* main */
+  .main{flex:1;min-width:0}
+  .top{background:#fff;border-bottom:1px solid var(--line);padding:13px 26px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+  .top h1{font-size:18px;font-weight:800}
+  .top .sub{font-size:12px;color:var(--muted);font-weight:500;margin-top:1px}
+  .top .right{display:flex;align-items:center;gap:14px}
+  .btn{background:var(--green);color:#fff;border:none;padding:8px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px}
+  .btn.ghost{background:#fff;color:var(--green);border:1px solid var(--line)}
+  .chip{background:var(--green-l);color:var(--green);padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+  .me{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+  .ava{width:30px;height:30px;border-radius:50%;background:var(--green2);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+
+  .wrap{padding:22px 26px}
+  .view{display:none}
+  .view.show{display:block}
+
+  /* KPI cards */
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:20px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+  .kpi .k{font-size:11.5px;color:var(--muted);font-weight:600;display:flex;align-items:center;gap:6px}
+  .kpi .v{font-size:23px;font-weight:800;margin-top:6px}
+  .kpi .v small{font-size:12px;font-weight:600;color:var(--muted)}
+  .kpi .delta{font-size:11px;font-weight:700;margin-top:3px}
+  .up{color:var(--green2)} .down{color:var(--amber)}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+  .grid2{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+  .panel h3{font-size:14px;font-weight:800;margin-bottom:2px;display:flex;justify-content:space-between;align-items:center}
+  .panel .ph{font-size:12px;color:var(--muted);margin-bottom:12px}
+  .link{color:var(--green2);font-size:12px;font-weight:700;cursor:pointer;text-decoration:none}
+
+  /* pipeline funnel */
+  .pipe{display:flex;gap:8px}
+  .pstage{flex:1;background:var(--green-ll);border:1px solid var(--line);border-radius:10px;padding:11px 8px;text-align:center;position:relative}
+  .pstage .pl{font-size:11px;color:var(--muted);font-weight:700;line-height:1.25;min-height:28px;display:flex;align-items:center;justify-content:center}
+  .pstage .pv{font-size:20px;font-weight:800;color:var(--green);margin-top:3px}
+  .pstage.mine{background:var(--green);border-color:var(--green)}
+  .pstage.mine .pl{color:#cfe6d6} .pstage.mine .pv{color:#fff}
+  .pstage.done{background:#eef7f0}
+  .pchev{display:flex;align-items:center;color:var(--line);font-weight:800;font-size:16px}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font-size:11px;color:var(--muted);font-weight:700;padding:8px 10px;border-bottom:1px solid var(--line);text-transform:uppercase;letter-spacing:.3px}
+  td{padding:11px 10px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  .pill{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;display:inline-block}
+  .pill.on{background:#e7f3ea;color:#1f7a45}
+  .pill.warn{background:#fdeee3;color:#c0612a}
+  .pill.late{background:#fde8e8;color:#c0392b}
+  .pill.done{background:#eef1f4;color:#5a6b7a}
+  .bar{height:7px;background:#eef1ee;border-radius:6px;overflow:hidden;width:90px}
+  .bar i{display:block;height:100%;background:var(--green2)}
+  .mini{font-size:11px;color:var(--muted)}
+
+  /* team load */
+  .member{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .member:last-child{border-bottom:none}
+  .member .ava{width:32px;height:32px;background:#dfeee4;color:var(--green)}
+  .member .nm{font-weight:700;font-size:13px}
+  .member .role{font-size:11px;color:var(--muted)}
+  .loadbar{flex:1;height:7px;background:#eef1ee;border-radius:6px;overflow:hidden}
+  .loadbar i{display:block;height:100%}
+
+  /* activity */
+  .act{display:flex;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:12.5px}
+  .act:last-child{border:none}
+  .act .t{color:var(--muted);font-size:11px;white-space:nowrap}
+
+  /* kanban */
+  .board{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .col{background:#eef1ee;border-radius:10px;padding:9px;min-height:320px}
+  .col h4{font-size:11.5px;font-weight:800;color:var(--green);margin-bottom:9px;display:flex;justify-content:space-between;padding:0 3px}
+  .card-t{background:#fff;border:1px solid var(--line);border-radius:8px;padding:9px 10px;margin-bottom:8px;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  .card-t .id{font-size:11px;color:var(--muted);font-weight:700}
+  .card-t .ti{font-size:12.5px;font-weight:700;margin:3px 0}
+  .card-t .meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+  .tag{font-size:10px;background:var(--green-l);color:var(--green);padding:2px 7px;border-radius:5px;font-weight:700}
+  .tag.jp{background:#eef3ff;color:#2a5fc0}
+
+  .secthead{font-size:13px;font-weight:800;color:var(--muted);margin:4px 0 12px;text-transform:uppercase;letter-spacing:.4px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="logo"><span class="mark">A</span> AudioForge</div>
+    <nav class="nav">
+      <a class="active" data-view="dash"><span class="ico">▥</span> ダッシュボード</a>
+      <a data-view="projects"><span class="ico">▦</span> プロジェクト</a>
+      <a data-view="board"><span class="ico">◫</span> タスクボード</a>
+      <a data-view="team"><span class="ico">◑</span> チーム</a>
+      <a data-view="qa"><span class="ico">✓</span> 品質・QA</a>
+      <a data-view="clients"><span class="ico">★</span> クライアント</a>
+      <a data-view="gl"><span class="ico">▤</span> ガイドライン</a>
+    </nav>
+    <div class="foot">Kazuma Sasaki<br>kazmike.s@gmail.com</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="top">
+      <div>
+        <h1 id="topttl">ダッシュボード</h1>
+        <div class="sub" id="topsub">プロジェクト全体の進捗・品質・納期を一望</div>
+      </div>
+      <div class="right">
+        <span class="chip">● 進行中 4件</span>
+        <button class="btn ghost">＋ メンバー招集</button>
+        <button class="btn">＋ 新規プロジェクト</button>
+        <div class="me"><div class="ava">KS</div>佐々木</div>
+      </div>
+    </div>
+
+    <div class="wrap">
+
+      <!-- ========== DASHBOARD ========== -->
+      <section class="view show" id="dash">
+        <div class="kpis">
+          <div class="kpi"><div class="k"><span class="dot" style="background:#1f7a45"></span>進行中プロジェクト</div><div class="v">4</div><div class="delta up">+1 今週</div></div>
+          <div class="kpi"><div class="k"><span class="dot" style="background:#2a5fc0"></span>処理中の音声</div><div class="v">128<small> 分</small></div><div class="delta mini">納品済 312分</div></div>
+          <div class="kpi"><div class="k"><span class="dot" style="background:#1f7a45"></span>納期遵守率</div><div class="v">100<small>%</small></div><div class="delta up">遅延 0件</div></div>
+          <div class="kpi"><div class="k"><span class="dot" style="background:#c0612a"></span>チーム稼働率</div><div class="v">72<small>%</small></div><div class="delta mini">7/10 稼働</div></div>
+          <div class="kpi"><div class="k"><span class="dot" style="background:#1f7a45"></span>平均品質スコア</div><div class="v">4.6<small>/5</small></div><div class="delta up">+0.2</div></div>
+          <div class="kpi"><div class="k"><span class="dot" style="background:#14532d"></span>今月の売上</div><div class="v">¥2.8<small>M</small></div><div class="delta up">+18%</div></div>
+        </div>
+
+        <div class="panel">
+          <h3>品質パイプライン <span class="link" data-jump="board">タスクボードを開く →</span></h3>
+          <div class="ph">各タスクが下の5段階を通って高品質データになる。数字は現在その段階にあるタスク数。</div>
+          <div class="pipe">
+            <div class="pstage"><div class="pl">未着手</div><div class="pv">24</div></div>
+            <div class="pchev">›</div>
+            <div class="pstage"><div class="pl">AIエキスパート<br>作業中</div><div class="pv">31</div></div>
+            <div class="pchev">›</div>
+            <div class="pstage"><div class="pl">プレ<br>レビュー</div><div class="pv">12</div></div>
+            <div class="pchev">›</div>
+            <div class="pstage"><div class="pl">ポスト<br>レビュー</div><div class="pv">9</div></div>
+            <div class="pchev">›</div>
+            <div class="pstage mine"><div class="pl">最終チェック<br>（自分）</div><div class="pv">5</div></div>
+            <div class="pchev">›</div>
+            <div class="pstage done"><div class="pl">納品済</div><div class="pv">156</div></div>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div>
+            <div class="panel">
+              <h3>進行中プロジェクト <span class="link" data-jump="projects">すべて見る →</span></h3>
+              <table>
+                <tr><th>クライアント</th><th>言語</th><th>進捗</th><th>納期</th><th>状態</th></tr>
+                <tr><td><b>Deepgram</b><div class="mini">ASR用 / 600分</div></td><td>日本語</td><td><div class="bar"><i style="width:68%"></i></div><span class="mini">68%</span></td><td>6/25</td><td><span class="pill on">順調</span></td></tr>
+                <tr><td><b>Samora AI</b><div class="mini">音声エージェント / 240分</div></td><td>日・韓</td><td><div class="bar"><i style="width:45%"></i></div><span class="mini">45%</span></td><td>6/22</td><td><span class="pill warn">要注意</span></td></tr>
+                <tr><td><b>社内ゴールドセット</b><div class="mini">評価用 / 120分</div></td><td>日本語</td><td><div class="bar"><i style="width:88%"></i></div><span class="mini">88%</span></td><td>6/20</td><td><span class="pill on">順調</span></td></tr>
+                <tr><td><b>ElevenLabs</b><div class="mini">TTS用 / 400分</div></td><td>日本語</td><td><div class="bar"><i style="width:20%"></i></div><span class="mini">20%</span></td><td>7/05</td><td><span class="pill on">順調</span></td></tr>
+              </table>
+            </div>
+            <div class="panel">
+              <h3>QC結果 — 直近の差し戻し</h3>
+              <div class="ph">最終チェックで弾いた、または再作業に戻したタスク。原因を見て次のGLに反映。</div>
+              <table>
+                <tr><th>タスク</th><th>担当</th><th>段階</th><th>主因</th></tr>
+                <tr><td>050826_02</td><td>田中</td><td>ポスト→プレ差戻</td><td>タイムスタンプが映像基準</td></tr>
+                <tr><td>050912_07</td><td>佐藤</td><td>最終→ポスト差戻</td><td>話者割り当ての不整合</td></tr>
+                <tr><td>050803_11</td><td>鈴木</td><td>プレ指摘</td><td>非言語音の表記ゆれ</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <h3>チーム稼働</h3>
+              <div class="ph">役割と現在の負荷。赤は過負荷、緑は余裕あり。</div>
+              <div class="member"><div class="ava">TT</div><div style="flex:1"><div class="nm">田中</div><div class="role">AIエキスパート</div></div><div class="loadbar" style="max-width:80px"><i style="width:90%;background:#c0612a"></i></div></div>
+              <div class="member"><div class="ava">ST</div><div style="flex:1"><div class="nm">佐藤</div><div class="role">プレレビュアー</div></div><div class="loadbar" style="max-width:80px"><i style="width:60%;background:#1f7a45"></i></div></div>
+              <div class="member"><div class="ava">SZ</div><div style="flex:1"><div class="nm">鈴木</div><div class="role">AIエキスパート</div></div><div class="loadbar" style="max-width:80px"><i style="width:75%;background:#1f7a45"></i></div></div>
+              <div class="member"><div class="ava">YM</div><div style="flex:1"><div class="nm">山本</div><div class="role">ポストレビュアー</div></div><div class="loadbar" style="max-width:80px"><i style="width:40%;background:#1f7a45"></i></div></div>
+              <div class="member"><div class="ava">＋</div><div style="flex:1"><div class="nm">3名 待機中</div><div class="role">バンク（招集可能）</div></div><a class="link">招集</a></div>
+            </div>
+            <div class="panel">
+              <h3>アクティビティ</h3>
+              <div class="act"><div style="flex:1">鈴木 が <b>12タスク</b>をプレレビューへ提出</div><div class="t">5分前</div></div>
+              <div class="act"><div style="flex:1">あなたが <b>Deepgram</b> 8タスクを最終承認</div><div class="t">32分前</div></div>
+              <div class="act"><div style="flex:1">Slackで <b>GL更新</b>：群衆音の扱い</div><div class="t">1時間前</div></div>
+              <div class="act"><div style="flex:1">Samora AI 納期まで <b>あと2日</b></div><div class="t">今日</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== TASK BOARD ========== -->
+      <section class="view" id="board">
+        <div class="secthead">タスクボード — Deepgram（日本語 / ASR）</div>
+        <div class="board">
+          <div class="col"><h4>未着手 <span>24</span></h4>
+            <div class="card-t"><div class="id">050901_01</div><div class="ti">競馬中継 14秒</div><div class="meta"><span class="tag jp">日本語</span><span class="tag">14s</span></div></div>
+            <div class="card-t"><div class="id">050901_02</div><div class="ti">インタビュー 22秒</div><div class="meta"><span class="tag jp">日本語</span><span class="tag">22s</span></div></div>
+          </div>
+          <div class="col"><h4>AIエキスパート <span>31</span></h4>
+            <div class="card-t"><div class="id">050826_05</div><div class="ti">街頭 18秒</div><div class="meta"><span class="tag jp">日本語</span><span class="tag">田中</span></div></div>
+            <div class="card-t"><div class="id">050826_08</div><div class="ti">実況 30秒</div><div class="meta"><span class="tag jp">日本語</span><span class="tag">鈴木</span></div></div>
+          </div>
+          <div class="col"><h4>プレレビュー <span>12</span></h4>
+            <div class="card-t"><div class="id">050826_02</div><div class="ti">競馬実況 14秒</div><div class="meta"><span class="tag jp">日本語</span><span class="tag">佐藤</span></div></div>
+          </div>
+          <div class="col"><h4>ポストレビュー <span>9</span></h4>
+            <div class="card-t"><div class="id">050812_04</div><div class="ti">対談 26秒</div><div class="meta"><span class="tag jp">日本語</span><span class="tag">山本</span></div></div>
+          </div>
+          <div class="col" style="background:#dfeee4"><h4>最終チェック（自分） <span>5</span></h4>
+            <div class="card-t"><div class="id">050803_09</div><div class="ti">ナレーション 20秒</div><div class="meta"><span class="tag jp">日本語</span><span class="tag">要確認</span></div></div>
+            <div class="card-t"><div class="id">050803_11</div><div class="ti">群衆+実況 28秒</div><div class="meta"><span class="tag jp">日本語</span></div></div>
+          </div>
+          <div class="col"><h4>納品済 <span>156</span></h4>
+            <div class="card-t"><div class="id">050722_01</div><div class="ti">実況 15秒</div><div class="meta"><span class="tag">✓ 4.8</span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========== PROJECTS ========== -->
+      <section class="view" id="projects">
+        <div class="panel">
+          <h3>すべてのプロジェクト</h3>
+          <table>
+            <tr><th>クライアント</th><th>種別</th><th>言語</th><th>量</th><th>進捗</th><th>単価</th><th>納期</th><th>状態</th></tr>
+            <tr><td><b>Deepgram</b></td><td>フル＋QA</td><td>日本語</td><td>600分</td><td><div class="bar"><i style="width:68%"></i></div></td><td>$32/分</td><td>6/25</td><td><span class="pill on">順調</span></td></tr>
+            <tr><td><b>Samora AI</b></td><td>フル＋QA</td><td>日・韓</td><td>240分</td><td><div class="bar"><i style="width:45%"></i></div></td><td>$38/分</td><td>6/22</td><td><span class="pill warn">要注意</span></td></tr>
+            <tr><td><b>社内ゴールドセット</b></td><td>評価セット</td><td>日本語</td><td>120分</td><td><div class="bar"><i style="width:88%"></i></div></td><td>—</td><td>6/20</td><td><span class="pill on">順調</span></td></tr>
+            <tr><td><b>ElevenLabs</b></td><td>フル＋QA</td><td>日本語</td><td>400分</td><td><div class="bar"><i style="width:20%"></i></div></td><td>$30/分</td><td>7/05</td><td><span class="pill on">順調</span></td></tr>
+            <tr><td><b>Pyannote AI</b></td><td>QA監査</td><td>日本語</td><td>サンプル</td><td><div class="bar"><i style="width:100%"></i></div></td><td>無料</td><td>—</td><td><span class="pill done">提案中</span></td></tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== TEAM ========== -->
+      <section class="view" id="team">
+        <div class="panel">
+          <h3>チーム・バンク</h3>
+          <div class="ph">業務委託のメンバー名簿。案件量に応じて招集／待機を切り替える。</div>
+          <table>
+            <tr><th>名前</th><th>役割</th><th>言語</th><th>品質スコア</th><th>処理速度</th><th>負荷</th><th>状態</th></tr>
+            <tr><td><b>田中</b></td><td>AIエキスパート</td><td>日本語</td><td>4.7</td><td>3.2分/h</td><td><div class="bar"><i style="width:90%;background:#c0612a"></i></div></td><td><span class="pill warn">過負荷</span></td></tr>
+            <tr><td><b>佐藤</b></td><td>プレレビュアー</td><td>日・英</td><td>4.9</td><td>18分/h</td><td><div class="bar"><i style="width:60%"></i></div></td><td><span class="pill on">稼働中</span></td></tr>
+            <tr><td><b>鈴木</b></td><td>AIエキスパート</td><td>日本語</td><td>4.5</td><td>2.9分/h</td><td><div class="bar"><i style="width:75%"></i></div></td><td><span class="pill on">稼働中</span></td></tr>
+            <tr><td><b>山本</b></td><td>ポストレビュアー</td><td>日・韓</td><td>4.8</td><td>15分/h</td><td><div class="bar"><i style="width:40%"></i></div></td><td><span class="pill on">稼働中</span></td></tr>
+            <tr><td><b>李</b></td><td>AIエキスパート</td><td>韓・日</td><td>4.6</td><td>3.0分/h</td><td><div class="bar"><i style="width:0%"></i></div></td><td><span class="pill done">待機</span></td></tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== QA ========== -->
+      <section class="view" id="qa">
+        <div class="kpis" style="grid-template-columns:repeat(4,1fr)">
+          <div class="kpi"><div class="k">平均品質スコア</div><div class="v">4.6<small>/5</small></div><div class="delta up">+0.2</div></div>
+          <div class="kpi"><div class="k">再作業率</div><div class="v">8<small>%</small></div><div class="delta up">-3pt</div></div>
+          <div class="kpi"><div class="k">1パス合格率</div><div class="v">91<small>%</small></div><div class="delta up">+4pt</div></div>
+          <div class="kpi"><div class="k">最終承認待ち</div><div class="v">5</div></div>
+        </div>
+        <div class="panel">
+          <h3>エラー傾向（今月）</h3>
+          <div class="ph">繰り返し出るエラーをGL・研修に反映して構造的に潰す。</div>
+          <table>
+            <tr><th>エラー種別</th><th>発生数</th><th>主な担当</th><th>対応</th></tr>
+            <tr><td>タイムスタンプが映像基準</td><td>14</td><td>田中</td><td><span class="pill warn">GL補足＋研修</span></td></tr>
+            <tr><td>非言語音の表記ゆれ</td><td>9</td><td>複数</td><td><span class="pill warn">用語集に追記</span></td></tr>
+            <tr><td>話者割り当ての不整合</td><td>6</td><td>佐藤</td><td><span class="pill on">個別FB済</span></td></tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== CLIENTS ========== -->
+      <section class="view" id="clients">
+        <div class="panel">
+          <h3>クライアント</h3>
+          <table>
+            <tr><th>会社</th><th>連絡先</th><th>状態</th><th>累計売上</th><th>最終接触</th></tr>
+            <tr><td><b>Deepgram</b></td><td>Head of Data</td><td><span class="pill on">契約中</span></td><td>$19,200</td><td>6/18</td></tr>
+            <tr><td><b>Samora AI</b></td><td>Kartik (CEO)</td><td><span class="pill on">契約中</span></td><td>$9,120</td><td>6/17</td></tr>
+            <tr><td><b>ElevenLabs</b></td><td>ML Lead</td><td><span class="pill on">契約中</span></td><td>$12,000</td><td>6/15</td></tr>
+            <tr><td><b>Sakana AI</b></td><td>Ren Ito (COO)</td><td><span class="pill warn">商談中</span></td><td>—</td><td>6/19</td></tr>
+            <tr><td><b>Pyannote AI</b></td><td>Hervé (Founder)</td><td><span class="pill done">提案中</span></td><td>—</td><td>6/16</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- ========== GUIDELINES ========== -->
+      <section class="view" id="gl">
+        <div class="panel">
+          <h3>ガイドライン（プロジェクト別）</h3>
+          <div class="ph">クライアントの要望から作る品質基準。各GLはバージョン管理し、Slackで変更を全員に即共有。</div>
+          <table>
+            <tr><th>プロジェクト</th><th>版</th><th>最終更新</th><th>変更点</th><th></th></tr>
+            <tr><td>Deepgram / 日本語ASR</td><td>v1.4</td><td>1時間前</td><td>群衆音の扱いを明確化</td><td><a class="link">開く</a></td></tr>
+            <tr><td>Samora AI / 日韓</td><td>v1.1</td><td>2日前</td><td>韓国語アクセント表記</td><td><a class="link">開く</a></td></tr>
+            <tr><td>ElevenLabs / TTS</td><td>v1.0</td><td>5日前</td><td>初版</td><td><a class="link">開く</a></td></tr>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const titles = {
+    dash:["ダッシュボード","プロジェクト全体の進捗・品質・納期を一望"],
+    projects:["プロジェクト","契約・進捗・単価・納期を管理"],
+    board:["タスクボード","各タスクの5段階パイプラインを管理"],
+    team:["チーム","業務委託バンクの招集・負荷・品質を管理"],
+    qa:["品質・QA","スコア・再作業率・エラー傾向を可視化"],
+    clients:["クライアント","商談から契約・売上までを管理"],
+    gl:["ガイドライン","プロジェクト別の品質基準とバージョン"]
+  };
+  function show(v){
+    document.querySelectorAll('.view').forEach(s=>s.classList.toggle('show',s.id===v));
+    document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',a.dataset.view===v));
+    document.getElementById('topttl').textContent=titles[v][0];
+    document.getElementById('topsub').textContent=titles[v][1];
+    window.scrollTo(0,0);
+  }
+  document.querySelectorAll('.nav a').forEach(a=>a.onclick=()=>show(a.dataset.view));
+  document.querySelectorAll('[data-jump]').forEach(e=>e.onclick=()=>show(e.dataset.jump));
+</script>
+</body>
+</html>
