@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page{size:A4 landscape;margin:9mm}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"IPAGothic",sans-serif;color:#16241c;background:#fff}
+  .title{font-size:17pt;font-weight:800;color:#14532d}
+  .one{font-size:9.5pt;color:#46574d;margin:1px 0 8px}
+  .lab{font-size:8pt;font-weight:800;color:#14532d;letter-spacing:.5px;text-transform:uppercase;margin:8px 0 4px}
+
+  .flow{display:flex;align-items:stretch;gap:0}
+  .st{flex:1;background:#f4f9f5;border:1.5px solid #86b694;border-radius:9px;padding:8px 6px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+  .st .n{font-size:7.5pt;color:#5b8a6b;font-weight:800}
+  .st .t{font-size:9.5pt;font-weight:800;color:#14532d;margin-top:2px;line-height:1.25}
+  .st .d{font-size:7pt;color:#43594c;margin-top:3px;line-height:1.2}
+  .st.client{background:#eef3ff;border-color:#9bb5e8}
+  .st.client .t,.st.client .n{color:#26408a}
+  .st.del{background:#fdeee3;border-color:#e0b48c}
+  .st.del .t,.st.del .n{color:#a9521c}
+  .ar{display:flex;align-items:center;justify-content:center;width:20px;color:#14532d;font-size:14pt;font-weight:800}
+
+  .qa{display:flex;align-items:stretch;gap:0;margin-top:3px}
+  .ql{flex:1;background:#14532d;color:#fff;border-radius:8px;padding:7px 5px;text-align:center;display:flex;flex-direction:column;justify-content:center}
+  .ql .t{font-size:9pt;font-weight:800;line-height:1.2}
+  .ql .d{font-size:6.8pt;color:#cfe6d6;margin-top:2px}
+  .ql.me{background:#0c3a20;border:2px solid #f0c040}
+  .arw{display:flex;align-items:center;justify-content:center;width:20px;color:#14532d;font-size:13pt;font-weight:800}
+
+  .cols{display:flex;gap:9px;margin-top:3px}
+  .card{flex:1;border:1px solid #cfe0d4;border-radius:9px;padding:8px 11px;background:#fff}
+  .card.sec{background:#fff8f0;border-color:#e6c8a8}
+  .card h4{font-size:9pt;color:#14532d;margin-bottom:5px}
+  .card.sec h4{color:#a9521c}
+  .card ul{margin:0;padding-left:14px}
+  .card li{font-size:8pt;margin-bottom:2.5px;color:#2c3e34;line-height:1.3}
+  .tagrow{display:flex;gap:5px;flex-wrap:wrap;margin-top:3px}
+  .tg{font-size:7.5pt;background:#e7f3ea;color:#14532d;padding:2px 7px;border-radius:5px;font-weight:700}
+  .pricebox{display:flex;gap:6px;margin-top:4px}
+  .pb{flex:1;text-align:center;background:#f4f9f5;border:1px solid #cfe0d4;border-radius:6px;padding:5px 3px}
+  .pb .p1{font-size:8pt;font-weight:800;color:#14532d}
+  .pb .p2{font-size:7pt;color:#5b8a6b}
+  .band{background:#14532d;color:#fff;border-radius:8px;padding:7px 13px;margin-top:9px;font-size:8.5pt;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="title">音声データ事業 — 一連の構造 <span style="font-weight:400;font-size:11pt;color:#5b8a6b">| 商談から納品・削除まで</span></div>
+<div class="one">「高品質な音声の教師データを、丸ごと請け負って返す」。日本語・アジア言語 × フロンティアラボ品質。</div>
+
+<div class="lab">① メインの流れ（受注 → 納品 → 削除）</div>
+<div class="flow">
+  <div class="st client"><div class="n">CLIENT</div><div class="t">顧客</div><div class="d">要望＋音声データを渡す</div></div>
+  <div class="ar">→</div>
+  <div class="st"><div class="n">STEP 1</div><div class="t">要望ヒアリング</div><div class="d">量・品質・言語・納期・形式</div></div>
+  <div class="ar">→</div>
+  <div class="st"><div class="n">STEP 2</div><div class="t">GL作成＋契約</div><div class="d">基準を作る／NDA・MSA・SOW・DPA</div></div>
+  <div class="ar">→</div>
+  <div class="st"><div class="n">STEP 3</div><div class="t">安全に保管</div><div class="d">アクセス制御クラウド・DL禁止</div></div>
+  <div class="ar">→</div>
+  <div class="st"><div class="n">STEP 4</div><div class="t">4層QAで作業</div><div class="d">下の多層チェック（核）</div></div>
+  <div class="ar">→</div>
+  <div class="st"><div class="n">STEP 5</div><div class="t">納品</div><div class="d">注釈データを返す</div></div>
+  <div class="ar">→</div>
+  <div class="st del"><div class="n">STEP 6</div><div class="t">削除</div><div class="d">契約通り全コピー消去</div></div>
+</div>
+
+<div class="lab">② STEP4の中身 — 4層QA（Label Studio内で作業／音声はDLさせない）</div>
+<div class="qa">
+  <div class="ql"><div class="t">AI Expert</div><div class="d">一次アノテーション</div></div>
+  <div class="arw">→</div>
+  <div class="ql"><div class="t">Pre-Reviewer</div><div class="d">完成前レビュー</div></div>
+  <div class="arw">→</div>
+  <div class="ql"><div class="t">Post-Reviewer</div><div class="d">完成後レビュー</div></div>
+  <div class="arw">→</div>
+  <div class="ql me"><div class="t">最終チェック（自分）</div><div class="d">Slackで常時運用・基準管理</div></div>
+</div>
+
+<div class="cols">
+  <div class="card sec">
+    <h4>🔒 全体を包む「セキュリティ・法務」</h4>
+    <ul>
+      <li>音声＝個人情報。漏洩は<b>賠償上限なし</b>のリスク</li>
+      <li>顧客と <b>NDA・DPA</b>／チーム全員に <b>NDA</b></li>
+      <li>権限は最小限・終了で即停止・監査ログ</li>
+      <li>目的外利用しない／指定リージョンで保管／終了後削除</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>👥 チーム（業務委託バンク）</h4>
+    <ul>
+      <li>案件量÷納期で<b>人数を決める</b>（先に抱えない）</li>
+      <li>自分の<b>オリジナルGLで研修</b>→品質を再現</li>
+      <li>サッカー部など<b>micro1の外</b>から採用（勧誘禁止条項クリア）</li>
+    </ul>
+    <div class="tagrow"><span class="tg">招集</span><span class="tg">研修</span><span class="tg">待機</span><span class="tg">伸縮自在</span></div>
+  </div>
+  <div class="card">
+    <h4>💰 商流・料金</h4>
+    <ul style="margin-bottom:3px">
+      <li><b>誰が買う</b>：資金調達済みスタートアップ／下請け／国策</li>
+      <li><b>流れ</b>：DM→無料サンプル→有料パイロット→継続</li>
+    </ul>
+    <div class="pricebox">
+      <div class="pb"><div class="p1">設計費</div><div class="p2">GL作成（一括）</div></div>
+      <div class="pb"><div class="p1">$30/分〜</div><div class="p2">フル作成</div></div>
+      <div class="pb"><div class="p1">月額</div><div class="p2">継続リテイナー</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="band">
+<b>稼ぎ方：</b>“時間”でなく“仕上がったデータ”を売る。人を増やすほど利益が伸びる（マージン型）。&nbsp;→&nbsp;
+<b>成長：</b>ソロ → 小チーム → 10人＋法人化 → 単発 ¥1億（下請け／国策）
+</div>
+
+</body>
+</html>
