@@ -34,6 +34,10 @@
   .big hr{border:none;border-top:1px solid #2f6b46;margin:10px 0}
   .note{font-size:11px;color:#7a8a80;margin-top:8px;line-height:1.45}
   .pill{display:inline-block;background:#e7f3ea;color:#14532d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
+  .preset{padding:5px 11px;border:1px solid #1f7a45;background:#fff;color:#14532d;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+  .preset:hover{background:#14532d;color:#fff}
+  .mgr{background:#f4f9f5;border:1px dashed #86b694;border-radius:8px;padding:8px 10px;margin-top:10px;font-size:12px;color:#33433a}
+  .mgr b{color:#14532d}
   .warn{color:#a9521c}
   .good{color:#9ff0bf}
 </style>
@@ -48,6 +52,7 @@
       <div class="card">
         <h2>① 案件の条件</h2>
         <div class="row"><label>音声の総量</label><input id="totalMin" type="number" value="600"><span class="unit">分</span></div>
+        <div class="row"><label>規模プリセット</label><span style="display:flex;gap:6px"><button class="preset" data-min="120">小 120分</button><button class="preset" data-min="600">中 600分</button><button class="preset" data-min="3000">大 3000分</button></span></div>
         <div class="row"><label>納期</label><input id="deadlineWeeks" type="number" value="2" step="0.5"><span class="unit">週</span></div>
         <div class="row"><label>1人あたり稼働</label><input id="hoursPerWeek" type="number" value="20"><span class="unit">h/週</span></div>
         <div class="row"><label>為替レート</label><input id="fx" type="number" value="150"><span class="unit">¥/$</span></div>
@@ -68,7 +73,7 @@
             <tr><td>AIトレーナー</td><td><input class="wmin" data-l="0" type="number" value="10"></td><td><input class="wage" data-l="0" type="number" value="2000"></td></tr>
             <tr><td>Pre Reviewer</td><td><input class="wmin" data-l="1" type="number" value="4"></td><td><input class="wage" data-l="1" type="number" value="2500"></td></tr>
             <tr><td>Post Reviewer</td><td><input class="wmin" data-l="2" type="number" value="3"></td><td><input class="wage" data-l="2" type="number" value="3000"></td></tr>
-            <tr><td>QC（自分）</td><td><input class="wmin" data-l="3" type="number" value="3"></td><td><input class="wage" data-l="3" type="number" value="3500"></td></tr>
+            <tr><td>QC</td><td><input class="wmin" data-l="3" type="number" value="3"></td><td><input class="wage" data-l="3" type="number" value="3500"></td></tr>
           </tbody>
         </table>
       </div>
@@ -94,7 +99,8 @@
           <tbody id="staffBody"></tbody>
           <tfoot><tr><th>合計</th><th id="oTotalHours">—</th><th id="oTotalStaff">—</th></tr></tfoot>
         </table>
-        <div class="note">必要人数 ＝ 各層の総作業時間 ÷（納期内に1人が働ける時間）。固定で抱えず、案件ごとにバンクから招集する前提。</div>
+        <div class="note">必要人数 ＝ 各層の総作業時間 ÷（納期内に1人が働ける時間）。規模（音声量）や納期を変えると自動で増減。固定で抱えず、案件ごとにバンクから招集する前提。</div>
+        <div class="mgr">＋ <b>あなた（管理者）</b>：全体監督・最終承認・基準管理。<b>作業人数には含めない</b>。QCも含めた4層はすべて訓練済みメンバーが担当し、あなたは上に立つ。</div>
       </div>
 
       <div class="card">
@@ -113,7 +119,7 @@
   const $=id=>document.getElementById(id);
   const yen=n=>'¥'+Math.round(n).toLocaleString();
   const usd=n=>'$'+Math.round(n).toLocaleString();
-  const labels=['AIトレーナー','Pre Reviewer','Post Reviewer','QC（自分）'];
+  const labels=['AIトレーナー','Pre Reviewer','Post Reviewer','QC'];
 
   function calc(){
     const totalMin=+$('totalMin').value||0;
@@ -175,6 +181,7 @@
   }
 
   document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));
+  document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>{$('totalMin').value=b.dataset.min;calc();}));
   calc();
 </script>
 </body>
