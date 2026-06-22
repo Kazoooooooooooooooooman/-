@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>音声データ事業 — 見積もり＆人数 計算ツール</title>
+<title>音声データ事業 — 見積もり＆人数 計算ツール（タスクベース）</title>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#eef3ef;color:#1d2a22;line-height:1.5;padding:16px}
@@ -18,13 +18,13 @@
   .row label{font-size:13px;color:#33433a;flex:1}
   .row input{width:110px;padding:7px 9px;border:1px solid #cfe0d4;border-radius:7px;font-size:14px;text-align:right;font-family:inherit}
   .row input:focus{outline:none;border-color:#1f7a45;background:#f4f9f5}
-  .unit{font-size:11px;color:#7a8a80;width:42px;text-align:left}
+  .unit{font-size:11px;color:#7a8a80;width:46px;text-align:left}
   table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
   th{background:#14532d;color:#fff;padding:6px 5px;text-align:right;font-weight:600}
   th:first-child{text-align:left}
   td{border-bottom:1px solid #e3ece6;padding:6px 5px;text-align:right}
   td:first-child{text-align:left;color:#33433a}
-  td input{width:62px;padding:5px 6px;border:1px solid #cfe0d4;border-radius:6px;font-size:13px;text-align:right;font-family:inherit}
+  td input{width:60px;padding:5px 6px;border:1px solid #cfe0d4;border-radius:6px;font-size:13px;text-align:right;font-family:inherit}
   .big{background:#14532d;color:#fff;border-radius:12px;padding:18px;margin-bottom:16px}
   .big .line{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
   .big .line:last-child{margin-bottom:0}
@@ -33,47 +33,50 @@
   .big .v.huge{font-size:30px;color:#9ff0bf}
   .big hr{border:none;border-top:1px solid #2f6b46;margin:10px 0}
   .note{font-size:11px;color:#7a8a80;margin-top:8px;line-height:1.45}
-  .pill{display:inline-block;background:#e7f3ea;color:#14532d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
   .preset{padding:5px 11px;border:1px solid #1f7a45;background:#fff;color:#14532d;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
   .preset:hover{background:#14532d;color:#fff}
   .mgr{background:#f4f9f5;border:1px dashed #86b694;border-radius:8px;padding:8px 10px;margin-top:10px;font-size:12px;color:#33433a}
   .mgr b{color:#14532d}
-  .warn{color:#a9521c}
+  .warn{color:#ffd2b0}
   .good{color:#9ff0bf}
+  .be{background:#fff8f0;border:1px solid #e6c8a8;border-radius:8px;padding:9px 11px;margin-top:8px;font-size:12px;color:#a9521c}
+  .be b{font-size:14px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>音声データ事業 — 見積もり＆必要人数 計算ツール</h1>
-  <div class="sub">条件を入れると、売上・原価・粗利・必要人数が一発で出ます。数字はすべて編集可。客から条件を聞いたら、この場で見積もりを。</div>
+  <div class="sub">タスクベース版。1タスク（例：30秒）が4層をどれだけの作業時間で通るかを入れると、原価・粗利・必要人数・損益分岐が出ます。実数で上書きを。</div>
 
   <div class="grid">
     <div class="col">
       <div class="card">
         <h2>① 案件の条件</h2>
-        <div class="row"><label>音声の総量</label><input id="totalMin" type="number" value="600"><span class="unit">分</span></div>
-        <div class="row"><label>規模プリセット</label><span style="display:flex;gap:6px"><button class="preset" data-min="120">小 120分</button><button class="preset" data-min="600">中 600分</button><button class="preset" data-min="3000">大 3000分</button></span></div>
-        <div class="row"><label>納期</label><input id="deadlineWeeks" type="number" value="2" step="0.5"><span class="unit">週</span></div>
-        <div class="row"><label>1人あたり稼働</label><input id="hoursPerWeek" type="number" value="20"><span class="unit">h/週</span></div>
+        <div class="row"><label>タスク数</label><input id="tasks" type="number" value="1000"><span class="unit">件</span></div>
+        <div class="row"><label>規模プリセット</label><span style="display:flex;gap:6px"><button class="preset" data-t="200">小</button><button class="preset" data-t="1000">中</button><button class="preset" data-t="5000">大</button></span></div>
+        <div class="row"><label>1タスクの長さ</label><input id="taskSec" type="number" value="30"><span class="unit">秒</span></div>
+        <div class="row"><label>納期</label><input id="weeks" type="number" value="2" step="0.5"><span class="unit">週</span></div>
+        <div class="row"><label>1人あたり稼働</label><input id="hpw" type="number" value="20"><span class="unit">h/週</span></div>
         <div class="row"><label>為替レート</label><input id="fx" type="number" value="150"><span class="unit">¥/$</span></div>
       </div>
 
       <div class="card">
         <h2>② 値段（客からもらう）</h2>
-        <div class="row"><label>制作単価</label><input id="pricePerMin" type="number" value="30"><span class="unit">$/分</span></div>
-        <div class="row"><label>設計費（一括）</label><input id="setupFee" type="number" value="7000"><span class="unit">$</span></div>
+        <div class="row"><label><b>1タスク単価</b></label><input id="priceTask" type="number" value="120"><span class="unit">$/件</span></div>
+        <div class="row"><label>設計費（一括）</label><input id="setup" type="number" value="7000"><span class="unit">$</span></div>
+        <div class="note" style="margin-top:0">タスク単価で考えるのが基本。下に「音声1分あたり換算」も自動表示。</div>
       </div>
 
       <div class="card">
-        <h2>③ 原価（4層 × 作業時間と時給）</h2>
-        <div class="note" style="margin-top:0;margin-bottom:8px">「作業分」＝音声<b>1分</b>を仕上げるのにかかる各層の作業時間。ここが利益の生命線。</div>
+        <h2>③ 原価（4層 × 1タスクあたりの作業時間）</h2>
+        <div class="note" style="margin-top:0;margin-bottom:8px">1タスク（=上で指定した秒数）を仕上げるのに、各層が何分かけるか。ここが利益の生命線。</div>
         <table>
-          <thead><tr><th>層</th><th>作業分/音声1分</th><th>時給(¥)</th></tr></thead>
+          <thead><tr><th>層</th><th>分/タスク</th><th>時給(¥)</th></tr></thead>
           <tbody>
-            <tr><td>AIトレーナー</td><td><input class="wmin" data-l="0" type="number" value="10"></td><td><input class="wage" data-l="0" type="number" value="2000"></td></tr>
-            <tr><td>Pre Reviewer</td><td><input class="wmin" data-l="1" type="number" value="4"></td><td><input class="wage" data-l="1" type="number" value="2500"></td></tr>
-            <tr><td>Post Reviewer</td><td><input class="wmin" data-l="2" type="number" value="3"></td><td><input class="wage" data-l="2" type="number" value="3000"></td></tr>
-            <tr><td>QC</td><td><input class="wmin" data-l="3" type="number" value="3"></td><td><input class="wage" data-l="3" type="number" value="3500"></td></tr>
+            <tr><td>AIトレーナー</td><td><input class="wmin" data-l="0" type="number" value="90"></td><td><input class="wage" data-l="0" type="number" value="2000"></td></tr>
+            <tr><td>Pre Reviewer</td><td><input class="wmin" data-l="1" type="number" value="60"></td><td><input class="wage" data-l="1" type="number" value="2500"></td></tr>
+            <tr><td>Post Reviewer</td><td><input class="wmin" data-l="2" type="number" value="45"></td><td><input class="wage" data-l="2" type="number" value="3000"></td></tr>
+            <tr><td>QC</td><td><input class="wmin" data-l="3" type="number" value="30"></td><td><input class="wage" data-l="3" type="number" value="3500"></td></tr>
           </tbody>
         </table>
       </div>
@@ -99,89 +102,93 @@
           <tbody id="staffBody"></tbody>
           <tfoot><tr><th>合計</th><th id="oTotalHours">—</th><th id="oTotalStaff">—</th></tr></tfoot>
         </table>
-        <div class="note">必要人数 ＝ 各層の総作業時間 ÷（納期内に1人が働ける時間）。規模（音声量）や納期を変えると自動で増減。固定で抱えず、案件ごとにバンクから招集する前提。</div>
-        <div class="mgr">＋ <b>あなた（管理者）</b>：全体監督・最終承認・基準管理。<b>作業人数には含めない</b>。QCも含めた4層はすべて訓練済みメンバーが担当し、あなたは上に立つ。</div>
+        <div class="note">必要人数 ＝ 各層の総作業時間 ÷（納期内に1人が働ける時間）。規模・納期を変えると自動で増減。固定で抱えず、案件ごとにバンクから招集。</div>
+        <div class="mgr">＋ <b>あなた（管理者）</b>：全体監督・最終承認・基準管理。<b>作業人数には含めない</b>。QCを含む4層は訓練済みメンバーが担当。</div>
       </div>
 
       <div class="card">
         <h2>⑤ 単位あたりの感覚</h2>
-        <div class="row" style="margin-bottom:6px"><label>音声1分の原価</label><span class="v" id="oCostPerMin" style="font-size:16px;color:#14532d">—</span></div>
-        <div class="row" style="margin-bottom:6px"><label>音声1分の粗利</label><span class="v" id="oProfitPerMin" style="font-size:16px;color:#14532d">—</span></div>
-        <div class="row" style="margin-bottom:0"><label>1分の合計作業時間</label><span class="v" id="oWminTotal" style="font-size:16px;color:#14532d">—</span></div>
+        <div class="row" style="margin-bottom:6px"><label>1タスクの原価</label><span class="v" id="oCostTask" style="font-size:16px;color:#14532d">—</span></div>
+        <div class="row" style="margin-bottom:6px"><label>1タスクの粗利</label><span class="v" id="oProfitTask" style="font-size:16px;color:#14532d">—</span></div>
+        <div class="row" style="margin-bottom:6px"><label>音声1分あたり 売値（換算）</label><span class="v" id="oPriceMin" style="font-size:16px;color:#14532d">—</span></div>
+        <div class="row" style="margin-bottom:0"><label>音声1分あたり 原価（換算）</label><span class="v" id="oCostMin" style="font-size:16px;color:#14532d">—</span></div>
+        <div class="be">損益分岐の単価：<b id="oBreakEven">—</b> /タスク（これ以下だと赤字）。粗利50%狙いなら <b id="oTarget">—</b> /タスク。</div>
       </div>
     </div>
   </div>
 
-  <div class="note">※ ドル建てで計算し、原価（円）は為替で換算。設計費は一括なので必要人数の算定には含めません（QCの工数のみ反映）。すべて概算。実際のスループットはパイロットで実測して上書きを。</div>
+  <div class="note">※ ドル建てで計算し、原価（円）は為替で換算。設計費は一括なので人数算定には含めません。すべて概算 — 実際の作業時間はパイロットで実測して上書きを。</div>
 </div>
 
 <script>
   const $=id=>document.getElementById(id);
+  const usd=n=>(n<0?'-$':'$')+Math.abs(Math.round(n)).toLocaleString();
   const yen=n=>'¥'+Math.round(n).toLocaleString();
-  const usd=n=>'$'+Math.round(n).toLocaleString();
   const labels=['AIトレーナー','Pre Reviewer','Post Reviewer','QC'];
 
   function calc(){
-    const totalMin=+$('totalMin').value||0;
-    const weeks=+$('deadlineWeeks').value||1;
-    const hpw=+$('hoursPerWeek').value||1;
+    const tasks=+$('tasks').value||0;
+    const taskSec=+$('taskSec').value||30;
+    const weeks=+$('weeks').value||1;
+    const hpw=+$('hpw').value||1;
     const fx=+$('fx').value||150;
-    const pricePerMin=+$('pricePerMin').value||0;
-    const setup=+$('setupFee').value||0;
+    const priceTask=+$('priceTask').value||0;
+    const setup=+$('setup').value||0;
 
     const wmin=[...document.querySelectorAll('.wmin')].map(i=>+i.value||0);
     const wage=[...document.querySelectorAll('.wage')].map(i=>+i.value||0);
 
-    // revenue (USD)
-    const prod=pricePerMin*totalMin;
+    const prod=priceTask*tasks;
     const revenue=prod+setup;
 
-    // cost per layer (yen -> usd)
-    const capacityH=weeks*hpw; // hours one person can work within deadline
-    let totalCostUsd=0, totalHours=0, totalStaff=0, wminTotal=0;
+    const capacityH=weeks*hpw;
+    let totalCostUsd=0,totalHours=0,totalStaff=0,minPerTask=0;
     let rows='';
     for(let i=0;i<4;i++){
-      const layerHours=totalMin*wmin[i]/60;        // total work hours for layer
-      const layerCostYen=layerHours*wage[i];
-      const layerCostUsd=layerCostYen/fx;
+      const layerHours=tasks*wmin[i]/60;
+      const layerCostUsd=(layerHours*wage[i])/fx;
       const staff=layerHours>0?Math.ceil(layerHours/capacityH):0;
-      totalCostUsd+=layerCostUsd;
-      totalHours+=layerHours;
-      totalStaff+=staff;
-      wminTotal+=wmin[i];
-      rows+=`<tr><td>${labels[i]}</td><td>${layerHours.toFixed(1)}h</td><td><b>${staff}</b>人</td></tr>`;
+      totalCostUsd+=layerCostUsd; totalHours+=layerHours; totalStaff+=staff; minPerTask+=wmin[i];
+      rows+=`<tr><td>${labels[i]}</td><td>${layerHours.toFixed(0)}h</td><td><b>${staff}</b>人</td></tr>`;
     }
     $('staffBody').innerHTML=rows;
 
     const profit=revenue-totalCostUsd;
     const margin=revenue>0?(profit/revenue*100):0;
+    const costTask=tasks>0?totalCostUsd/tasks:0;
+    const audioMin=tasks*taskSec/60;
+    const priceMin=audioMin>0?prod/audioMin:0;
+    const costMin=audioMin>0?totalCostUsd/audioMin:0;
 
     $('oRevenue').textContent=usd(revenue);
     $('oProd').textContent=usd(prod);
     $('oSetup').textContent=usd(setup);
     $('oCost').textContent=usd(totalCostUsd);
     $('oProfit').textContent=usd(profit);
+    $('oProfit').className='v huge '+(profit>=0?'good':'warn');
     $('oMargin').textContent=margin.toFixed(0)+'%';
     $('oMargin').className='v '+(margin>=50?'good':'warn');
-
     $('oTotalHours').textContent=totalHours.toFixed(0)+'h';
     $('oTotalStaff').textContent=totalStaff+'人';
 
-    const costPerMin=totalMin>0?totalCostUsd/totalMin:0;
-    $('oCostPerMin').textContent=usd(costPerMin)+' / '+yen(costPerMin*fx);
-    $('oProfitPerMin').textContent=usd(pricePerMin-costPerMin);
-    $('oWminTotal').textContent=wminTotal+'分';
+    $('oCostTask').textContent=usd(costTask);
+    $('oProfitTask').textContent=usd(priceTask-costTask);
+    $('oPriceMin').textContent=usd(priceMin);
+    $('oCostMin').textContent=usd(costMin);
+    $('oBreakEven').textContent=usd(costTask);
+    $('oTarget').textContent=usd(costTask/0.5);
 
     let msg='';
-    if(margin>=70) msg='粗利率◎ — 強い構造。この条件なら全力で取りに行く。';
-    else if(margin>=50) msg='粗利率○ — 健全。スループットを上げればさらに伸びる。';
-    else if(margin>=30) msg='粗利率△ — 薄め。単価UP か 作業時間の短縮を。';
-    else msg='粗利率✕ — このままだと厳しい。単価かスループットを見直す。';
+    if(profit<0) msg='⚠️ 赤字。単価を上げるか、1タスクの作業時間を短縮しないと回らない。';
+    else if(margin>=70) msg='粗利率◎ — 強い構造。全力で取りに行く。';
+    else if(margin>=50) msg='粗利率○ — 健全。';
+    else if(margin>=30) msg='粗利率△ — 薄め。単価UP か 作業短縮を。';
+    else msg='粗利率✕ — このままだと厳しい。';
     $('oNote').textContent=msg;
   }
 
   document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));
-  document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>{$('totalMin').value=b.dataset.min;calc();}));
+  document.querySelectorAll('.preset').forEach(b=>b.addEventListener('click',()=>{$('tasks').value=b.dataset.t;calc();}));
   calc();
 </script>
 </body>
