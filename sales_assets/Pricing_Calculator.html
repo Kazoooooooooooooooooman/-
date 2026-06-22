@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>音声データ事業 — 見積もり＆人数 計算ツール</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#eef3ef;color:#1d2a22;line-height:1.5;padding:16px}
+  .wrap{max-width:1000px;margin:0 auto}
+  h1{font-size:20px;color:#14532d;margin-bottom:2px}
+  .sub{font-size:13px;color:#5b8a6b;margin-bottom:16px}
+  .grid{display:flex;gap:16px;flex-wrap:wrap}
+  .col{flex:1;min-width:300px}
+  .card{background:#fff;border:1px solid #cfe0d4;border-radius:12px;padding:16px;margin-bottom:16px}
+  .card h2{font-size:14px;color:#14532d;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #e7f3ea}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .row label{font-size:13px;color:#33433a;flex:1}
+  .row input{width:110px;padding:7px 9px;border:1px solid #cfe0d4;border-radius:7px;font-size:14px;text-align:right;font-family:inherit}
+  .row input:focus{outline:none;border-color:#1f7a45;background:#f4f9f5}
+  .unit{font-size:11px;color:#7a8a80;width:42px;text-align:left}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:4px}
+  th{background:#14532d;color:#fff;padding:6px 5px;text-align:right;font-weight:600}
+  th:first-child{text-align:left}
+  td{border-bottom:1px solid #e3ece6;padding:6px 5px;text-align:right}
+  td:first-child{text-align:left;color:#33433a}
+  td input{width:62px;padding:5px 6px;border:1px solid #cfe0d4;border-radius:6px;font-size:13px;text-align:right;font-family:inherit}
+  .big{background:#14532d;color:#fff;border-radius:12px;padding:18px;margin-bottom:16px}
+  .big .line{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+  .big .line:last-child{margin-bottom:0}
+  .big .k{font-size:13px;color:#cfe6d6}
+  .big .v{font-size:20px;font-weight:700}
+  .big .v.huge{font-size:30px;color:#9ff0bf}
+  .big hr{border:none;border-top:1px solid #2f6b46;margin:10px 0}
+  .note{font-size:11px;color:#7a8a80;margin-top:8px;line-height:1.45}
+  .pill{display:inline-block;background:#e7f3ea;color:#14532d;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
+  .warn{color:#a9521c}
+  .good{color:#9ff0bf}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>音声データ事業 — 見積もり＆必要人数 計算ツール</h1>
+  <div class="sub">条件を入れると、売上・原価・粗利・必要人数が一発で出ます。数字はすべて編集可。客から条件を聞いたら、この場で見積もりを。</div>
+
+  <div class="grid">
+    <div class="col">
+      <div class="card">
+        <h2>① 案件の条件</h2>
+        <div class="row"><label>音声の総量</label><input id="totalMin" type="number" value="600"><span class="unit">分</span></div>
+        <div class="row"><label>納期</label><input id="deadlineWeeks" type="number" value="2" step="0.5"><span class="unit">週</span></div>
+        <div class="row"><label>1人あたり稼働</label><input id="hoursPerWeek" type="number" value="20"><span class="unit">h/週</span></div>
+        <div class="row"><label>為替レート</label><input id="fx" type="number" value="150"><span class="unit">¥/$</span></div>
+      </div>
+
+      <div class="card">
+        <h2>② 値段（客からもらう）</h2>
+        <div class="row"><label>制作単価</label><input id="pricePerMin" type="number" value="30"><span class="unit">$/分</span></div>
+        <div class="row"><label>設計費（一括）</label><input id="setupFee" type="number" value="7000"><span class="unit">$</span></div>
+      </div>
+
+      <div class="card">
+        <h2>③ 原価（4層 × 作業時間と時給）</h2>
+        <div class="note" style="margin-top:0;margin-bottom:8px">「作業分」＝音声<b>1分</b>を仕上げるのにかかる各層の作業時間。ここが利益の生命線。</div>
+        <table>
+          <thead><tr><th>層</th><th>作業分/音声1分</th><th>時給(¥)</th></tr></thead>
+          <tbody>
+            <tr><td>AIトレーナー</td><td><input class="wmin" data-l="0" type="number" value="10"></td><td><input class="wage" data-l="0" type="number" value="2000"></td></tr>
+            <tr><td>Pre Reviewer</td><td><input class="wmin" data-l="1" type="number" value="4"></td><td><input class="wage" data-l="1" type="number" value="2500"></td></tr>
+            <tr><td>Post Reviewer</td><td><input class="wmin" data-l="2" type="number" value="3"></td><td><input class="wage" data-l="2" type="number" value="3000"></td></tr>
+            <tr><td>QC（自分）</td><td><input class="wmin" data-l="3" type="number" value="3"></td><td><input class="wage" data-l="3" type="number" value="3500"></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="big">
+        <div class="line"><span class="k">総売上</span><span class="v" id="oRevenue">—</span></div>
+        <div class="line"><span class="k">　制作売上</span><span class="v" id="oProd" style="font-size:15px">—</span></div>
+        <div class="line"><span class="k">　設計費</span><span class="v" id="oSetup" style="font-size:15px">—</span></div>
+        <hr>
+        <div class="line"><span class="k">総原価</span><span class="v" id="oCost">—</span></div>
+        <hr>
+        <div class="line"><span class="k">粗利</span><span class="v huge" id="oProfit">—</span></div>
+        <div class="line"><span class="k">粗利率</span><span class="v" id="oMargin">—</span></div>
+        <div class="note" style="color:#cfe6d6" id="oNote"></div>
+      </div>
+
+      <div class="card">
+        <h2>④ 必要人数（量÷納期で自動計算）</h2>
+        <table>
+          <thead><tr><th>層</th><th>総作業h</th><th>必要人数</th></tr></thead>
+          <tbody id="staffBody"></tbody>
+          <tfoot><tr><th>合計</th><th id="oTotalHours">—</th><th id="oTotalStaff">—</th></tr></tfoot>
+        </table>
+        <div class="note">必要人数 ＝ 各層の総作業時間 ÷（納期内に1人が働ける時間）。固定で抱えず、案件ごとにバンクから招集する前提。</div>
+      </div>
+
+      <div class="card">
+        <h2>⑤ 単位あたりの感覚</h2>
+        <div class="row" style="margin-bottom:6px"><label>音声1分の原価</label><span class="v" id="oCostPerMin" style="font-size:16px;color:#14532d">—</span></div>
+        <div class="row" style="margin-bottom:6px"><label>音声1分の粗利</label><span class="v" id="oProfitPerMin" style="font-size:16px;color:#14532d">—</span></div>
+        <div class="row" style="margin-bottom:0"><label>1分の合計作業時間</label><span class="v" id="oWminTotal" style="font-size:16px;color:#14532d">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">※ ドル建てで計算し、原価（円）は為替で換算。設計費は一括なので必要人数の算定には含めません（QCの工数のみ反映）。すべて概算。実際のスループットはパイロットで実測して上書きを。</div>
+</div>
+
+<script>
+  const $=id=>document.getElementById(id);
+  const yen=n=>'¥'+Math.round(n).toLocaleString();
+  const usd=n=>'$'+Math.round(n).toLocaleString();
+  const labels=['AIトレーナー','Pre Reviewer','Post Reviewer','QC（自分）'];
+
+  function calc(){
+    const totalMin=+$('totalMin').value||0;
+    const weeks=+$('deadlineWeeks').value||1;
+    const hpw=+$('hoursPerWeek').value||1;
+    const fx=+$('fx').value||150;
+    const pricePerMin=+$('pricePerMin').value||0;
+    const setup=+$('setupFee').value||0;
+
+    const wmin=[...document.querySelectorAll('.wmin')].map(i=>+i.value||0);
+    const wage=[...document.querySelectorAll('.wage')].map(i=>+i.value||0);
+
+    // revenue (USD)
+    const prod=pricePerMin*totalMin;
+    const revenue=prod+setup;
+
+    // cost per layer (yen -> usd)
+    const capacityH=weeks*hpw; // hours one person can work within deadline
+    let totalCostUsd=0, totalHours=0, totalStaff=0, wminTotal=0;
+    let rows='';
+    for(let i=0;i<4;i++){
+      const layerHours=totalMin*wmin[i]/60;        // total work hours for layer
+      const layerCostYen=layerHours*wage[i];
+      const layerCostUsd=layerCostYen/fx;
+      const staff=layerHours>0?Math.ceil(layerHours/capacityH):0;
+      totalCostUsd+=layerCostUsd;
+      totalHours+=layerHours;
+      totalStaff+=staff;
+      wminTotal+=wmin[i];
+      rows+=`<tr><td>${labels[i]}</td><td>${layerHours.toFixed(1)}h</td><td><b>${staff}</b>人</td></tr>`;
+    }
+    $('staffBody').innerHTML=rows;
+
+    const profit=revenue-totalCostUsd;
+    const margin=revenue>0?(profit/revenue*100):0;
+
+    $('oRevenue').textContent=usd(revenue);
+    $('oProd').textContent=usd(prod);
+    $('oSetup').textContent=usd(setup);
+    $('oCost').textContent=usd(totalCostUsd);
+    $('oProfit').textContent=usd(profit);
+    $('oMargin').textContent=margin.toFixed(0)+'%';
+    $('oMargin').className='v '+(margin>=50?'good':'warn');
+
+    $('oTotalHours').textContent=totalHours.toFixed(0)+'h';
+    $('oTotalStaff').textContent=totalStaff+'人';
+
+    const costPerMin=totalMin>0?totalCostUsd/totalMin:0;
+    $('oCostPerMin').textContent=usd(costPerMin)+' / '+yen(costPerMin*fx);
+    $('oProfitPerMin').textContent=usd(pricePerMin-costPerMin);
+    $('oWminTotal').textContent=wminTotal+'分';
+
+    let msg='';
+    if(margin>=70) msg='粗利率◎ — 強い構造。この条件なら全力で取りに行く。';
+    else if(margin>=50) msg='粗利率○ — 健全。スループットを上げればさらに伸びる。';
+    else if(margin>=30) msg='粗利率△ — 薄め。単価UP か 作業時間の短縮を。';
+    else msg='粗利率✕ — このままだと厳しい。単価かスループットを見直す。';
+    $('oNote').textContent=msg;
+  }
+
+  document.querySelectorAll('input').forEach(i=>i.addEventListener('input',calc));
+  calc();
+</script>
+</body>
+</html>
