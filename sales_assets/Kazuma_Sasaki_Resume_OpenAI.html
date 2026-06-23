@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kazuma Sasaki — Resume</title>
+<style>
+  @page{size:Letter;margin:14mm 15mm}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"Helvetica Neue",Arial,sans-serif;color:#1a1a1a;line-height:1.4;font-size:10.3pt}
+  .wrap{max-width:760px;margin:0 auto}
+  header{border-bottom:2.5px solid #1a1a1a;padding-bottom:10px;margin-bottom:14px}
+  h1{font-size:23pt;letter-spacing:.5px;font-weight:700}
+  .role{font-size:10.5pt;color:#2b6cb0;font-weight:600;margin-top:2px}
+  .contact{font-size:9pt;color:#444;margin-top:7px;display:flex;flex-wrap:wrap;gap:4px 14px}
+  .contact span{white-space:nowrap}
+  h2{font-size:10.5pt;text-transform:uppercase;letter-spacing:1.2px;color:#1a1a1a;border-bottom:1px solid #cfcfcf;padding-bottom:3px;margin:14px 0 8px}
+  .summary{font-size:10pt;color:#262626}
+  .job{margin-bottom:11px}
+  .jline{display:flex;justify-content:space-between;align-items:baseline}
+  .jt{font-weight:700;font-size:10.6pt}
+  .jc{color:#2b6cb0;font-weight:600}
+  .jd{font-size:9pt;color:#666;white-space:nowrap;padding-left:10px}
+  ul{list-style:none;margin:4px 0 0}
+  li{position:relative;padding-left:13px;margin-bottom:3px;font-size:9.9pt;color:#262626}
+  li:before{content:"–";position:absolute;left:0;color:#2b6cb0;font-weight:700}
+  .two{display:flex;gap:24px}
+  .two>div{flex:1}
+  .skills span{font-weight:700;color:#1a1a1a}
+  .skl{font-size:9.9pt;margin-bottom:4px;color:#262626}
+  .reloc{font-size:9pt;color:#2b6cb0;font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>KAZUMA SASAKI</h1>
+  <div class="role">Program Manager — Human Data&nbsp;·&nbsp;AI Data Quality &amp; Operations</div>
+  <div class="contact">
+    <span>kazmike.s@gmail.com</span>
+    <span>linkedin.com/in/kazumasasaki</span>
+    <span>Tokyo, Japan</span>
+    <span class="reloc">Open to relocation — San Francisco</span>
+  </div>
+</header>
+
+<div class="summary">
+Human-data operator with ~2 years building and leading high-quality data programs for frontier AI labs.
+Native-bilingual in Japanese and English. Hands-on across the full pipeline — gathering requirements,
+writing guidelines and success criteria, calibrating AI trainers, designing multi-layer QA, and managing
+distributed annotation teams to hit quality and throughput targets. Currently founding a Japanese-language
+audio human-data venture.
+</div>
+
+<h2>Experience</h2>
+
+<div class="job">
+  <div class="jline"><span class="jt">QA Lead — Audio &amp; Video Human Data, <span class="jc">micro1 (AI Data Lab)</span></span><span class="jd">2023 – 2025 · Remote</span></div>
+  <ul>
+    <li>Led quality assurance for a video/audio data program spanning <b>20 countries and 1,000+ AI trainers</b>, delivering training data to a frontier AI research lab.</li>
+    <li>Gathered requirements from researchers and translated them into executable annotation <b>guidelines, instructions, and success criteria</b>; calibrated AI trainers with continuous feedback to drive consistency.</li>
+    <li>Designed a <b>four-stage review pipeline</b> (annotation → pre-review → post-review → final QC) that structurally guaranteed data quality at scale.</li>
+    <li>Used internal tooling to assess labeled data, surface error patterns, and recommend process improvements optimizing for <b>quality, throughput, and trainer experience</b>.</li>
+    <li>Progressed on merit: AI Trainer → Pre-Reviewer → Post-Reviewer → QA Lead.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="jline"><span class="jt">AI Tutor — Voice Data, <span class="jc">xAI</span></span><span class="jd">2023 · Remote</span></div>
+  <ul>
+    <li>Selected through a competitive interview to help train an expressive voice model.</li>
+    <li>Labeled and annotated audio prompts to detailed guidelines — speaker, emotion, pronunciation, and precise timing.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="jline"><span class="jt">Founder, <span class="jc">Audio Human Data (Japanese-language)</span></span><span class="jd">2025 – Present</span></div>
+  <ul>
+    <li>Founding a venture delivering frontier-lab-quality Japanese &amp; Asian-language audio annotation, end-to-end (requirements → guidelines → trainer onboarding → multi-layer QA → delivery).</li>
+    <li>Recruiting and training a network of bilingual AI data trainers; built the guideline framework, QA ladder, and pricing model.</li>
+    <li>Earned ~US$27K as an independent human-data professional while building the business.</li>
+  </ul>
+</div>
+
+<div class="job">
+  <div class="jline"><span class="jt">Founder, <span class="jc">Trade &amp; Error (SaaS)</span></span><span class="jd">2025</span></div>
+  <ul>
+    <li>Independently built and launched a B2C web + mobile SaaS (record → review → improve) with a live freemium model on iOS and Android.</li>
+  </ul>
+</div>
+
+<h2>Selected Project</h2>
+<div class="skl"><span>LLM-as-a-Judge QA tool</span> — Building a Python + LLM tool that auto-scores annotation quality against guidelines, turning quality control into measurable, repeatable analytics.</div>
+
+<h2>Skills</h2>
+<div class="two">
+  <div>
+    <div class="skl"><span>Data programs:</span> guideline &amp; SOP authoring, AI-trainer calibration, multi-layer QA design, requirements gathering, vendor &amp; team management</div>
+    <div class="skl"><span>Data types:</span> speech/audio annotation, speaker diarization, emotion &amp; event labeling, transcription, video annotation</div>
+  </div>
+  <div>
+    <div class="skl"><span>Analytics &amp; tooling:</span> Python (QA automation), LLM evaluation, data analysis &amp; reporting</div>
+    <div class="skl"><span>Languages:</span> Japanese (native), English (fluent, near-native)</div>
+  </div>
+</div>
+
+<h2>Education</h2>
+<div class="skl"><span>International Christian University (ICU), Tokyo</span> — Liberal Arts (bilingual program). Expected 2026.</div>
+
+</div>
+</body>
+</html>
