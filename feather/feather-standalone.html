@@ -1,682 +1,434 @@
 <!doctype html>
-<html lang="ja" class="light">
+<html lang="ja">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>feather — Audio Annotation Dashboard</title>
+<title>feather — Video Audio Captioning</title>
 <style>
 :root{
-  --bg:#f6f7f9; --panel:#ffffff; --ink:#0f172a; --muted:#64748b;
-  --line:#e5e7eb; --line2:#eef2f6; --brand:#4f46e5; --brand-weak:#eef2ff;
-  --green:#10b981; --amber:#f59e0b; --rose:#f43f5e; --sky:#0ea5e9;
-  --shadow:0 1px 2px rgba(15,23,42,.06),0 1px 3px rgba(15,23,42,.04);
-  --radius:12px;
-}
-.dark{
-  --bg:#0b1120; --panel:#0f172a; --ink:#e2e8f0; --muted:#94a3b8;
-  --line:#1e293b; --line2:#16213a; --brand:#818cf8; --brand-weak:#1e1b4b;
+  --bg:#ffffff; --ink:#1f2937; --muted:#6b7280; --faint:#9ca3af;
+  --line:#e5e7eb; --line2:#f0f1f3; --field:#f3f4f6;
+  --blue:#3b82f6; --blue-ink:#1d4ed8; --chip:#b6d7ea; --chip-ink:#0f3a52;
+  --green:#10b981; --shadow:0 1px 2px rgba(0,0,0,.05);
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{
-  font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
-  background:var(--bg); color:var(--ink); font-size:14px; -webkit-font-smoothing:antialiased;
-}
-#root{height:100vh;width:100vw;overflow:hidden}
-.shell{display:flex;flex-direction:row;height:100%;width:100%;overflow:hidden}
+html,body{margin:0;height:100%}
+body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;
+  background:var(--bg);color:var(--ink);font-size:14px;-webkit-font-smoothing:antialiased}
+.app{max-width:1320px;margin:0 auto;padding:0 0 80px}
 
-/* panels */
-.panel{display:flex;flex-direction:column;overflow:hidden;background:var(--panel)}
-.panel-left{flex:0 0 240px;border-right:1px solid var(--line);min-width:160px;max-width:420px}
-.panel-center{flex:1 1 0;min-width:0}
-.panel-head{height:48px;display:flex;align-items:center;gap:8px;padding:0 14px;
-  font-weight:600;font-size:13px;border-bottom:1px solid var(--line);color:var(--muted)}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+/* ---------- header ---------- */
+.hdr{display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line)}
+.home{font-size:22px;line-height:1;color:var(--ink);text-decoration:none;margin-top:2px}
+.hdr-main{flex:1;min-width:0}
+.hdr-id{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:700;letter-spacing:.2px}
+.hdr-id .copy{cursor:pointer;color:var(--faint);font-size:15px}
+.hdr-id .copy:hover{color:var(--ink)}
+.hdr-sub{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin-top:6px;flex-wrap:wrap}
+.hdr-sub .sep{color:var(--line)}
+.hdr-right{display:flex;align-items:center;gap:14px}
+.status{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer}
+.status .tick{color:var(--green)}
+.status .chev{color:var(--faint);font-size:11px}
+.hdr-icons{display:flex;align-items:center;gap:16px;color:var(--muted);font-size:18px}
+.hdr-icons .ic{cursor:pointer;position:relative}
+.hdr-icons .ic:hover{color:var(--ink)}
+.hdr-icons .badge-dot{position:absolute;top:-2px;right:-2px;width:8px;height:8px;background:#ef4444;border-radius:50%}
+.vbar{width:1px;align-self:stretch;background:var(--line);margin:2px 0}
 
-.resize-handle{flex:0 0 5px;cursor:col-resize;background:transparent;position:relative}
-.resize-handle:hover,.resize-handle.drag{background:var(--brand)}
-.resize-handle::after{content:"";position:absolute;inset:0 1px;background:var(--line)}
-.resize-handle:hover::after{background:transparent}
+/* ---------- video ---------- */
+.player{background:#000;position:relative}
+.video{position:relative;aspect-ratio:16/9;max-height:560px;margin:0 auto;width:100%;overflow:hidden;
+  display:grid;place-items:center}
+/* stylized baseball-field poster (no real video file) */
+.scene{position:absolute;inset:0}
+.scene .wall{position:absolute;top:0;left:0;right:0;height:46%;background:#33567a;
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.scene .wall b{font-size:7vw;color:#e8c266;font-weight:800;letter-spacing:.1em;opacity:.92;white-space:nowrap}
+.scene .field{position:absolute;bottom:0;left:0;right:0;height:56%;
+  background:linear-gradient(180deg,#5a8f3c,#477031)}
+.scene .dirt{position:absolute;bottom:0;left:0;right:0;height:14%;background:#7a5638;opacity:.5}
+.scene .mascots{position:absolute;bottom:14%;left:50%;transform:translateX(-50%);font-size:5vw}
+.poster-letterbox{position:absolute;inset:0;pointer-events:none}
 
-/* queue */
-.queue{overflow:auto;padding:8px}
-.q-item{padding:10px 12px;border-radius:10px;cursor:pointer;margin-bottom:4px;border:1px solid transparent}
-.q-item:hover{background:var(--line2)}
-.q-item.active{background:var(--brand-weak);border-color:var(--brand)}
-.q-item .q-title{font-weight:600;font-size:13px}
-.q-item .q-meta{font-size:11px;color:var(--muted);margin-top:2px;display:flex;gap:6px;align-items:center}
-.q-badge{font-size:10px;padding:1px 6px;border-radius:999px;font-weight:600}
-.q-badge.todo{background:#fef3c7;color:#92400e}
-.q-badge.done{background:#d1fae5;color:#065f46}
-.q-badge.review{background:#dbeafe;color:#1e40af}
-
-/* topbar */
-.topbar{height:60px;min-height:60px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 16px;border-bottom:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow)}
-.brand{display:flex;align-items:center;gap:8px;font-size:15px}
-.brand .logo{font-size:18px}
-.brand .crumb{color:var(--muted);font-size:12px;margin-left:4px}
-.topbar-right{display:flex;align-items:center;gap:10px}
-.git{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
-
-/* buttons */
-.btn{font:inherit;border:1px solid var(--line);background:var(--panel);color:var(--ink);
-  padding:7px 12px;border-radius:9px;cursor:pointer;font-size:13px;transition:.12s}
-.btn:hover{border-color:var(--brand);color:var(--brand)}
-.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
-.btn.primary:hover{filter:brightness(1.06);color:#fff}
-.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
-.btn.ghost:hover{background:var(--line2);color:var(--ink)}
-.btn.sm{padding:4px 9px;font-size:12px}
-.btn.icon{padding:6px 9px;font-size:14px;line-height:1}
-.btn.icon.play{background:var(--brand);border-color:var(--brand);color:#fff;width:40px}
-
-/* content / columns */
-.content{flex:1;overflow:auto;padding:16px;display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
-.col-wave{flex:1 1 600px;min-width:380px;display:flex;flex-direction:column;gap:16px}
-.col-label{flex:1 1 420px;min-width:340px;display:flex;flex-direction:column;gap:16px}
-
-/* card */
-.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-  box-shadow:var(--shadow);overflow:hidden}
-.card-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line2)}
-.card-title{font-weight:700;font-size:14px}
-.card-sub{font-size:11px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
-.count{display:inline-block;min-width:18px;text-align:center;background:var(--brand-weak);color:var(--brand);
-  border-radius:999px;font-size:11px;padding:0 6px;margin-left:4px}
+/* waveform strip under video */
+.wavestrip{height:54px;background:#fafafa;border-top:1px solid var(--line);position:relative;overflow:hidden}
+#wavecanvas{position:absolute;left:42%;top:6px;height:42px}
+.wavestrip .wh{position:absolute;top:0;width:2px;height:100%;background:var(--blue);left:42%}
 
 /* transport */
-.transport{display:flex;align-items:center;gap:6px}
-.rate{display:flex;gap:3px;margin-left:6px}
-.chip{font:inherit;font-size:11px;border:1px solid var(--line);background:var(--panel);color:var(--muted);
-  border-radius:7px;padding:3px 7px;cursor:pointer}
-.chip.active{background:var(--brand-weak);border-color:var(--brand);color:var(--brand);font-weight:600}
+.scrub{display:flex;align-items:center;padding:10px 20px 4px}
+.scrub input[type=range]{flex:1;accent-color:var(--ink)}
+.controls{display:flex;align-items:center;gap:14px;padding:6px 20px 14px;border-bottom:1px solid var(--line)}
+.btn{font:inherit;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:8px;
+  padding:7px 14px;cursor:pointer}
+.btn:hover{background:var(--field)}
+.tc{font-variant-numeric:tabular-nums;color:var(--ink);font-size:13px}
+.controls .right{margin-left:auto;display:flex;align-items:center;gap:12px;color:var(--muted)}
+.controls select{font:inherit;border:1px solid var(--line);border-radius:7px;padding:5px 8px}
 
-/* waveform */
-.wave-wrap{position:relative;padding:14px 14px 26px;user-select:none}
-#wave{width:100%;display:block;height:160px;border-radius:8px;background:linear-gradient(180deg,var(--line2),transparent)}
-.regions{position:absolute;left:14px;right:14px;top:14px;height:160px;pointer-events:none}
-.region{position:absolute;top:0;height:160px;background:rgba(79,70,229,.12);border-left:2px solid var(--brand);
-  border-right:2px solid var(--brand);pointer-events:auto;cursor:pointer}
-.region.sel{background:rgba(79,70,229,.24)}
-.region .rlabel{position:absolute;top:2px;left:4px;font-size:10px;font-weight:700;color:var(--brand);
-  background:var(--panel);border-radius:4px;padding:0 4px;white-space:nowrap}
-.region .emo{position:absolute;bottom:2px;left:4px;font-size:11px}
-.playhead{position:absolute;top:14px;width:2px;height:160px;background:var(--rose);left:14px;pointer-events:none;box-shadow:0 0 6px rgba(244,63,94,.6)}
-.timeaxis{position:absolute;left:14px;right:14px;bottom:6px;height:14px;font-size:10px;color:var(--muted)}
-.timeaxis span{position:absolute;transform:translateX(-50%);font-variant-numeric:tabular-nums}
-.wave-hint{font-size:11px;color:var(--muted);padding:0 14px 12px;line-height:1.6}
+/* ---------- timeline ---------- */
+.timeline{border-bottom:1px solid var(--line);display:flex}
+.tl-gutter{flex:0 0 150px;border-right:1px solid var(--line)}
+.tl-zoom{height:30px;display:flex;align-items:center;gap:12px;padding:0 12px;color:var(--faint);border-bottom:1px solid var(--line2)}
+.tl-zoom span{cursor:pointer}.tl-zoom span:hover{color:var(--ink)}
+.tl-lane-label{height:42px;display:flex;align-items:center;padding:0 14px;font-size:13px;border-bottom:1px solid var(--line2)}
+.tl-scroll{flex:1;overflow-x:auto;overflow-y:hidden}
+.tl-inner{position:relative}
+.tl-ruler{height:30px;position:relative;border-bottom:1px solid var(--line2)}
+.tl-ruler .tick{position:absolute;top:0;height:100%;border-left:1px solid var(--line);
+  font-size:10px;color:var(--faint);padding-left:3px;padding-top:8px;font-variant-numeric:tabular-nums}
+.tl-lane{height:42px;position:relative;border-bottom:1px solid var(--line2)}
+.tl-block{position:absolute;top:6px;height:30px;background:var(--chip);border:1px solid #8fbcd6;border-radius:6px;
+  color:var(--chip-ink);font-size:12px;font-style:italic;display:flex;align-items:center;padding:0 8px;
+  overflow:hidden;white-space:nowrap;cursor:pointer}
+.tl-cap{position:absolute;top:4px;height:34px;font-size:11px;color:var(--ink);padding:3px 6px;
+  overflow:hidden;border-left:2px solid var(--line);line-height:1.3}
 
-/* segments list */
-.seg-list{max-height:220px;overflow:auto}
-.seg-row{display:flex;align-items:center;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line2);cursor:pointer;font-size:13px}
-.seg-row:hover{background:var(--line2)}
-.seg-row.sel{background:var(--brand-weak)}
-.seg-row .seg-idx{width:22px;height:22px;border-radius:6px;background:var(--brand-weak);color:var(--brand);
-  display:grid;place-items:center;font-size:11px;font-weight:700;flex:none}
-.seg-row .seg-time{font-variant-numeric:tabular-nums;color:var(--muted);font-size:12px;flex:none;width:120px}
-.seg-row .seg-tags{display:flex;gap:5px;flex-wrap:wrap;flex:1;min-width:0}
-.tag{font-size:10px;padding:1px 7px;border-radius:999px;background:var(--line2);color:var(--muted);font-weight:600;white-space:nowrap}
-.tag.spk{background:#e0f2fe;color:#0369a1}
-.tag.emo{background:#fce7f3;color:#9d174d}
-.tag.voc{background:#ecfccb;color:#3f6212}
-.seg-row .seg-del{opacity:0;color:var(--rose);font-weight:700;flex:none}
-.seg-row:hover .seg-del{opacity:1}
-.empty{padding:24px 14px;text-align:center;color:var(--muted);font-size:12px}
+/* ---------- annotation card ---------- */
+.section{max-width:1180px;margin:26px auto 0;padding:0 20px}
+.card{border:1px solid var(--line);border-radius:10px;padding:18px;box-shadow:var(--shadow)}
+.tabs{display:flex;justify-content:center;gap:34px;margin-bottom:18px}
+.tab{font:inherit;background:none;border:none;font-size:15px;color:var(--muted);cursor:pointer;
+  padding-bottom:6px;border-bottom:2px solid transparent}
+.tab.active{color:var(--ink);font-weight:600;border-bottom-color:var(--ink)}
 
-/* tabs (radix-like) */
-.tabs{display:flex;gap:6px;padding:12px 14px 0;border-bottom:1px solid var(--line2)}
-.tab{font:inherit;font-size:13px;border:none;background:transparent;color:var(--muted);
-  padding:8px 12px;border-radius:8px 8px 0 0;cursor:pointer;border-bottom:2px solid transparent;font-weight:600}
-.tab:hover{color:var(--ink)}
-.tab.active{color:var(--brand);border-bottom-color:var(--brand)}
-.tabpanel{padding:14px}
-.tabpanel[hidden]{display:none}
-.field-label{font-size:12px;font-weight:600;color:var(--muted);margin:6px 0 8px}
-.opt-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-.opt{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--panel);color:var(--ink);
-  padding:7px 12px;border-radius:999px;cursor:pointer;transition:.1s}
-.opt:hover{border-color:var(--brand)}
-.opt.sel{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
-.ta{width:100%;min-height:80px;resize:vertical;font:inherit;font-size:13px;padding:10px;border:1px solid var(--line);
-  border-radius:9px;background:var(--bg);color:var(--ink)}
-.ta:focus{outline:2px solid var(--brand);border-color:var(--brand)}
-.slider{width:100%;accent-color:var(--brand)}
-.label-footer{display:flex;align-items:center;gap:8px;padding:12px 14px;border-top:1px solid var(--line2)}
-.autosave{font-size:11px;color:var(--green);margin-right:auto;opacity:0;transition:.3s}
-.autosave.show{opacity:1}
+/* speaker row */
+.spk-row{border:2px solid var(--blue);border-radius:8px;overflow:hidden}
+.spk-line{display:flex;align-items:stretch;gap:1px;background:var(--line)}
+.spk-line>*{background:var(--field)}
+.spk-tag{display:flex;align-items:center;padding:0 16px;color:var(--muted);font-size:13px;white-space:nowrap}
+.spk-field{flex:1;display:flex;align-items:center;padding:12px 14px;color:var(--muted);min-width:0}
+.spk-at{width:46px;display:flex;align-items:center;justify-content:center;color:var(--faint)}
+.spk-ts{width:64px;background:#fff !important;border:1px solid var(--line);margin:6px 0;border-radius:6px}
+.spk-icon{width:42px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer}
+.spk-icon:hover{color:var(--ink)}
+.spk-tools{display:flex;gap:1px}
+.spk-tool{width:48px;display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;font-size:15px}
+.spk-tool:hover{color:var(--ink)}
+.spk-desc{flex:1;display:flex;align-items:center;padding:12px 14px;color:var(--muted)}
+.translit{margin-top:14px;font:inherit;border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 16px;cursor:pointer}
+.translit:hover{background:var(--field)}
 
-/* json */
-.json{margin:0;padding:14px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11.5px;
-  line-height:1.55;max-height:260px;overflow:auto;color:var(--ink);white-space:pre;tab-size:2}
-.json .k{color:var(--sky)} .json .s{color:var(--green)} .json .n{color:var(--amber)}
+/* sub-tabs (diarization/captions) */
+.subtabs{display:flex;justify-content:center;gap:8px;margin:26px 0 0}
+.subtab{font:inherit;background:#fff;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;
+  padding:9px 18px;color:var(--muted);cursor:pointer;position:relative;top:1px}
+.subtab .cnt{color:var(--faint);margin-left:6px;font-size:12px}
+.subtab.active{color:var(--ink);font-weight:600;border-color:var(--line);background:#fff}
+.sub-card{border:1px solid var(--line);border-radius:10px;padding:18px;min-height:90px;display:flex;
+  align-items:center;flex-wrap:wrap;gap:12px;box-shadow:var(--shadow)}
+.dia-chip{background:var(--chip);color:var(--chip-ink);border-radius:8px;padding:12px 18px;font-style:italic;
+  font-size:14px;cursor:pointer}
+.dia-chip:hover{filter:brightness(.97)}
 
-/* modal */
-.modal-bg{position:fixed;inset:0;background:rgba(15,23,42,.45);display:grid;place-items:center;z-index:50}
-.modal{background:var(--panel);border-radius:14px;padding:22px 24px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.modal h3{margin:0 0 14px}
-.modal table{width:100%;border-collapse:collapse;margin-bottom:16px}
-.modal td{padding:6px 4px;font-size:13px;border-bottom:1px solid var(--line2)}
-kbd{background:var(--line2);border:1px solid var(--line);border-radius:6px;padding:2px 7px;font-size:11px;font-family:ui-monospace,monospace}
+/* questions */
+.qa{max-width:1180px;margin:40px auto 0;padding:0 20px}
+.q{padding:22px 0;border-bottom:1px solid var(--line)}
+.q-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.q-title{font-size:17px;font-weight:700}
+.q-title .req{color:#ef4444;margin-left:4px}
+.q-desc{color:var(--muted);margin-top:8px;line-height:1.6}
+.q-chat{color:var(--faint);cursor:pointer;font-size:18px}
+.yn{display:inline-flex;margin-top:14px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.yn button{font:inherit;border:none;background:#fff;padding:9px 22px;cursor:pointer;color:var(--ink)}
+.yn button.on{background:var(--blue);color:#fff;font-weight:600}
+.yn button+button{border-left:1px solid var(--line)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;
+  padding:10px 18px;border-radius:10px;font-size:13px;opacity:0;transition:.25s;pointer-events:none}
+.toast.show{opacity:1}
 
 </style>
 </head>
 <body>
-  <div id="root">
-    <!-- App shell: resizable sidebar group (left / center / right) -->
-    <div class="shell">
-      <!-- LEFT PANEL: task queue -->
-      <aside class="panel panel-left" id="left-panel">
-        <div class="panel-head">
-          <span class="dot"></span>
-          <span>Task Queue</span>
+  <div class="app">
+
+    <!-- ===== header ===== -->
+    <div class="hdr">
+      <a class="home" href="#" title="Home">⌂</a>
+      <div class="hdr-main">
+        <div class="hdr-id">5098858366000774098 <span class="copy" id="copy-id" title="IDをコピー">⧉</span></div>
+        <div class="hdr-sub">
+          <span>👤 tosa568@expert.micro1.ai</span><span class="sep">·</span>
+          <span>📢 Video Audio Captioning</span><span class="sep">·</span>
+          <span>🗒 050826_02</span>
         </div>
-        <div class="queue" id="queue"></div>
-      </aside>
+      </div>
+      <div class="hdr-right">
+        <div class="status"><span class="tick">✔</span> Completed <span class="chev">▼</span></div>
+        <div class="vbar"></div>
+        <div class="hdr-icons">
+          <span class="ic" title="コメント">💬</span>
+          <span class="ic" title="ガイドライン">📄</span>
+          <span class="ic" title="通知">👤<span class="badge-dot"></span></span>
+          <span class="ic" title="メニュー">⋯</span>
+        </div>
+      </div>
+    </div>
 
-      <div class="resize-handle" data-handle="left" title="ドラッグで幅変更"></div>
+    <!-- ===== video player ===== -->
+    <div class="player">
+      <div class="video">
+        <div class="scene">
+          <div class="wall"><b>インテリア</b></div>
+          <div class="field"></div>
+          <div class="dirt"></div>
+          <div class="mascots">🐟🐤</div>
+        </div>
+      </div>
+    </div>
 
-      <!-- CENTER PANEL -->
-      <section class="panel panel-center">
-        <!-- top bar (60px) -->
-        <header class="topbar">
-          <div class="brand">
-            <span class="logo">🪶</span>
-            <strong>feather</strong>
-            <span class="crumb" id="crumb">— / task_0481 / call_audio.wav</span>
-          </div>
-          <div class="topbar-right">
-            <span class="git" id="git-sha">sha 86e0aab · 2026-06-19</span>
-            <button class="btn ghost" id="btn-shortcuts">⌘ ショートカット</button>
-            <button class="btn primary" id="btn-submit">納品 (Submit)</button>
-          </div>
-        </header>
+    <!-- waveform strip -->
+    <div class="wavestrip">
+      <canvas id="wavecanvas" height="42"></canvas>
+      <div class="wh" id="wave-head"></div>
+    </div>
 
-        <!-- content: two columns -->
-        <div class="content">
-          <!-- LEFT COLUMN: waveform + segments -->
-          <div class="col col-wave">
-            <div class="card">
-              <div class="card-head">
-                <div>
-                  <div class="card-title">Waveform</div>
-                  <div class="card-sub" id="audio-meta">call_audio.wav · 00:00.0 / 00:00.0 · 16kHz mono</div>
-                </div>
-                <div class="transport">
-                  <button class="btn icon" id="btn-back" title="-5s">⏪</button>
-                  <button class="btn icon play" id="btn-play" title="Space">▶</button>
-                  <button class="btn icon" id="btn-fwd" title="+5s">⏩</button>
-                  <span class="rate">
-                    <button class="chip" data-rate="0.75">0.75×</button>
-                    <button class="chip active" data-rate="1">1×</button>
-                    <button class="chip" data-rate="1.5">1.5×</button>
-                  </span>
-                </div>
-              </div>
+    <!-- scrubber + controls -->
+    <div class="scrub"><input type="range" id="seek" min="0" max="1438" value="0" /></div>
+    <div class="controls">
+      <button class="btn" id="play">Play</button>
+      <span class="tc" id="tc">00:00.00 / 00:14.38</span>
+      <div class="right">
+        <span>Speed</span>
+        <select id="speed"><option>1x</option><option>0.75x</option><option>1.5x</option><option>2x</option></select>
+        <button class="btn" id="fs">Fullscreen</button>
+      </div>
+    </div>
 
-              <div class="wave-wrap">
-                <canvas id="wave" height="160"></canvas>
-                <div class="regions" id="regions"></div>
-                <div class="playhead" id="playhead"></div>
-                <div class="timeaxis" id="timeaxis"></div>
-              </div>
+    <!-- ===== timeline ===== -->
+    <div class="timeline">
+      <div class="tl-gutter">
+        <div class="tl-zoom"><span id="zoom-in">🔍＋</span><span id="zoom-out">🔍−</span></div>
+        <div class="tl-lane-label">Diarization</div>
+        <div class="tl-lane-label">Audio captions</div>
+      </div>
+      <div class="tl-scroll">
+        <div class="tl-inner" id="tl-inner">
+          <div class="tl-ruler" id="tl-ruler"></div>
+          <div class="tl-lane" id="lane-dia"></div>
+          <div class="tl-lane" id="lane-cap"></div>
+        </div>
+      </div>
+    </div>
 
-              <div class="wave-hint">
-                波形上を<strong>ドラッグ</strong>して区間(チャンク)を作成 ·
-                クリックで選択 · <strong>E</strong> で再生位置に区切りを追加 ·
-                <strong>Del</strong> で選択区間を削除
-              </div>
+    <!-- ===== annotation (Speakers / Emotion / Vocal Delivery) ===== -->
+    <div class="section">
+      <div class="card">
+        <div class="tabs">
+          <button class="tab active" data-tab="speakers">Speakers</button>
+          <button class="tab" data-tab="emotion">Emotion</button>
+          <button class="tab" data-tab="vocal">Vocal Delivery</button>
+        </div>
+
+        <div data-panel="speakers">
+          <div class="spk-row">
+            <div class="spk-line">
+              <div class="spk-tag">Speaker 1</div>
+              <div class="spk-field">N/A</div>
+              <div class="spk-at">@</div>
+              <div class="spk-ts"></div>
+              <div class="spk-icon" title="タイムスタンプ">🕘</div>
+              <div class="spk-icon" title="再生">▶</div>
             </div>
-
-            <div class="card seg-card">
-              <div class="card-head">
-                <div class="card-title">Segments <span class="count" id="seg-count">0</span></div>
-                <button class="btn ghost sm" id="btn-clear">全消去</button>
+            <div class="spk-line">
+              <div class="spk-tools">
+                <div class="spk-tool" title="編集">✎</div>
+                <div class="spk-tool" title="削除">🗑</div>
               </div>
-              <div class="seg-list" id="seg-list"></div>
+              <div class="spk-desc">Adult male voice, medium pitch, standard Japanese accent</div>
             </div>
           </div>
+          <button class="translit">Transliterate</button>
+        </div>
 
-          <!-- RIGHT COLUMN: labeling tabs -->
-          <div class="col col-label">
-            <div class="card label-card">
-              <div class="card-head">
-                <div>
-                  <div class="card-title">Annotation</div>
-                  <div class="card-sub" id="active-seg-label">区間を選択してください</div>
-                </div>
-              </div>
-
-              <!-- Radix-style tablist -->
-              <div class="tabs" role="tablist" aria-orientation="horizontal">
-                <button class="tab active" role="tab" data-tab="speakers" id="trigger-speakers">👥 Speakers</button>
-                <button class="tab" role="tab" data-tab="emotion" id="trigger-emotion">🎭 Emotion</button>
-                <button class="tab" role="tab" data-tab="vocal_delivery" id="trigger-vocal">🎙 Vocal Delivery</button>
-              </div>
-
-              <!-- panels -->
-              <div class="tabpanel" data-panel="speakers" data-state="active">
-                <div class="field-label">話者 (Speaker)</div>
-                <div class="opt-grid" id="opt-speakers"></div>
-                <div class="field-label">書き起こし (Transcript)</div>
-                <textarea id="transcript" class="ta" placeholder="この区間の発話内容を入力..."></textarea>
-              </div>
-
-              <div class="tabpanel" data-panel="emotion" data-state="inactive" hidden>
-                <div class="field-label">主感情 (Primary Emotion)</div>
-                <div class="opt-grid" id="opt-emotion"></div>
-                <div class="field-label">強度 (Intensity) <span id="intensity-val">3</span>/5</div>
-                <input type="range" id="intensity" min="1" max="5" value="3" class="slider" />
-              </div>
-
-              <div class="tabpanel" data-panel="vocal_delivery" data-state="inactive" hidden>
-                <div class="field-label">発話スタイル (Vocal Delivery)</div>
-                <div class="opt-grid" id="opt-vocal"></div>
-                <div class="field-label">メモ (Notes)</div>
-                <textarea id="vocal-notes" class="ta" placeholder="抑揚・速度・ためらい など..."></textarea>
-              </div>
-
-              <div class="label-footer">
-                <span id="autosave" class="autosave">●  自動保存</span>
-                <button class="btn ghost sm" id="btn-prev">← 前の区間</button>
-                <button class="btn ghost sm" id="btn-next">次の区間 →</button>
-              </div>
-            </div>
-
-            <div class="card json-card">
-              <div class="card-head">
-                <div class="card-title">納品プレビュー (Delivery JSON)</div>
-                <button class="btn ghost sm" id="btn-copy">コピー</button>
-              </div>
-              <pre class="json" id="json-out">{ }</pre>
+        <div data-panel="emotion" hidden>
+          <div class="spk-row">
+            <div class="spk-line">
+              <div class="spk-tag">Speaker 1</div>
+              <div class="spk-field">主感情: <strong style="color:#1f2937;margin-left:6px">neutral</strong> · 強度 2/5</div>
+              <div class="spk-icon" title="再生">▶</div>
             </div>
           </div>
         </div>
-      </section>
+
+        <div data-panel="vocal" hidden>
+          <div class="spk-row">
+            <div class="spk-line">
+              <div class="spk-tag">Speaker 1</div>
+              <div class="spk-field">発話スタイル: <strong style="color:#1f2937;margin-left:6px">calm / standard</strong></div>
+              <div class="spk-icon" title="再生">▶</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- sub-tabs: Diarization / Captions -->
+      <div class="subtabs">
+        <button class="subtab active" data-sub="dia">Diarization <span class="cnt">3</span></button>
+        <button class="subtab" data-sub="cap">Captions <span class="cnt">2</span></button>
+      </div>
+      <div class="sub-card" data-subpanel="dia">
+        <div class="dia-chip">unintelligible speech</div>
+        <div class="dia-chip">よー。</div>
+        <div class="dia-chip">unintelligible speech</div>
+      </div>
+      <div class="sub-card" data-subpanel="cap" hidden>
+        <div style="line-height:1.6">An off-screen, loud music is heard in the background. The music is a fast tempo pop music with a heavy bass. It has an epic mood and is heard from a speaker at a close distance from the camera.</div>
+        <div style="line-height:1.6">A continuous buzzing white noise at high volume is heard from an off-screen source in the background. The sound is a high-frequency, electric buzzing heard throughout the video at a close distance.</div>
+      </div>
+    </div>
+
+    <!-- ===== QA questions ===== -->
+    <div class="qa">
+      <div class="q">
+        <div class="q-head">
+          <div class="q-title">Are you proficient in understanding ALL languages spoken in this video?</div>
+          <span class="q-chat" title="コメント">💬</span>
+        </div>
+        <div class="q-desc">Select <strong>Yes</strong> only if you can comfortably understand <strong>ALL</strong> spoken languages well enough to accurately label this clip.</div>
+      </div>
+      <div class="q">
+        <div class="q-head">
+          <div class="q-title">Are you proficient in understanding ALL languages spoken in this video?<span class="req">*</span></div>
+          <span class="q-chat" title="コメント">💬</span>
+        </div>
+        <div class="yn" data-yn>
+          <button class="on" data-v="yes">Yes</button>
+          <button data-v="no">No</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- shortcuts modal -->
-  <div class="modal-bg" id="modal" hidden>
-    <div class="modal">
-      <h3>キーボードショートカット</h3>
-      <table>
-        <tr><td><kbd>Space</kbd></td><td>再生 / 一時停止</td></tr>
-        <tr><td><kbd>E</kbd></td><td>再生位置に区切りを追加</td></tr>
-        <tr><td><kbd>Del</kbd></td><td>選択中の区間を削除</td></tr>
-        <tr><td><kbd>← / →</kbd></td><td>前 / 次の区間へ</td></tr>
-        <tr><td><kbd>1 / 2 / 3</kbd></td><td>Speakers / Emotion / Vocal タブ</td></tr>
-      </table>
-      <button class="btn primary" id="modal-close">閉じる</button>
-    </div>
-  </div>
-
+  <div class="toast" id="toast"></div>
   <script>
-/* feather — audio annotation dashboard (standalone prototype) */
+/* feather — Video Audio Captioning (faithful UI mock of the micro1 task screen) */
 (() => {
   "use strict";
-
-  // ---------- option vocabularies (the labeling taxonomy) ----------
-  const SPEAKERS = ["Agent", "Customer", "Speaker C", "Overlap", "Silence/Noise"];
-  const EMOTIONS = ["neutral", "happy", "angry", "sad", "anxious", "frustrated", "excited", "confused"];
-  const VOCALS   = ["calm", "fast", "hesitant", "emphatic", "monotone", "whisper", "raised voice", "laughing"];
-
-  // ---------- task queue (fake dataset, как from a client) ----------
-  const TASKS = [
-    { id: "task_0481", file: "call_audio.wav", dur: 42.5, status: "todo",   seed: 7 },
-    { id: "task_0482", file: "support_03.wav", dur: 31.0, status: "review", seed: 21 },
-    { id: "task_0483", file: "interview_a.wav", dur: 58.2, status: "done",  seed: 4 },
-    { id: "task_0484", file: "sales_demo.wav", dur: 27.8, status: "todo",   seed: 55 },
-  ];
-
-  // ---------- state ----------
-  let task = TASKS[0];
-  let duration = task.dur;
-  let segments = [];          // {id,start,end,speaker,transcript,emotion,intensity,vocal,vnotes}
-  let selectedId = null;
-  let playing = false;
-  let playT = 0;              // seconds
-  let rate = 1;
-  let lastTick = 0;
-  let waveData = [];
-
   const $ = (s) => document.querySelector(s);
-  const fmt = (t) => {
-    const m = Math.floor(t / 60), s = (t % 60);
-    return `${String(m).padStart(2, "0")}:${s.toFixed(1).padStart(4, "0")}`;
+  const $ = (s) => [...document.querySelectorAll(s)];
+
+  const DURATION = 14.38;          // total seconds (matches 00:14.38)
+  let pxPerSec = 1100;             // timeline zoom (deciseconds spacing)
+  let t = 0, playing = false, rate = 1, last = 0;
+
+  const fmt = (sec, dec = 2) => {
+    const m = Math.floor(sec / 60), s = sec - m * 60;
+    return `${String(m).padStart(2, "0")}:${s.toFixed(dec).padStart(dec ? 3 + dec : 2, "0")}`;
   };
-  const uid = () => "s" + Math.random().toString(36).slice(2, 8);
 
-  // ---------- synthetic waveform (seeded, deterministic) ----------
-  function genWave(seed, n = 1400) {
-    let x = seed * 9973 + 1;
-    const rnd = () => { x = (x * 1103515245 + 12345) & 0x7fffffff; return x / 0x7fffffff; };
-    const out = [];
-    let env = 0;
-    for (let i = 0; i < n; i++) {
-      // speech-like: bursts of energy with gaps
-      const phrase = Math.sin(i / 70) * 0.5 + 0.5;
-      const gap = phrase < 0.25 ? 0.05 : 1;
-      env += ((rnd() * gap) - env) * 0.25;
-      const a = Math.max(0.02, env * (0.4 + rnd() * 0.6));
-      out.push(a);
-    }
-    return out;
-  }
-
-  // ---------- canvas waveform ----------
-  const canvas = $("#wave");
-  const ctx = canvas.getContext("2d");
+  // ---------- waveform strip ----------
+  const wc = $("#wavecanvas"), wctx = wc.getContext("2d");
   function drawWave() {
-    const w = canvas.clientWidth, h = canvas.height;
-    canvas.width = w * devicePixelRatio; canvas.height = h * devicePixelRatio;
-    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-    ctx.clearRect(0, 0, w, h);
-    const mid = h / 2, n = waveData.length, bw = w / n;
-    const css = getComputedStyle(document.body);
-    const brand = css.getPropertyValue("--brand").trim() || "#4f46e5";
-    for (let i = 0; i < n; i++) {
-      const a = waveData[i] * (h * 0.46);
-      const played = (i / n) * duration <= playT;
-      ctx.fillStyle = played ? brand : "#cbd5e1";
-      ctx.fillRect(i * bw, mid - a, Math.max(1, bw * 0.7), a * 2);
+    const w = Math.round((DURATION - 6.3) * 90); // partial strip like screenshot
+    wc.width = w * devicePixelRatio; wc.height = 42 * devicePixelRatio;
+    wc.style.width = w + "px";
+    wctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    wctx.clearRect(0, 0, w, 42);
+    let x = 99; const rnd = () => (x = (x * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+    let env = .2;
+    for (let i = 0; i < w; i += 2) {
+      env += (rnd() - env) * .3;
+      const a = Math.max(1, env * 18);
+      wctx.fillStyle = "#9ca3af";
+      wctx.fillRect(i, 21 - a, 1.4, a * 2);
     }
   }
 
-  // ---------- time axis ----------
-  function drawAxis() {
-    const ax = $("#timeaxis"); ax.innerHTML = "";
-    const ticks = 6;
-    for (let i = 0; i <= ticks; i++) {
-      const t = (duration / ticks) * i;
-      const s = document.createElement("span");
-      s.style.left = (i / ticks * 100) + "%";
-      s.textContent = fmt(t);
-      ax.appendChild(s);
+  // ---------- timeline ----------
+  const DIA = [
+    { s: 0.0, e: 3.6, text: "unintelligible speech" },
+    { s: 3.6, e: 4.1, text: "よー。" },
+    { s: 4.1, e: 9.2, text: "unintelligible speech" },
+  ];
+  const CAP = [
+    { s: 0.0, e: 14.38, text: "Loud off-screen pop music, heavy bass, epic mood." },
+    { s: 0.0, e: 14.38, text: "Continuous high-frequency electric buzzing throughout." },
+  ];
+  function buildTimeline() {
+    const W = DURATION * pxPerSec;
+    $("#tl-inner").style.width = W + "px";
+    // ruler at 0.1s steps
+    const ruler = $("#tl-ruler"); ruler.innerHTML = "";
+    for (let d = 0; d <= DURATION * 10; d++) {
+      const sec = d / 10;
+      const tick = document.createElement("div");
+      tick.className = "tick"; tick.style.left = (sec * pxPerSec) + "px";
+      tick.textContent = (d % 10 === 0) ? fmt(sec, 0) : fmt(sec, 1);
+      ruler.appendChild(tick);
     }
-  }
-
-  // ---------- regions overlay ----------
-  function renderRegions() {
-    const box = $("#regions"); box.innerHTML = "";
-    const w = box.clientWidth;
-    segments.forEach((seg, i) => {
+    // diarization lane
+    const ld = $("#lane-dia"); ld.innerHTML = "";
+    DIA.forEach((b) => {
       const el = document.createElement("div");
-      el.className = "region" + (seg.id === selectedId ? " sel" : "");
-      el.style.left = (seg.start / duration * w) + "px";
-      el.style.width = ((seg.end - seg.start) / duration * w) + "px";
-      el.innerHTML = `<span class="rlabel">#${i + 1} ${seg.speaker || "?"}</span>` +
-        (seg.emotion ? `<span class="emo">${emoIcon(seg.emotion)}</span>` : "");
-      el.onclick = (e) => { e.stopPropagation(); select(seg.id); };
-      box.appendChild(el);
+      el.className = "tl-block";
+      el.style.left = (b.s * pxPerSec) + "px";
+      el.style.width = ((b.e - b.s) * pxPerSec - 3) + "px";
+      el.textContent = b.text;
+      el.onclick = () => { t = b.s; sync(); };
+      ld.appendChild(el);
     });
-  }
-  const emoIcon = (e) => ({neutral:"😐",happy:"😊",angry:"😠",sad:"😢",anxious:"😰",frustrated:"😤",excited:"🤩",confused:"😕"}[e] || "");
-
-  // ---------- segment list ----------
-  function renderSegList() {
-    const list = $("#seg-list"); $("#seg-count").textContent = segments.length;
-    if (!segments.length) { list.innerHTML = `<div class="empty">区間がありません。波形をドラッグして作成してください。</div>`; return; }
-    list.innerHTML = "";
-    segments.sort((a, b) => a.start - b.start).forEach((seg, i) => {
-      const row = document.createElement("div");
-      row.className = "seg-row" + (seg.id === selectedId ? " sel" : "");
-      const tags = [];
-      if (seg.speaker) tags.push(`<span class="tag spk">${seg.speaker}</span>`);
-      if (seg.emotion) tags.push(`<span class="tag emo">${emoIcon(seg.emotion)} ${seg.emotion}</span>`);
-      if (seg.vocal) tags.push(`<span class="tag voc">${seg.vocal}</span>`);
-      row.innerHTML = `<span class="seg-idx">${i + 1}</span>
-        <span class="seg-time">${fmt(seg.start)} → ${fmt(seg.end)}</span>
-        <span class="seg-tags">${tags.join("") || '<span class="tag">未ラベル</span>'}</span>
-        <span class="seg-del" title="削除">✕</span>`;
-      row.onclick = () => select(seg.id);
-      row.querySelector(".seg-del").onclick = (e) => { e.stopPropagation(); del(seg.id); };
-      list.appendChild(row);
+    // captions lane
+    const lc = $("#lane-cap"); lc.innerHTML = "";
+    CAP.forEach((b, i) => {
+      const el = document.createElement("div");
+      el.className = "tl-cap";
+      el.style.left = (b.s * pxPerSec) + "px";
+      el.style.top = (4 + i * 1) + "px"; // slight stagger handled by lane height; keep simple
+      el.style.width = ((b.e - b.s) * pxPerSec - 4) + "px";
+      el.textContent = b.text;
+      lc.appendChild(el);
     });
   }
 
-  // ---------- option grids ----------
-  function buildOpts(elId, vals, key) {
-    const box = $(elId); box.innerHTML = "";
-    vals.forEach((v) => {
-      const b = document.createElement("button");
-      b.className = "opt"; b.textContent = v; b.dataset.val = v;
-      b.onclick = () => setField(key, v);
-      box.appendChild(b);
-    });
+  // ---------- playback ----------
+  function sync() {
+    $("#seek").value = Math.round(t * 100);
+    $("#tc").textContent = `${fmt(t)} / 00:14.38`;
+    $("#wave-head").style.left = `calc(42% + ${t * 90}px)`;
   }
-
-  function syncOpts() {
-    const seg = current();
-    [["#opt-speakers", "speaker"], ["#opt-emotion", "emotion"], ["#opt-vocal", "vocal"]].forEach(([sel, key]) => {
-      document.querySelectorAll(sel + " .opt").forEach((b) =>
-        b.classList.toggle("sel", seg && seg[key] === b.dataset.val));
-    });
-    $("#transcript").value = seg?.transcript || "";
-    $("#vocal-notes").value = seg?.vnotes || "";
-    $("#intensity").value = seg?.intensity || 3;
-    $("#intensity-val").textContent = seg?.intensity || 3;
-    $("#active-seg-label").textContent = seg
-      ? `区間 #${segments.indexOf(seg) + 1} · ${fmt(seg.start)} → ${fmt(seg.end)}`
-      : "区間を選択してください";
-  }
-
-  // ---------- mutations ----------
-  const current = () => segments.find((s) => s.id === selectedId);
-  function setField(key, val) {
-    const seg = current(); if (!seg) { flashHint(); return; }
-    seg[key] = (seg[key] === val) ? "" : val; // toggle off if re-click
-    refresh(); autosave();
-  }
-  function bindInputs() {
-    $("#transcript").oninput = (e) => { const s = current(); if (s) { s.transcript = e.target.value; updateJson(); autosave(); } };
-    $("#vocal-notes").oninput = (e) => { const s = current(); if (s) { s.vnotes = e.target.value; updateJson(); autosave(); } };
-    $("#intensity").oninput = (e) => { $("#intensity-val").textContent = e.target.value; const s = current(); if (s) { s.intensity = +e.target.value; updateJson(); autosave(); } };
-  }
-  function select(id) { selectedId = id; refresh(); }
-  function del(id) {
-    segments = segments.filter((s) => s.id !== id);
-    if (selectedId === id) selectedId = segments[0]?.id || null;
-    refresh(); autosave();
-  }
-  function addSegment(start, end) {
-    start = Math.max(0, Math.min(start, duration));
-    end = Math.max(0, Math.min(end, duration));
-    if (Math.abs(end - start) < 0.3) return; // too small
-    if (end < start) [start, end] = [end, start];
-    const seg = { id: uid(), start, end, speaker: "", transcript: "", emotion: "", intensity: 3, vocal: "", vnotes: "" };
-    segments.push(seg); selectedId = seg.id; refresh(); autosave();
-  }
-
-  let saveTimer;
-  function autosave() {
-    const el = $("#autosave"); el.classList.add("show");
-    clearTimeout(saveTimer); saveTimer = setTimeout(() => el.classList.remove("show"), 900);
-  }
-  function flashHint() {
-    const h = $("#active-seg-label"); h.style.color = "var(--rose)";
-    h.textContent = "先に区間を選択してください"; setTimeout(() => { h.style.color = ""; syncOpts(); }, 1000);
-  }
-
-  // ---------- delivery JSON ----------
-  function buildPayload() {
-    return {
-      task_id: task.id, audio_file: task.file, duration_sec: +duration.toFixed(2),
-      sample_rate: 16000, channels: 1, annotator: "u_demo",
-      schema_version: "1.0",
-      segments: segments.slice().sort((a, b) => a.start - b.start).map((s, i) => ({
-        index: i + 1, start: +s.start.toFixed(2), end: +s.end.toFixed(2),
-        speaker: s.speaker || null, transcript: s.transcript || null,
-        emotion: s.emotion || null, emotion_intensity: s.emotion ? s.intensity : null,
-        vocal_delivery: s.vocal || null, notes: s.vnotes || null,
-      })),
-    };
-  }
-  function updateJson() {
-    const json = JSON.stringify(buildPayload(), null, 2)
-      .replace(/("(\\.|[^"])*?")(\s*:)/g, '<span class="k">$1</span>$3')
-      .replace(/:\s*("(\\.|[^"])*?")/g, ': <span class="s">$1</span>')
-      .replace(/:\s*(-?\d+\.?\d*)/g, ': <span class="n">$1</span>');
-    $("#json-out").innerHTML = json;
-  }
-
-  // ---------- master refresh ----------
-  function refresh() { renderRegions(); renderSegList(); syncOpts(); updateJson(); drawWave(); }
-
-  // ---------- playback loop ----------
   function loop(ts) {
     if (playing) {
-      if (!lastTick) lastTick = ts;
-      playT += ((ts - lastTick) / 1000) * rate;
-      lastTick = ts;
-      if (playT >= duration) { playT = duration; togglePlay(false); }
-      updatePlayhead(); drawWave();
-    } else lastTick = 0;
+      if (!last) last = ts;
+      t += ((ts - last) / 1000) * rate; last = ts;
+      if (t >= DURATION) { t = DURATION; toggle(false); }
+      sync();
+    } else last = 0;
     requestAnimationFrame(loop);
   }
-  function updatePlayhead() {
-    const wrap = $("#regions"); const w = wrap.clientWidth;
-    $("#playhead").style.left = (14 + playT / duration * w) + "px";
-    $("#audio-meta").textContent = `${task.file} · ${fmt(playT)} / ${fmt(duration)} · 16kHz mono`;
-  }
-  function togglePlay(force) {
-    playing = force === undefined ? !playing : force;
-    $("#btn-play").textContent = playing ? "⏸" : "▶";
-    lastTick = 0;
-  }
-
-  // ---------- drag to create region ----------
-  function setupDrag() {
-    const wrap = $("#regions"); let dragging = false, x0 = 0, ghost = null;
-    const toSec = (clientX) => {
-      const r = wrap.getBoundingClientRect();
-      return Math.max(0, Math.min(1, (clientX - r.left) / r.width)) * duration;
-    };
-    wrap.parentElement.addEventListener("mousedown", (e) => {
-      if (e.target.closest(".region")) return;
-      dragging = true; x0 = toSec(e.clientX);
-      ghost = document.createElement("div"); ghost.className = "region sel";
-      ghost.style.left = (x0 / duration * wrap.clientWidth) + "px"; ghost.style.width = "0px";
-      wrap.appendChild(ghost);
-    });
-    window.addEventListener("mousemove", (e) => {
-      if (!dragging) return;
-      const x1 = toSec(e.clientX), a = Math.min(x0, x1), b = Math.max(x0, x1);
-      ghost.style.left = (a / duration * wrap.clientWidth) + "px";
-      ghost.style.width = ((b - a) / duration * wrap.clientWidth) + "px";
-    });
-    window.addEventListener("mouseup", (e) => {
-      if (!dragging) return; dragging = false;
-      const x1 = toSec(e.clientX); ghost?.remove();
-      addSegment(x0, x1);
-    });
-    // click on waveform (not drag) -> move playhead
-    wrap.parentElement.addEventListener("click", (e) => {
-      if (e.target.closest(".region")) return;
-      // tiny movement counts as seek handled via mouseup small region rejected
-    });
-  }
+  function toggle(f) { playing = f === undefined ? !playing : f; $("#play").textContent = playing ? "Pause" : "Play"; last = 0; }
 
   // ---------- tabs ----------
-  function setupTabs() {
-    document.querySelectorAll(".tab").forEach((t) => t.onclick = () => activateTab(t.dataset.tab));
-  }
-  function activateTab(name) {
-    document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.dataset.tab === name));
-    document.querySelectorAll(".tabpanel").forEach((p) => {
-      const on = p.dataset.panel === name;
-      p.hidden = !on; p.dataset.state = on ? "active" : "inactive";
-    });
-  }
+  $(".tab").forEach((tab) => tab.onclick = () => {
+    $(".tab").forEach((x) => x.classList.toggle("active", x === tab));
+    $("[data-panel]").forEach((p) => p.hidden = p.dataset.panel !== tab.dataset.tab);
+  });
+  $(".subtab").forEach((tab) => tab.onclick = () => {
+    $(".subtab").forEach((x) => x.classList.toggle("active", x === tab));
+    $("[data-subpanel]").forEach((p) => p.hidden = p.dataset.subpanel !== tab.dataset.sub);
+  });
 
-  // ---------- task queue ----------
-  function renderQueue() {
-    const q = $("#queue"); q.innerHTML = "";
-    TASKS.forEach((t) => {
-      const el = document.createElement("div");
-      el.className = "q-item" + (t.id === task.id ? " active" : "");
-      el.innerHTML = `<div class="q-title">${t.file}</div>
-        <div class="q-meta"><span>${t.id}</span>·<span>${fmt(t.dur)}</span>
-        <span class="q-badge ${t.status}">${t.status}</span></div>`;
-      el.onclick = () => loadTask(t);
-      q.appendChild(el);
-    });
-  }
-  function loadTask(t) {
-    task = t; duration = t.dur; segments = []; selectedId = null; playT = 0; togglePlay(false);
-    waveData = genWave(t.seed);
-    $("#crumb").textContent = `— / ${t.id} / ${t.file}`;
-    // seed a couple of example segments on the first task so it looks alive
-    if (t.id === "task_0481") {
-      segments = [
-        { id: uid(), start: 1.2, end: 6.8, speaker: "Agent", transcript: "お電話ありがとうございます。", emotion: "neutral", intensity: 2, vocal: "calm", vnotes: "" },
-        { id: uid(), start: 8.1, end: 14.3, speaker: "Customer", transcript: "先週注文した商品がまだ届いていません。", emotion: "frustrated", intensity: 4, vocal: "fast", vnotes: "語尾が強い" },
-      ];
-      selectedId = segments[0].id;
-    }
-    renderQueue(); drawAxis(); updatePlayhead(); refresh();
-  }
+  // ---------- yes/no ----------
+  $("[data-yn] button").forEach((b) => b.onclick = () => {
+    b.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+  });
 
-  // ---------- shortcuts ----------
-  function setupKeys() {
-    window.addEventListener("keydown", (e) => {
-      if (e.target.matches("textarea,input")) return;
-      const idx = segments.findIndex((s) => s.id === selectedId);
-      if (e.code === "Space") { e.preventDefault(); togglePlay(); }
-      else if (e.key === "e" || e.key === "E") { addSegment(playT, playT + 3); }
-      else if (e.key === "Delete" || e.key === "Backspace") { if (selectedId) del(selectedId); }
-      else if (e.key === "ArrowRight") { if (idx < segments.length - 1) select(segments[idx + 1].id); }
-      else if (e.key === "ArrowLeft") { if (idx > 0) select(segments[idx - 1].id); }
-      else if (e.key === "1") activateTab("speakers");
-      else if (e.key === "2") activateTab("emotion");
-      else if (e.key === "3") activateTab("vocal_delivery");
-    });
-  }
+  // ---------- misc controls ----------
+  const toast = (m) => { const el = $("#toast"); el.textContent = m; el.classList.add("show"); setTimeout(() => el.classList.remove("show"), 1400); };
+  $("#play").onclick = () => toggle();
+  $("#seek").oninput = (e) => { t = e.target.value / 100; sync(); };
+  $("#speed").onchange = (e) => { rate = parseFloat(e.target.value); };
+  $("#fs").onclick = () => { const p = document.querySelector(".player"); (p.requestFullscreen ? p.requestFullscreen() : toast("フルスクリーン")); };
+  $("#zoom-in").onclick = () => { pxPerSec = Math.min(2600, pxPerSec * 1.4); buildTimeline(); };
+  $("#zoom-out").onclick = () => { pxPerSec = Math.max(300, pxPerSec / 1.4); buildTimeline(); };
+  $("#copy-id").onclick = async () => { try { await navigator.clipboard.writeText("5098858366000774098"); toast("Task ID をコピーしました"); } catch { toast("5098858366000774098"); } };
+  $(".dia-chip").forEach((c) => c.onclick = () => toast("チップを選択: " + c.textContent));
+  window.addEventListener("keydown", (e) => { if (e.code === "Space" && !e.target.matches("input,textarea,select")) { e.preventDefault(); toggle(); } });
 
-  // ---------- resize handle ----------
-  function setupResize() {
-    const h = document.querySelector('[data-handle="left"]'); const left = $("#left-panel");
-    let drag = false;
-    h.addEventListener("mousedown", () => { drag = true; h.classList.add("drag"); document.body.style.cursor = "col-resize"; });
-    window.addEventListener("mousemove", (e) => { if (drag) left.style.flexBasis = Math.max(160, Math.min(420, e.clientX)) + "px"; });
-    window.addEventListener("mouseup", () => { drag = false; h.classList.remove("drag"); document.body.style.cursor = ""; });
-  }
-
-  // ---------- buttons ----------
-  function setupButtons() {
-    $("#btn-play").onclick = () => togglePlay();
-    $("#btn-fwd").onclick = () => { playT = Math.min(duration, playT + 5); updatePlayhead(); drawWave(); };
-    $("#btn-back").onclick = () => { playT = Math.max(0, playT - 5); updatePlayhead(); drawWave(); };
-    document.querySelectorAll(".chip[data-rate]").forEach((c) => c.onclick = () => {
-      rate = +c.dataset.rate; document.querySelectorAll(".chip").forEach((x) => x.classList.remove("active")); c.classList.add("active");
-    });
-    $("#btn-clear").onclick = () => { if (confirm("全区間を削除しますか？")) { segments = []; selectedId = null; refresh(); } };
-    $("#btn-prev").onclick = () => { const i = segments.findIndex((s) => s.id === selectedId); if (i > 0) select(segments[i - 1].id); };
-    $("#btn-next").onclick = () => { const i = segments.findIndex((s) => s.id === selectedId); if (i < segments.length - 1) select(segments[i + 1].id); };
-    $("#btn-copy").onclick = async () => {
-      await navigator.clipboard.writeText(JSON.stringify(buildPayload(), null, 2));
-      const b = $("#btn-copy"); b.textContent = "コピー済 ✓"; setTimeout(() => b.textContent = "コピー", 1200);
-    };
-    $("#btn-submit").onclick = () => {
-      const labeled = segments.filter((s) => s.speaker && s.emotion).length;
-      alert(`納品プレビュー\n\nタスク: ${task.id}\n区間数: ${segments.length}\n完全ラベル済: ${labeled}\n\n実運用ではここで POST /deliveries が叩かれ、\n相手企業の Webhook に納品完了が通知されます。`);
-    };
-    $("#btn-shortcuts").onclick = () => $("#modal").hidden = false;
-    $("#modal-close").onclick = () => $("#modal").hidden = true;
-    $("#modal").onclick = (e) => { if (e.target.id === "modal") $("#modal").hidden = true; };
-  }
-
-  // ---------- init ----------
-  function init() {
-    buildOpts("#opt-speakers", SPEAKERS, "speaker");
-    buildOpts("#opt-emotion", EMOTIONS, "emotion");
-    buildOpts("#opt-vocal", VOCALS, "vocal");
-    bindInputs(); setupTabs(); setupDrag(); setupKeys(); setupResize(); setupButtons();
-    renderQueue(); loadTask(TASKS[0]);
-    window.addEventListener("resize", () => { drawWave(); renderRegions(); drawAxis(); updatePlayhead(); });
-    requestAnimationFrame(loop);
-  }
-  document.addEventListener("DOMContentLoaded", init);
+  drawWave(); buildTimeline(); sync();
+  window.addEventListener("resize", drawWave);
+  requestAnimationFrame(loop);
 })();
 
 </script>
