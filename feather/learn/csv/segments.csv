@@ -1,0 +1,1759 @@
+segment_id,annotation_id,start_sec,end_sec,speaker,emotion,vocal_delivery,transcript_len
+1,1,0.0,2.89,N/A,frustrated,whisper,100
+2,1,4.06,7.29,Speaker 1,excited,monotone,24
+3,1,8.13,11.29,N/A,neutral,monotone,118
+4,1,12.19,16.02,Speaker 2,frustrated,emphatic,8
+5,1,16.26,20.26,Speaker 3,frustrated,whisper,108
+6,1,20.32,23.32,Speaker 3,anxious,whisper,52
+7,1,24.39,27.63,Speaker 3,angry,fast,53
+8,1,28.45,32.11,N/A,angry,monotone,72
+9,1,32.52,35.73,Speaker 1,anxious,hesitant,26
+10,1,36.58,39.95,Speaker 3,confused,emphatic,56
+11,1,40.65,44.32,N/A,angry,whisper,10
+12,1,44.71,47.9,Speaker 3,happy,laughing,96
+13,1,48.78,51.91,Speaker 3,sad,laughing,25
+14,1,52.84,55.87,Speaker 1,sad,emphatic,78
+15,1,56.91,60.79,Speaker 1,confused,emphatic,113
+16,1,60.97,64.58,Speaker 2,excited,emphatic,51
+17,1,65.04,68.18,Speaker 1,happy,laughing,54
+18,2,0.0,3.27,Speaker 3,confused,monotone,104
+19,2,3.64,6.97,N/A,confused,fast,95
+20,2,7.27,10.76,N/A,anxious,laughing,31
+21,2,10.91,14.37,Speaker 3,confused,whisper,30
+22,2,14.55,17.39,Speaker 1,anxious,fast,34
+23,2,18.18,21.1,Speaker 1,angry,fast,29
+24,2,21.82,24.78,Speaker 2,sad,calm,53
+25,2,25.46,28.45,N/A,excited,calm,26
+26,2,29.09,32.55,N/A,neutral,laughing,112
+27,2,32.73,36.11,N/A,confused,calm,120
+28,2,36.37,39.3,N/A,excited,monotone,95
+29,2,40.01,43.35,Speaker 2,confused,fast,34
+30,2,43.64,46.66,Speaker 1,excited,hesitant,85
+31,2,47.28,50.57,N/A,angry,laughing,59
+32,2,50.92,54.46,Speaker 1,excited,monotone,72
+33,2,54.55,57.82,Speaker 1,excited,fast,110
+34,2,58.19,61.24,Speaker 1,anxious,emphatic,41
+35,2,61.83,64.6,Speaker 3,frustrated,laughing,112
+36,2,65.46,68.42,N/A,anxious,laughing,10
+37,3,0.0,3.07,Speaker 2,sad,laughing,2
+38,3,3.32,6.25,Speaker 2,angry,emphatic,85
+39,3,6.63,9.07,Speaker 2,confused,whisper,32
+40,3,9.95,13.03,Speaker 2,happy,laughing,104
+41,3,13.26,15.75,Speaker 3,happy,monotone,3
+42,3,16.58,19.82,N/A,excited,whisper,25
+43,3,19.89,22.29,Speaker 2,happy,whisper,98
+44,3,23.21,25.83,Speaker 1,neutral,hesitant,68
+45,3,26.52,29.27,Speaker 3,happy,monotone,82
+46,3,29.84,32.5,N/A,confused,calm,55
+47,3,33.15,36.43,N/A,angry,emphatic,22
+48,3,36.47,39.52,Speaker 3,confused,emphatic,55
+49,3,39.78,42.93,Speaker 3,frustrated,laughing,31
+50,4,0.0,4.56,Speaker 3,anxious,hesitant,35
+51,4,5.39,10.58,Speaker 3,neutral,monotone,24
+52,4,10.78,14.68,N/A,confused,monotone,97
+53,4,16.16,20.32,N/A,confused,emphatic,101
+54,4,21.55,25.35,Speaker 3,sad,emphatic,88
+55,4,26.94,31.1,Speaker 3,confused,monotone,67
+56,4,32.33,36.65,Speaker 3,frustrated,whisper,58
+57,4,37.71,41.92,Speaker 3,sad,calm,92
+58,5,0.0,5.41,Speaker 1,sad,hesitant,29
+59,5,6.16,11.13,Speaker 3,neutral,whisper,68
+60,5,12.31,16.86,Speaker 1,neutral,monotone,37
+61,5,18.47,24.07,Speaker 2,confused,calm,111
+62,5,24.63,28.96,Speaker 3,confused,emphatic,56
+63,5,30.79,35.73,Speaker 1,anxious,laughing,61
+64,5,36.94,41.46,Speaker 1,excited,emphatic,9
+65,6,0.0,4.85,N/A,confused,emphatic,38
+66,6,5.2,10.18,N/A,anxious,monotone,79
+67,6,10.4,14.13,Speaker 1,sad,whisper,27
+68,6,15.6,19.65,Speaker 1,angry,fast,22
+69,6,20.8,25.3,Speaker 2,neutral,emphatic,57
+70,7,0.0,3.16,Speaker 2,anxious,laughing,101
+71,7,4.38,8.26,Speaker 2,excited,calm,69
+72,7,8.75,12.11,Speaker 2,anxious,laughing,18
+73,7,13.12,16.28,Speaker 2,anxious,monotone,95
+74,7,17.5,21.64,Speaker 3,confused,calm,59
+75,7,21.88,25.84,N/A,anxious,monotone,69
+76,7,26.25,29.96,Speaker 1,neutral,emphatic,94
+77,7,30.62,34.11,Speaker 3,neutral,calm,29
+78,7,35.0,39.33,Speaker 1,anxious,monotone,5
+79,7,39.38,43.44,Speaker 2,confused,monotone,83
+80,7,43.75,47.39,Speaker 3,angry,monotone,55
+81,7,48.12,52.02,N/A,happy,emphatic,44
+82,7,52.5,56.1,Speaker 3,happy,laughing,20
+83,7,56.88,60.37,N/A,anxious,whisper,120
+84,7,61.25,64.84,Speaker 1,confused,calm,40
+85,7,65.62,69.02,Speaker 1,excited,laughing,65
+86,8,0.0,5.26,Speaker 3,confused,whisper,62
+87,8,6.08,10.56,Speaker 2,angry,hesitant,70
+88,8,12.17,16.45,N/A,happy,fast,107
+89,8,18.25,24.17,N/A,happy,whisper,106
+90,8,24.33,28.87,Speaker 3,anxious,emphatic,106
+91,8,30.42,35.56,N/A,sad,emphatic,70
+92,8,36.5,41.02,Speaker 2,angry,laughing,8
+93,8,42.58,47.35,N/A,frustrated,laughing,64
+94,8,48.67,53.41,Speaker 1,anxious,whisper,38
+95,8,54.75,60.54,N/A,angry,emphatic,68
+96,8,60.83,65.98,Speaker 3,excited,emphatic,119
+97,8,66.92,71.76,Speaker 2,sad,monotone,49
+98,9,0.0,4.96,Speaker 2,confused,calm,16
+99,9,6.08,11.26,Speaker 3,happy,laughing,108
+100,9,12.17,17.23,N/A,neutral,whisper,18
+101,9,18.25,23.26,Speaker 2,happy,emphatic,100
+102,9,24.33,30.36,Speaker 3,excited,whisper,10
+103,9,30.42,36.23,N/A,frustrated,whisper,91
+104,9,36.5,42.38,N/A,neutral,monotone,8
+105,9,42.58,47.27,Speaker 3,sad,whisper,11
+106,9,48.67,53.72,Speaker 1,happy,emphatic,21
+107,9,54.75,60.27,Speaker 1,neutral,hesitant,101
+108,9,60.83,65.19,Speaker 3,frustrated,emphatic,18
+109,9,66.92,71.62,N/A,angry,fast,22
+110,10,0.0,3.06,Speaker 1,confused,hesitant,86
+111,10,3.65,6.8,Speaker 1,confused,hesitant,75
+112,10,7.3,10.18,N/A,anxious,emphatic,108
+113,10,10.95,13.84,N/A,confused,calm,30
+114,10,14.6,17.57,Speaker 3,anxious,whisper,37
+115,10,18.25,20.83,N/A,anxious,calm,72
+116,10,21.9,25.4,Speaker 1,confused,laughing,115
+117,10,25.55,29.09,Speaker 2,frustrated,fast,81
+118,10,29.2,31.96,Speaker 3,angry,whisper,12
+119,10,32.85,36.39,Speaker 1,anxious,laughing,56
+120,10,36.5,39.09,Speaker 3,angry,calm,116
+121,10,40.15,43.03,N/A,angry,fast,16
+122,10,43.8,47.22,Speaker 3,anxious,laughing,21
+123,10,47.45,50.29,N/A,anxious,whisper,111
+124,10,51.1,54.03,Speaker 1,confused,calm,18
+125,10,54.75,58.13,Speaker 2,excited,laughing,102
+126,10,58.4,61.57,Speaker 1,excited,calm,33
+127,10,62.05,65.19,N/A,frustrated,whisper,95
+128,10,65.7,68.99,N/A,frustrated,calm,86
+129,10,69.35,72.16,Speaker 1,frustrated,monotone,28
+130,11,0.0,2.39,Speaker 2,excited,emphatic,47
+131,11,3.27,6.23,N/A,angry,emphatic,83
+132,11,6.55,8.94,N/A,excited,hesitant,4
+133,11,9.82,12.8,Speaker 2,confused,emphatic,30
+134,11,13.1,16.23,Speaker 1,frustrated,monotone,115
+135,11,16.38,19.63,Speaker 3,neutral,emphatic,35
+136,11,19.65,22.13,Speaker 1,confused,calm,84
+137,11,22.92,25.43,Speaker 1,neutral,laughing,42
+138,11,26.2,28.73,Speaker 2,sad,calm,106
+139,11,29.47,32.52,Speaker 2,sad,laughing,111
+140,11,32.75,35.27,Speaker 2,neutral,hesitant,109
+141,11,36.02,39.28,Speaker 2,anxious,laughing,22
+142,12,0.0,4.62,Speaker 3,neutral,fast,94
+143,12,6.55,11.96,Speaker 1,happy,emphatic,57
+144,12,13.1,19.21,Speaker 1,confused,monotone,28
+145,12,19.65,26.09,Speaker 1,anxious,emphatic,82
+146,12,26.2,32.68,Speaker 1,confused,laughing,51
+147,12,32.75,38.17,Speaker 1,confused,whisper,116
+148,13,0.0,3.22,Speaker 3,excited,monotone,67
+149,13,4.37,7.81,N/A,happy,laughing,89
+150,13,8.73,11.94,Speaker 2,excited,emphatic,113
+151,13,13.1,16.46,Speaker 3,confused,emphatic,53
+152,13,17.47,21.48,Speaker 3,excited,hesitant,85
+153,13,21.83,25.22,Speaker 2,confused,calm,11
+154,13,26.2,30.35,Speaker 1,excited,calm,95
+155,13,30.57,34.59,Speaker 2,neutral,monotone,71
+156,13,34.93,38.73,Speaker 1,excited,hesitant,111
+157,14,0.0,3.02,Speaker 1,frustrated,laughing,71
+158,14,3.93,7.11,Speaker 3,sad,laughing,54
+159,14,7.86,11.61,Speaker 1,anxious,calm,23
+160,14,11.79,14.86,Speaker 3,frustrated,hesitant,0
+161,14,15.72,18.68,Speaker 2,excited,calm,18
+162,14,19.65,23.27,Speaker 1,happy,whisper,67
+163,14,23.58,26.58,N/A,confused,hesitant,20
+164,14,27.51,30.7,Speaker 3,happy,calm,19
+165,14,31.44,34.38,Speaker 1,happy,hesitant,56
+166,14,35.37,38.9,N/A,confused,emphatic,34
+167,14,39.3,42.31,Speaker 1,frustrated,emphatic,14
+168,14,43.23,46.31,N/A,anxious,calm,28
+169,14,47.16,50.38,Speaker 1,neutral,fast,38
+170,14,51.09,54.96,Speaker 2,anxious,hesitant,41
+171,14,55.02,57.91,N/A,excited,fast,16
+172,14,58.95,62.15,Speaker 2,frustrated,calm,50
+173,14,62.88,66.65,Speaker 1,excited,calm,58
+174,14,66.81,70.65,Speaker 3,excited,monotone,51
+175,14,70.74,74.33,N/A,anxious,calm,51
+176,14,74.67,77.45,Speaker 3,angry,laughing,79
+177,15,0.0,3.06,N/A,anxious,whisper,43
+178,15,3.57,6.31,Speaker 2,happy,monotone,81
+179,15,7.15,9.77,Speaker 2,frustrated,hesitant,93
+180,15,10.72,14.25,Speaker 2,sad,calm,18
+181,15,14.29,17.07,Speaker 2,angry,laughing,97
+182,15,17.86,21.07,Speaker 2,confused,emphatic,96
+183,15,21.44,24.54,N/A,frustrated,laughing,80
+184,15,25.01,27.85,N/A,happy,emphatic,56
+185,15,28.58,31.76,Speaker 3,neutral,hesitant,64
+186,15,32.15,34.73,N/A,confused,calm,7
+187,15,35.73,38.62,Speaker 3,happy,whisper,110
+188,15,39.3,42.85,Speaker 1,excited,emphatic,74
+189,15,42.87,45.97,Speaker 1,confused,laughing,73
+190,15,46.45,49.65,Speaker 3,confused,monotone,19
+191,15,50.02,53.55,N/A,happy,laughing,115
+192,15,53.59,56.99,Speaker 1,angry,calm,31
+193,15,57.16,60.42,N/A,angry,hesitant,47
+194,15,60.74,64.22,N/A,excited,laughing,43
+195,15,64.31,67.54,Speaker 1,frustrated,calm,42
+196,15,67.88,70.48,N/A,anxious,hesitant,92
+197,15,71.45,74.87,Speaker 2,frustrated,calm,74
+198,15,75.03,78.24,Speaker 3,anxious,whisper,89
+199,16,0.0,5.06,Speaker 1,excited,monotone,46
+200,16,5.61,9.57,Speaker 3,angry,fast,43
+201,16,11.23,16.75,N/A,sad,fast,17
+202,16,16.84,21.03,Speaker 3,happy,monotone,98
+203,16,22.46,27.3,Speaker 1,frustrated,laughing,79
+204,16,28.07,32.22,N/A,angry,fast,23
+205,16,33.69,39.02,Speaker 2,confused,calm,52
+206,16,39.3,43.84,Speaker 2,confused,monotone,36
+207,16,44.91,50.11,N/A,sad,monotone,30
+208,16,50.53,54.98,N/A,sad,hesitant,86
+209,16,56.14,61.67,N/A,confused,laughing,36
+210,16,61.76,67.0,N/A,angry,laughing,25
+211,16,67.37,72.65,Speaker 2,anxious,calm,82
+212,16,72.99,77.73,Speaker 3,happy,whisper,108
+213,17,0.0,4.72,Speaker 1,sad,laughing,57
+214,17,4.97,9.77,Speaker 1,excited,calm,50
+215,17,9.94,14.17,Speaker 2,excited,calm,47
+216,17,14.91,18.73,Speaker 3,happy,laughing,91
+217,17,19.89,24.34,Speaker 2,angry,calm,36
+218,17,24.86,29.71,N/A,angry,laughing,90
+219,17,29.83,34.01,Speaker 1,happy,calm,32
+220,17,34.8,38.6,Speaker 2,excited,calm,99
+221,17,39.77,43.68,Speaker 3,happy,calm,30
+222,17,44.74,48.85,N/A,happy,calm,107
+223,17,49.71,54.54,Speaker 1,sad,whisper,18
+224,17,54.69,58.6,Speaker 1,frustrated,fast,73
+225,17,59.66,63.76,Speaker 1,frustrated,calm,67
+226,17,64.63,68.92,Speaker 1,excited,laughing,60
+227,18,0.0,3.58,Speaker 1,frustrated,fast,5
+228,18,4.64,8.38,Speaker 3,angry,laughing,99
+229,18,9.28,13.48,N/A,angry,laughing,17
+230,18,13.92,17.26,N/A,neutral,hesitant,25
+231,18,18.56,21.87,Speaker 2,neutral,hesitant,119
+232,18,23.2,26.88,N/A,confused,hesitant,4
+233,18,27.84,32.14,Speaker 2,anxious,hesitant,110
+234,18,32.48,36.81,Speaker 3,anxious,calm,102
+235,18,37.12,40.88,N/A,confused,emphatic,43
+236,18,41.76,46.36,N/A,confused,hesitant,118
+237,18,46.4,50.76,Speaker 3,happy,whisper,54
+238,18,51.04,54.4,Speaker 2,anxious,hesitant,13
+239,18,55.68,59.04,Speaker 3,anxious,emphatic,77
+240,18,60.32,64.57,Speaker 2,confused,hesitant,57
+241,18,64.96,68.27,Speaker 3,excited,hesitant,81
+242,19,0.0,3.83,N/A,neutral,fast,8
+243,19,4.01,7.11,Speaker 3,frustrated,emphatic,72
+244,19,8.03,10.87,Speaker 2,confused,hesitant,47
+245,19,12.04,15.38,Speaker 1,angry,monotone,46
+246,19,16.05,19.34,Speaker 3,sad,calm,3
+247,19,20.06,23.76,N/A,excited,monotone,15
+248,19,24.07,27.2,Speaker 3,confused,fast,78
+249,19,28.09,31.24,N/A,sad,calm,17
+250,20,0.0,6.21,Speaker 2,angry,laughing,46
+251,20,6.42,11.89,Speaker 1,sad,laughing,17
+252,20,12.84,17.79,N/A,neutral,hesitant,70
+253,20,19.26,24.86,N/A,angry,monotone,113
+254,20,25.68,30.34,Speaker 3,excited,whisper,92
+255,21,0.0,4.07,Speaker 2,angry,emphatic,64
+256,21,5.07,10.01,Speaker 1,happy,monotone,19
+257,21,10.14,14.15,Speaker 2,frustrated,whisper,28
+258,21,15.21,19.29,Speaker 3,happy,hesitant,25
+259,21,20.28,24.8,Speaker 3,angry,whisper,38
+260,21,25.35,29.84,Speaker 1,angry,monotone,120
+261,21,30.42,34.86,Speaker 2,frustrated,laughing,118
+262,21,35.49,39.9,Speaker 1,happy,calm,82
+263,21,40.56,45.29,Speaker 3,sad,laughing,73
+264,21,45.64,49.82,Speaker 1,confused,whisper,69
+265,21,50.71,54.7,Speaker 3,confused,fast,103
+266,21,55.78,60.55,N/A,anxious,emphatic,9
+267,21,60.85,65.44,Speaker 2,confused,emphatic,61
+268,21,65.92,70.17,Speaker 3,angry,hesitant,110
+269,21,70.99,75.63,Speaker 3,excited,fast,97
+270,21,76.06,80.17,Speaker 1,frustrated,fast,59
+271,21,81.13,84.87,N/A,sad,fast,12
+272,22,0.0,5.04,N/A,confused,emphatic,112
+273,22,5.42,9.72,Speaker 1,happy,emphatic,64
+274,22,10.85,15.39,Speaker 2,sad,monotone,45
+275,22,16.27,20.14,Speaker 3,confused,monotone,112
+276,22,21.69,26.86,N/A,anxious,monotone,1
+277,22,27.12,32.29,N/A,angry,hesitant,93
+278,22,32.54,36.93,N/A,frustrated,calm,51
+279,22,37.96,41.84,Speaker 2,frustrated,monotone,36
+280,22,43.38,47.3,N/A,anxious,laughing,79
+281,22,48.81,53.71,Speaker 1,angry,calm,50
+282,22,54.23,58.63,Speaker 3,frustrated,laughing,18
+283,22,59.65,63.77,N/A,neutral,calm,4
+284,22,65.08,69.1,Speaker 3,confused,monotone,58
+285,23,0.0,6.15,N/A,anxious,emphatic,104
+286,23,7.0,11.93,Speaker 3,happy,emphatic,74
+287,23,14.0,19.55,Speaker 1,confused,hesitant,83
+288,23,21.0,27.54,Speaker 2,neutral,monotone,61
+289,23,28.0,33.26,N/A,angry,laughing,87
+290,23,35.0,40.41,Speaker 1,sad,calm,56
+291,23,42.0,47.56,Speaker 2,excited,whisper,26
+292,23,49.0,54.76,N/A,neutral,whisper,17
+293,23,56.0,61.99,Speaker 3,confused,monotone,48
+294,23,63.0,68.56,Speaker 2,confused,monotone,43
+295,23,70.0,76.05,Speaker 3,confused,fast,31
+296,24,0.0,5.0,Speaker 3,anxious,calm,73
+297,24,5.92,11.27,N/A,excited,laughing,44
+298,24,11.85,17.69,Speaker 2,anxious,calm,36
+299,24,17.77,23.61,Speaker 1,frustrated,emphatic,83
+300,24,23.69,28.29,N/A,sad,fast,105
+301,24,29.62,34.72,Speaker 3,angry,calm,78
+302,24,35.54,41.0,Speaker 2,sad,calm,85
+303,24,41.46,47.22,Speaker 2,sad,calm,12
+304,24,47.38,52.27,N/A,happy,whisper,98
+305,24,53.31,57.7,Speaker 2,excited,whisper,119
+306,24,59.23,64.94,N/A,confused,whisper,25
+307,24,65.15,70.64,Speaker 3,frustrated,hesitant,82
+308,24,71.08,75.33,Speaker 1,sad,monotone,94
+309,25,0.0,3.02,Speaker 2,anxious,calm,1
+310,25,3.23,5.77,Speaker 1,frustrated,hesitant,58
+311,25,6.45,9.66,N/A,angry,laughing,64
+312,25,9.68,12.39,Speaker 2,happy,hesitant,20
+313,25,12.9,15.86,Speaker 3,angry,calm,94
+314,25,16.12,18.71,Speaker 3,sad,fast,78
+315,25,19.35,22.44,N/A,excited,monotone,41
+316,25,22.58,24.92,Speaker 1,angry,fast,61
+317,25,25.8,28.37,Speaker 2,neutral,hesitant,49
+318,25,29.03,31.51,Speaker 3,frustrated,hesitant,74
+319,25,32.25,35.21,Speaker 1,anxious,whisper,46
+320,25,35.48,38.4,Speaker 1,happy,emphatic,39
+321,26,0.0,5.93,Speaker 2,confused,fast,58
+322,26,7.74,14.89,Speaker 3,excited,whisper,70
+323,26,15.48,23.02,Speaker 2,sad,whisper,96
+324,26,23.22,30.02,Speaker 1,confused,monotone,90
+325,26,30.96,37.22,Speaker 1,neutral,laughing,70
+326,27,0.0,5.28,N/A,happy,monotone,57
+327,27,5.77,11.2,N/A,angry,monotone,53
+328,27,11.53,16.36,Speaker 1,confused,whisper,103
+329,27,17.3,21.87,Speaker 1,excited,hesitant,104
+330,27,23.07,27.11,Speaker 2,happy,calm,54
+331,27,28.83,33.47,Speaker 1,neutral,calm,119
+332,28,0.0,4.02,Speaker 2,frustrated,calm,22
+333,28,4.94,9.88,N/A,angry,whisper,28
+334,28,9.89,14.58,Speaker 1,anxious,emphatic,86
+335,28,14.83,19.35,N/A,excited,laughing,29
+336,28,19.77,23.6,Speaker 3,angry,hesitant,24
+337,28,24.71,29.56,Speaker 1,neutral,laughing,84
+338,28,29.66,33.74,Speaker 1,sad,fast,8
+339,29,0.0,4.46,Speaker 1,excited,emphatic,29
+340,29,5.77,10.74,Speaker 1,angry,monotone,37
+341,29,11.53,15.98,Speaker 3,frustrated,fast,38
+342,29,17.3,22.85,Speaker 2,excited,hesitant,35
+343,29,23.07,27.21,Speaker 2,excited,monotone,63
+344,29,28.83,32.95,Speaker 3,excited,laughing,67
+345,30,0.0,6.5,N/A,excited,monotone,67
+346,30,6.67,11.62,Speaker 2,anxious,fast,42
+347,30,13.35,19.32,N/A,frustrated,calm,68
+348,30,20.02,26.15,Speaker 2,neutral,hesitant,48
+349,30,26.7,32.72,Speaker 1,happy,fast,102
+350,30,33.38,39.57,Speaker 2,confused,fast,111
+351,30,40.05,46.54,Speaker 3,neutral,fast,119
+352,30,46.72,51.78,Speaker 1,confused,fast,89
+353,30,53.4,59.28,Speaker 2,excited,fast,70
+354,30,60.07,65.39,Speaker 3,excited,emphatic,68
+355,30,66.75,72.72,Speaker 3,anxious,hesitant,65
+356,30,73.42,79.87,N/A,happy,laughing,92
+357,31,0.0,3.21,Speaker 1,anxious,monotone,119
+358,31,3.48,6.52,N/A,anxious,fast,25
+359,31,6.95,9.73,N/A,sad,emphatic,70
+360,31,10.43,13.54,Speaker 3,anxious,laughing,105
+361,31,13.9,16.84,N/A,confused,fast,93
+362,31,17.38,20.64,Speaker 2,angry,whisper,69
+363,31,20.85,23.79,Speaker 1,neutral,laughing,108
+364,31,24.33,26.83,Speaker 1,neutral,emphatic,17
+365,32,0.0,3.05,Speaker 1,neutral,monotone,70
+366,32,3.4,6.2,Speaker 1,anxious,monotone,36
+367,32,6.8,9.2,N/A,angry,calm,117
+368,32,10.2,12.68,Speaker 2,sad,fast,79
+369,32,13.6,16.52,Speaker 3,anxious,laughing,50
+370,32,17.0,19.46,N/A,confused,monotone,31
+371,32,20.4,23.79,Speaker 2,anxious,whisper,105
+372,32,23.8,27.04,Speaker 1,happy,emphatic,48
+373,32,27.2,29.96,N/A,neutral,whisper,1
+374,32,30.6,33.7,Speaker 1,confused,laughing,55
+375,32,34.0,37.04,Speaker 3,happy,monotone,117
+376,32,37.4,39.82,Speaker 2,confused,hesitant,5
+377,32,40.8,44.12,Speaker 3,neutral,fast,118
+378,32,44.2,47.45,Speaker 1,sad,monotone,18
+379,32,47.6,50.75,N/A,happy,hesitant,20
+380,32,51.0,53.96,N/A,frustrated,emphatic,96
+381,32,54.4,57.53,Speaker 1,frustrated,calm,12
+382,32,57.8,60.63,Speaker 1,frustrated,monotone,98
+383,32,61.2,64.21,N/A,frustrated,calm,81
+384,32,64.6,67.26,N/A,confused,fast,45
+385,33,0.0,4.5,Speaker 2,excited,whisper,100
+386,33,6.21,11.74,N/A,frustrated,hesitant,13
+387,33,12.42,16.94,Speaker 3,confused,hesitant,97
+388,33,18.63,23.48,Speaker 2,happy,fast,55
+389,33,24.84,30.02,N/A,happy,calm,11
+390,33,31.05,36.06,Speaker 1,frustrated,laughing,49
+391,33,37.26,41.63,N/A,excited,laughing,10
+392,33,43.47,49.17,Speaker 2,angry,whisper,48
+393,33,49.68,54.34,Speaker 3,anxious,hesitant,63
+394,33,55.89,60.51,Speaker 2,excited,hesitant,53
+395,34,0.0,6.9,Speaker 3,confused,hesitant,55
+396,34,7.33,14.25,Speaker 2,anxious,hesitant,77
+397,34,14.66,21.87,Speaker 2,confused,hesitant,22
+398,34,21.99,29.24,Speaker 3,anxious,whisper,88
+399,34,29.31,35.84,Speaker 2,frustrated,emphatic,35
+400,34,36.64,43.57,N/A,frustrated,calm,119
+401,34,43.97,50.34,Speaker 2,neutral,whisper,59
+402,35,0.0,5.78,Speaker 2,anxious,fast,32
+403,35,6.41,12.17,N/A,excited,calm,57
+404,35,12.82,19.22,N/A,excited,monotone,64
+405,35,19.24,25.5,N/A,neutral,laughing,46
+406,35,25.65,31.49,Speaker 1,happy,laughing,31
+407,35,32.06,37.82,Speaker 3,angry,whisper,78
+408,35,38.48,43.05,N/A,frustrated,laughing,55
+409,35,44.89,49.58,Speaker 1,anxious,fast,65
+410,36,0.0,4.51,Speaker 1,confused,calm,37
+411,36,5.61,10.24,Speaker 1,happy,laughing,120
+412,36,11.23,16.39,Speaker 3,anxious,hesitant,58
+413,36,16.84,22.09,N/A,frustrated,emphatic,12
+414,36,22.45,27.12,N/A,frustrated,calm,38
+415,36,28.07,32.07,Speaker 1,neutral,laughing,43
+416,36,33.68,38.7,Speaker 2,sad,monotone,22
+417,36,39.29,44.15,Speaker 3,excited,emphatic,29
+418,36,44.91,50.18,Speaker 2,angry,whisper,84
+419,36,50.52,55.18,Speaker 1,sad,emphatic,75
+420,36,56.13,60.79,Speaker 1,sad,fast,35
+421,36,61.75,66.94,Speaker 1,happy,laughing,111
+422,36,67.36,72.19,Speaker 3,frustrated,fast,58
+423,36,72.97,77.09,N/A,frustrated,monotone,49
+424,36,78.59,83.55,Speaker 1,frustrated,hesitant,108
+425,37,0.0,4.46,Speaker 2,anxious,calm,23
+426,37,5.61,10.17,Speaker 2,excited,emphatic,76
+427,37,11.23,15.39,N/A,excited,fast,62
+428,37,16.84,21.84,Speaker 2,angry,emphatic,36
+429,37,22.45,26.62,Speaker 3,confused,monotone,6
+430,37,28.07,33.45,Speaker 1,confused,fast,24
+431,37,33.68,38.98,N/A,excited,whisper,62
+432,37,39.29,43.92,N/A,confused,fast,10
+433,37,44.91,49.79,Speaker 2,anxious,calm,35
+434,37,50.52,54.83,Speaker 3,angry,laughing,58
+435,37,56.13,61.02,N/A,happy,monotone,14
+436,37,61.75,66.13,Speaker 3,neutral,laughing,92
+437,37,67.36,72.03,Speaker 2,excited,calm,94
+438,37,72.97,78.3,Speaker 2,anxious,laughing,4
+439,37,78.59,83.27,Speaker 3,happy,emphatic,110
+440,38,0.0,3.55,Speaker 3,angry,hesitant,90
+441,38,4.07,7.28,Speaker 3,happy,fast,96
+442,38,8.14,11.95,Speaker 1,anxious,laughing,83
+443,38,12.21,15.21,Speaker 2,sad,fast,91
+444,38,16.28,19.52,Speaker 2,excited,emphatic,18
+445,38,20.35,23.9,Speaker 3,excited,emphatic,57
+446,38,24.42,27.36,Speaker 1,excited,monotone,95
+447,38,28.49,31.68,Speaker 3,confused,emphatic,41
+448,38,32.56,36.12,Speaker 1,confused,whisper,85
+449,38,36.63,40.33,Speaker 1,excited,fast,54
+450,39,0.0,5.11,Speaker 1,neutral,calm,80
+451,39,5.45,10.55,N/A,neutral,calm,118
+452,39,10.91,16.13,N/A,confused,calm,54
+453,39,16.36,20.51,Speaker 2,anxious,fast,111
+454,39,21.81,27.16,Speaker 3,happy,whisper,46
+455,39,27.27,31.49,Speaker 3,angry,calm,50
+456,39,32.72,37.56,Speaker 2,excited,whisper,11
+457,39,38.17,43.14,Speaker 1,sad,emphatic,9
+458,39,43.63,47.66,Speaker 2,confused,calm,1
+459,39,49.08,54.04,Speaker 1,excited,whisper,16
+460,39,54.53,59.13,Speaker 2,excited,calm,93
+461,39,59.99,65.12,Speaker 1,frustrated,hesitant,112
+462,39,65.44,69.75,N/A,angry,whisper,86
+463,39,70.89,74.94,Speaker 1,angry,emphatic,44
+464,39,76.35,81.35,Speaker 2,excited,monotone,87
+465,40,0.0,5.39,Speaker 3,angry,fast,35
+466,40,5.45,10.33,Speaker 2,anxious,laughing,120
+467,40,10.91,15.85,Speaker 3,sad,monotone,77
+468,40,16.36,21.01,N/A,anxious,whisper,6
+469,40,21.81,26.91,Speaker 2,confused,emphatic,14
+470,40,27.27,31.48,Speaker 1,neutral,hesitant,119
+471,40,32.72,37.06,N/A,excited,hesitant,69
+472,40,38.17,43.11,N/A,happy,calm,75
+473,40,43.63,47.55,Speaker 3,sad,calm,118
+474,40,49.08,53.0,N/A,anxious,whisper,91
+475,40,54.53,59.17,N/A,excited,whisper,51
+476,40,59.99,63.94,Speaker 2,anxious,calm,39
+477,40,65.44,69.39,Speaker 2,angry,monotone,41
+478,40,70.89,75.35,Speaker 1,anxious,whisper,55
+479,40,76.35,81.36,Speaker 2,neutral,fast,11
+480,41,0.0,2.47,Speaker 3,anxious,fast,47
+481,41,3.3,5.74,Speaker 3,happy,laughing,115
+482,41,6.6,8.94,N/A,anxious,monotone,8
+483,41,9.9,12.47,Speaker 1,confused,emphatic,65
+484,41,13.2,15.87,N/A,angry,hesitant,20
+485,41,16.5,19.06,Speaker 1,happy,fast,94
+486,41,19.8,22.61,Speaker 1,neutral,fast,5
+487,41,23.1,25.88,N/A,angry,fast,119
+488,42,0.0,4.13,Speaker 1,frustrated,calm,64
+489,42,5.28,10.04,Speaker 1,angry,fast,102
+490,42,10.56,15.07,Speaker 1,excited,calm,112
+491,42,15.84,20.27,Speaker 3,anxious,hesitant,11
+492,42,21.12,25.69,Speaker 1,frustrated,fast,37
+493,43,0.0,8.09,Speaker 2,angry,calm,119
+494,43,8.8,16.04,Speaker 2,frustrated,whisper,107
+495,43,17.6,25.59,Speaker 1,frustrated,calm,97
+496,44,0.0,5.55,Speaker 2,excited,whisper,114
+497,44,7.63,13.82,Speaker 1,happy,monotone,17
+498,44,15.26,22.06,N/A,happy,monotone,72
+499,44,22.89,28.37,Speaker 2,sad,hesitant,33
+500,44,30.51,37.8,N/A,frustrated,hesitant,57
+501,44,38.14,44.11,Speaker 1,sad,fast,99
+502,44,45.77,52.87,Speaker 1,angry,calm,21
+503,45,0.0,3.2,Speaker 1,happy,fast,103
+504,45,4.11,7.83,Speaker 1,sad,laughing,109
+505,45,8.22,11.49,Speaker 1,sad,hesitant,50
+506,45,12.32,15.83,Speaker 3,anxious,laughing,22
+507,45,16.43,19.34,N/A,confused,monotone,95
+508,45,20.54,24.09,Speaker 1,confused,calm,102
+509,45,24.65,28.5,Speaker 1,neutral,calm,106
+510,45,28.75,32.59,Speaker 2,angry,fast,105
+511,45,32.86,36.23,Speaker 1,anxious,laughing,9
+512,45,36.97,39.87,Speaker 1,sad,whisper,56
+513,45,41.08,44.95,Speaker 1,frustrated,calm,5
+514,45,45.18,49.22,Speaker 1,angry,monotone,55
+515,45,49.29,53.18,N/A,confused,calm,48
+516,46,0.0,5.97,N/A,excited,monotone,61
+517,46,6.67,11.47,Speaker 3,excited,fast,53
+518,46,13.35,18.42,Speaker 2,neutral,emphatic,100
+519,46,20.02,26.13,N/A,confused,hesitant,116
+520,46,26.7,32.51,Speaker 3,excited,hesitant,23
+521,46,33.38,38.1,Speaker 2,neutral,laughing,99
+522,46,40.05,45.29,N/A,frustrated,laughing,74
+523,46,46.72,53.4,Speaker 2,happy,fast,84
+524,47,0.0,5.19,Speaker 3,frustrated,monotone,3
+525,47,6.9,13.19,Speaker 3,angry,monotone,24
+526,48,0.0,3.04,Speaker 1,confused,calm,42
+527,48,3.45,6.82,Speaker 2,angry,hesitant,91
+528,48,6.9,9.5,Speaker 3,neutral,calm,18
+529,48,10.35,13.37,Speaker 2,happy,laughing,67
+530,49,0.0,4.57,N/A,confused,whisper,40
+531,49,4.6,8.06,Speaker 3,sad,whisper,75
+532,49,9.2,13.54,N/A,anxious,whisper,88
+533,50,0.0,6.02,Speaker 1,confused,fast,42
+534,50,6.75,12.98,Speaker 2,frustrated,hesitant,21
+535,51,0.0,5.87,Speaker 1,neutral,emphatic,56
+536,51,6.28,12.05,Speaker 2,excited,emphatic,112
+537,51,12.55,17.66,N/A,happy,laughing,61
+538,51,18.83,24.7,Speaker 2,angry,emphatic,9
+539,51,25.1,31.0,Speaker 1,anxious,calm,40
+540,51,31.38,36.26,Speaker 1,happy,hesitant,21
+541,51,37.65,43.71,Speaker 2,happy,monotone,120
+542,51,43.92,50.01,Speaker 1,frustrated,monotone,78
+543,52,0.0,4.15,Speaker 3,anxious,hesitant,30
+544,52,4.56,7.89,N/A,confused,fast,6
+545,52,9.13,12.82,N/A,happy,hesitant,105
+546,52,13.69,17.79,N/A,sad,calm,3
+547,52,18.25,21.73,Speaker 3,happy,emphatic,108
+548,52,22.82,26.17,N/A,confused,emphatic,114
+549,52,27.38,31.48,Speaker 1,excited,fast,47
+550,52,31.95,36.35,Speaker 3,angry,emphatic,5
+551,52,36.51,40.06,N/A,anxious,fast,107
+552,52,41.07,44.63,Speaker 1,angry,laughing,89
+553,52,45.64,49.74,Speaker 1,frustrated,laughing,69
+554,53,0.0,4.55,Speaker 2,confused,hesitant,10
+555,53,5.22,9.49,Speaker 1,angry,calm,96
+556,53,10.44,14.8,Speaker 2,sad,laughing,24
+557,53,15.66,19.51,N/A,happy,whisper,55
+558,53,20.88,24.85,Speaker 2,anxious,hesitant,116
+559,53,26.1,30.89,Speaker 1,happy,emphatic,71
+560,53,31.32,35.6,Speaker 3,anxious,monotone,58
+561,53,36.54,41.63,Speaker 1,excited,calm,53
+562,53,41.76,45.65,Speaker 1,happy,monotone,99
+563,53,46.98,50.79,Speaker 3,frustrated,emphatic,33
+564,54,0.0,2.65,Speaker 3,sad,calm,95
+565,54,3.73,6.87,Speaker 3,frustrated,calm,43
+566,54,7.46,10.98,Speaker 3,anxious,hesitant,107
+567,54,11.19,14.35,Speaker 1,sad,fast,38
+568,54,14.91,18.61,N/A,frustrated,hesitant,93
+569,54,18.64,21.72,Speaker 1,sad,emphatic,27
+570,54,22.37,26.0,N/A,confused,laughing,66
+571,54,26.1,29.68,Speaker 1,angry,calm,39
+572,54,29.83,33.23,N/A,angry,laughing,108
+573,54,33.56,36.75,Speaker 1,angry,fast,112
+574,54,37.29,40.83,Speaker 1,sad,calm,58
+575,54,41.01,43.68,Speaker 3,sad,hesitant,47
+576,54,44.74,48.27,N/A,happy,whisper,3
+577,54,48.47,51.35,N/A,confused,fast,111
+578,55,0.0,3.01,Speaker 2,sad,whisper,28
+579,55,3.14,5.98,Speaker 3,excited,monotone,2
+580,55,6.29,9.3,Speaker 1,confused,fast,82
+581,55,9.43,11.79,Speaker 1,sad,hesitant,77
+582,55,12.57,15.53,Speaker 3,anxious,emphatic,114
+583,55,15.72,18.27,Speaker 3,confused,hesitant,27
+584,55,18.86,21.5,N/A,happy,calm,65
+585,55,22.0,25.15,Speaker 3,anxious,hesitant,87
+586,55,25.15,27.45,Speaker 1,frustrated,hesitant,81
+587,55,28.29,30.8,Speaker 3,anxious,whisper,91
+588,55,31.43,34.53,Speaker 3,sad,fast,66
+589,55,34.58,37.5,Speaker 1,excited,whisper,40
+590,55,37.72,40.56,Speaker 1,confused,hesitant,33
+591,55,40.87,43.92,N/A,excited,whisper,4
+592,55,44.01,46.76,Speaker 2,frustrated,whisper,91
+593,55,47.15,49.56,N/A,frustrated,monotone,38
+594,55,50.3,53.29,Speaker 2,anxious,calm,60
+595,55,53.44,55.76,Speaker 3,angry,whisper,115
+596,55,56.58,59.1,Speaker 1,sad,hesitant,28
+597,55,59.73,62.63,Speaker 3,excited,laughing,113
+598,55,62.87,65.38,Speaker 3,anxious,emphatic,108
+599,55,66.01,68.32,Speaker 1,happy,emphatic,113
+600,55,69.16,71.54,Speaker 1,excited,monotone,38
+601,56,0.0,4.42,Speaker 2,happy,emphatic,42
+602,56,5.56,10.51,Speaker 2,frustrated,whisper,7
+603,56,11.12,15.02,Speaker 3,sad,laughing,99
+604,56,16.68,20.86,Speaker 2,confused,laughing,97
+605,56,22.25,27.44,Speaker 2,excited,whisper,54
+606,56,27.81,32.37,N/A,excited,calm,4
+607,56,33.37,38.15,Speaker 3,neutral,hesitant,96
+608,56,38.93,44.21,Speaker 2,neutral,whisper,0
+609,56,44.49,49.43,Speaker 2,sad,whisper,112
+610,56,50.05,54.52,Speaker 2,happy,emphatic,64
+611,56,55.62,60.49,Speaker 2,happy,laughing,5
+612,56,61.18,65.57,Speaker 3,confused,whisper,66
+613,56,66.74,71.63,Speaker 3,excited,whisper,17
+614,57,0.0,5.61,Speaker 2,angry,fast,93
+615,57,7.95,13.57,Speaker 2,happy,hesitant,91
+616,58,0.0,2.84,Speaker 1,excited,emphatic,48
+617,58,3.98,6.9,Speaker 3,confused,whisper,19
+618,58,7.95,10.98,Speaker 1,anxious,emphatic,84
+619,58,11.93,14.83,Speaker 3,angry,emphatic,106
+620,59,0.0,3.96,Speaker 2,frustrated,whisper,52
+621,59,4.17,7.46,Speaker 1,confused,fast,88
+622,59,8.34,12.43,Speaker 3,sad,calm,1
+623,59,12.51,16.27,Speaker 1,confused,fast,11
+624,59,16.68,20.57,Speaker 1,happy,hesitant,82
+625,59,20.85,24.06,Speaker 3,anxious,emphatic,6
+626,59,25.02,28.06,Speaker 2,neutral,laughing,37
+627,59,29.19,32.56,Speaker 3,excited,whisper,14
+628,59,33.36,36.4,Speaker 1,neutral,laughing,17
+629,59,37.53,41.28,Speaker 2,frustrated,hesitant,114
+630,60,0.0,5.9,N/A,excited,whisper,113
+631,60,6.5,12.6,Speaker 1,angry,whisper,92
+632,61,0.0,6.63,Speaker 1,angry,emphatic,117
+633,61,7.1,13.11,N/A,confused,calm,8
+634,61,14.2,19.73,Speaker 3,neutral,whisper,111
+635,61,21.3,27.71,Speaker 2,frustrated,monotone,66
+636,62,0.0,4.23,Speaker 1,neutral,whisper,119
+637,62,5.68,9.92,N/A,confused,laughing,21
+638,62,11.36,15.46,N/A,frustrated,fast,42
+639,62,17.04,22.67,Speaker 1,sad,monotone,82
+640,62,22.72,27.34,Speaker 2,happy,emphatic,56
+641,63,0.0,2.33,Speaker 1,happy,laughing,77
+642,63,3.28,6.52,Speaker 3,sad,whisper,85
+643,63,6.55,9.3,Speaker 3,frustrated,laughing,6
+644,63,9.83,12.93,N/A,frustrated,monotone,98
+645,63,13.11,16.01,N/A,frustrated,whisper,57
+646,63,16.38,18.79,Speaker 2,neutral,hesitant,45
+647,63,19.66,22.77,Speaker 3,frustrated,whisper,13
+648,63,22.94,25.28,Speaker 2,confused,fast,105
+649,63,26.22,29.21,N/A,happy,hesitant,78
+650,63,29.49,31.98,Speaker 1,excited,fast,58
+651,63,32.77,35.87,Speaker 2,frustrated,calm,96
+652,63,36.05,38.75,Speaker 1,confused,emphatic,84
+653,63,39.32,42.2,Speaker 2,confused,calm,67
+654,64,0.0,6.53,Speaker 2,happy,emphatic,84
+655,64,7.1,13.35,Speaker 3,excited,emphatic,77
+656,64,14.2,21.12,Speaker 2,anxious,emphatic,43
+657,64,21.3,28.34,N/A,angry,fast,52
+658,64,28.4,34.65,Speaker 3,frustrated,whisper,94
+659,64,35.5,42.46,Speaker 2,sad,fast,79
+660,65,0.0,3.03,N/A,anxious,laughing,54
+661,65,3.47,6.73,Speaker 1,neutral,emphatic,18
+662,65,6.93,9.41,Speaker 1,sad,hesitant,96
+663,65,10.4,13.64,Speaker 3,anxious,fast,107
+664,65,13.86,16.35,Speaker 3,sad,laughing,69
+665,65,17.33,19.79,N/A,happy,monotone,111
+666,65,20.79,23.92,Speaker 2,excited,fast,65
+667,65,24.26,27.5,Speaker 3,neutral,emphatic,49
+668,65,27.72,30.58,Speaker 3,neutral,calm,95
+669,65,31.19,33.87,N/A,sad,whisper,90
+670,65,34.65,37.82,Speaker 3,sad,laughing,92
+671,65,38.12,41.55,Speaker 3,confused,fast,87
+672,65,41.58,44.09,Speaker 2,happy,emphatic,5
+673,65,45.05,47.92,Speaker 3,angry,fast,74
+674,65,48.51,51.82,Speaker 1,frustrated,emphatic,90
+675,65,51.98,55.38,Speaker 1,angry,hesitant,76
+676,65,55.44,57.92,Speaker 3,confused,laughing,73
+677,65,58.91,61.91,Speaker 1,frustrated,monotone,28
+678,65,62.37,65.79,Speaker 1,angry,emphatic,69
+679,65,65.84,68.82,Speaker 1,frustrated,fast,113
+680,65,69.3,71.95,Speaker 3,frustrated,hesitant,37
+681,65,72.77,75.42,N/A,neutral,calm,85
+682,65,76.23,79.02,Speaker 2,sad,calm,87
+683,66,0.0,4.54,N/A,confused,calm,37
+684,66,5.31,10.46,Speaker 2,frustrated,monotone,10
+685,66,10.63,15.86,Speaker 2,neutral,whisper,8
+686,66,15.94,20.0,Speaker 2,excited,laughing,13
+687,66,21.25,25.3,N/A,happy,whisper,87
+688,66,26.57,30.53,N/A,frustrated,calm,11
+689,66,31.88,35.72,Speaker 2,anxious,monotone,9
+690,66,37.19,41.83,Speaker 2,anxious,emphatic,49
+691,66,42.51,46.95,N/A,excited,hesitant,2
+692,66,47.82,52.16,Speaker 1,neutral,whisper,92
+693,66,53.13,57.84,Speaker 1,happy,hesitant,118
+694,66,58.45,62.97,Speaker 3,anxious,monotone,11
+695,66,63.76,67.93,N/A,excited,emphatic,105
+696,66,69.07,73.85,N/A,angry,monotone,28
+697,66,74.39,78.32,N/A,anxious,whisper,18
+698,67,0.0,3.73,N/A,happy,hesitant,26
+699,67,5.31,10.23,Speaker 3,sad,emphatic,115
+700,67,10.63,15.38,Speaker 2,angry,fast,28
+701,67,15.94,20.64,Speaker 3,sad,calm,23
+702,67,21.25,26.04,Speaker 1,confused,whisper,70
+703,67,26.57,30.4,Speaker 1,anxious,calm,25
+704,67,31.88,36.76,N/A,frustrated,hesitant,16
+705,67,37.19,41.98,Speaker 2,happy,hesitant,79
+706,67,42.51,46.34,Speaker 2,frustrated,emphatic,57
+707,67,47.82,52.06,Speaker 3,angry,monotone,72
+708,67,53.13,57.43,Speaker 3,excited,fast,0
+709,67,58.45,62.67,Speaker 2,excited,hesitant,107
+710,67,63.76,68.05,Speaker 3,confused,emphatic,57
+711,67,69.07,73.36,Speaker 3,confused,monotone,13
+712,67,74.39,78.39,Speaker 1,anxious,laughing,105
+713,68,0.0,2.98,Speaker 2,neutral,monotone,33
+714,68,3.2,5.96,N/A,angry,hesitant,50
+715,68,6.4,8.85,Speaker 3,angry,emphatic,64
+716,68,9.6,12.33,N/A,frustrated,monotone,1
+717,68,12.8,15.68,Speaker 2,angry,emphatic,20
+718,69,0.0,5.04,Speaker 2,neutral,whisper,26
+719,69,6.46,11.99,Speaker 3,excited,emphatic,117
+720,69,12.92,18.33,Speaker 1,neutral,whisper,41
+721,69,19.38,24.11,Speaker 3,anxious,monotone,69
+722,69,25.85,31.47,N/A,excited,hesitant,75
+723,69,32.31,38.1,Speaker 1,anxious,emphatic,116
+724,69,38.77,43.72,N/A,frustrated,laughing,111
+725,69,45.23,50.42,N/A,neutral,monotone,112
+726,69,51.69,56.48,Speaker 2,sad,calm,65
+727,69,58.15,63.92,Speaker 2,angry,fast,20
+728,69,64.62,69.84,Speaker 1,sad,emphatic,103
+729,69,71.08,76.24,Speaker 1,confused,whisper,61
+730,69,77.54,82.99,Speaker 2,excited,calm,31
+731,70,0.0,2.32,Speaker 3,angry,monotone,51
+732,70,3.23,6.07,Speaker 1,anxious,calm,27
+733,70,6.46,9.16,N/A,confused,fast,28
+734,70,9.69,12.76,Speaker 2,angry,monotone,84
+735,70,12.92,15.68,Speaker 2,frustrated,emphatic,76
+736,70,16.15,18.99,Speaker 2,excited,emphatic,16
+737,70,19.38,21.75,Speaker 2,excited,laughing,19
+738,70,22.62,25.46,Speaker 2,confused,monotone,76
+739,70,25.85,28.15,Speaker 1,happy,emphatic,84
+740,70,29.08,31.46,Speaker 1,excited,monotone,53
+741,70,32.31,34.93,Speaker 1,excited,fast,120
+742,70,35.54,38.58,N/A,frustrated,monotone,102
+743,70,38.77,41.75,Speaker 1,excited,fast,32
+744,70,42.0,44.72,Speaker 2,happy,hesitant,76
+745,70,45.23,48.34,N/A,anxious,fast,0
+746,70,48.46,51.41,Speaker 1,happy,monotone,0
+747,70,51.69,54.32,Speaker 2,frustrated,emphatic,46
+748,70,54.92,57.29,N/A,anxious,hesitant,109
+749,70,58.15,60.93,Speaker 3,anxious,whisper,50
+750,70,61.38,64.38,N/A,confused,fast,47
+751,70,64.62,67.42,N/A,anxious,hesitant,73
+752,70,67.85,70.44,N/A,angry,laughing,110
+753,70,71.08,73.98,Speaker 2,confused,laughing,89
+754,70,74.31,77.49,Speaker 1,sad,monotone,51
+755,70,77.54,80.56,Speaker 1,angry,emphatic,81
+756,70,80.77,83.04,Speaker 1,angry,emphatic,118
+757,71,0.0,5.48,N/A,anxious,whisper,76
+758,71,5.6,9.62,Speaker 2,confused,emphatic,1
+759,71,11.2,15.46,Speaker 3,sad,calm,100
+760,71,16.8,21.73,Speaker 2,angry,whisper,4
+761,71,22.4,26.92,Speaker 1,angry,calm,35
+762,71,28.0,33.23,Speaker 3,excited,emphatic,75
+763,71,33.6,37.86,Speaker 1,happy,calm,70
+764,71,39.2,43.6,Speaker 3,frustrated,laughing,35
+765,71,44.8,49.1,Speaker 2,confused,emphatic,73
+766,71,50.4,54.33,Speaker 2,excited,monotone,13
+767,71,56.0,60.86,Speaker 3,frustrated,calm,102
+768,71,61.6,66.38,Speaker 3,anxious,whisper,56
+769,71,67.2,72.74,N/A,sad,laughing,43
+770,71,72.8,78.33,N/A,confused,monotone,110
+771,71,78.4,82.37,Speaker 1,anxious,calm,48
+772,72,0.0,4.7,N/A,frustrated,calm,70
+773,72,5.97,11.83,N/A,frustrated,hesitant,27
+774,72,11.95,17.74,Speaker 3,angry,whisper,87
+775,72,17.92,23.77,Speaker 2,confused,whisper,25
+776,72,23.9,28.5,Speaker 2,anxious,fast,29
+777,72,29.88,34.42,Speaker 2,frustrated,fast,99
+778,72,35.85,40.22,Speaker 1,confused,monotone,0
+779,72,41.83,47.38,Speaker 1,confused,hesitant,79
+780,73,0.0,5.6,Speaker 2,neutral,monotone,102
+781,73,6.83,12.48,Speaker 1,frustrated,emphatic,110
+782,73,13.66,19.84,Speaker 2,confused,calm,89
+783,73,20.49,26.33,Speaker 3,neutral,calm,86
+784,73,27.31,32.53,Speaker 1,frustrated,hesitant,78
+785,73,34.14,40.69,Speaker 2,anxious,fast,34
+786,73,40.97,46.72,Speaker 3,frustrated,fast,63
+787,74,0.0,4.92,Speaker 2,excited,laughing,48
+788,74,5.38,9.45,Speaker 2,confused,laughing,1
+789,74,10.75,14.8,N/A,angry,laughing,80
+790,74,16.12,20.72,Speaker 3,confused,hesitant,32
+791,75,0.0,6.77,N/A,happy,emphatic,95
+792,75,7.17,12.9,Speaker 3,frustrated,monotone,71
+793,75,14.33,21.35,Speaker 3,frustrated,calm,52
+794,76,0.0,5.08,N/A,anxious,emphatic,80
+795,76,5.25,10.43,Speaker 2,frustrated,emphatic,80
+796,76,10.5,15.14,N/A,happy,calm,20
+797,76,15.75,19.97,Speaker 3,frustrated,whisper,37
+798,76,21.0,25.79,N/A,anxious,emphatic,99
+799,76,26.25,31.28,Speaker 3,confused,emphatic,21
+800,76,31.5,35.46,Speaker 1,angry,whisper,30
+801,76,36.75,41.47,Speaker 1,sad,fast,50
+802,76,42.0,45.84,Speaker 1,confused,monotone,6
+803,76,47.25,50.97,N/A,happy,calm,33
+804,76,52.5,57.15,Speaker 1,excited,hesitant,29
+805,76,57.75,61.81,Speaker 3,confused,whisper,16
+806,76,63.0,66.88,Speaker 2,neutral,calm,84
+807,76,68.25,72.49,Speaker 3,confused,emphatic,111
+808,76,73.5,78.03,Speaker 3,confused,fast,89
+809,76,78.75,83.27,N/A,excited,monotone,81
+810,77,0.0,4.11,Speaker 3,excited,hesitant,19
+811,77,4.94,8.85,Speaker 1,angry,hesitant,36
+812,77,9.88,14.04,Speaker 1,confused,laughing,61
+813,77,14.82,18.73,N/A,anxious,monotone,29
+814,77,19.76,24.4,Speaker 3,sad,emphatic,112
+815,77,24.71,29.0,N/A,sad,fast,91
+816,77,29.65,34.2,N/A,excited,fast,33
+817,77,34.59,38.16,Speaker 2,anxious,hesitant,83
+818,77,39.53,44.09,Speaker 3,excited,fast,109
+819,77,44.47,48.03,Speaker 2,anxious,calm,81
+820,77,49.41,53.55,N/A,anxious,whisper,79
+821,77,54.35,58.54,Speaker 3,neutral,fast,6
+822,77,59.29,64.19,Speaker 1,angry,calm,36
+823,77,64.24,68.09,N/A,neutral,fast,11
+824,77,69.18,72.86,N/A,sad,hesitant,53
+825,77,74.12,78.04,N/A,frustrated,emphatic,89
+826,77,79.06,83.69,Speaker 3,happy,laughing,96
+827,78,0.0,3.0,Speaker 2,excited,laughing,56
+828,78,4.07,7.22,Speaker 1,sad,emphatic,94
+829,78,8.14,11.93,Speaker 2,confused,emphatic,87
+830,78,12.21,16.23,Speaker 3,angry,whisper,93
+831,78,16.27,19.17,Speaker 1,anxious,emphatic,81
+832,78,20.34,23.56,Speaker 3,neutral,laughing,85
+833,78,24.41,27.53,Speaker 1,sad,whisper,55
+834,78,28.48,31.73,Speaker 2,anxious,monotone,15
+835,78,32.55,35.88,Speaker 2,neutral,calm,74
+836,78,36.62,40.42,N/A,angry,hesitant,98
+837,78,40.69,43.64,Speaker 2,confused,calm,87
+838,78,44.76,48.36,Speaker 1,neutral,hesitant,82
+839,78,48.83,51.86,Speaker 1,angry,emphatic,29
+840,78,52.89,56.13,Speaker 3,confused,whisper,24
+841,78,56.96,59.84,N/A,frustrated,whisper,17
+842,78,61.03,64.19,Speaker 1,confused,whisper,56
+843,79,0.0,4.25,Speaker 2,happy,monotone,19
+844,79,5.42,9.95,Speaker 3,frustrated,emphatic,0
+845,79,10.85,15.91,N/A,angry,calm,79
+846,79,16.27,21.47,Speaker 2,frustrated,whisper,8
+847,79,21.7,26.57,N/A,sad,monotone,87
+848,79,27.12,31.73,Speaker 2,anxious,hesitant,52
+849,79,32.55,37.39,Speaker 1,happy,monotone,84
+850,79,37.97,41.88,Speaker 2,angry,laughing,4
+851,79,43.4,47.53,N/A,sad,calm,4
+852,79,48.82,53.55,N/A,confused,monotone,79
+853,79,54.25,59.19,Speaker 3,neutral,hesitant,28
+854,79,59.67,64.46,Speaker 1,neutral,fast,83
+855,80,0.0,6.79,Speaker 1,anxious,monotone,5
+856,80,7.23,13.89,Speaker 3,happy,fast,66
+857,80,14.47,19.74,Speaker 2,excited,fast,24
+858,80,21.7,27.91,Speaker 2,angry,monotone,95
+859,80,28.93,35.21,Speaker 1,frustrated,whisper,58
+860,80,36.17,42.75,N/A,happy,fast,101
+861,80,43.4,48.85,N/A,frustrated,whisper,20
+862,80,50.63,56.86,N/A,frustrated,hesitant,70
+863,80,57.87,65.08,Speaker 3,frustrated,emphatic,97
+864,81,0.0,7.78,N/A,excited,calm,92
+865,81,7.87,13.46,Speaker 3,neutral,monotone,17
+866,81,15.73,23.58,Speaker 3,neutral,hesitant,28
+867,82,0.0,4.6,Speaker 2,sad,hesitant,103
+868,82,5.9,10.56,N/A,sad,whisper,9
+869,82,11.8,17.21,N/A,angry,emphatic,105
+870,82,17.7,23.42,Speaker 1,anxious,calm,93
+871,83,0.0,7.56,Speaker 2,neutral,whisper,99
+872,83,7.87,14.87,Speaker 1,anxious,monotone,5
+873,83,15.73,21.99,Speaker 2,frustrated,monotone,89
+874,84,0.0,3.16,Speaker 1,confused,monotone,95
+875,84,4.27,7.32,N/A,anxious,calm,51
+876,84,8.54,12.17,Speaker 2,angry,emphatic,71
+877,84,12.81,16.05,N/A,sad,monotone,78
+878,84,17.07,21.34,Speaker 2,sad,calm,34
+879,84,21.34,25.33,Speaker 3,happy,calm,85
+880,84,25.61,29.13,Speaker 3,frustrated,fast,41
+881,84,29.88,33.31,Speaker 1,anxious,fast,44
+882,84,34.15,37.93,N/A,angry,emphatic,5
+883,84,38.42,42.59,Speaker 2,sad,whisper,47
+884,84,42.69,45.88,Speaker 1,happy,whisper,6
+885,84,46.96,50.26,Speaker 2,anxious,calm,43
+886,84,51.22,55.1,Speaker 1,anxious,emphatic,60
+887,84,55.49,58.51,Speaker 2,sad,fast,69
+888,84,59.76,63.42,Speaker 3,confused,monotone,93
+889,84,64.03,68.29,Speaker 1,excited,monotone,115
+890,85,0.0,2.33,Speaker 1,happy,emphatic,84
+891,85,3.25,5.79,Speaker 3,happy,calm,37
+892,85,6.5,9.63,N/A,sad,emphatic,65
+893,85,9.76,12.99,Speaker 1,frustrated,emphatic,110
+894,85,13.01,15.87,Speaker 1,angry,fast,64
+895,85,16.26,19.48,Speaker 1,neutral,fast,118
+896,85,19.51,22.31,Speaker 3,confused,emphatic,95
+897,85,22.77,25.2,Speaker 3,frustrated,hesitant,80
+898,85,26.02,28.59,Speaker 3,neutral,whisper,32
+899,85,29.27,32.41,Speaker 1,anxious,fast,19
+900,85,32.52,35.13,N/A,angry,calm,93
+901,85,35.78,38.43,Speaker 2,excited,fast,73
+902,85,39.03,41.45,Speaker 3,frustrated,emphatic,69
+903,85,42.28,44.69,Speaker 2,sad,laughing,17
+904,85,45.53,48.11,Speaker 2,excited,laughing,18
+905,85,48.79,51.7,Speaker 2,frustrated,calm,71
+906,85,52.04,54.83,Speaker 1,angry,hesitant,107
+907,85,55.29,58.43,Speaker 1,frustrated,emphatic,52
+908,85,58.54,61.12,Speaker 3,angry,laughing,24
+909,85,61.8,64.18,Speaker 2,neutral,laughing,78
+910,85,65.05,67.93,Speaker 2,sad,fast,87
+911,86,0.0,3.41,Speaker 2,neutral,emphatic,97
+912,86,4.55,9.06,Speaker 3,excited,fast,95
+913,86,9.11,13.21,Speaker 2,sad,calm,22
+914,86,13.66,18.11,N/A,confused,whisper,41
+915,86,18.21,22.58,Speaker 2,excited,emphatic,99
+916,86,22.77,26.01,N/A,frustrated,emphatic,78
+917,86,27.32,31.79,Speaker 1,happy,emphatic,58
+918,86,31.87,36.19,Speaker 1,sad,monotone,68
+919,86,36.43,40.15,Speaker 1,excited,monotone,97
+920,86,40.98,45.03,Speaker 1,sad,hesitant,56
+921,86,45.53,49.26,Speaker 3,anxious,emphatic,21
+922,86,50.09,53.85,Speaker 1,angry,emphatic,106
+923,86,54.64,58.71,Speaker 1,happy,fast,99
+924,86,59.19,63.18,Speaker 2,excited,emphatic,41
+925,86,63.75,67.55,Speaker 2,confused,monotone,114
+926,87,0.0,5.54,Speaker 1,happy,calm,90
+927,87,6.05,11.1,Speaker 3,happy,monotone,90
+928,88,0.0,3.42,Speaker 2,angry,laughing,91
+929,88,4.57,7.84,Speaker 3,anxious,whisper,98
+930,88,9.14,13.65,Speaker 3,angry,calm,115
+931,88,13.71,17.08,Speaker 2,neutral,monotone,97
+932,88,18.27,21.82,N/A,confused,laughing,63
+933,88,22.84,26.78,Speaker 1,confused,fast,27
+934,88,27.41,31.42,N/A,confused,emphatic,56
+935,88,31.98,35.29,Speaker 1,sad,monotone,35
+936,88,36.55,40.59,Speaker 2,neutral,fast,18
+937,88,41.12,44.39,Speaker 3,neutral,fast,109
+938,88,45.68,48.93,Speaker 3,frustrated,calm,6
+939,88,50.25,53.6,Speaker 2,angry,whisper,36
+940,88,54.82,58.86,Speaker 2,confused,whisper,74
+941,88,59.39,63.08,Speaker 1,happy,laughing,38
+942,88,63.96,67.6,N/A,happy,laughing,54
+943,88,68.53,72.88,Speaker 1,anxious,emphatic,17
+944,88,73.09,76.46,Speaker 3,frustrated,monotone,52
+945,88,77.66,81.58,Speaker 2,neutral,calm,73
+946,88,82.23,86.43,Speaker 1,confused,whisper,88
+947,89,0.0,6.28,N/A,confused,emphatic,103
+948,89,7.1,12.45,Speaker 2,anxious,fast,0
+949,89,14.2,19.42,N/A,happy,whisper,108
+950,89,21.3,26.71,N/A,excited,calm,42
+951,89,28.4,34.11,Speaker 2,neutral,whisper,25
+952,89,35.5,41.94,Speaker 3,happy,hesitant,38
+953,89,42.6,48.65,Speaker 3,neutral,calm,87
+954,89,49.7,55.38,N/A,neutral,laughing,22
+955,90,0.0,5.04,Speaker 3,confused,laughing,104
+956,90,5.68,10.36,Speaker 1,anxious,monotone,92
+957,90,11.36,16.49,Speaker 1,sad,monotone,87
+958,90,17.04,21.58,Speaker 3,happy,fast,35
+959,90,22.72,28.13,Speaker 3,excited,whisper,68
+960,90,28.4,33.81,N/A,angry,monotone,14
+961,90,34.08,39.53,Speaker 3,frustrated,whisper,4
+962,90,39.76,44.2,Speaker 1,confused,fast,47
+963,90,45.44,50.19,Speaker 3,sad,monotone,38
+964,90,51.12,55.39,Speaker 3,neutral,laughing,25
+965,91,0.0,4.78,N/A,anxious,laughing,41
+966,91,6.31,11.0,Speaker 1,angry,fast,92
+967,91,12.62,17.11,N/A,happy,calm,39
+968,91,18.93,25.12,Speaker 1,frustrated,emphatic,113
+969,91,25.24,29.75,Speaker 3,neutral,monotone,97
+970,91,31.56,36.56,Speaker 2,frustrated,fast,24
+971,91,37.87,42.83,Speaker 3,confused,whisper,15
+972,91,44.18,49.11,Speaker 2,anxious,calm,1
+973,91,50.49,56.72,Speaker 1,sad,monotone,44
+974,92,0.0,3.29,N/A,neutral,calm,49
+975,92,4.45,7.64,N/A,excited,fast,90
+976,92,8.9,12.81,N/A,frustrated,hesitant,42
+977,92,13.35,17.56,Speaker 1,confused,monotone,16
+978,93,0.0,6.21,Speaker 2,anxious,hesitant,50
+979,93,6.31,11.08,Speaker 3,frustrated,emphatic,62
+980,93,12.62,17.1,N/A,happy,hesitant,61
+981,93,18.93,24.22,Speaker 2,anxious,laughing,44
+982,93,25.24,30.81,Speaker 2,happy,emphatic,104
+983,93,31.56,37.33,Speaker 1,frustrated,monotone,83
+984,93,37.87,42.42,Speaker 3,confused,emphatic,75
+985,93,44.18,49.38,Speaker 2,angry,emphatic,49
+986,93,50.49,55.03,Speaker 2,excited,laughing,55
+987,94,0.0,5.38,Speaker 2,anxious,emphatic,8
+988,94,5.68,10.68,N/A,frustrated,emphatic,82
+989,94,11.36,16.46,Speaker 1,sad,laughing,17
+990,94,17.04,22.53,Speaker 1,angry,whisper,19
+991,94,22.72,27.47,Speaker 3,excited,monotone,73
+992,94,28.4,33.14,Speaker 2,frustrated,hesitant,72
+993,94,34.08,39.41,Speaker 3,excited,whisper,117
+994,94,39.76,44.32,Speaker 1,neutral,monotone,65
+995,94,45.44,50.1,Speaker 2,anxious,calm,47
+996,94,51.12,56.63,Speaker 1,neutral,whisper,71
+997,95,0.0,3.91,N/A,sad,whisper,22
+998,95,4.76,8.77,Speaker 2,excited,laughing,118
+999,95,9.52,13.37,N/A,angry,hesitant,111
+1000,95,14.28,18.57,Speaker 2,neutral,calm,82
+1001,95,19.05,22.4,N/A,excited,fast,10
+1002,95,23.81,27.34,N/A,confused,laughing,89
+1003,95,28.57,32.77,N/A,angry,emphatic,65
+1004,95,33.33,37.27,N/A,excited,hesitant,28
+1005,95,38.09,41.69,Speaker 1,confused,laughing,93
+1006,95,42.85,46.53,Speaker 3,excited,monotone,73
+1007,95,47.62,51.47,Speaker 1,confused,whisper,47
+1008,95,52.38,55.87,N/A,happy,fast,93
+1009,95,57.14,61.52,Speaker 3,confused,monotone,10
+1010,96,0.0,4.31,Speaker 3,excited,hesitant,102
+1011,96,4.94,8.83,Speaker 2,neutral,whisper,118
+1012,96,9.88,14.22,Speaker 3,anxious,calm,80
+1013,96,14.82,18.98,Speaker 2,neutral,whisper,37
+1014,96,19.76,24.42,Speaker 1,anxious,emphatic,10
+1015,97,0.0,3.48,Speaker 1,angry,monotone,94
+1016,97,4.94,8.62,N/A,frustrated,laughing,22
+1017,97,9.88,13.73,Speaker 2,confused,fast,102
+1018,97,14.82,19.06,Speaker 1,frustrated,calm,18
+1019,97,19.76,24.1,Speaker 2,confused,laughing,52
+1020,98,0.0,5.51,Speaker 1,neutral,fast,59
+1021,98,6.17,11.24,Speaker 3,confused,whisper,96
+1022,98,12.35,18.38,Speaker 2,excited,whisper,90
+1023,98,18.52,23.57,Speaker 3,angry,monotone,111
+1024,99,0.0,3.68,N/A,anxious,hesitant,34
+1025,99,3.73,6.63,Speaker 1,anxious,whisper,74
+1026,99,7.45,10.49,Speaker 2,sad,monotone,43
+1027,99,11.18,14.54,Speaker 2,frustrated,monotone,1
+1028,99,14.9,18.26,Speaker 1,neutral,emphatic,12
+1029,99,18.62,21.82,N/A,frustrated,fast,92
+1030,99,22.35,25.27,Speaker 2,neutral,calm,79
+1031,99,26.08,28.79,Speaker 2,happy,whisper,15
+1032,100,0.0,5.01,Speaker 1,confused,hesitant,98
+1033,100,5.96,10.9,Speaker 3,anxious,fast,99
+1034,100,11.92,16.22,Speaker 1,excited,emphatic,42
+1035,100,17.88,23.83,Speaker 3,anxious,fast,56
+1036,100,23.84,28.14,Speaker 2,excited,fast,82
+1037,101,0.0,2.72,Speaker 1,happy,monotone,93
+1038,101,3.73,6.61,N/A,neutral,emphatic,19
+1039,101,7.45,10.79,Speaker 1,neutral,whisper,49
+1040,101,11.18,14.08,Speaker 3,excited,monotone,0
+1041,101,14.9,18.08,N/A,confused,emphatic,51
+1042,101,18.62,22.18,Speaker 1,sad,calm,49
+1043,101,22.35,26.02,N/A,happy,monotone,68
+1044,101,26.08,29.73,Speaker 3,frustrated,whisper,38
+1045,102,0.0,5.11,Speaker 1,excited,whisper,24
+1046,102,6.78,12.13,N/A,happy,whisper,88
+1047,102,13.56,19.04,Speaker 1,confused,whisper,24
+1048,102,20.34,25.37,Speaker 2,neutral,whisper,75
+1049,102,27.12,32.35,N/A,happy,laughing,69
+1050,103,0.0,2.48,Speaker 1,excited,calm,27
+1051,103,3.1,6.02,N/A,angry,whisper,74
+1052,103,6.2,8.59,Speaker 1,neutral,whisper,18
+1053,103,9.3,11.92,Speaker 1,confused,monotone,5
+1054,103,12.4,14.8,Speaker 2,neutral,fast,80
+1055,103,15.5,17.72,Speaker 3,happy,emphatic,78
+1056,103,18.6,20.93,Speaker 1,happy,calm,63
+1057,103,21.7,24.42,Speaker 2,happy,laughing,25
+1058,103,24.8,27.37,N/A,frustrated,calm,87
+1059,103,27.9,30.61,Speaker 2,frustrated,laughing,101
+1060,103,31.0,33.37,Speaker 1,angry,hesitant,8
+1061,103,34.1,36.38,Speaker 2,excited,fast,89
+1062,103,37.2,39.71,Speaker 2,confused,fast,118
+1063,103,40.3,43.01,Speaker 2,happy,laughing,108
+1064,103,43.4,46.16,N/A,angry,calm,112
+1065,103,46.5,49.12,Speaker 1,neutral,fast,118
+1066,103,49.6,51.85,Speaker 3,excited,whisper,103
+1067,103,52.7,55.61,N/A,angry,fast,18
+1068,103,55.8,58.57,N/A,excited,fast,120
+1069,104,0.0,2.79,Speaker 1,sad,fast,15
+1070,104,3.46,6.92,Speaker 1,frustrated,laughing,97
+1071,104,6.93,10.38,Speaker 2,confused,laughing,80
+1072,104,10.39,13.5,Speaker 3,neutral,fast,14
+1073,104,13.86,17.11,N/A,confused,fast,20
+1074,104,17.32,20.45,Speaker 1,neutral,whisper,46
+1075,104,20.79,23.51,N/A,anxious,hesitant,78
+1076,104,24.25,27.52,N/A,neutral,calm,94
+1077,104,27.72,30.2,Speaker 2,angry,laughing,3
+1078,104,31.18,34.11,Speaker 1,happy,fast,92
+1079,104,34.65,37.53,Speaker 3,excited,fast,95
+1080,104,38.11,41.24,Speaker 3,sad,laughing,14
+1081,104,41.58,44.34,Speaker 1,sad,whisper,52
+1082,104,45.04,48.37,N/A,sad,calm,60
+1083,104,48.51,51.54,Speaker 1,excited,fast,27
+1084,104,51.97,55.36,N/A,angry,emphatic,47
+1085,104,55.44,58.0,Speaker 2,frustrated,hesitant,25
+1086,105,0.0,4.92,Speaker 3,sad,hesitant,77
+1087,105,6.54,11.43,Speaker 2,sad,calm,52
+1088,105,13.09,19.35,N/A,sad,monotone,60
+1089,105,19.63,25.86,Speaker 3,neutral,whisper,54
+1090,105,26.18,32.2,Speaker 2,sad,hesitant,55
+1091,105,32.72,38.44,Speaker 2,neutral,emphatic,5
+1092,105,39.27,43.93,N/A,neutral,emphatic,67
+1093,105,45.81,51.17,Speaker 1,confused,emphatic,30
+1094,105,52.36,57.1,Speaker 1,excited,fast,16
+1095,106,0.0,7.16,N/A,angry,laughing,111
+1096,106,7.44,13.48,N/A,neutral,laughing,80
+1097,106,14.89,20.25,Speaker 3,neutral,hesitant,54
+1098,106,22.33,29.22,Speaker 2,happy,monotone,112
+1099,106,29.77,35.73,Speaker 1,frustrated,calm,14
+1100,106,37.21,43.28,N/A,neutral,hesitant,46
+1101,106,44.66,50.26,Speaker 1,sad,fast,42
+1102,107,0.0,6.31,N/A,anxious,calm,8
+1103,107,6.51,11.8,N/A,confused,monotone,67
+1104,107,13.03,19.2,N/A,anxious,emphatic,79
+1105,107,19.54,24.82,Speaker 1,sad,emphatic,11
+1106,107,26.05,30.77,Speaker 2,anxious,calm,13
+1107,107,32.56,37.44,Speaker 1,angry,emphatic,19
+1108,107,39.08,45.34,Speaker 1,anxious,emphatic,87
+1109,107,45.59,51.2,Speaker 2,confused,hesitant,53
+1110,108,0.0,3.3,Speaker 3,frustrated,emphatic,75
+1111,108,4.01,7.61,N/A,confused,hesitant,72
+1112,108,8.02,10.98,Speaker 3,angry,laughing,33
+1113,108,12.02,15.1,Speaker 3,anxious,laughing,108
+1114,108,16.03,18.89,Speaker 3,anxious,emphatic,21
+1115,108,20.04,23.59,Speaker 2,anxious,fast,22
+1116,108,24.05,27.86,Speaker 2,angry,fast,14
+1117,108,28.05,30.91,Speaker 3,angry,emphatic,33
+1118,108,32.06,35.31,Speaker 2,neutral,whisper,40
+1119,108,36.07,40.05,Speaker 2,frustrated,emphatic,69
+1120,108,40.08,44.06,Speaker 3,happy,calm,51
+1121,108,44.08,48.01,Speaker 2,confused,hesitant,19
+1122,108,48.09,50.9,Speaker 3,anxious,emphatic,114
+1123,109,0.0,5.58,N/A,sad,emphatic,45
+1124,109,7.04,12.17,Speaker 1,sad,monotone,67
+1125,109,14.08,19.48,Speaker 3,sad,calm,10
+1126,109,21.12,27.19,N/A,happy,monotone,50
+1127,109,28.17,33.51,Speaker 3,neutral,whisper,46
+1128,109,35.21,40.98,N/A,frustrated,emphatic,47
+1129,109,42.25,47.2,Speaker 3,frustrated,hesitant,57
+1130,109,49.29,56.07,Speaker 1,sad,whisper,113
+1131,109,56.33,62.2,N/A,confused,hesitant,20
+1132,109,63.37,70.01,N/A,excited,fast,106
+1133,109,70.42,76.59,Speaker 1,angry,fast,38
+1134,109,77.46,83.39,Speaker 3,happy,monotone,96
+1135,110,0.0,3.78,N/A,anxious,monotone,62
+1136,110,4.97,8.51,Speaker 3,anxious,emphatic,71
+1137,110,9.94,14.52,Speaker 2,neutral,laughing,0
+1138,110,14.91,18.62,Speaker 3,confused,calm,83
+1139,110,19.88,24.35,Speaker 3,excited,fast,62
+1140,110,24.85,29.68,Speaker 2,neutral,calm,97
+1141,110,29.82,33.72,Speaker 1,frustrated,monotone,61
+1142,110,34.79,39.12,Speaker 3,confused,whisper,104
+1143,110,39.76,43.42,Speaker 1,anxious,fast,74
+1144,110,44.74,48.3,Speaker 3,confused,whisper,17
+1145,110,49.71,53.72,Speaker 1,anxious,hesitant,53
+1146,110,54.68,59.1,Speaker 3,neutral,hesitant,37
+1147,110,59.65,63.92,Speaker 1,sad,laughing,80
+1148,110,64.62,68.37,Speaker 1,angry,monotone,41
+1149,110,69.59,74.37,Speaker 3,anxious,whisper,89
+1150,110,74.56,79.06,Speaker 1,frustrated,laughing,18
+1151,110,79.53,83.03,Speaker 3,frustrated,laughing,62
+1152,111,0.0,4.91,Speaker 1,excited,emphatic,117
+1153,111,5.23,9.02,Speaker 2,neutral,emphatic,44
+1154,111,10.47,14.62,Speaker 3,angry,laughing,56
+1155,111,15.7,20.76,Speaker 3,angry,whisper,38
+1156,111,20.93,24.64,Speaker 1,sad,fast,109
+1157,111,26.17,30.92,Speaker 2,anxious,fast,26
+1158,112,0.0,3.5,Speaker 1,confused,calm,116
+1159,112,4.93,8.75,Speaker 1,anxious,whisper,1
+1160,112,9.86,14.42,Speaker 1,sad,monotone,115
+1161,112,14.78,18.53,Speaker 3,neutral,calm,18
+1162,112,19.71,24.41,Speaker 3,frustrated,hesitant,20
+1163,112,24.64,29.35,Speaker 2,happy,calm,104
+1164,112,29.57,33.87,Speaker 1,sad,whisper,24
+1165,112,34.49,39.37,Speaker 2,neutral,whisper,12
+1166,112,39.42,44.24,N/A,frustrated,whisper,75
+1167,112,44.35,48.07,Speaker 1,angry,laughing,45
+1168,112,49.28,54.18,N/A,sad,monotone,29
+1169,112,54.21,58.26,Speaker 3,happy,emphatic,14
+1170,112,59.13,63.35,N/A,frustrated,whisper,36
+1171,112,64.06,68.33,Speaker 1,happy,hesitant,63
+1172,112,68.99,72.61,Speaker 3,confused,monotone,94
+1173,112,73.92,77.83,N/A,sad,monotone,52
+1174,112,78.84,82.72,N/A,sad,laughing,8
+1175,112,83.77,88.54,N/A,frustrated,fast,1
+1176,113,0.0,3.28,Speaker 1,angry,calm,46
+1177,113,3.61,7.2,Speaker 3,sad,monotone,108
+1178,113,7.22,10.82,Speaker 1,sad,laughing,54
+1179,113,10.83,14.15,Speaker 3,anxious,laughing,101
+1180,113,14.44,17.84,N/A,frustrated,emphatic,85
+1181,113,18.06,21.24,N/A,confused,monotone,35
+1182,113,21.67,24.35,N/A,happy,calm,32
+1183,113,25.28,28.34,Speaker 2,angry,calm,12
+1184,113,28.89,32.22,Speaker 1,confused,whisper,3
+1185,114,0.0,4.12,N/A,confused,monotone,33
+1186,114,5.42,10.09,Speaker 1,neutral,emphatic,112
+1187,114,10.83,16.11,N/A,confused,hesitant,109
+1188,114,16.25,20.65,N/A,neutral,calm,22
+1189,114,21.67,26.36,Speaker 3,angry,emphatic,55
+1190,114,27.08,31.09,N/A,confused,laughing,14
+1191,115,0.0,4.38,Speaker 3,anxious,hesitant,7
+1192,115,4.95,8.46,Speaker 1,angry,laughing,46
+1193,115,9.9,13.88,Speaker 1,frustrated,emphatic,12
+1194,115,14.85,18.95,Speaker 3,excited,hesitant,7
+1195,115,19.8,24.25,Speaker 2,sad,whisper,39
+1196,115,24.75,29.09,Speaker 1,anxious,calm,43
+1197,116,0.0,5.91,N/A,excited,hesitant,73
+1198,116,5.94,10.27,N/A,happy,whisper,86
+1199,116,11.88,16.4,N/A,frustrated,fast,78
+1200,116,17.82,22.51,N/A,sad,emphatic,81
+1201,116,23.76,29.43,Speaker 1,sad,hesitant,33
+1202,117,0.0,6.82,Speaker 3,happy,monotone,102
+1203,117,7.78,14.46,N/A,sad,hesitant,101
+1204,117,15.55,21.17,Speaker 3,anxious,emphatic,84
+1205,117,23.33,30.03,Speaker 2,excited,emphatic,32
+1206,118,0.0,3.96,N/A,anxious,whisper,68
+1207,118,5.18,10.07,N/A,neutral,monotone,25
+1208,118,10.37,14.56,Speaker 2,sad,fast,95
+1209,118,15.55,20.24,Speaker 3,excited,emphatic,40
+1210,118,20.73,25.7,Speaker 1,sad,laughing,52
+1211,118,25.92,29.96,Speaker 3,angry,hesitant,87
+1212,119,0.0,3.73,N/A,excited,whisper,115
+1213,119,4.44,7.6,Speaker 2,anxious,fast,3
+1214,119,8.89,12.34,Speaker 3,angry,whisper,109
+1215,119,13.33,16.49,N/A,neutral,calm,110
+1216,119,17.77,22.08,Speaker 3,anxious,laughing,8
+1217,119,22.21,26.52,N/A,frustrated,whisper,84
+1218,119,26.66,30.95,N/A,angry,fast,14
+1219,120,0.0,6.12,N/A,sad,emphatic,27
+1220,120,6.44,11.23,Speaker 2,sad,hesitant,56
+1221,120,12.88,18.18,Speaker 1,confused,monotone,47
+1222,120,19.32,25.18,Speaker 1,frustrated,monotone,54
+1223,120,25.76,31.19,Speaker 2,anxious,laughing,119
+1224,120,32.2,36.99,N/A,frustrated,laughing,39
+1225,120,38.64,43.19,Speaker 1,neutral,whisper,117
+1226,120,45.08,51.11,Speaker 2,anxious,monotone,49
+1227,120,51.52,56.63,Speaker 3,happy,monotone,110
+1228,120,57.96,62.92,N/A,excited,calm,116
+1229,121,0.0,5.65,Speaker 2,confused,whisper,40
+1230,121,7.16,14.05,N/A,neutral,hesitant,110
+1231,121,14.31,19.49,N/A,confused,whisper,52
+1232,121,21.47,28.46,Speaker 3,excited,laughing,12
+1233,121,28.62,35.4,Speaker 3,happy,hesitant,53
+1234,121,35.78,42.08,Speaker 3,confused,whisper,3
+1235,121,42.93,49.58,Speaker 2,confused,laughing,82
+1236,121,50.09,55.39,N/A,sad,whisper,39
+1237,121,57.24,62.93,Speaker 1,happy,fast,31
+1238,122,0.0,3.51,Speaker 2,happy,emphatic,47
+1239,122,3.74,6.56,N/A,sad,calm,2
+1240,122,7.47,11.12,Speaker 2,happy,emphatic,25
+1241,122,11.21,14.12,Speaker 2,neutral,emphatic,79
+1242,122,14.95,18.04,Speaker 3,angry,calm,47
+1243,122,18.68,21.49,Speaker 1,neutral,whisper,67
+1244,122,22.42,25.52,N/A,confused,calm,28
+1245,122,26.15,29.57,Speaker 2,anxious,hesitant,95
+1246,122,29.89,33.06,Speaker 2,excited,laughing,26
+1247,122,33.63,36.92,Speaker 3,sad,emphatic,23
+1248,122,37.36,40.44,Speaker 2,neutral,hesitant,33
+1249,122,41.1,43.98,N/A,sad,hesitant,74
+1250,122,44.84,48.22,N/A,happy,calm,60
+1251,122,48.57,51.34,Speaker 3,excited,whisper,27
+1252,122,52.31,55.72,N/A,anxious,calm,12
+1253,122,56.05,59.29,Speaker 1,frustrated,fast,60
+1254,122,59.78,63.42,Speaker 1,neutral,hesitant,64
+1255,122,63.52,66.83,Speaker 3,excited,whisper,47
+1256,122,67.25,70.02,Speaker 1,angry,hesitant,21
+1257,122,70.99,74.17,Speaker 3,confused,fast,11
+1258,122,74.73,77.7,N/A,angry,hesitant,14
+1259,122,78.46,81.43,Speaker 2,confused,laughing,106
+1260,123,0.0,3.51,N/A,angry,hesitant,94
+1261,123,4.11,8.21,Speaker 2,confused,calm,24
+1262,123,8.22,11.28,Speaker 2,angry,calm,60
+1263,123,12.33,15.53,N/A,excited,calm,114
+1264,123,16.44,20.46,Speaker 1,confused,hesitant,90
+1265,123,20.55,24.12,N/A,confused,calm,108
+1266,123,24.66,28.42,Speaker 2,happy,hesitant,11
+1267,123,28.77,31.9,Speaker 3,angry,laughing,21
+1268,123,32.88,36.68,Speaker 3,sad,monotone,0
+1269,123,36.99,40.52,Speaker 2,excited,calm,31
+1270,123,41.1,44.92,Speaker 1,frustrated,calm,36
+1271,123,45.21,48.93,Speaker 1,excited,hesitant,75
+1272,123,49.32,53.34,Speaker 1,frustrated,fast,3
+1273,123,53.43,56.41,N/A,confused,whisper,34
+1274,123,57.54,61.15,Speaker 1,frustrated,calm,83
+1275,123,61.65,65.29,N/A,frustrated,whisper,93
+1276,123,65.76,69.76,Speaker 2,sad,laughing,6
+1277,123,69.87,73.74,Speaker 3,frustrated,laughing,7
+1278,123,73.98,77.77,N/A,happy,emphatic,32
+1279,123,78.09,81.19,N/A,happy,calm,109
+1280,124,0.0,4.92,Speaker 2,frustrated,whisper,12
+1281,124,5.07,9.88,Speaker 2,confused,emphatic,113
+1282,124,10.13,14.27,Speaker 3,excited,calm,96
+1283,124,15.2,19.39,Speaker 3,angry,emphatic,80
+1284,124,20.27,24.46,Speaker 1,frustrated,emphatic,86
+1285,124,25.33,29.22,Speaker 2,confused,monotone,80
+1286,124,30.4,34.93,Speaker 1,anxious,emphatic,55
+1287,124,35.47,39.13,N/A,anxious,fast,16
+1288,124,40.53,45.12,Speaker 3,sad,monotone,54
+1289,124,45.6,49.6,Speaker 1,happy,calm,65
+1290,124,50.67,54.38,N/A,excited,calm,59
+1291,124,55.73,60.28,Speaker 3,frustrated,hesitant,74
+1292,124,60.8,64.47,Speaker 1,happy,whisper,84
+1293,124,65.87,70.12,Speaker 2,excited,calm,10
+1294,124,70.93,75.11,Speaker 3,frustrated,monotone,92
+1295,125,0.0,5.22,Speaker 3,happy,emphatic,68
+1296,125,6.91,11.78,N/A,happy,calm,21
+1297,125,13.82,20.01,N/A,excited,laughing,84
+1298,125,20.73,27.57,N/A,anxious,monotone,104
+1299,125,27.64,34.49,Speaker 3,excited,laughing,38
+1300,125,34.55,39.56,Speaker 2,neutral,fast,14
+1301,125,41.45,47.98,Speaker 2,neutral,fast,61
+1302,125,48.36,54.54,Speaker 2,excited,laughing,80
+1303,125,55.27,61.89,Speaker 2,happy,hesitant,98
+1304,125,62.18,67.98,N/A,excited,calm,14
+1305,125,69.09,74.27,Speaker 2,confused,emphatic,60
+1306,126,0.0,3.02,N/A,anxious,calm,62
+1307,126,3.04,5.53,N/A,sad,whisper,7
+1308,126,6.08,8.69,N/A,frustrated,monotone,8
+1309,126,9.12,11.49,N/A,confused,calm,63
+1310,126,12.16,14.86,Speaker 3,confused,whisper,55
+1311,126,15.2,17.35,Speaker 3,sad,emphatic,44
+1312,126,18.24,20.77,Speaker 2,frustrated,monotone,109
+1313,126,21.28,24.18,N/A,angry,hesitant,92
+1314,126,24.32,27.1,N/A,frustrated,laughing,60
+1315,126,27.36,30.22,Speaker 2,sad,hesitant,88
+1316,126,30.4,33.21,N/A,angry,fast,25
+1317,126,33.44,35.71,N/A,happy,laughing,53
+1318,126,36.48,39.47,N/A,anxious,fast,26
+1319,126,39.52,42.16,Speaker 1,frustrated,hesitant,45
+1320,126,42.56,45.31,Speaker 2,neutral,laughing,8
+1321,126,45.6,48.04,Speaker 1,sad,calm,71
+1322,126,48.64,50.97,Speaker 3,frustrated,laughing,45
+1323,126,51.68,54.51,Speaker 3,angry,laughing,88
+1324,126,54.72,57.64,Speaker 1,neutral,emphatic,102
+1325,126,57.76,60.3,Speaker 1,happy,laughing,78
+1326,126,60.8,63.48,Speaker 1,neutral,monotone,13
+1327,126,63.84,66.12,Speaker 1,sad,hesitant,20
+1328,126,66.88,69.67,N/A,confused,whisper,111
+1329,126,69.92,72.14,Speaker 3,frustrated,laughing,17
+1330,126,72.96,75.2,Speaker 2,confused,emphatic,98
+1331,127,0.0,2.74,Speaker 2,angry,laughing,96
+1332,127,3.39,6.3,Speaker 2,angry,laughing,54
+1333,127,6.78,9.57,N/A,confused,laughing,66
+1334,127,10.17,13.35,Speaker 3,neutral,emphatic,18
+1335,127,13.56,16.72,Speaker 1,happy,hesitant,40
+1336,127,16.95,19.73,Speaker 2,excited,calm,50
+1337,127,20.34,23.49,Speaker 2,neutral,whisper,91
+1338,127,23.73,26.92,Speaker 3,excited,emphatic,113
+1339,127,27.12,30.19,Speaker 3,frustrated,hesitant,1
+1340,127,30.51,33.73,Speaker 2,excited,emphatic,82
+1341,127,33.9,36.49,N/A,frustrated,laughing,100
+1342,127,37.3,40.33,Speaker 2,anxious,calm,4
+1343,127,40.69,43.61,N/A,angry,monotone,69
+1344,127,44.08,46.74,Speaker 1,anxious,monotone,43
+1345,127,47.47,50.61,Speaker 2,neutral,calm,113
+1346,127,50.86,54.04,Speaker 3,sad,laughing,99
+1347,127,54.25,56.93,N/A,happy,whisper,7
+1348,127,57.64,60.87,Speaker 3,frustrated,calm,6
+1349,127,61.03,64.17,Speaker 1,confused,hesitant,73
+1350,127,64.42,67.54,N/A,frustrated,fast,103
+1351,127,67.81,70.94,Speaker 2,frustrated,hesitant,36
+1352,128,0.0,3.66,Speaker 3,confused,calm,18
+1353,128,4.19,8.01,N/A,happy,calm,7
+1354,128,8.38,11.84,Speaker 2,confused,fast,57
+1355,128,12.56,15.59,N/A,excited,laughing,33
+1356,128,16.75,20.42,N/A,confused,whisper,119
+1357,128,20.94,25.06,N/A,angry,fast,64
+1358,128,25.13,28.22,N/A,angry,whisper,65
+1359,128,29.32,33.33,Speaker 1,sad,emphatic,60
+1360,128,33.51,36.48,Speaker 2,frustrated,calm,77
+1361,128,37.69,41.7,Speaker 1,happy,hesitant,73
+1362,128,41.88,45.18,Speaker 2,happy,hesitant,39
+1363,128,46.07,50.25,Speaker 3,anxious,emphatic,3
+1364,128,50.26,54.18,Speaker 2,excited,calm,119
+1365,128,54.45,58.5,Speaker 3,sad,fast,104
+1366,128,58.64,62.5,Speaker 1,happy,monotone,44
+1367,128,62.82,65.84,Speaker 1,excited,emphatic,73
+1368,128,67.01,70.33,N/A,frustrated,laughing,48
+1369,129,0.0,2.63,N/A,excited,fast,115
+1370,129,3.62,6.59,Speaker 1,confused,whisper,35
+1371,129,7.24,10.48,Speaker 2,neutral,monotone,80
+1372,129,10.86,14.26,Speaker 3,happy,whisper,71
+1373,129,14.48,17.11,Speaker 1,sad,laughing,60
+1374,129,18.11,21.19,Speaker 1,happy,whisper,119
+1375,129,21.73,24.84,Speaker 1,anxious,laughing,26
+1376,129,25.35,28.15,N/A,happy,laughing,68
+1377,129,28.97,32.16,N/A,neutral,emphatic,110
+1378,129,32.59,36.14,Speaker 3,excited,fast,53
+1379,129,36.21,38.77,Speaker 3,excited,hesitant,11
+1380,129,39.83,42.49,Speaker 1,angry,hesitant,18
+1381,129,43.45,46.19,Speaker 1,angry,hesitant,52
+1382,129,47.07,50.35,Speaker 1,frustrated,fast,3
+1383,129,50.69,54.0,Speaker 3,excited,calm,40
+1384,129,54.32,57.01,Speaker 3,anxious,emphatic,120
+1385,129,57.94,61.37,Speaker 1,neutral,fast,30
+1386,129,61.56,64.91,Speaker 2,confused,monotone,96
+1387,129,65.18,68.26,Speaker 1,anxious,calm,40
+1388,130,0.0,5.32,Speaker 2,anxious,monotone,52
+1389,130,6.88,12.62,Speaker 2,angry,hesitant,69
+1390,130,13.76,20.61,Speaker 2,excited,monotone,57
+1391,130,20.64,25.54,N/A,anxious,whisper,21
+1392,130,27.52,32.34,N/A,anxious,monotone,32
+1393,130,34.4,40.95,N/A,frustrated,laughing,80
+1394,130,41.28,46.54,Speaker 3,neutral,fast,94
+1395,130,48.16,54.08,Speaker 1,anxious,calm,50
+1396,130,55.04,61.3,Speaker 2,anxious,emphatic,26
+1397,130,61.92,68.0,Speaker 3,frustrated,whisper,33
+1398,131,0.0,4.25,Speaker 3,neutral,whisper,17
+1399,131,4.3,8.14,Speaker 1,confused,calm,115
+1400,131,8.6,11.62,Speaker 2,excited,monotone,114
+1401,131,12.9,16.81,N/A,excited,monotone,10
+1402,131,17.2,21.23,Speaker 1,neutral,laughing,104
+1403,131,21.5,25.38,Speaker 1,frustrated,laughing,48
+1404,131,25.8,29.88,Speaker 3,excited,fast,107
+1405,131,30.1,34.1,Speaker 1,happy,emphatic,47
+1406,131,34.4,38.62,N/A,neutral,fast,95
+1407,131,38.7,41.74,Speaker 3,frustrated,fast,11
+1408,131,43.0,47.06,Speaker 3,sad,fast,63
+1409,131,47.3,51.56,Speaker 1,anxious,emphatic,115
+1410,131,51.6,55.52,Speaker 2,neutral,fast,105
+1411,131,55.9,59.73,Speaker 1,anxious,monotone,64
+1412,131,60.2,63.85,Speaker 2,angry,calm,75
+1413,131,64.5,67.68,Speaker 1,angry,hesitant,119
+1414,132,0.0,8.64,Speaker 1,frustrated,emphatic,108
+1415,133,0.0,6.28,N/A,confused,hesitant,0
+1416,134,0.0,7.03,Speaker 1,happy,calm,61
+1417,135,0.0,5.43,Speaker 1,frustrated,monotone,101
+1418,135,5.5,9.74,Speaker 1,confused,laughing,12
+1419,136,0.0,7.9,N/A,neutral,hesitant,78
+1420,137,0.0,4.23,Speaker 1,confused,emphatic,59
+1421,137,5.5,10.66,Speaker 1,frustrated,whisper,120
+1422,138,0.0,5.99,Speaker 2,anxious,hesitant,53
+1423,138,6.17,11.37,N/A,angry,fast,17
+1424,138,12.33,18.12,Speaker 1,angry,hesitant,74
+1425,139,0.0,5.19,Speaker 3,anxious,hesitant,1
+1426,139,6.17,11.44,Speaker 2,neutral,fast,64
+1427,139,12.33,18.17,Speaker 1,excited,hesitant,25
+1428,140,0.0,5.43,Speaker 3,frustrated,monotone,38
+1429,140,6.17,11.26,Speaker 2,happy,emphatic,112
+1430,140,12.33,18.11,Speaker 1,confused,fast,117
+1431,141,0.0,5.66,Speaker 2,neutral,hesitant,1
+1432,141,7.43,12.79,Speaker 1,happy,fast,37
+1433,141,14.85,21.03,Speaker 3,neutral,calm,25
+1434,141,22.28,27.92,Speaker 2,sad,hesitant,92
+1435,141,29.71,35.3,Speaker 2,angry,fast,2
+1436,141,37.14,42.73,Speaker 3,happy,calm,106
+1437,141,44.56,51.27,N/A,happy,hesitant,119
+1438,141,51.99,57.66,N/A,sad,hesitant,103
+1439,141,59.42,65.45,Speaker 2,excited,whisper,8
+1440,141,66.85,72.31,Speaker 2,sad,fast,68
+1441,141,74.27,80.31,Speaker 3,frustrated,monotone,54
+1442,142,0.0,4.37,N/A,sad,whisper,10
+1443,142,4.54,8.78,Speaker 1,angry,monotone,49
+1444,142,9.08,13.28,Speaker 3,confused,monotone,59
+1445,142,13.62,17.04,Speaker 3,confused,whisper,63
+1446,142,18.16,21.98,N/A,neutral,fast,28
+1447,142,22.69,27.09,N/A,sad,emphatic,27
+1448,142,27.23,30.83,N/A,angry,laughing,47
+1449,142,31.77,35.3,Speaker 1,angry,laughing,10
+1450,142,36.31,39.89,Speaker 3,sad,monotone,5
+1451,142,40.85,44.66,Speaker 3,excited,emphatic,59
+1452,142,45.39,49.16,Speaker 3,confused,hesitant,34
+1453,142,49.93,53.63,Speaker 2,confused,fast,33
+1454,142,54.47,58.52,Speaker 3,happy,hesitant,107
+1455,142,59.01,62.87,Speaker 1,anxious,fast,12
+1456,142,63.54,66.88,Speaker 3,neutral,monotone,25
+1457,142,68.08,71.72,Speaker 3,anxious,hesitant,95
+1458,142,72.62,76.91,Speaker 3,sad,whisper,77
+1459,142,77.16,81.7,Speaker 3,neutral,laughing,38
+1460,143,0.0,4.04,Speaker 2,excited,fast,29
+1461,143,4.81,9.21,Speaker 2,confused,fast,66
+1462,143,9.61,13.82,N/A,confused,hesitant,101
+1463,143,14.42,17.91,Speaker 2,excited,laughing,120
+1464,143,19.22,23.59,Speaker 2,confused,emphatic,109
+1465,143,24.03,28.2,Speaker 3,angry,monotone,111
+1466,143,28.84,32.38,Speaker 1,confused,laughing,84
+1467,143,33.64,38.21,Speaker 3,sad,emphatic,54
+1468,143,38.45,42.8,N/A,anxious,hesitant,75
+1469,143,43.25,46.65,Speaker 1,angry,fast,42
+1470,143,48.06,52.24,N/A,excited,fast,50
+1471,143,52.86,56.32,N/A,sad,emphatic,13
+1472,143,57.67,61.51,N/A,anxious,calm,21
+1473,143,62.48,65.99,Speaker 2,neutral,laughing,88
+1474,143,67.28,71.52,Speaker 1,angry,fast,8
+1475,143,72.09,76.77,N/A,anxious,fast,29
+1476,143,76.89,80.68,Speaker 1,confused,calm,47
+1477,144,0.0,4.56,Speaker 2,anxious,emphatic,104
+1478,144,6.17,11.8,N/A,angry,monotone,73
+1479,144,12.33,18.39,Speaker 2,confused,hesitant,25
+1480,144,18.5,22.83,Speaker 2,confused,calm,105
+1481,144,24.67,29.72,Speaker 2,frustrated,monotone,112
+1482,144,30.83,36.06,N/A,neutral,whisper,11
+1483,145,0.0,5.21,Speaker 2,excited,emphatic,49
+1484,145,6.32,12.47,Speaker 2,happy,emphatic,89
+1485,145,12.64,18.85,Speaker 2,angry,hesitant,112
+1486,145,18.95,24.57,Speaker 3,happy,whisper,92
+1487,145,25.27,31.06,Speaker 2,confused,emphatic,97
+1488,145,31.59,37.06,Speaker 3,happy,laughing,13
+1489,145,37.91,43.29,Speaker 3,excited,emphatic,21
+1490,145,44.23,49.13,Speaker 1,confused,calm,9
+1491,145,50.55,56.18,N/A,excited,hesitant,95
+1492,145,56.86,62.04,Speaker 2,excited,calm,1
+1493,145,63.18,68.08,Speaker 2,frustrated,whisper,95
+1494,146,0.0,4.73,Speaker 2,neutral,monotone,12
+1495,146,4.96,8.7,Speaker 1,excited,fast,9
+1496,146,9.93,14.4,Speaker 1,anxious,fast,56
+1497,146,14.89,18.9,Speaker 2,neutral,whisper,68
+1498,146,19.86,23.65,Speaker 1,happy,emphatic,88
+1499,146,24.82,28.76,Speaker 1,neutral,calm,98
+1500,146,29.79,33.82,Speaker 2,sad,hesitant,116
+1501,146,34.75,38.58,Speaker 1,neutral,emphatic,3
+1502,146,39.71,44.66,Speaker 3,sad,whisper,85
+1503,146,44.68,48.25,Speaker 1,angry,whisper,21
+1504,146,49.64,53.18,Speaker 1,frustrated,hesitant,71
+1505,146,54.61,59.02,Speaker 2,excited,emphatic,15
+1506,146,59.57,63.39,Speaker 1,frustrated,hesitant,22
+1507,146,64.54,68.03,Speaker 3,neutral,emphatic,27
+1508,147,0.0,4.51,Speaker 2,excited,hesitant,98
+1509,147,6.32,11.88,Speaker 1,angry,hesitant,12
+1510,147,12.64,18.2,N/A,angry,hesitant,22
+1511,147,18.95,24.58,Speaker 3,confused,calm,42
+1512,147,25.27,29.73,N/A,excited,monotone,81
+1513,147,31.59,37.42,Speaker 1,sad,calm,78
+1514,147,37.91,43.77,Speaker 1,anxious,fast,94
+1515,147,44.23,49.46,Speaker 2,happy,calm,17
+1516,147,50.55,55.68,Speaker 3,sad,fast,48
+1517,147,56.86,61.67,Speaker 1,sad,whisper,76
+1518,147,63.18,69.48,N/A,frustrated,fast,35
+1519,148,0.0,3.84,Speaker 2,sad,monotone,111
+1520,148,4.46,8.09,Speaker 3,angry,emphatic,80
+1521,148,8.92,12.05,N/A,happy,fast,6
+1522,148,13.38,17.36,Speaker 2,sad,fast,11
+1523,148,17.84,21.2,Speaker 2,sad,monotone,10
+1524,148,22.31,26.0,N/A,anxious,fast,92
+1525,148,26.77,30.15,N/A,angry,monotone,31
+1526,148,31.23,34.76,N/A,sad,hesitant,110
+1527,148,35.69,39.86,Speaker 1,frustrated,emphatic,48
+1528,148,40.15,43.5,N/A,excited,monotone,78
+1529,148,44.61,48.72,Speaker 2,confused,calm,97
+1530,148,49.07,52.71,Speaker 1,anxious,monotone,68
+1531,148,53.53,56.86,Speaker 2,anxious,emphatic,59
+1532,148,57.99,61.53,Speaker 3,excited,monotone,77
+1533,148,62.46,66.22,Speaker 3,angry,whisper,60
+1534,148,66.92,70.3,Speaker 2,neutral,calm,110
+1535,148,71.38,75.17,Speaker 3,confused,emphatic,118
+1536,148,75.84,79.52,N/A,frustrated,emphatic,62
+1537,149,0.0,5.48,Speaker 3,confused,whisper,88
+1538,149,5.55,10.05,Speaker 1,excited,emphatic,94
+1539,149,11.11,15.41,N/A,neutral,laughing,46
+1540,149,16.66,21.6,Speaker 1,angry,hesitant,77
+1541,149,22.22,26.86,Speaker 2,anxious,fast,77
+1542,149,27.77,32.62,Speaker 2,neutral,calm,98
+1543,149,33.32,37.36,N/A,excited,whisper,75
+1544,149,38.88,44.39,Speaker 1,sad,emphatic,21
+1545,149,44.43,49.7,Speaker 3,anxious,monotone,68
+1546,149,49.98,54.97,N/A,anxious,whisper,52
+1547,149,55.54,60.68,Speaker 1,happy,whisper,73
+1548,149,61.09,66.27,Speaker 3,angry,hesitant,95
+1549,149,66.65,70.88,N/A,anxious,calm,21
+1550,150,0.0,3.85,Speaker 2,confused,fast,64
+1551,150,4.22,8.37,N/A,sad,fast,25
+1552,150,8.44,11.47,Speaker 2,sad,hesitant,115
+1553,150,12.66,16.72,N/A,happy,laughing,81
+1554,150,16.88,20.04,Speaker 3,happy,emphatic,15
+1555,151,0.0,3.71,Speaker 3,neutral,whisper,74
+1556,151,5.28,10.22,Speaker 1,happy,fast,66
+1557,151,10.55,15.5,N/A,anxious,emphatic,60
+1558,151,15.83,20.72,N/A,frustrated,hesitant,87
+1559,152,0.0,3.31,Speaker 1,confused,laughing,89
+1560,152,3.52,6.4,Speaker 2,neutral,monotone,15
+1561,152,7.03,10.41,Speaker 3,sad,hesitant,57
+1562,152,10.55,13.66,N/A,excited,whisper,24
+1563,152,14.07,16.53,Speaker 3,neutral,whisper,46
+1564,152,17.58,20.97,Speaker 3,confused,fast,77
+1565,153,0.0,5.22,Speaker 2,angry,laughing,66
+1566,153,6.62,13.0,Speaker 1,angry,emphatic,101
+1567,153,13.25,18.06,N/A,angry,emphatic,14
+1568,153,19.88,25.47,Speaker 2,sad,fast,21
+1569,153,26.5,32.63,Speaker 1,happy,emphatic,91
+1570,153,33.12,37.82,Speaker 3,excited,laughing,35
+1571,153,39.75,44.83,Speaker 3,confused,whisper,15
+1572,153,46.38,52.34,N/A,happy,laughing,88
+1573,153,53.0,58.3,Speaker 2,happy,whisper,43
+1574,153,59.62,65.01,N/A,excited,laughing,29
+1575,153,66.25,71.33,Speaker 1,anxious,calm,14
+1576,153,72.88,77.69,Speaker 2,happy,monotone,47
+1577,154,0.0,3.01,Speaker 3,angry,monotone,84
+1578,154,3.79,7.12,Speaker 2,happy,emphatic,1
+1579,154,7.57,10.83,N/A,frustrated,fast,104
+1580,154,11.36,15.08,Speaker 2,confused,whisper,58
+1581,154,15.14,17.96,Speaker 3,angry,whisper,85
+1582,154,18.93,22.54,Speaker 1,frustrated,hesitant,64
+1583,154,22.71,26.49,Speaker 1,anxious,laughing,90
+1584,154,26.5,29.8,Speaker 2,confused,hesitant,90
+1585,154,30.29,34.03,Speaker 1,frustrated,fast,105
+1586,154,34.07,37.54,Speaker 2,neutral,laughing,99
+1587,154,37.86,40.71,N/A,excited,hesitant,104
+1588,154,41.64,45.04,Speaker 2,neutral,monotone,50
+1589,154,45.43,48.46,N/A,frustrated,laughing,50
+1590,154,49.21,52.31,Speaker 3,anxious,whisper,118
+1591,154,53.0,55.87,N/A,happy,fast,41
+1592,154,56.79,60.29,Speaker 1,anxious,emphatic,83
+1593,154,60.57,63.41,Speaker 2,confused,whisper,61
+1594,154,64.36,67.34,Speaker 2,sad,fast,102
+1595,154,68.14,71.64,Speaker 1,frustrated,whisper,109
+1596,154,71.93,75.23,Speaker 2,excited,emphatic,86
+1597,154,75.71,79.32,Speaker 1,happy,hesitant,60
+1598,155,0.0,3.41,Speaker 3,angry,whisper,95
+1599,155,4.17,7.55,Speaker 1,confused,laughing,104
+1600,155,8.33,12.06,Speaker 3,confused,hesitant,1
+1601,155,12.5,15.57,Speaker 1,happy,emphatic,82
+1602,155,16.67,20.42,Speaker 2,neutral,monotone,73
+1603,155,20.83,24.98,N/A,anxious,whisper,95
+1604,155,25.0,28.03,Speaker 2,excited,emphatic,82
+1605,155,29.17,32.96,Speaker 3,angry,calm,41
+1606,155,33.33,36.33,Speaker 2,excited,laughing,89
+1607,155,37.5,40.44,N/A,happy,monotone,107
+1608,155,41.67,45.31,Speaker 1,sad,whisper,114
+1609,155,45.83,48.9,Speaker 2,neutral,monotone,57
+1610,155,50.0,53.92,Speaker 1,neutral,fast,73
+1611,155,54.17,57.34,Speaker 2,happy,monotone,32
+1612,155,58.33,62.31,Speaker 1,happy,calm,64
+1613,155,62.5,65.79,Speaker 2,excited,whisper,0
+1614,155,66.67,69.89,Speaker 1,anxious,whisper,68
+1615,155,70.83,74.31,N/A,frustrated,monotone,116
+1616,156,0.0,2.42,Speaker 2,angry,monotone,70
+1617,156,3.26,5.75,Speaker 3,anxious,fast,93
+1618,156,6.52,9.41,Speaker 1,anxious,hesitant,48
+1619,156,9.78,12.7,Speaker 2,excited,emphatic,10
+1620,156,13.04,16.25,N/A,angry,monotone,26
+1621,156,16.3,18.66,Speaker 3,sad,whisper,47
+1622,156,19.57,22.4,Speaker 2,excited,laughing,19
+1623,156,22.83,25.42,N/A,excited,calm,77
+1624,156,26.09,28.61,Speaker 3,happy,monotone,14
+1625,156,29.35,32.3,N/A,happy,hesitant,81
+1626,156,32.61,34.98,Speaker 3,anxious,fast,111
+1627,156,35.87,38.93,Speaker 3,neutral,calm,48
+1628,156,39.13,42.37,Speaker 2,excited,calm,100
+1629,156,42.39,45.58,Speaker 2,anxious,monotone,105
+1630,156,45.65,48.72,Speaker 1,frustrated,whisper,73
+1631,156,48.91,52.04,Speaker 3,happy,calm,21
+1632,156,52.17,54.77,N/A,angry,hesitant,103
+1633,156,55.43,58.44,N/A,confused,monotone,16
+1634,156,58.7,61.23,Speaker 2,angry,fast,48
+1635,156,61.96,64.79,Speaker 3,neutral,whisper,81
+1636,156,65.22,68.45,Speaker 2,excited,whisper,58
+1637,156,68.48,70.94,Speaker 3,confused,monotone,36
+1638,156,71.74,74.29,N/A,sad,hesitant,81
+1639,157,0.0,4.93,Speaker 2,happy,fast,73
+1640,157,6.82,11.71,Speaker 3,confused,laughing,111
+1641,157,13.64,18.43,N/A,angry,emphatic,63
+1642,157,20.45,26.28,Speaker 1,excited,calm,78
+1643,157,27.27,32.43,Speaker 1,excited,whisper,68
+1644,157,34.09,40.4,Speaker 2,neutral,monotone,57
+1645,157,40.91,47.65,Speaker 2,angry,calm,46
+1646,157,47.73,54.22,Speaker 3,neutral,emphatic,63
+1647,157,54.55,60.09,Speaker 3,happy,hesitant,116
+1648,157,61.36,67.53,Speaker 1,anxious,hesitant,61
+1649,157,68.18,73.55,Speaker 2,neutral,whisper,80
+1650,158,0.0,2.48,Speaker 1,neutral,hesitant,113
+1651,158,3.14,6.01,N/A,frustrated,calm,12
+1652,158,6.27,8.88,Speaker 2,happy,monotone,65
+1653,158,9.41,12.45,N/A,happy,emphatic,0
+1654,158,12.55,14.89,Speaker 3,sad,emphatic,50
+1655,158,15.69,18.24,Speaker 3,excited,fast,68
+1656,158,18.82,21.79,Speaker 1,confused,whisper,107
+1657,158,21.96,24.57,Speaker 2,frustrated,whisper,55
+1658,158,25.1,27.3,Speaker 2,happy,fast,36
+1659,158,28.24,30.47,N/A,excited,whisper,42
+1660,158,31.37,34.42,Speaker 2,sad,emphatic,85
+1661,158,34.51,37.63,Speaker 1,excited,emphatic,70
+1662,158,37.65,40.31,Speaker 2,frustrated,laughing,97
+1663,158,40.79,43.72,N/A,excited,fast,14
+1664,158,43.93,47.02,Speaker 1,angry,fast,44
+1665,158,47.06,49.73,Speaker 2,neutral,whisper,106
+1666,158,50.2,52.72,Speaker 1,excited,emphatic,37
+1667,158,53.34,55.8,Speaker 1,excited,fast,79
+1668,158,56.48,58.81,Speaker 2,sad,hesitant,98
+1669,158,59.61,61.92,Speaker 3,sad,whisper,105
+1670,158,62.75,65.35,N/A,happy,whisper,93
+1671,158,65.89,68.56,Speaker 2,sad,laughing,75
+1672,158,69.03,71.81,Speaker 2,sad,calm,16
+1673,158,72.16,74.74,Speaker 3,sad,fast,54
+1674,159,0.0,2.59,Speaker 2,sad,hesitant,54
+1675,159,3.27,6.04,N/A,neutral,hesitant,14
+1676,159,6.55,9.1,Speaker 3,frustrated,whisper,53
+1677,159,9.82,12.36,Speaker 1,angry,calm,0
+1678,159,13.1,15.44,Speaker 3,sad,hesitant,60
+1679,159,16.37,18.94,Speaker 1,excited,fast,32
+1680,159,19.64,22.87,Speaker 3,frustrated,hesitant,14
+1681,159,22.92,25.3,Speaker 1,angry,hesitant,46
+1682,159,26.19,29.21,Speaker 3,frustrated,fast,83
+1683,159,29.47,32.03,N/A,happy,calm,16
+1684,159,32.74,35.65,Speaker 1,neutral,monotone,116
+1685,159,36.01,39.17,Speaker 2,sad,whisper,57
+1686,159,39.29,42.49,Speaker 1,frustrated,hesitant,92
+1687,159,42.56,45.32,Speaker 2,angry,calm,16
+1688,159,45.83,48.31,Speaker 3,frustrated,hesitant,57
+1689,159,49.11,52.02,Speaker 1,excited,calm,61
+1690,159,52.38,55.09,Speaker 1,angry,monotone,35
+1691,159,55.66,58.63,Speaker 2,anxious,calm,72
+1692,159,58.93,61.28,Speaker 2,excited,emphatic,87
+1693,159,62.2,65.02,Speaker 1,angry,emphatic,96
+1694,159,65.48,68.27,N/A,excited,monotone,34
+1695,159,68.75,71.25,Speaker 1,angry,monotone,27
+1696,159,72.03,74.9,Speaker 1,confused,monotone,90
+1697,160,0.0,4.07,Speaker 3,angry,hesitant,111
+1698,160,4.14,8.02,Speaker 2,sad,monotone,14
+1699,160,8.28,11.18,Speaker 3,frustrated,hesitant,10
+1700,160,12.42,16.49,Speaker 3,angry,emphatic,114
+1701,160,16.56,20.22,Speaker 3,neutral,whisper,104
+1702,160,20.7,23.61,Speaker 3,sad,whisper,35
+1703,160,24.84,27.96,Speaker 1,happy,whisper,95
+1704,160,28.98,32.73,Speaker 3,sad,laughing,56
+1705,160,33.12,36.29,Speaker 3,sad,monotone,80
+1706,160,37.26,41.16,N/A,angry,emphatic,29
+1707,160,41.4,45.2,N/A,frustrated,fast,115
+1708,160,45.54,49.03,N/A,angry,emphatic,23
+1709,160,49.68,53.59,Speaker 2,sad,monotone,62
+1710,160,53.82,57.89,Speaker 2,anxious,calm,39
+1711,160,57.96,61.06,Speaker 2,excited,whisper,77
+1712,161,0.0,4.63,N/A,excited,calm,14
+1713,161,5.26,10.25,Speaker 1,angry,fast,98
+1714,161,10.52,14.33,Speaker 2,neutral,laughing,1
+1715,161,15.78,20.97,Speaker 1,frustrated,laughing,90
+1716,161,21.04,24.86,Speaker 2,confused,laughing,72
+1717,161,26.3,31.39,Speaker 2,anxious,hesitant,61
+1718,161,31.56,35.49,Speaker 1,anxious,whisper,69
+1719,161,36.82,40.7,Speaker 1,happy,monotone,37
+1720,161,42.08,45.92,N/A,angry,calm,116
+1721,161,47.34,51.38,Speaker 2,excited,emphatic,18
+1722,161,52.6,56.84,Speaker 3,sad,whisper,49
+1723,161,57.86,62.63,Speaker 1,confused,fast,14
+1724,161,63.12,67.16,Speaker 3,frustrated,calm,78
+1725,161,68.38,72.59,Speaker 3,happy,calm,77
+1726,161,73.64,77.56,N/A,frustrated,monotone,23
+1727,162,0.0,4.07,Speaker 1,neutral,laughing,119
+1728,162,4.15,8.28,Speaker 2,frustrated,fast,49
+1729,162,8.31,11.77,N/A,happy,calm,73
+1730,162,12.46,15.9,Speaker 3,angry,calm,41
+1731,162,16.61,20.76,Speaker 2,excited,hesitant,40
+1732,162,20.76,24.29,N/A,excited,monotone,101
+1733,162,24.92,28.62,Speaker 2,sad,emphatic,53
+1734,162,29.07,32.66,N/A,sad,emphatic,10
+1735,162,33.22,36.85,N/A,sad,whisper,11
+1736,162,37.37,40.57,Speaker 1,sad,laughing,2
+1737,162,41.53,44.88,N/A,angry,calm,7
+1738,162,45.68,49.72,Speaker 3,angry,hesitant,58
+1739,162,49.83,52.92,N/A,sad,fast,105
+1740,162,53.98,57.17,Speaker 2,happy,whisper,90
+1741,162,58.14,61.22,Speaker 1,excited,hesitant,6
+1742,162,62.29,66.07,Speaker 1,confused,laughing,76
+1743,162,66.44,70.43,Speaker 1,angry,hesitant,18
+1744,162,70.59,73.6,Speaker 1,neutral,monotone,106
+1745,162,74.75,78.67,Speaker 2,angry,emphatic,95
+1746,163,0.0,5.35,Speaker 2,neutral,whisper,4
+1747,163,6.8,12.79,Speaker 2,angry,calm,50
+1748,163,13.6,20.06,N/A,anxious,monotone,64
+1749,163,20.4,25.78,Speaker 2,excited,fast,34
+1750,163,27.2,33.95,N/A,angry,whisper,27
+1751,163,34.0,39.58,Speaker 1,sad,emphatic,23
+1752,164,0.0,4.37,Speaker 3,excited,fast,34
+1753,164,5.83,10.1,Speaker 1,frustrated,monotone,99
+1754,164,11.66,17.22,Speaker 1,sad,hesitant,20
+1755,164,17.49,22.51,Speaker 1,sad,monotone,1
+1756,164,23.31,28.72,Speaker 3,sad,monotone,25
+1757,164,29.14,34.34,Speaker 1,sad,hesitant,10
+1758,164,34.97,40.76,Speaker 1,confused,calm,6
