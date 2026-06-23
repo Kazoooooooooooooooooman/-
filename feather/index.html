@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja" class="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>feather — Audio Annotation Dashboard</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="root">
+    <!-- App shell: resizable sidebar group (left / center / right) -->
+    <div class="shell">
+      <!-- LEFT PANEL: task queue -->
+      <aside class="panel panel-left" id="left-panel">
+        <div class="panel-head">
+          <span class="dot"></span>
+          <span>Task Queue</span>
+        </div>
+        <div class="queue" id="queue"></div>
+      </aside>
+
+      <div class="resize-handle" data-handle="left" title="ドラッグで幅変更"></div>
+
+      <!-- CENTER PANEL -->
+      <section class="panel panel-center">
+        <!-- top bar (60px) -->
+        <header class="topbar">
+          <div class="brand">
+            <span class="logo">🪶</span>
+            <strong>feather</strong>
+            <span class="crumb" id="crumb">— / task_0481 / call_audio.wav</span>
+          </div>
+          <div class="topbar-right">
+            <span class="git" id="git-sha">sha 86e0aab · 2026-06-19</span>
+            <button class="btn ghost" id="btn-shortcuts">⌘ ショートカット</button>
+            <button class="btn primary" id="btn-submit">納品 (Submit)</button>
+          </div>
+        </header>
+
+        <!-- content: two columns -->
+        <div class="content">
+          <!-- LEFT COLUMN: waveform + segments -->
+          <div class="col col-wave">
+            <div class="card">
+              <div class="card-head">
+                <div>
+                  <div class="card-title">Waveform</div>
+                  <div class="card-sub" id="audio-meta">call_audio.wav · 00:00.0 / 00:00.0 · 16kHz mono</div>
+                </div>
+                <div class="transport">
+                  <button class="btn icon" id="btn-back" title="-5s">⏪</button>
+                  <button class="btn icon play" id="btn-play" title="Space">▶</button>
+                  <button class="btn icon" id="btn-fwd" title="+5s">⏩</button>
+                  <span class="rate">
+                    <button class="chip" data-rate="0.75">0.75×</button>
+                    <button class="chip active" data-rate="1">1×</button>
+                    <button class="chip" data-rate="1.5">1.5×</button>
+                  </span>
+                </div>
+              </div>
+
+              <div class="wave-wrap">
+                <canvas id="wave" height="160"></canvas>
+                <div class="regions" id="regions"></div>
+                <div class="playhead" id="playhead"></div>
+                <div class="timeaxis" id="timeaxis"></div>
+              </div>
+
+              <div class="wave-hint">
+                波形上を<strong>ドラッグ</strong>して区間(チャンク)を作成 ·
+                クリックで選択 · <strong>E</strong> で再生位置に区切りを追加 ·
+                <strong>Del</strong> で選択区間を削除
+              </div>
+            </div>
+
+            <div class="card seg-card">
+              <div class="card-head">
+                <div class="card-title">Segments <span class="count" id="seg-count">0</span></div>
+                <button class="btn ghost sm" id="btn-clear">全消去</button>
+              </div>
+              <div class="seg-list" id="seg-list"></div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: labeling tabs -->
+          <div class="col col-label">
+            <div class="card label-card">
+              <div class="card-head">
+                <div>
+                  <div class="card-title">Annotation</div>
+                  <div class="card-sub" id="active-seg-label">区間を選択してください</div>
+                </div>
+              </div>
+
+              <!-- Radix-style tablist -->
+              <div class="tabs" role="tablist" aria-orientation="horizontal">
+                <button class="tab active" role="tab" data-tab="speakers" id="trigger-speakers">👥 Speakers</button>
+                <button class="tab" role="tab" data-tab="emotion" id="trigger-emotion">🎭 Emotion</button>
+                <button class="tab" role="tab" data-tab="vocal_delivery" id="trigger-vocal">🎙 Vocal Delivery</button>
+              </div>
+
+              <!-- panels -->
+              <div class="tabpanel" data-panel="speakers" data-state="active">
+                <div class="field-label">話者 (Speaker)</div>
+                <div class="opt-grid" id="opt-speakers"></div>
+                <div class="field-label">書き起こし (Transcript)</div>
+                <textarea id="transcript" class="ta" placeholder="この区間の発話内容を入力..."></textarea>
+              </div>
+
+              <div class="tabpanel" data-panel="emotion" data-state="inactive" hidden>
+                <div class="field-label">主感情 (Primary Emotion)</div>
+                <div class="opt-grid" id="opt-emotion"></div>
+                <div class="field-label">強度 (Intensity) <span id="intensity-val">3</span>/5</div>
+                <input type="range" id="intensity" min="1" max="5" value="3" class="slider" />
+              </div>
+
+              <div class="tabpanel" data-panel="vocal_delivery" data-state="inactive" hidden>
+                <div class="field-label">発話スタイル (Vocal Delivery)</div>
+                <div class="opt-grid" id="opt-vocal"></div>
+                <div class="field-label">メモ (Notes)</div>
+                <textarea id="vocal-notes" class="ta" placeholder="抑揚・速度・ためらい など..."></textarea>
+              </div>
+
+              <div class="label-footer">
+                <span id="autosave" class="autosave">●  自動保存</span>
+                <button class="btn ghost sm" id="btn-prev">← 前の区間</button>
+                <button class="btn ghost sm" id="btn-next">次の区間 →</button>
+              </div>
+            </div>
+
+            <div class="card json-card">
+              <div class="card-head">
+                <div class="card-title">納品プレビュー (Delivery JSON)</div>
+                <button class="btn ghost sm" id="btn-copy">コピー</button>
+              </div>
+              <pre class="json" id="json-out">{ }</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- shortcuts modal -->
+  <div class="modal-bg" id="modal" hidden>
+    <div class="modal">
+      <h3>キーボードショートカット</h3>
+      <table>
+        <tr><td><kbd>Space</kbd></td><td>再生 / 一時停止</td></tr>
+        <tr><td><kbd>E</kbd></td><td>再生位置に区切りを追加</td></tr>
+        <tr><td><kbd>Del</kbd></td><td>選択中の区間を削除</td></tr>
+        <tr><td><kbd>← / →</kbd></td><td>前 / 次の区間へ</td></tr>
+        <tr><td><kbd>1 / 2 / 3</kbd></td><td>Speakers / Emotion / Vocal タブ</td></tr>
+      </table>
+      <button class="btn primary" id="modal-close">閉じる</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
