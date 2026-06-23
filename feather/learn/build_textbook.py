@@ -20,11 +20,43 @@ CONTENT = {
     <h2>ようこそ feather Academy へ 🪶</h2>
     <p>これは「読むだけ」で終わらない教科書。<b>その場でSQLを書いて、本物のデータベースで実行</b>できる。
     間違えてもOK——ヒントと解説が出るし、詰まったら「Claudeに聞く」で質問を作れる。</p>
-    <div class="callout">
-      <b>題材は人間データ(アノテーション)の品質オペレーション</b>——つまり Mercor の Quality PM の仕事そのもの。
-      「どのアノテーターの品質が低いか」「なぜ棄却が多いか」を、自分のSQLで解き明かしていく。
+
+    <h3>🎯 この教科書の「完成形」</h3>
+    <p>7日間のゴールは、バラバラのデータから<b>自分の手で、こういう品質レポートを生み出せるようになる</b>こと👇</p>
+    <div class="goalbox">
+      <div class="goalbox-h">📊 週次 品質レポート(あなたが作れるようになるもの)</div>
+      <ul>
+        <li><b>棄却率は 32%</b>(目標20%)。棄却の <b>56% が下位3名に集中</b>。</li>
+        <li>下位3名(Mika_05, Yuki_08, Nina_09)への<b>再研修で大幅改善が見込める</b>。</li>
+        <li>hardタスクの品質は medium 比 <b>-7pt</b>。難易度配分の見直しを提案。</li>
+      </ul>
+      <div class="goalbox-f">↑ これは「事実の羅列」ではなく<b>意思決定者が今すぐ動ける成果物</b>。
+      数字 → 原因 → 打ち手 がワンセットになっている。これが書けると評価が変わる。</div>
     </div>
-    <h3>データの全体像(5つのテーブル)</h3>
+
+    <h3>🎁 あなたが得られるもの</h3>
+    <table class="dict">
+      <tr><th>スキル</th><th>できるようになること</th><th>Mercorでの意味</th></tr>
+      <tr><td><b>SQL</b></td><td>データを自分で開き、集計し、原因を特定</td><td>"root-cause issues"</td></tr>
+      <tr><td><b>統計</b></td><td>「低い」を"統計的に低い"と判断できる</td><td>"quantitative analytical ability"</td></tr>
+      <tr><td><b>pandas</b></td><td>分析を自動化し、グラフにする</td><td>"leveraging databases & scripting"</td></tr>
+      <tr><td><b>レポート</b></td><td>数字を"成果の言葉"に翻訳して伝える</td><td>"leadership-facing reports"</td></tr>
+      <tr><td>🏆 <b>作品</b></td><td>面接で見せられるポートフォリオ1個</td><td>"building systems from scratch"</td></tr>
+    </table>
+    <div class="callout">この4スキル+作品が、Mercor の Quality PM が「1日に回す仕事」そのもの:
+      <b>データを開き(SQL)→原因を詰め(統計)→自動化し(pandas)→1枚で伝える(レポート)</b>。</div>
+
+    <h3>🗺 7日間の地図</h3>
+    <table class="dict">
+      <tr><th>Day</th><th>テーマ</th><th>身につくこと</th></tr>
+      <tr><td>1</td><td>データに触れる</td><td>SELECT / WHERE / ORDER BY</td></tr>
+      <tr><td>2</td><td>数字を作る</td><td>GROUP BY / 集計 / CASE(棄却率KPI)</td></tr>
+      <tr><td>3</td><td>関係と順位</td><td>JOIN / 集計(アノテーター別品質)</td></tr>
+      <tr><td>4</td><td>判断する</td><td>分布 / ばらつき / 統計</td></tr>
+      <tr><td>5-7</td><td>自動化・伝達・統合</td><td>pandas / レポート / 完成形へ</td></tr>
+    </table>
+
+    <h3>🗃 使うデータ(5つのテーブル)</h3>
     <table class="dict">
       <tr><th>テーブル</th><th>意味</th><th>主な列</th></tr>
       <tr><td>annotators</td><td>作業者</td><td>annotator_id, name, country, tier, hired_date</td></tr>
@@ -33,7 +65,11 @@ CONTENT = {
       <tr><td>segments</td><td>区間ごとのラベル</td><td>start_sec, end_sec, speaker, emotion, vocal_delivery</td></tr>
       <tr><td>audits</td><td>レビュー結果</td><td>quality_score, verdict, error_type</td></tr>
     </table>
-    <p>左のメニューから Day 1 を選んでスタート。各 Day の演習を全部 ✓ にしていこう。</p>
+
+    <div class="callout" style="background:#ecfdf5;border-color:#10b981">
+      <b>▶ さあ始めよう。</b> 左メニューの「Day 1 — データに触れる」をクリック。
+      最初の1問は3秒で解ける。各Dayの演習を全部 ✓ にして、上の「完成形」までたどり着こう。
+    </div>
   """,
   "days": [
     {
@@ -238,6 +274,10 @@ h2{font-size:24px;margin:0 0 4px}h3{font-size:18px;margin:26px 0 8px}
 .daysub{color:var(--brand);font-weight:700;font-size:13px;letter-spacing:.04em;margin-bottom:18px}
 p{margin:8px 0}
 .callout{background:var(--brandw);border-left:4px solid var(--brand);padding:12px 16px;border-radius:8px;margin:14px 0;font-size:14px}
+.goalbox{background:#fff;border:2px solid var(--brand);border-radius:14px;padding:18px 20px;margin:14px 0;box-shadow:0 2px 10px rgba(79,70,229,.08)}
+.goalbox-h{font-weight:800;color:var(--brand);margin-bottom:10px;font-size:15px}
+.goalbox ul{margin:6px 0;padding-left:22px}.goalbox li{margin:5px 0}
+.goalbox-f{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:13px;color:var(--muted)}
 pre.sql,code{font-family:ui-monospace,"SF Mono",Menlo,monospace}
 pre.sql{background:#0f172a;color:#e2e8f0;padding:14px 16px;border-radius:10px;overflow:auto;font-size:13px;line-height:1.55}
 code{background:#eef0f3;padding:1px 6px;border-radius:5px;font-size:13px}
