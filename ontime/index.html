@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#2f6fed" />
+<title>OnTime 約束逆算</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="top">
+  <h1>⏰ OnTime</h1>
+  <p class="tag">決まった約束から「何時に起きて・何時に出るか」を自動で逆算</p>
+</header>
+
+<main>
+  <!-- いまやること (直近の約束) -->
+  <section id="now" class="card now" hidden>
+    <div class="now-head">
+      <span class="pill" id="now-title"></span>
+      <span class="muted" id="now-when"></span>
+    </div>
+    <div class="now-label">いまやること</div>
+    <div class="now-task" id="now-task"></div>
+    <div class="now-next" id="now-next"></div>
+    <div class="countdown" id="now-countdown"></div>
+    <div class="row wrap">
+      <button class="btn" id="now-leaving">🚪 出発報告を送る</button>
+      <button class="btn warn" id="now-late">🙏 遅刻連絡を送る</button>
+      <button class="btn ghost" id="now-open">詳細</button>
+    </div>
+  </section>
+
+  <!-- STEP 1 -->
+  <section class="card">
+    <h2><span class="num">1</span>LINE / Gmail の会話を貼り付け</h2>
+    <p class="muted small">約束が決まったトーク・メールをそのままコピペ（スマホならLINE・Gmailの「共有」からこのアプリを選んでもOK）。最後に決まった日時・場所を自動で拾います。</p>
+    <textarea id="msg" rows="6" placeholder="例）&#10;A: 明日どうする？&#10;B: 14時半に渋谷駅ハチ公前で集合ね！&#10;A: おけ！"></textarea>
+    <div class="row wrap">
+      <button class="btn primary" id="parse">読み取る</button>
+      <button class="btn ghost" id="paste">📋 クリップボードから貼り付け</button>
+    </div>
+    <div id="cands" class="cands"></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="card" id="step2">
+    <h2><span class="num">2</span>内容を確認</h2>
+    <div class="grid">
+      <label>なんの約束？<input id="f-title" placeholder="例）Aとごはん" /></label>
+      <label>日時<input id="f-when" type="datetime-local" /></label>
+      <label>場所<input id="f-place" placeholder="例）渋谷駅ハチ公前" /></label>
+      <label>出発地<input id="f-from" placeholder="設定の「家」が入ります" /></label>
+    </div>
+    <p id="guess-warn" class="warn-text" hidden>⚠ 「午前/午後」が書かれていなかったので午後と判断しました。違ったら日時を直してください。</p>
+
+    <div class="route">
+      <div class="muted small">↓ 到着時刻を指定した乗換検索が開きます。表示された<b>所要時間（分）</b>と<b>乗る電車</b>を下に入れてください。</div>
+      <div class="row wrap">
+        <a class="btn" id="link-yahoo" target="_blank" rel="noopener">🚃 Yahoo!乗換案内（到着時刻指定）</a>
+        <a class="btn" id="link-google" target="_blank" rel="noopener">🗺 Googleマップ</a>
+      </div>
+      <div class="grid">
+        <label>家→到着までの所要時間（分）<input id="f-travel" type="number" min="0" step="1" inputmode="numeric" /></label>
+        <label>道のりメモ<input id="f-route" placeholder="例）9:12 ○○駅発 JR山手線 → 渋谷 9:40着 ハチ公口" /></label>
+      </div>
+      <p class="muted small" id="travel-memo"></p>
+    </div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="card" id="step3">
+    <h2><span class="num">3</span>当日のタイムライン</h2>
+    <div id="summary" class="summary"></div>
+    <ol id="timeline" class="timeline"></ol>
+    <div class="row wrap">
+      <button class="btn primary" id="save">💾 この約束を保存</button>
+      <button class="btn" id="ics">📅 アラーム付きでカレンダーに追加</button>
+      <button class="btn ghost" id="notify">🔔 通知をON</button>
+    </div>
+    <p class="muted small">カレンダーに追加すると「前日の準備」「起床」「出発15分前・5分前・出発」のアラームが iPhone / Google カレンダーから鳴ります（アプリを閉じていても鳴る一番確実な方法）。</p>
+
+    <h3>📣 ほうれん草（報告・連絡）</h3>
+    <div id="msgs" class="msgs"></div>
+  </section>
+
+  <!-- 保存した約束 -->
+  <section class="card">
+    <h2>📌 保存した約束</h2>
+    <ul id="list" class="list"></ul>
+  </section>
+
+  <!-- 設定 -->
+  <details class="card" id="settings">
+    <summary><h2>⚙ 自分用の設定（最初に一度だけ）</h2></summary>
+    <div class="grid">
+      <label>家（最寄り駅 or 住所）<input id="s-home" placeholder="例）中野駅" /></label>
+      <label>何分前に着く？<input id="s-arriveEarly" type="number" min="0" /></label>
+      <label>電車遅延・迷子の保険（分）<input id="s-delayBuffer" type="number" min="0" /></label>
+      <label>起きてからぼーっとする時間（分）<input id="s-wakeBuffer" type="number" min="0" /></label>
+      <label>気が散る係数（支度時間×）<input id="s-distraction" type="number" min="1" max="3" step="0.1" /></label>
+      <label>いつもの起床時刻<input id="s-usualWake" type="time" /></label>
+      <label>睡眠時間（時間）<input id="s-sleepHours" type="number" min="3" max="12" step="0.5" /></label>
+    </div>
+    <p class="muted small">「気が散る係数」: スマホを見たりして支度が予定より延びがちなら 1.3〜1.5 がおすすめ。実際にかかった時間に合わせて調整しよう。</p>
+    <h3>朝の支度（上から順にやる）</h3>
+    <ul id="routine" class="routine"></ul>
+    <button class="btn ghost" id="add-task">＋ 支度を追加</button>
+  </details>
+</main>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

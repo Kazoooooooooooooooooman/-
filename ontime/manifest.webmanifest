@@ -1,0 +1,17 @@
+{
+  "name": "OnTime 約束逆算",
+  "short_name": "OnTime",
+  "description": "LINE・Gmailで決まった約束から、起床・出発時刻と道のりを自動で逆算",
+  "lang": "ja",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#2f6fed",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  }
+}
