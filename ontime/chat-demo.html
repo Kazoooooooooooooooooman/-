@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OnTime Chat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+:root {
+  --bg: #eef1ee;
+  --surface: #ffffff;
+  --ink: #18221f;
+  --muted: #5d6b66;
+  --line: #d5dcd8;
+  --accent: #0f6e6a;
+  --accent-ink: #ffffff;
+  --accent-weak: #ddedea;
+  --them: #ffffff;
+  --board: #121a18;
+  --board-line: #25302d;
+  --board-dim: #7d8a85;
+  --amber: #f2b33d;
+  --warn: #c8452f;
+  --warn-weak: #f8e4df;
+  --ok: #2b8a57;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0e1413; --surface: #172120; --ink: #e6eeea; --muted: #93a39d; --line: #26332f;
+    --accent: #3fb5ac; --accent-ink: #0b1514; --accent-weak: #16322f; --them: #1d2927;
+    --board: #0a0f0e; --board-line: #1f2a27; --warn: #f07a62; --warn-weak: #3a221d; --ok: #5cc38a;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0e1413; --surface: #172120; --ink: #e6eeea; --muted: #93a39d; --line: #26332f;
+  --accent: #3fb5ac; --accent-ink: #0b1514; --accent-weak: #16322f; --them: #1d2927;
+  --board: #0a0f0e; --board-line: #1f2a27; --warn: #f07a62; --warn-weak: #3a221d; --ok: #5cc38a;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
+  font-size: 15px; line-height: 1.6;
+  padding: 20px 16px 40px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+.head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
+.head h1 { margin: 0; font-size: 24px; letter-spacing: .02em; }
+.head p { margin: 0; color: var(--muted); font-size: 14px; }
+.demo-note { font-size: 12px; color: var(--muted); }
+
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.panel-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+.panel-h h2 { margin: 0; font-size: 15px; }
+.panel-h .sub { font-size: 12px; color: var(--muted); }
+
+/* chat */
+.chat { display: flex; flex-direction: column; height: 620px; max-height: 80vh; }
+.msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
+.m { display: flex; flex-direction: column; max-width: 82%; }
+.m .who { font-size: 11px; color: var(--muted); margin: 0 4px 2px; }
+.m .b { padding: 8px 12px; border-radius: 14px; background: var(--them); border: 1px solid var(--line); white-space: pre-wrap; word-break: break-word; }
+.m.me { align-self: flex-end; align-items: flex-end; }
+.m.me .b { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.sys { align-self: center; width: min(100%, 420px); border: 1px dashed var(--accent); background: var(--accent-weak); border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+.sys b { display: block; font-size: 14px; }
+.sys button { margin-top: 6px; }
+.compose { border-top: 1px solid var(--line); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; align-self: flex-start; }
+.seg button { border: 0; background: transparent; color: var(--muted); padding: 4px 12px; font: inherit; font-size: 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.send-row { display: flex; gap: 8px; }
+.send-row input { flex: 1; min-width: 0; }
+input, select {
+  font: inherit; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px;
+}
+input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.btn {
+  font: inherit; font-size: 13px; cursor: pointer; border-radius: 10px; padding: 8px 12px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+.btn.warn { background: var(--warn); border-color: var(--warn); color: #fff; }
+.btn.sm { padding: 4px 10px; font-size: 12px; }
+.hints { display: flex; flex-wrap: wrap; gap: 6px; }
+.hint { font: inherit; font-size: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+
+/* right side */
+.right { display: flex; flex-direction: column; gap: 16px; }
+.cal { padding: 12px 14px 14px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-variant-numeric: tabular-nums; }
+.cal-grid .dow { font-size: 11px; color: var(--muted); padding-bottom: 2px; }
+.day { position: relative; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 13px; padding: 6px 0 12px; border-radius: 8px; cursor: default; }
+.day.other { color: var(--line); }
+.day.today { font-weight: 700; box-shadow: inset 0 0 0 1px var(--line); }
+.day.has { cursor: pointer; background: var(--accent-weak); }
+.day.has::after { content: ""; position: absolute; left: 50%; bottom: 4px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: var(--accent); }
+.day.sel { background: var(--accent); color: var(--accent-ink); }
+.day.sel::after { background: var(--accent-ink); }
+.flash { animation: flash 1.2s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 6px var(--amber); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+
+/* departure board */
+.board { background: var(--board); color: #e9efe9; border-radius: 14px; overflow: hidden; border: 1px solid var(--board-line); }
+.board-h { padding: 14px 16px 10px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; border-bottom: 1px solid var(--board-line); }
+.board-h .t { font-size: 17px; font-weight: 700; }
+.board-h .p { font-size: 13px; color: var(--board-dim); }
+.big { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--board-line); }
+.big > div { padding: 10px 12px; border-right: 1px solid var(--board-line); }
+.big > div:last-child { border-right: 0; }
+.big span { display: block; font-size: 11px; letter-spacing: .08em; color: var(--board-dim); }
+.big b { font-family: "DotGothic16", ui-monospace, monospace; font-weight: 400; font-size: 30px; color: var(--amber); letter-spacing: .04em; }
+.rows { list-style: none; margin: 0; padding: 4px 0; }
+.rows li { display: grid; grid-template-columns: 64px 1fr; gap: 10px; padding: 7px 16px; align-items: baseline; }
+.rows li + li { border-top: 1px solid var(--board-line); }
+.rows time { font-family: "DotGothic16", ui-monospace, monospace; color: var(--amber); font-size: 18px; font-variant-numeric: tabular-nums; }
+.rows .lbl { display: flex; flex-direction: column; }
+.rows .lbl small { color: var(--board-dim); font-size: 12px; }
+.rows .k-night time { color: #b9a4ff; }
+.rows .k-leave .lbl > span:first-child, .rows .k-start .lbl > span:first-child { font-weight: 700; }
+.rows .k-appt time { color: #7ee0a3; }
+.rows .done { opacity: .4; }
+.line-chip { display: inline-flex; align-items: center; gap: 6px; }
+.line-chip i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+.board-empty { padding: 28px 16px; color: var(--board-dim); font-size: 14px; }
+.actions { padding: 12px 16px 14px; border-top: 1px solid var(--board-line); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.actions .btn { background: transparent; color: #e9efe9; border-color: var(--board-line); }
+.actions .btn.warn { background: var(--warn); border-color: var(--warn); }
+.late-pick { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--board-dim); }
+
+.settings { padding: 12px 14px 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 520px) { .settings { grid-template-columns: 1fr; } }
+.settings label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.foot { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+</style>
+
+<div class="wrap">
+  <div class="head">
+    <h1>OnTime Chat</h1>
+    <p>チャットで約束が決まった瞬間に、カレンダー登録と当日の段取り（起きる・出る・乗る電車）が自動で入る</p>
+  </div>
+
+  <div class="cols">
+    <section class="panel chat" aria-label="グループトーク">
+      <div class="panel-h">
+        <h2>週末あそぶ会</h2>
+        <span class="sub">自分・ゆうき</span>
+      </div>
+      <div class="msgs" id="msgs"></div>
+      <div class="compose">
+        <div class="seg" role="group" aria-label="送信者">
+          <button id="as-me" aria-pressed="true">自分として送る</button>
+          <button id="as-yuki" aria-pressed="false">ゆうきとして送る</button>
+        </div>
+        <div class="send-row">
+          <input id="text" placeholder="例）やっぱ15時にしない？" autocomplete="off">
+          <button class="btn primary" id="send">送信</button>
+        </div>
+        <div class="hints" id="hints">
+          <button class="hint">やっぱ15時にしない？</button>
+          <button class="hint">来週の土曜10時に池袋駅東口で集合は？</button>
+          <button class="hint">おけ！</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="right">
+      <section class="panel">
+        <div class="panel-h">
+          <h2 id="cal-title">カレンダー</h2>
+          <span class="sub">決まった予定は自動で入ります</span>
+        </div>
+        <div class="cal"><div class="cal-grid" id="cal"></div></div>
+      </section>
+
+      <section class="board" aria-live="polite">
+        <div id="board"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-h"><h2>自分の設定</h2><span class="sub">1回だけ</span></div>
+        <div class="settings">
+          <label for="s-wake">いつもの起床<input id="s-wake" type="time"></label>
+          <label for="s-dist">気が散る係数
+            <select id="s-dist">
+              <option value="1">×1.0 ちゃんとできる</option>
+              <option value="1.3">×1.3 ちょっと寄り道</option>
+              <option value="1.5">×1.5 スマホ見がち</option>
+            </select>
+          </label>
+          <label for="s-early">何分前に着く<input id="s-early" type="number" min="0" max="60"></label>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="foot">
+    <span>家: 中野駅（デモ）。電車はデモ用の経路で、本番は乗換検索から自動で取ります。</span>
+    <button class="btn sm" id="reset">デモを最初から</button>
+  </div>
+</div>
+
+<script src="core.js"></script>
+<script>
+(function () {
+  "use strict";
+  const C = window.OnTimeCore;
+  const $ = (id) => document.getElementById(id);
+  const MIN = 60000;
+  const WD = "日月火水木金土";
+  const CONFIRM = /(おけ|おっけ|オッケ|OK|ok|了解|りょ|いいよ|決定|決まり|それで|賛成|👍|🙆)/;
+  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+  // 中野駅からのデモ経路
+  const ROUTES = [
+    { key: "渋谷", walk: 7, after: 3, legs: [{ line: "JR中央線快速", color: "#f15a22", from: "中野", to: "新宿", min: 5 }, { line: "JR山手線", color: "#80c241", from: "新宿", to: "渋谷", min: 7 }] },
+    { key: "池袋", walk: 7, after: 4, legs: [{ line: "JR中央線快速", color: "#f15a22", from: "中野", to: "新宿", min: 5 }, { line: "JR山手線", color: "#80c241", from: "新宿", to: "池袋", min: 9 }] },
+    { key: "新宿", walk: 7, after: 3, legs: [{ line: "JR中央線快速", color: "#f15a22", from: "中野", to: "新宿", min: 5 }] },
+    { key: "東京", walk: 7, after: 4, legs: [{ line: "JR中央線快速", color: "#f15a22", from: "中野", to: "東京", min: 17 }] },
+    { key: "吉祥寺", walk: 7, after: 3, legs: [{ line: "JR中央線快速", color: "#f15a22", from: "中野", to: "吉祥寺", min: 9 }] },
+  ];
+  const DEFAULT_ROUTE = { walk: 7, after: 5, legs: [{ line: "電車（デモ）", color: "#8a9691", from: "中野", to: "目的地", min: 20 }] };
+  function routeFor(place) {
+    const r = ROUTES.find((x) => place && place.includes(x.key)) || DEFAULT_ROUTE;
+    const transfers = Math.max(0, r.legs.length - 1) * 3;
+    return Object.assign({}, r, { total: r.walk + r.legs.reduce((a, l) => a + l.min, 0) + transfers + r.after });
+  }
+
+  const SAMPLE = [
+    { who: "yuki", text: "今週末ひま？映画いかない？" },
+    { who: "me", text: "いいね！土曜は無理だけど日曜ならいける" },
+    { who: "yuki", text: "じゃあ日曜の14時半に渋谷駅ハチ公前で集合でどう？" },
+    { who: "me", text: "おけ！" },
+  ];
+
+  let state;
+  function fresh() {
+    return { msgs: [], events: [], sel: null, as: "me", settings: { usualWake: "08:00", distraction: 1.3, arriveEarly: 10 } };
+  }
+  function load() {
+    try {
+      const s = JSON.parse(localStorage.getItem("ontime-chat") || "null");
+      if (s && s.msgs) {
+        s.events.forEach((e) => (e.when = new Date(e.when)));
+        return s;
+      }
+    } catch (e) {}
+    return null;
+  }
+  function save() {
+    try { localStorage.setItem("ontime-chat", JSON.stringify(state)); } catch (e) {}
+  }
+  const settings = () => Object.assign({}, C.DEFAULT_SETTINGS, state.settings, { delayBuffer: 3 });
+  const planOf = (ev) => C.buildPlan({ when: ev.when, travelMin: routeFor(ev.place).total, place: ev.place }, settings());
+
+  // ---------- チャット → 予定の自動登録 ----------
+  function post(who, text, silent) {
+    state.msgs.push({ who, text });
+    if (who !== "sys") detect(text, silent);
+    save();
+    if (!silent) render();
+  }
+  function detect(latest, silent) {
+    if (!CONFIRM.test(latest)) return;
+    const recent = state.msgs.filter((m) => m.who !== "sys").slice(-10).map((m) => m.text).join("\n");
+    const r = C.parseMessage(recent, new Date());
+    if (!r.when || r.when < new Date()) return;
+    const sameDay = state.events.find((e) => e.when.toDateString() === r.when.toDateString());
+    let ev, changed = false;
+    if (sameDay) {
+      if (+sameDay.when === +r.when && sameDay.place === (r.place || sameDay.place)) return;
+      sameDay.when = r.when;
+      if (r.place) sameDay.place = r.place;
+      ev = sameDay; changed = true;
+    } else {
+      ev = { id: String(Date.now()), when: r.when, place: r.place || "場所未定", title: "ゆうきと" };
+      state.events.push(ev);
+    }
+    state.sel = ev.id;
+    state.msgs.push({ who: "sys", id: ev.id, changed });
+    flashId = ev.id;
+  }
+  let flashId = null;
+
+  // ---------- 描画 ----------
+  function renderMsgs() {
+    const box = $("msgs");
+    box.innerHTML = state.msgs.map((m) => {
+      if (m.who === "sys") {
+        const ev = state.events.find((e) => e.id === m.id);
+        if (!ev) return "";
+        const p = planOf(ev);
+        return `<div class="sys"><b>📅 ${m.changed ? "予定を変更しました" : "カレンダーに登録しました"}</b>
+          ${C.md(ev.when)} ${C.hm(ev.when)}　${esc(ev.place)}<br>
+          支度スタート ${C.hm(p.prepStart)} ／ 家を出る ${C.hm(p.leave)}
+          <br><button class="btn sm" data-open="${ev.id}">当日の段取りを見る</button></div>`;
+      }
+      const me = m.who === "me";
+      return `<div class="m ${me ? "me" : ""}"><span class="who">${me ? "自分" : "ゆうき"}</span><div class="b">${esc(m.text)}</div></div>`;
+    }).join("");
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function renderCal() {
+    const sel = state.events.find((e) => e.id === state.sel);
+    const ref = sel ? sel.when : new Date();
+    const y = ref.getFullYear(), mo = ref.getMonth();
+    $("cal-title").textContent = `${y}年${mo + 1}月`;
+    const first = new Date(y, mo, 1);
+    const start = new Date(y, mo, 1 - first.getDay());
+    const today = new Date().toDateString();
+    let html = [...WD].map((d) => `<div class="dow">${d}</div>`).join("");
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+      if (i >= 35 && d.getMonth() !== mo) break;
+      const ev = state.events.find((e) => e.when.toDateString() === d.toDateString());
+      const cls = ["day", d.getMonth() !== mo ? "other" : "", d.toDateString() === today ? "today" : "", ev ? "has" : "", ev && ev.id === state.sel ? "sel" : "", ev && ev.id === flashId ? "flash" : ""].join(" ");
+      html += `<button class="${cls}" ${ev ? `data-open="${ev.id}" aria-label="${C.md(ev.when)} ${esc(ev.place)}"` : 'tabindex="-1" aria-hidden="true"'}>${d.getDate()}</button>`;
+    }
+    $("cal").innerHTML = html;
+  }
+
+  let latePick = false;
+  function renderBoard() {
+    const ev = state.events.find((e) => e.id === state.sel);
+    if (!ev) {
+      $("board").innerHTML = `<div class="board-empty">まだ予定がありません。左のトークで日時と場所を決めて「おけ！」と送ると、ここに当日の段取りが出ます。</div>`;
+      return;
+    }
+    const p = planOf(ev);
+    const rt = routeFor(ev.place);
+    const now = new Date();
+    // 家を出てからの乗車ステップ
+    const legs = [];
+    let t = new Date(+p.leave + rt.walk * MIN);
+    rt.legs.forEach((l, i) => {
+      if (i > 0) t = new Date(+t + 3 * MIN);
+      legs.push({ at: new Date(t), kind: "ride", label: `<span class="line-chip"><i style="background:${l.color}"></i>${esc(l.line)}</span>`, detail: `${l.from}駅 → ${l.to}駅（${l.min}分）` });
+      t = new Date(+t + l.min * MIN);
+    });
+    const steps = p.steps.filter((s) => s.kind !== "buffer").map((s) => ({ at: s.at, kind: s.kind, label: esc(s.label), detail: esc(s.detail) }))
+      .concat(legs).sort((a, b) => a.at - b.at);
+    steps.forEach((s) => { if (s.kind === "leave") s.detail = `駅まで徒歩${rt.walk}分`; });
+    $("board").innerHTML = `
+      <div class="board-h"><span class="t">${C.md(ev.when)} ${esc(ev.title)}</span><span class="p">${esc(ev.place)}</span></div>
+      <div class="big">
+        <div><span>支度スタート</span><b>${C.hm(p.prepStart)}</b></div>
+        <div><span>家を出る</span><b>${C.hm(p.leave)}</b></div>
+        <div><span>約束</span><b>${C.hm(p.when)}</b></div>
+      </div>
+      <ol class="rows">${steps.map((s) => `<li class="k-${s.kind}${s.at < now ? " done" : ""}"><time>${C.hm(s.at)}</time><span class="lbl"><span>${s.label}</span>${s.detail ? `<small>${s.detail}</small>` : ""}</span></li>`).join("")}</ol>
+      <div class="actions">
+        <button class="btn" data-act="eve">前日リマインドを送る</button>
+        <button class="btn" data-act="leave">出発したと報告</button>
+        ${latePick
+          ? `<span class="late-pick">何分遅れる？ ${[5, 10, 15, 30].map((n) => `<button class="btn sm warn" data-late="${n}">${n}分</button>`).join("")}</span>`
+          : `<button class="btn warn" data-act="late">遅れそうと連絡</button>`}
+      </div>`;
+  }
+
+  function render() {
+    renderMsgs();
+    renderCal();
+    renderBoard();
+    flashId = null;
+  }
+
+  // ---------- 操作 ----------
+  function send() {
+    const v = $("text").value.trim();
+    if (!v) return;
+    $("text").value = "";
+    post(state.as, v);
+  }
+  $("send").onclick = send;
+  $("text").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) send(); });
+  $("hints").onclick = (e) => {
+    const b = e.target.closest(".hint");
+    if (b) { $("text").value = b.textContent; $("text").focus(); }
+  };
+  function setAs(who) {
+    state.as = who;
+    $("as-me").setAttribute("aria-pressed", who === "me");
+    $("as-yuki").setAttribute("aria-pressed", who === "yuki");
+  }
+  $("as-me").onclick = () => setAs("me");
+  $("as-yuki").onclick = () => setAs("yuki");
+
+  document.addEventListener("click", (e) => {
+    const o = e.target.closest("[data-open]");
+    if (o) { state.sel = o.dataset.open; latePick = false; save(); renderCal(); renderBoard(); return; }
+    const a = e.target.closest("[data-act]");
+    const ev = state.events.find((x) => x.id === state.sel);
+    if (a && ev) {
+      const appt = { when: ev.when, place: ev.place };
+      if (a.dataset.act === "eve") post("me", C.messages.remindEve(appt));
+      if (a.dataset.act === "leave") post("me", "🚃 " + C.messages.leaving(appt, planOf(ev), new Date()));
+      if (a.dataset.act === "late") { latePick = true; renderBoard(); }
+      return;
+    }
+    const l = e.target.closest("[data-late]");
+    if (l && ev) {
+      const n = +l.dataset.late;
+      latePick = false;
+      post("me", C.messages.late({ when: ev.when, place: ev.place }, n, new Date(+ev.when + n * MIN)));
+    }
+  });
+
+  function bindSettings() {
+    $("s-wake").value = state.settings.usualWake;
+    $("s-dist").value = String(state.settings.distraction);
+    $("s-early").value = state.settings.arriveEarly;
+    $("s-wake").oninput = (e) => { state.settings.usualWake = e.target.value; save(); render(); };
+    $("s-dist").onchange = (e) => { state.settings.distraction = +e.target.value; save(); render(); };
+    $("s-early").oninput = (e) => { const v = +e.target.value; if (e.target.value !== "" && v >= 0) { state.settings.arriveEarly = v; save(); render(); } };
+  }
+
+  function start(reset) {
+    state = (!reset && load()) || null;
+    if (!state) {
+      state = fresh();
+      SAMPLE.forEach((m) => post(m.who, m.text, true));
+    }
+    setAs(state.as || "me");
+    bindSettings();
+    render();
+  }
+  $("reset").onclick = () => start(true);
+  start(false);
+  setInterval(renderBoard, 60 * 1000);
+})();
+</script>
