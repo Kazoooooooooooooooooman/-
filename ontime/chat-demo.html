@@ -200,6 +200,10 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
 .rows .k-appt time { color: #7ee0a3; }
 .rows .k-slack time, .rows .k-slack .lbl > span:first-child { color: #7ee0a3; }
 .rows .done { opacity: .4; }
+.src { display: inline-block; font-size: 10px; border-radius: 999px; padding: 1px 8px; margin-left: 6px; vertical-align: 2px; }
+.src.real { background: #173226; color: #9be3b7; }
+.src.demo { background: #2b2614; color: #f5d487; }
+.src.err { background: #3b1d18; color: #ffb4a4; }
 .line-chip { display: inline-flex; align-items: center; gap: 6px; }
 .line-chip i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
 .actions { padding: 10px 14px 12px; border-top: 1px solid var(--board-line); display: flex; flex-wrap: wrap; gap: 6px; }
@@ -233,12 +237,19 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
     <div class="scroll">
       <div class="profile">
         <div class="avatar lg">自</div>
-        <div><b>自分</b><span>家: 中野駅（デモ）</span></div>
+        <div><b>自分</b><span id="home-label"></span></div>
       </div>
       <div class="section-h">次の予定</div>
       <div id="next"></div>
       <div class="section-h">自分の段取り（全部変えられます）</div>
       <div class="set-body">
+        <fieldset>
+          <legend>家</legend>
+          <div class="set-grid">
+            <label for="s-home" style="grid-column: 1 / -1">家（最寄り駅か住所）<input id="s-home" placeholder="例）中野駅"></label>
+          </div>
+          <p class="help" id="transit-note"></p>
+        </fieldset>
         <fieldset>
           <legend>夜</legend>
           <div class="set-grid">
@@ -282,7 +293,7 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
         </fieldset>
         <fieldset>
           <legend>デモ</legend>
-          <p class="help">電車は中野駅発のデモ経路です（渋谷・池袋・新宿・東京・吉祥寺）。</p>
+          <p class="help">本物の乗換検索は、PCで server.js を起動して開いたときに使えます。それ以外は中野駅発のデモ経路（渋谷・池袋・新宿・東京・吉祥寺）です。</p>
           <button class="btn sm" id="reset">デモを最初からやり直す</button>
         </fieldset>
       </div>
@@ -365,17 +376,69 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
     { key: "吉祥寺", walk: 7, after: 3, legs: [{ line: "JR中央線快速", color: "#f15a22", from: "中野", to: "吉祥寺", min: 9 }] },
   ];
   const DEFAULT_ROUTE = { walk: 7, after: 5, legs: [{ line: "電車（デモ）", color: "#8a9691", from: "中野", to: "目的地", min: 20 }] };
-  function routeFor(place) {
+  function demoRoute(place) {
     const r = ROUTES.find((x) => place && place.includes(x.key)) || DEFAULT_ROUTE;
     const transfers = Math.max(0, r.legs.length - 1) * 3;
-    return Object.assign({}, r, { total: r.walk + r.legs.reduce((a, l) => a + l.min, 0) + transfers + r.after });
+    return Object.assign({ real: false }, r, { total: r.walk + r.legs.reduce((a, l) => a + l.min, 0) + transfers + r.after });
   }
+  const stn = (n) => (/駅$/.test(n) ? n : n + "駅");
+
+  // ---------- 本物の乗換検索（server.js 経由の Google Routes API） ----------
+  let realTransit = false;
+  const pending = new Set();
+  function arriveByOf(ev) {
+    const st = settings();
+    return new Date(+ev.when - (st.arriveEarly + (Number(st.fakeEarly) || 0)) * MIN);
+  }
+  const routeKey = (ev) => `${state.settings.home}|${ev.place}|${+arriveByOf(ev)}`;
+  function routeFor(ev) {
+    if (ev.route && ev.routeKey === routeKey(ev)) {
+      const r = ev.route;
+      // 家を出てから、着きたい時刻までを移動時間とみなす（本物の電車の時刻に合わせる）
+      const total = Math.max(1, Math.ceil((arriveByOf(ev) - new Date(r.departAt)) / MIN));
+      return { real: true, walk: r.walk, after: r.after, total, departAt: new Date(r.departAt), legs: r.legs.map((l) => Object.assign({}, l, { dep: new Date(l.dep) })) };
+    }
+    return demoRoute(ev.place);
+  }
+  function routeState(ev) {
+    if (!realTransit) return { cls: "demo", text: "デモ経路" };
+    if (pending.has(ev.id)) return { cls: "demo", text: "乗換検索中…" };
+    if (ev.route && ev.routeKey === routeKey(ev)) return { cls: "real", text: "本物の乗換検索" };
+    if (ev.routeErr && ev.routeErrKey === routeKey(ev)) return { cls: "err", text: "検索できずデモ表示" };
+    return { cls: "demo", text: "デモ経路" };
+  }
+  async function ensureRoute(ev) {
+    if (!realTransit || ev.place === "場所未定" || !state.settings.home) return;
+    const key = routeKey(ev);
+    if ((ev.route && ev.routeKey === key) || (ev.routeErr && ev.routeErrKey === key) || pending.has(ev.id)) return;
+    pending.add(ev.id);
+    try {
+      const res = await fetch("/api/route", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ from: state.settings.home, to: ev.place, arriveBy: arriveByOf(ev).toISOString() }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "HTTP " + res.status);
+      ev.route = data; ev.routeKey = key; ev.routeErr = null;
+    } catch (e) {
+      ev.routeErr = e.message; ev.routeErrKey = key;
+    }
+    pending.delete(ev.id);
+    day = null;
+    save();
+    renderAll();
+  }
+  function ensureRoutes() {
+    const now = new Date();
+    state.events.filter((e) => e.when > now).forEach(ensureRoute);
+  }
+
 
   // ---------- 状態 ----------
   function freshSettings() {
     return {
       usualWake: "08:00", distraction: 1.3, arriveEarly: 10, nightPrepMin: 30, sleepHours: 7,
-      wakeBuffer: 10, fakeEarly: 0, buddy: true,
+      wakeBuffer: 10, fakeEarly: 0, buddy: true, home: "中野駅",
       routine: C.DEFAULT_SETTINGS.routine.map((r) => Object.assign({}, r)),
     };
   }
@@ -422,7 +485,7 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
     } catch (e) {}
   }
   const settings = () => Object.assign({}, C.DEFAULT_SETTINGS, state.settings, { delayBuffer: 3 });
-  const planOf = (ev) => C.buildPlan({ when: ev.when, travelMin: routeFor(ev.place).total, place: ev.place }, settings());
+  const planOf = (ev) => C.buildPlan({ when: ev.when, travelMin: routeFor(ev).total, place: ev.place }, settings());
   const group = (id) => state.groups.find((g) => g.id === id);
   const selEv = () => state.events.find((e) => e.id === state.sel);
   const tm = (t) => C.hm(new Date(t));
@@ -455,6 +518,7 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
     }
     state.sel = ev.id;
     state.calMonth = null;
+    setTimeout(() => ensureRoute(ev), 0);
     if (state.tab !== "cal") state.unseen += 1;
     g.msgs.push({ who: "sys", id: ev.id, changed, t: Date.now() });
     flashId = ev.id;
@@ -577,7 +641,7 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
       <button role="tab" data-mode="plan" aria-selected="${state.calMode === "plan"}">段取り表</button>
       <button role="tab" data-mode="day" aria-selected="${state.calMode === "day"}">当日モード</button></div>`;
     const p = planOf(ev);
-    const rt = routeFor(ev.place);
+    const rt = routeFor(ev);
     if (state.calMode === "day") {
       $("plan-area").innerHTML = seg + `<div class="board" id="day"></div>`;
       renderDay(ev, p, rt);
@@ -588,13 +652,16 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
     let t = new Date(+p.leave + rt.walk * MIN);
     rt.legs.forEach((l, i) => {
       if (i > 0) t = new Date(+t + 3 * MIN);
-      legs.push({ at: new Date(t), kind: "ride", label: `<span class="line-chip"><i style="background:${l.color}"></i>${esc(l.line)}</span>`, detail: `${l.from}駅 → ${l.to}駅（${l.min}分）` });
+      const at = rt.real ? l.dep : new Date(t);
+      legs.push({ at, kind: "ride", label: `<span class="line-chip"><i style="background:${esc(l.color)}"></i>${esc(l.line)}</span>`,
+        detail: `${stn(l.from)} → ${stn(l.to)}（${l.min}分${l.headsign ? "・" + l.headsign + "行き" : ""}）` });
       t = new Date(+t + l.min * MIN);
     });
+    const rs = routeState(ev);
     const steps = p.steps.filter((s) => s.kind !== "buffer").map((s) => ({ at: s.at, kind: s.kind, label: esc(s.label), detail: esc(s.kind === "leave" ? `駅まで徒歩${rt.walk}分` : s.detail) }))
       .concat(legs).sort((a, b) => a.at - b.at);
     $("plan-area").innerHTML = seg + `<div class="board">
-      <div class="board-h"><span class="t">${C.md(ev.when)} ${esc(ev.title)}</span><span class="p">${esc(ev.place)}</span></div>
+      <div class="board-h"><span class="t">${C.md(ev.when)} ${esc(ev.title)}</span><span class="p">${esc(ev.place)}<span class="src ${rs.cls}">${esc(rs.text)}</span></span></div>
       <div class="big">
         <div><span>支度スタート</span><b>${C.hm(p.prepStart)}</b></div>
         <div><span>家を出る</span><b>${C.hm(p.leave)}</b></div>
@@ -651,8 +718,8 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
       return;
     }
     const leg = rt.legs[0];
-    const trainAt = new Date(+p.leave + rt.walk * MIN);
-    const leaveLine = `家を出る ${C.hm(p.leave)} → ${C.hm(trainAt)} ${leg.from}駅 ${leg.line}`;
+    const trainAt = rt.real ? leg.dep : new Date(+p.leave + rt.walk * MIN);
+    const leaveLine = `家を出る ${C.hm(p.leave)} → ${C.hm(trainAt)} ${stn(leg.from)} ${leg.line}`;
     const act = (html) => `<div class="f-actions">${html}</div>`;
     let body = "";
     if (ph.k === "sleep") {
@@ -702,7 +769,7 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
       body = `<div class="focus">${ring(1, ok ? "#7ee0a3" : "#ff7a66", C.hm(p.leave), "家を出る")}
         <div><div class="f-eyebrow">${ok ? "準備完了" : "出発時刻"}</div>
         <div class="f-title">${ok ? `出発まで あと${fmtLeft(ph.left)}` : "今すぐ家を出る！"}</div>
-        <div class="f-first">${C.hm(trainAt)} ${esc(leg.from)}駅 <b>${esc(leg.line)}</b>${rt.legs[1] ? ` → ${esc(rt.legs[1].from)}で${esc(rt.legs[1].line)}` : ""}</div></div></div>
+        <div class="f-first">${C.hm(trainAt)} ${esc(stn(leg.from))} <b>${esc(leg.line)}</b>${rt.legs[1] ? ` → ${esc(rt.legs[1].from)}で${esc(rt.legs[1].line)}` : ""}</div></div></div>
         ${act(`<button class="btn go" data-day="depart">出発した！（グループに報告）</button>`)}`;
     } else {
       body = `<div class="focus">${ring(1, "#7ee0a3", C.hm(new Date(+day.departedAt + rt.total * MIN)), "到着予定")}
@@ -757,6 +824,12 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
         <input class="r-first" id="r-first-${i}" value="${esc(r.first || "")}" placeholder="最初の一歩（例: まず靴下だけはく）" aria-label="支度${i + 1}の最初の一歩">
       </li>`).join("");
   }
+  function renderHome() {
+    $("home-label").textContent = `家: ${state.settings.home || "未設定"}`;
+    $("transit-note").textContent = realTransit
+      ? "乗換検索はつながっています。家と約束の場所から、本物の電車と出発時刻を出します。"
+      : "今はデモ経路です（中野駅発の一部の駅だけ）。PCで server.js を起動して開くと本物の乗換検索になります。";
+  }
   function bindSettings() {
     const st = state.settings;
     Object.keys(NUM).forEach((id) => {
@@ -767,6 +840,8 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
     $("s-wake").oninput = (e) => { st.usualWake = e.target.value; changed(); };
     $("s-dist").value = String(st.distraction);
     $("s-dist").onchange = (e) => { st.distraction = +e.target.value; changed(); };
+    $("s-home").value = st.home || "";
+    $("s-home").onchange = (e) => { st.home = e.target.value.trim(); changed(); renderHome(); ensureRoutes(); };
     $("s-buddy").checked = !!st.buddy;
     $("s-buddy").onchange = (e) => { st.buddy = e.target.checked; save(); };
     renderRoutine();
@@ -853,7 +928,15 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
     state.groups.forEach((g) => { const s = seeds.groups.find((x) => x.id === g.id); if (s) g.hints = s.hints; });
     day = null;
     bindSettings();
+    renderHome();
     renderAll();
+    // server.js から開かれていれば本物の乗換検索を使う
+    fetch("/api/status").then((r) => (r.ok ? r.json() : null)).then((j) => {
+      realTransit = !!(j && j.transit);
+      renderHome();
+      ensureRoutes();
+      renderAll();
+    }).catch(() => {});
   }
   $("reset").onclick = () => start(true);
   start(false);

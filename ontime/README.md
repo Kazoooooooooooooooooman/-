@@ -42,3 +42,30 @@ node --test ontime/test/*.test.js
 `chat-demo.html` をブラウザで開くと、グループトークで「おけ！」と決まった瞬間に
 カレンダー登録＋当日の段取り（支度開始・出発・乗る電車）が出るデモを試せます。
 電車は中野駅発のデモ経路です。
+
+## 本物の乗換検索を使う（Google Routes API）
+
+プロトタイプ（`chat-demo.html`）は、PCで `server.js` を起動して開くと本物の乗換検索になります。
+APIキーはこのサーバーの中だけで使い、ブラウザ側には渡しません。検索内容もログに残しません。
+
+### 1. APIキーを作る（最初の1回だけ）
+1. [Google Cloud コンソール](https://console.cloud.google.com/) でプロジェクトを作る
+2. 「お支払い」でクレジットカードを登録（毎月の無料枠内なら請求は発生しません）
+3. 「APIとサービス」→「ライブラリ」で **Routes API** を有効にする
+4. 「認証情報」→「認証情報を作成」→「APIキー」
+5. 作ったキーを編集して「APIの制限」で **Routes API だけ** に絞る
+6. 念のため「予算とアラート」で上限額の通知（例: 1,000円）を設定しておく
+
+### 2. 起動する（Node.js 18 以上が必要）
+Mac / Linux:
+```
+cd ontime
+GOOGLE_MAPS_API_KEY=ここにキー node server.js
+```
+Windows (PowerShell):
+```
+cd ontime
+$env:GOOGLE_MAPS_API_KEY="ここにキー"; node server.js
+```
+ブラウザで http://localhost:8787 を開く →「個人」タブの「家」に最寄り駅を入れる。
+カレンダーの段取り表に「本物の乗換検索」と出ていれば接続できています。
