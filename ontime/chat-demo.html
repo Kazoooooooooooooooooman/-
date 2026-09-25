@@ -1,286 +1,345 @@
 <!doctype html>
 <html lang="ja">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
 <title>OnTime Chat</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
 :root {
-  --bg: #eef1ee;
-  --surface: #ffffff;
-  --ink: #18221f;
-  --muted: #5d6b66;
-  --line: #d5dcd8;
-  --accent: #0f6e6a;
-  --accent-ink: #ffffff;
-  --accent-weak: #ddedea;
-  --them: #ffffff;
+  --page: #e9edf2;
+  --bg: #ffffff;
+  --ink: #111111;
+  --muted: #8a8f98;
+  --line: #e6e8ec;
+  --soft: #f4f5f7;
+  --green: #06c755;
+  --green-ink: #ffffff;
+  --green-weak: #e3f8ec;
+  --talk: #a8bdd8;
+  --mine: #8de055;
+  --mine-ink: #111111;
+  --theirs: #ffffff;
+  --theirs-ink: #111111;
+  --stamp: rgba(0, 0, 0, .45);
   --board: #121a18;
   --board-line: #25302d;
   --board-dim: #7d8a85;
   --amber: #f2b33d;
-  --warn: #c8452f;
-  --warn-weak: #f8e4df;
-  --ok: #2b8a57;
+  --warn: #e0483a;
+  --warn-weak: #fdeceb;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #0e1413; --surface: #172120; --ink: #e6eeea; --muted: #93a39d; --line: #26332f;
-    --accent: #3fb5ac; --accent-ink: #0b1514; --accent-weak: #16322f; --them: #1d2927;
-    --board: #0a0f0e; --board-line: #1f2a27; --warn: #f07a62; --warn-weak: #3a221d; --ok: #5cc38a;
+    --page: #0b0c0e; --bg: #16181c; --ink: #eceef1; --muted: #8b919b; --line: #262a30; --soft: #1e2126;
+    --green-weak: #143222; --talk: #1f2a38; --mine: #3d9e4a; --mine-ink: #ffffff; --theirs: #2a2f37; --theirs-ink: #eceef1;
+    --stamp: rgba(255, 255, 255, .5); --board: #0a0f0e; --board-line: #1f2a27; --warn: #ff6f61; --warn-weak: #3a2220;
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #0e1413; --surface: #172120; --ink: #e6eeea; --muted: #93a39d; --line: #26332f;
-  --accent: #3fb5ac; --accent-ink: #0b1514; --accent-weak: #16322f; --them: #1d2927;
-  --board: #0a0f0e; --board-line: #1f2a27; --warn: #f07a62; --warn-weak: #3a221d; --ok: #5cc38a;
+  --page: #0b0c0e; --bg: #16181c; --ink: #eceef1; --muted: #8b919b; --line: #262a30; --soft: #1e2126;
+  --green-weak: #143222; --talk: #1f2a38; --mine: #3d9e4a; --mine-ink: #ffffff; --theirs: #2a2f37; --theirs-ink: #eceef1;
+  --stamp: rgba(255, 255, 255, .5); --board: #0a0f0e; --board-line: #1f2a27; --warn: #ff6f61; --warn-weak: #3a2220;
 }
 * { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
-  background: var(--bg); color: var(--ink);
+  background: var(--page); color: var(--ink);
   font-family: "Zen Kaku Gothic New", "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif;
-  font-size: 15px; line-height: 1.6;
-  padding: 20px 16px 40px;
+  font-size: 15px; line-height: 1.5;
+  display: flex; justify-content: center; align-items: center;
 }
-.wrap { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
-.head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; }
-.head h1 { margin: 0; font-size: 24px; letter-spacing: .02em; }
-.head p { margin: 0; color: var(--muted); font-size: 14px; }
-.demo-note { font-size: 12px; color: var(--muted); }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
 
-.cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 16px; align-items: start; }
-@media (max-width: 860px) { .cols { grid-template-columns: 1fr; } }
-
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
-.panel-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--line); }
-.panel-h h2 { margin: 0; font-size: 15px; }
-.panel-h .sub { font-size: 12px; color: var(--muted); }
-
-/* chat */
-.chat { display: flex; flex-direction: column; height: 620px; max-height: 80vh; }
-.msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; background: var(--bg); }
-.m { display: flex; flex-direction: column; max-width: 82%; }
-.m .who { font-size: 11px; color: var(--muted); margin: 0 4px 2px; }
-.m .b { padding: 8px 12px; border-radius: 14px; background: var(--them); border: 1px solid var(--line); white-space: pre-wrap; word-break: break-word; }
-.m.me { align-self: flex-end; align-items: flex-end; }
-.m.me .b { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-.sys { align-self: center; width: min(100%, 420px); border: 1px dashed var(--accent); background: var(--accent-weak); border-radius: 12px; padding: 10px 12px; font-size: 13px; }
-.sys b { display: block; font-size: 14px; }
-.sys button { margin-top: 6px; }
-.compose { border-top: 1px solid var(--line); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; align-self: flex-start; }
-.seg button { border: 0; background: transparent; color: var(--muted); padding: 4px 12px; font: inherit; font-size: 12px; cursor: pointer; }
-.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
-.send-row { display: flex; gap: 8px; }
-.send-row input { flex: 1; min-width: 0; }
-input, select {
-  font: inherit; color: var(--ink); background: var(--bg);
-  border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px;
+/* スマホ1台分の枠 */
+.app {
+  width: 100%; max-width: 430px; height: 100%;
+  background: var(--bg); display: flex; flex-direction: column; overflow: hidden; position: relative;
 }
-input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-.btn {
-  font: inherit; font-size: 13px; cursor: pointer; border-radius: 10px; padding: 8px 12px;
-  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+@media (min-width: 520px) {
+  body { padding-block: 20px; }
+  .app { height: min(880px, 100%); border-radius: 28px; border: 1px solid var(--line); box-shadow: 0 20px 60px rgba(20, 30, 50, .18); }
 }
-.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
-.btn.warn { background: var(--warn); border-color: var(--warn); color: #fff; }
+.view { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.view[hidden] { display: none !important; }
+.scroll { flex: 1; min-height: 0; overflow-y: auto; }
+
+/* ヘッダー */
+.top { display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px; border-bottom: 1px solid var(--line); background: var(--bg); }
+.top h1 { margin: 0; font-size: 20px; font-weight: 700; flex: 1; }
+.top .sub { font-size: 12px; color: var(--muted); }
+.back { border: 0; background: transparent; font-size: 26px; line-height: 1; padding: 0 6px 0 0; }
+
+/* 下のタブ */
+.tabbar { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); background: var(--bg); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.tabbar button { border: 0; background: transparent; padding: 8px 0 10px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; color: var(--muted); position: relative; }
+.tabbar svg { width: 26px; height: 26px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tabbar button[aria-selected="true"] { color: var(--ink); font-weight: 700; }
+.tabbar button[aria-selected="true"] svg { stroke-width: 2.3; }
+.badge { position: absolute; top: 6px; left: calc(50% + 8px); min-width: 16px; height: 16px; border-radius: 8px; background: var(--green); color: #fff; font-size: 10px; line-height: 16px; padding: 0 4px; font-weight: 700; }
+
+/* 個人 */
+.profile { display: flex; gap: 14px; align-items: center; padding: 18px 16px; }
+.avatar { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; color: #fff; background: var(--green); }
+.avatar.lg { width: 60px; height: 60px; font-size: 22px; }
+.profile b { font-size: 18px; display: block; }
+.profile span { font-size: 13px; color: var(--muted); }
+.section-h { font-size: 13px; font-weight: 700; color: var(--muted); padding: 14px 16px 6px; }
+.next-card { margin: 0 16px; border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+.next-card .when { font-size: 18px; font-weight: 700; }
+.next-card .meta { font-size: 13px; color: var(--muted); }
+.next-card .times { display: flex; gap: 16px; font-size: 13px; margin-top: 4px; }
+.next-card .times b { font-family: "DotGothic16", ui-monospace, monospace; font-weight: 400; font-size: 20px; color: var(--green); display: block; }
+.btn { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+.btn.green { background: var(--green); border-color: var(--green); color: var(--green-ink); font-weight: 700; }
 .btn.sm { padding: 4px 10px; font-size: 12px; }
-.hints { display: flex; flex-wrap: wrap; gap: 6px; }
-.hint { font: inherit; font-size: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 999px; padding: 3px 10px; cursor: pointer; }
+.set-body { padding: 0 16px 24px; display: flex; flex-direction: column; }
+fieldset { border: 0; border-top: 1px solid var(--line); margin: 0; padding: 12px 0 6px; min-width: 0; }
+legend { font-size: 13px; font-weight: 700; padding: 0 6px 0 0; }
+.set-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.set-grid label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+input, select { background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; min-width: 0; width: 100%; font-size: 15px; }
+.help { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+.routine { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.routine li { display: grid; grid-template-columns: minmax(0, 1fr) 58px auto auto auto; gap: 6px; align-items: center; }
+.routine li .r-first { grid-column: 1 / -1; font-size: 13px; padding: 6px 10px; }
+.routine li span { font-size: 12px; color: var(--muted); }
+.icon-btn { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; }
+.check input { width: auto; margin-top: 3px; }
 
-/* right side */
-.right { display: flex; flex-direction: column; gap: 16px; }
-.cal { padding: 12px 14px 14px; }
-.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-variant-numeric: tabular-nums; }
-.cal-grid .dow { font-size: 11px; color: var(--muted); padding-bottom: 2px; }
-.day { position: relative; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 13px; padding: 6px 0 12px; border-radius: 8px; cursor: default; }
+/* グループ一覧 */
+.rooms { list-style: none; margin: 0; padding: 0; }
+.rooms button { width: 100%; border: 0; background: transparent; display: flex; gap: 12px; align-items: center; padding: 10px 16px; text-align: left; }
+.rooms button:hover { background: var(--soft); }
+.rooms .txt { flex: 1; min-width: 0; }
+.rooms .name { font-weight: 700; display: flex; gap: 6px; align-items: baseline; }
+.rooms .name small { color: var(--muted); font-weight: 400; }
+.rooms .last { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rooms time { font-size: 11px; color: var(--muted); align-self: flex-start; margin-top: 4px; }
+.search { margin: 10px 16px 6px; background: var(--soft); border-radius: 10px; padding: 8px 12px; font-size: 13px; color: var(--muted); }
+
+/* トークルーム */
+.talk { background: var(--talk); padding: 12px 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.date-chip { align-self: center; background: rgba(0, 0, 0, .18); color: #fff; font-size: 11px; border-radius: 999px; padding: 2px 10px; }
+.m { display: flex; gap: 8px; align-items: flex-start; max-width: 88%; }
+.m .avatar { width: 34px; height: 34px; font-size: 13px; }
+.m .col { display: flex; flex-direction: column; min-width: 0; }
+.m .who { font-size: 11px; color: var(--stamp); margin: 0 0 2px 2px; }
+.m .row { display: flex; align-items: flex-end; gap: 4px; }
+.m .b { background: var(--theirs); color: var(--theirs-ink); border-radius: 16px; padding: 8px 12px; white-space: pre-wrap; word-break: break-word; }
+.m time { font-size: 10px; color: var(--stamp); white-space: nowrap; }
+.m.me { align-self: flex-end; }
+.m.me .row { flex-direction: row-reverse; }
+.m.me .b { background: var(--mine); color: var(--mine-ink); }
+.sys { align-self: center; width: min(100%, 320px); background: var(--bg); border-radius: 14px; padding: 10px 12px; font-size: 13px; box-shadow: 0 1px 2px rgba(0, 0, 0, .08); }
+.sys .h { color: var(--green); font-weight: 700; font-size: 13px; display: flex; gap: 6px; align-items: center; }
+.sys .w { font-size: 16px; font-weight: 700; margin: 2px 0; }
+.sys .t { color: var(--muted); }
+.sys .btn { width: 100%; margin-top: 8px; }
+.sys.alarm .h { color: var(--warn); }
+.compose { border-top: 1px solid var(--line); background: var(--bg); padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px)); display: flex; flex-direction: column; gap: 6px; }
+.hints { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.hint { flex: none; font-size: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); border-radius: 999px; padding: 3px 10px; }
+.send-row { display: flex; gap: 8px; align-items: center; }
+.as { flex: none; border: 1px solid var(--line); background: var(--soft); border-radius: 999px; padding: 6px 10px; font-size: 12px; }
+.send-row input { flex: 1; border-radius: 999px; }
+.send { flex: none; width: 38px; height: 38px; border-radius: 50%; border: 0; background: var(--green); color: #fff; display: grid; place-items: center; }
+.send svg { width: 18px; height: 18px; fill: currentColor; }
+
+/* カレンダー */
+.cal-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px 4px; }
+.cal-nav b { font-size: 16px; }
+.cal-nav button { border: 0; background: transparent; font-size: 22px; padding: 0 8px; color: var(--muted); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; padding: 0 10px 8px; text-align: center; font-variant-numeric: tabular-nums; }
+.cal-grid .dow { font-size: 11px; color: var(--muted); padding: 4px 0; }
+.cal-grid .dow:first-child { color: var(--warn); }
+.day { position: relative; border: 0; background: transparent; font-size: 14px; padding: 7px 0 13px; border-radius: 10px; cursor: default; }
 .day.other { color: var(--line); }
-.day.today { font-weight: 700; box-shadow: inset 0 0 0 1px var(--line); }
-.day.has { cursor: pointer; background: var(--accent-weak); }
-.day.has::after { content: ""; position: absolute; left: 50%; bottom: 4px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: var(--accent); }
-.day.sel { background: var(--accent); color: var(--accent-ink); }
-.day.sel::after { background: var(--accent-ink); }
+.day.today span { display: inline-block; min-width: 26px; border-radius: 13px; background: var(--ink); color: var(--bg); }
+.day.has { cursor: pointer; }
+.day.has::after { content: ""; position: absolute; left: 50%; bottom: 4px; width: 6px; height: 6px; margin-left: -3px; border-radius: 50%; background: var(--green); }
+.day.sel { background: var(--green-weak); }
 .flash { animation: flash 1.2s ease-out; }
-@keyframes flash { from { box-shadow: 0 0 0 6px var(--amber); } to { box-shadow: 0 0 0 0 transparent; } }
+@keyframes flash { from { box-shadow: 0 0 0 5px var(--green); } to { box-shadow: 0 0 0 0 transparent; } }
 @media (prefers-reduced-motion: reduce) { .flash { animation: none; } }
+.ev-list { list-style: none; margin: 0; padding: 0 16px; display: flex; flex-direction: column; gap: 6px; }
+.ev-list button { width: 100%; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 12px; padding: 8px 12px; display: flex; gap: 10px; align-items: center; }
+.ev-list button[aria-current="true"] { border-color: var(--green); background: var(--green-weak); }
+.ev-list .d { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 88px; }
+.ev-list .p { font-size: 13px; color: var(--muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.empty { padding: 16px; color: var(--muted); font-size: 13px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; margin: 12px 16px 8px; background: var(--soft); border-radius: 10px; padding: 3px; }
+.seg button { border: 0; background: transparent; border-radius: 8px; padding: 6px 0; font-size: 13px; color: var(--muted); }
+.seg button[aria-selected="true"] { background: var(--bg); color: var(--ink); font-weight: 700; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
 
-/* departure board */
-.board { background: var(--board); color: #e9efe9; border-radius: 14px; overflow: hidden; border: 1px solid var(--board-line); }
-.board-h { padding: 14px 16px 10px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 12px; border-bottom: 1px solid var(--board-line); }
-.board-h .t { font-size: 17px; font-weight: 700; }
-.board-h .p { font-size: 13px; color: var(--board-dim); }
+/* 発車標スタイルの段取り */
+.board { margin: 0 16px 20px; background: var(--board); color: #e9efe9; border-radius: 16px; overflow: hidden; }
+.board-h { padding: 12px 14px 8px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 10px; border-bottom: 1px solid var(--board-line); }
+.board-h .t { font-weight: 700; }
+.board-h .p { font-size: 12px; color: var(--board-dim); }
 .big { display: grid; grid-template-columns: repeat(3, 1fr); border-bottom: 1px solid var(--board-line); }
-.big > div { padding: 10px 12px; border-right: 1px solid var(--board-line); }
+.big > div { padding: 8px 10px; border-right: 1px solid var(--board-line); }
 .big > div:last-child { border-right: 0; }
-.big span { display: block; font-size: 11px; letter-spacing: .08em; color: var(--board-dim); }
-.big b { font-family: "DotGothic16", ui-monospace, monospace; font-weight: 400; font-size: 30px; color: var(--amber); letter-spacing: .04em; }
-.rows { list-style: none; margin: 0; padding: 4px 0; }
-.rows li { display: grid; grid-template-columns: 64px 1fr; gap: 10px; padding: 7px 16px; align-items: baseline; }
+.big span { display: block; font-size: 10px; letter-spacing: .06em; color: var(--board-dim); }
+.big b { font-family: "DotGothic16", ui-monospace, monospace; font-weight: 400; font-size: 24px; color: var(--amber); }
+.rows { list-style: none; margin: 0; padding: 2px 0; }
+.rows li { display: grid; grid-template-columns: 54px 1fr; gap: 8px; padding: 6px 14px; align-items: baseline; }
 .rows li + li { border-top: 1px solid var(--board-line); }
-.rows time { font-family: "DotGothic16", ui-monospace, monospace; color: var(--amber); font-size: 18px; font-variant-numeric: tabular-nums; }
-.rows .lbl { display: flex; flex-direction: column; }
-.rows .lbl small { color: var(--board-dim); font-size: 12px; }
+.rows time { font-family: "DotGothic16", ui-monospace, monospace; color: var(--amber); font-size: 16px; }
+.rows .lbl { display: flex; flex-direction: column; font-size: 14px; }
+.rows .lbl small { color: var(--board-dim); font-size: 11px; }
 .rows .k-night time { color: #b9a4ff; }
 .rows .k-leave .lbl > span:first-child, .rows .k-start .lbl > span:first-child { font-weight: 700; }
 .rows .k-appt time { color: #7ee0a3; }
 .rows .done { opacity: .4; }
 .line-chip { display: inline-flex; align-items: center; gap: 6px; }
 .line-chip i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
-.board-empty { padding: 28px 16px; color: var(--board-dim); font-size: 14px; }
-.actions { padding: 12px 16px 14px; border-top: 1px solid var(--board-line); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.actions .btn { background: transparent; color: #e9efe9; border-color: var(--board-line); }
-.actions .btn.warn { background: var(--warn); border-color: var(--warn); }
-.late-pick { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--board-dim); }
-
-.settings { padding: 12px 14px 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-@media (max-width: 520px) { .settings { grid-template-columns: 1fr; } }
-.settings label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
-/* 段取りの設定 */
-.set-body { padding: 4px 14px 14px; display: flex; flex-direction: column; gap: 4px; }
-fieldset { border: 0; border-top: 1px solid var(--line); margin: 0; padding: 10px 0 4px; min-width: 0; }
-legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--accent); padding: 0 6px 0 0; }
-.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
-.set-grid label, .routine-h { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
-.help { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
-.routine { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.routine li { display: grid; grid-template-columns: minmax(0, 1fr) 64px auto auto auto; gap: 6px; align-items: center; }
-.routine li .r-first { grid-column: 1 / -1; font-size: 13px; padding: 6px 10px; }
-.routine li span { font-size: 12px; color: var(--muted); }
-.icon-btn { font: inherit; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
-.check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; }
-.check input { margin-top: 4px; }
-
-/* 段取り表 / 当日モード タブ */
-.tabs { display: flex; gap: 4px; padding: 10px 12px 0; }
-.tabs button { font: inherit; font-size: 13px; cursor: pointer; border: 1px solid var(--board-line); border-bottom: 0; border-radius: 8px 8px 0 0; background: transparent; color: var(--board-dim); padding: 6px 12px; }
-.tabs button[aria-selected="true"] { background: var(--board-line); color: #e9efe9; }
-.tabs + * { border-top: 1px solid var(--board-line); }
+.actions { padding: 10px 14px 12px; border-top: 1px solid var(--board-line); display: flex; flex-wrap: wrap; gap: 6px; }
+.actions .btn, .f-actions .btn, .sim .btn { background: transparent; color: #e9efe9; border-color: var(--board-line); }
+.actions .btn.warn, .f-actions .btn.warn { background: var(--warn); border-color: var(--warn); color: #fff; }
 
 /* 当日モード */
-.sim { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 16px; font-size: 12px; color: var(--board-dim); border-bottom: 1px solid var(--board-line); }
+.sim { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 14px; font-size: 12px; color: var(--board-dim); border-bottom: 1px solid var(--board-line); }
 .sim b { font-family: "DotGothic16", ui-monospace, monospace; font-weight: 400; color: var(--amber); font-size: 16px; }
-.sim .btn { background: transparent; color: #e9efe9; border-color: var(--board-line); }
-.focus { padding: 18px 16px; display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 16px; align-items: center; }
-@media (max-width: 460px) { .focus { grid-template-columns: 1fr; justify-items: start; } }
-.ring { width: 132px; height: 132px; }
+.focus { padding: 16px 14px; display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: center; }
+.ring { width: 112px; height: 112px; }
 .ring text { font-family: "DotGothic16", ui-monospace, monospace; }
-.f-eyebrow { font-size: 12px; letter-spacing: .08em; color: var(--board-dim); }
-.f-title { font-size: 26px; font-weight: 700; line-height: 1.3; margin: 2px 0 6px; text-wrap: balance; }
-.f-first { font-size: 14px; color: #cfd8d3; }
+.f-eyebrow { font-size: 11px; letter-spacing: .08em; color: var(--board-dim); }
+.f-title { font-size: 22px; font-weight: 700; line-height: 1.3; margin: 2px 0 6px; text-wrap: balance; }
+.f-first { font-size: 13px; color: #cfd8d3; }
 .f-first b { color: var(--amber); font-weight: 500; }
-.f-next { font-size: 13px; color: var(--board-dim); margin-top: 6px; }
-.banner { margin: 0 16px 12px; border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+.f-next { font-size: 12px; color: var(--board-dim); margin-top: 6px; }
+.banner { margin: 0 14px 12px; border-radius: 10px; padding: 10px 12px; font-size: 13px; }
 .banner.ok { background: #173226; color: #9be3b7; }
 .banner.warn { background: #3b1d18; color: #ffb4a4; }
 .banner.info { background: #2b2614; color: #f5d487; }
-.f-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 16px; }
-.f-actions .btn { background: transparent; color: #e9efe9; border-color: var(--board-line); }
+.f-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 14px 14px; }
 .f-actions .btn.go { background: var(--amber); border-color: var(--amber); color: #1b1606; font-weight: 700; font-size: 15px; padding: 10px 18px; }
-.f-actions .btn.warn { background: var(--warn); border-color: var(--warn); color: #fff; }
-.sys.alarm { border-color: var(--warn); background: var(--warn-weak); }
-
-.foot { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
+.foot-note { font-size: 11px; color: var(--muted); padding: 0 16px 20px; }
 </style>
 
-<div class="wrap">
-  <div class="head">
-    <h1>OnTime Chat</h1>
-    <p>チャットで約束が決まった瞬間に、カレンダー登録と当日の段取り（起きる・出る・乗る電車）が自動で入る</p>
-  </div>
-
-  <div class="cols">
-    <section class="panel chat" aria-label="グループトーク">
-      <div class="panel-h">
-        <h2>週末あそぶ会</h2>
-        <span class="sub">自分・ゆうき</span>
+<div class="app">
+  <!-- 個人 -->
+  <section class="view" id="v-me" hidden>
+    <div class="top"><h1>個人</h1></div>
+    <div class="scroll">
+      <div class="profile">
+        <div class="avatar lg">自</div>
+        <div><b>自分</b><span>家: 中野駅（デモ）</span></div>
       </div>
-      <div class="msgs" id="msgs"></div>
-      <div class="compose">
-        <div class="seg" role="group" aria-label="送信者">
-          <button id="as-me" aria-pressed="true">自分として送る</button>
-          <button id="as-yuki" aria-pressed="false">ゆうきとして送る</button>
-        </div>
-        <div class="send-row">
-          <input id="text" placeholder="例）やっぱ15時にしない？" autocomplete="off">
-          <button class="btn primary" id="send">送信</button>
-        </div>
-        <div class="hints" id="hints">
-          <button class="hint">やっぱ15時にしない？</button>
-          <button class="hint">来週の土曜10時に池袋駅東口で集合は？</button>
-          <button class="hint">おけ！</button>
-        </div>
+      <div class="section-h">次の予定</div>
+      <div id="next"></div>
+      <div class="section-h">自分の段取り（全部変えられます）</div>
+      <div class="set-body">
+        <fieldset>
+          <legend>夜</legend>
+          <div class="set-grid">
+            <label for="s-night">前日の準備（寝る何分前・0でなし）<input id="s-night" type="number" min="0" max="180" step="5"></label>
+            <label for="s-sleep">睡眠時間（0で表示しない）<input id="s-sleep" type="number" min="0" max="12" step="0.5"></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>朝</legend>
+          <div class="set-grid">
+            <label for="s-wake">いつもの起床（空欄＝ギリギリまで寝る）<input id="s-wake" type="time"></label>
+            <label for="s-wbuf">起きてからぼーっと（分）<input id="s-wbuf" type="number" min="0" max="60"></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>支度（上から順番）</legend>
+          <ul class="routine" id="routine"></ul>
+          <button class="btn sm" id="add-task">＋ 支度を追加</button>
+          <p class="help">「最初の一歩」は、やる気が出ないときにこれだけやればいい小さい行動。当日モードで大きく出ます。</p>
+        </fieldset>
+        <fieldset>
+          <legend>時間の感覚</legend>
+          <div class="set-grid">
+            <label for="s-dist">気が散る係数
+              <select id="s-dist">
+                <option value="1">×1.0 ちゃんとできる</option>
+                <option value="1.3">×1.3 ちょっと寄り道</option>
+                <option value="1.5">×1.5 スマホ見がち</option>
+                <option value="2">×2.0 だいたい倍</option>
+              </select>
+            </label>
+            <label for="s-early">何分前に着く？<input id="s-early" type="number" min="0" max="60"></label>
+            <label for="s-fake">サバ読み（分）<input id="s-fake" type="number" min="0" max="60" step="5"></label>
+          </div>
+          <p class="help">サバ読み: 画面の時刻が全部この分だけ早くなります。本当の締め切りを見ないのがコツ。</p>
+        </fieldset>
+        <fieldset>
+          <legend>見守り</legend>
+          <label class="check" for="s-buddy"><input type="checkbox" id="s-buddy"> 起床から5分たっても「起きた」を押さなかったら、グループに知らせる</label>
+        </fieldset>
+        <fieldset>
+          <legend>デモ</legend>
+          <p class="help">電車は中野駅発のデモ経路です（渋谷・池袋・新宿・東京・吉祥寺）。</p>
+          <button class="btn sm" id="reset">デモを最初からやり直す</button>
+        </fieldset>
       </div>
-    </section>
-
-    <div class="right">
-      <section class="panel">
-        <div class="panel-h">
-          <h2 id="cal-title">カレンダー</h2>
-          <span class="sub">決まった予定は自動で入ります</span>
-        </div>
-        <div class="cal"><div class="cal-grid" id="cal"></div></div>
-      </section>
-
-      <section class="board" aria-live="polite">
-        <div id="board"></div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-h"><h2>自分の段取り</h2><span class="sub">全部自分に合わせて変えられます</span></div>
-        <div class="set-body">
-          <fieldset>
-            <legend>夜</legend>
-            <div class="set-grid">
-              <label for="s-night">前日の準備は寝る何分前？（0でなし）<input id="s-night" type="number" min="0" max="180" step="5"></label>
-              <label for="s-sleep">睡眠時間（0で表示しない）<input id="s-sleep" type="number" min="0" max="12" step="0.5"></label>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>朝</legend>
-            <div class="set-grid">
-              <label for="s-wake">いつもの起床（空欄ならギリギリまで寝る）<input id="s-wake" type="time"></label>
-              <label for="s-wbuf">起きてからぼーっとする時間（分）<input id="s-wbuf" type="number" min="0" max="60"></label>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>支度（上から順番にやる）</legend>
-            <ul class="routine" id="routine"></ul>
-            <button class="btn sm" id="add-task">＋ 支度を追加</button>
-            <p class="help">「最初の一歩」は、やる気が出ないときにこれだけやればいい小さい行動。当日モードで大きく出ます。</p>
-          </fieldset>
-          <fieldset>
-            <legend>時間の感覚</legend>
-            <div class="set-grid">
-              <label for="s-dist">気が散る係数
-                <select id="s-dist">
-                  <option value="1">×1.0 ちゃんとできる</option>
-                  <option value="1.3">×1.3 ちょっと寄り道</option>
-                  <option value="1.5">×1.5 スマホ見がち</option>
-                  <option value="2">×2.0 だいたい倍かかる</option>
-                </select>
-              </label>
-              <label for="s-early">何分前に着く？<input id="s-early" type="number" min="0" max="60"></label>
-              <label for="s-fake">サバ読み（分）<input id="s-fake" type="number" min="0" max="60" step="5"></label>
-            </div>
-            <p class="help">サバ読み: 画面に出る時刻が全部この分だけ早くなります。ギリギリまで動けないなら、本当の締め切りを見ないのがコツ。</p>
-          </fieldset>
-          <fieldset>
-            <legend>見守り</legend>
-            <label class="check" for="s-buddy"><input type="checkbox" id="s-buddy"> 起床時刻から5分たっても「起きた」を押さなかったら、グループに知らせる</label>
-          </fieldset>
-        </div>
-      </section>
     </div>
-  </div>
+  </section>
 
-  <div class="foot">
-    <span>家: 中野駅（デモ）。電車はデモ用の経路で、本番は乗換検索から自動で取ります。</span>
-    <button class="btn sm" id="reset">デモを最初から</button>
-  </div>
+  <!-- カレンダー -->
+  <section class="view" id="v-cal" hidden>
+    <div class="top"><h1>カレンダー</h1><span class="sub">トークで決まった予定が自動で入ります</span></div>
+    <div class="scroll">
+      <div class="cal-nav">
+        <button id="cal-prev" aria-label="前の月">‹</button>
+        <b id="cal-title"></b>
+        <button id="cal-next" aria-label="次の月">›</button>
+      </div>
+      <div class="cal-grid" id="cal"></div>
+      <ul class="ev-list" id="ev-list"></ul>
+      <div id="plan-area"></div>
+    </div>
+  </section>
+
+  <!-- グループ一覧 -->
+  <section class="view" id="v-groups" hidden>
+    <div class="top"><h1>グループ</h1></div>
+    <div class="scroll">
+      <div class="search">検索</div>
+      <ul class="rooms" id="rooms"></ul>
+    </div>
+  </section>
+
+  <!-- トークルーム -->
+  <section class="view" id="v-room" hidden>
+    <div class="top">
+      <button class="back" id="back" aria-label="グループ一覧に戻る">‹</button>
+      <h1 id="room-title"></h1>
+    </div>
+    <div class="scroll talk" id="talk"></div>
+    <div class="compose">
+      <div class="hints" id="hints"></div>
+      <div class="send-row">
+        <button class="as" id="as" title="タップで送信者を切り替え">自分</button>
+        <input id="text" placeholder="メッセージを入力" autocomplete="off" aria-label="メッセージ">
+        <button class="send" id="send" aria-label="送信"><svg viewBox="0 0 24 24"><path d="M3 20.5 21 12 3 3.5l2.7 7.3L15 12l-9.3 1.2z"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <nav class="tabbar" role="tablist" id="tabbar">
+    <button role="tab" data-tab="me" aria-selected="false">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>個人
+    </button>
+    <button role="tab" data-tab="cal" aria-selected="false">
+      <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>カレンダー
+      <span class="badge" id="cal-badge" hidden>1</span>
+    </button>
+    <button role="tab" data-tab="groups" aria-selected="false">
+      <svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20c1-3.6 3.5-5.5 6.5-5.5s5.5 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.8"/><path d="M16.5 14.6c2.4.2 4.1 2 5 5.4"/></svg>グループ
+    </button>
+  </nav>
 </div>
 
 <script src="core.js"></script>
@@ -293,6 +352,7 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
   const WD = "日月火水木金土";
   const CONFIRM = /(おけ|おっけ|オッケ|OK|ok|了解|りょ|いいよ|決定|決まり|それで|賛成|👍|🙆)/;
   const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+  const COLORS = { ゆ: "#f5a623", 母: "#e86c8d", 先: "#5b8def", 自: "#06c755" };
 
   // 中野駅からのデモ経路
   const ROUTES = [
@@ -309,14 +369,7 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
     return Object.assign({}, r, { total: r.walk + r.legs.reduce((a, l) => a + l.min, 0) + transfers + r.after });
   }
 
-  const SAMPLE = [
-    { who: "yuki", text: "今週末ひま？映画いかない？" },
-    { who: "me", text: "いいね！土曜は無理だけど日曜ならいける" },
-    { who: "yuki", text: "じゃあ日曜の14時半に渋谷駅ハチ公前で集合でどう？" },
-    { who: "me", text: "おけ！" },
-  ];
-
-  let state;
+  // ---------- 状態 ----------
   function freshSettings() {
     return {
       usualWake: "08:00", distraction: 1.3, arriveEarly: 10, nightPrepMin: 30, sleepHours: 7,
@@ -325,39 +378,68 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
     };
   }
   function fresh() {
-    return { msgs: [], events: [], sel: null, as: "me", tab: "plan", settings: freshSettings() };
+    const t0 = Date.now() - 40 * MIN;
+    const at = (i) => t0 + i * 3 * MIN;
+    return {
+      tab: "groups", room: null, sel: null, calMode: "plan", calMonth: null, as: "me", unseen: 0,
+      settings: freshSettings(), events: [],
+      groups: [
+        { id: "g1", name: "週末あそぶ会", other: "ゆうき", msgs: [] ,
+          seed: [
+            { who: "other", text: "今週末ひま？映画いかない？", t: at(0) },
+            { who: "me", text: "いいね！土曜は無理だけど日曜ならいける", t: at(1) },
+            { who: "other", text: "じゃあ日曜の14時半に渋谷駅ハチ公前で集合でどう？", t: at(2) },
+            { who: "me", text: "おけ！", t: at(3) },
+          ],
+          hints: ["やっぱ15時にしない？", "おけ！", "来週の土曜10時に池袋駅東口で集合は？"] },
+        { id: "g2", name: "家族", other: "母", msgs: [],
+          seed: [{ who: "other", text: "おばあちゃんの誕生日会、みんなで行こうね", t: at(-20) }],
+          hints: ["何日にする？", "10/11(日) 12時に吉祥寺駅北口集合でどう？", "了解！"] },
+        { id: "g3", name: "ゼミ", other: "先輩", msgs: [],
+          seed: [{ who: "other", text: "発表の打ち合わせしたいです", t: at(-60) }],
+          hints: ["明日の17時に新宿駅南口でどうですか？", "OKです！"] },
+      ],
+    };
   }
+  let state;
   function load() {
     try {
-      const s = JSON.parse(localStorage.getItem("ontime-chat") || "null");
-      if (s && s.msgs) {
+      const s = JSON.parse(localStorage.getItem("ontime-line-v1") || "null");
+      if (s && s.groups) {
         s.events.forEach((e) => (e.when = new Date(e.when)));
         s.settings = Object.assign(freshSettings(), s.settings);
-        s.tab = s.tab || "plan";
         return s;
       }
     } catch (e) {}
     return null;
   }
   function save() {
-    try { localStorage.setItem("ontime-chat", JSON.stringify(state)); } catch (e) {}
+    try {
+      const copy = Object.assign({}, state, { groups: state.groups.map((g) => Object.assign({}, g, { seed: undefined })) });
+      localStorage.setItem("ontime-line-v1", JSON.stringify(copy));
+    } catch (e) {}
   }
   const settings = () => Object.assign({}, C.DEFAULT_SETTINGS, state.settings, { delayBuffer: 3 });
   const planOf = (ev) => C.buildPlan({ when: ev.when, travelMin: routeFor(ev.place).total, place: ev.place }, settings());
+  const group = (id) => state.groups.find((g) => g.id === id);
+  const selEv = () => state.events.find((e) => e.id === state.sel);
+  const tm = (t) => C.hm(new Date(t));
 
-  // ---------- チャット → 予定の自動登録 ----------
-  function post(who, text, silent) {
-    state.msgs.push({ who, text });
-    if (who === "me" || who === "yuki") detect(text, silent);
+  // ---------- トーク → 予定の自動登録 ----------
+  function post(gid, who, text, opt) {
+    const g = group(gid);
+    g.msgs.push(Object.assign({ who, text, t: Date.now() }, opt));
+    if (who === "me" || who === "other") detect(g);
     save();
-    if (!silent) render();
+    renderAll();
   }
-  function detect(latest, silent) {
+  function detect(g) {
+    const latest = g.msgs[g.msgs.length - 1].text;
     if (!CONFIRM.test(latest)) return;
-    const recent = state.msgs.filter((m) => m.who === "me" || m.who === "yuki").slice(-10).map((m) => m.text).join("\n");
+    const recent = g.msgs.filter((m) => m.who === "me" || m.who === "other").slice(-10).map((m) => m.text).join("\n");
     const r = C.parseMessage(recent, new Date());
     if (!r.when || r.when < new Date()) return;
-    const sameDay = state.events.find((e) => e.when.toDateString() === r.when.toDateString());
+    const sameDay = state.events.find((e) => e.gid === g.id && e.when.toDateString() === r.when.toDateString());
     let ev, changed = false;
     if (sameDay) {
       if (+sameDay.when === +r.when && sameDay.place === (r.place || sameDay.place)) return;
@@ -365,38 +447,107 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
       if (r.place) sameDay.place = r.place;
       ev = sameDay; changed = true;
     } else {
-      ev = { id: String(Date.now()), when: r.when, place: r.place || "場所未定", title: "ゆうきと" };
+      ev = { id: String(Date.now()), gid: g.id, when: r.when, place: r.place || "場所未定", title: g.name };
       state.events.push(ev);
+      state.events.sort((a, b) => a.when - b.when);
     }
     state.sel = ev.id;
-    state.msgs.push({ who: "sys", id: ev.id, changed });
+    state.calMonth = null;
+    if (state.tab !== "cal") state.unseen += 1;
+    g.msgs.push({ who: "sys", id: ev.id, changed, t: Date.now() });
     flashId = ev.id;
+    day = null;
   }
   let flashId = null;
 
-  // ---------- 描画 ----------
-  function renderMsgs() {
-    const box = $("msgs");
-    box.innerHTML = state.msgs.map((m) => {
+  // ---------- 画面切り替え ----------
+  function show(tab, room) {
+    state.tab = tab;
+    state.room = tab === "groups" ? room || null : state.room && tab === "groups" ? state.room : null;
+    if (tab === "cal") state.unseen = 0;
+    latePick = false;
+    save();
+    renderAll();
+  }
+  function renderShell() {
+    const inRoom = state.tab === "groups" && state.room;
+    $("v-me").hidden = state.tab !== "me";
+    $("v-cal").hidden = state.tab !== "cal";
+    $("v-groups").hidden = !(state.tab === "groups" && !inRoom);
+    $("v-room").hidden = !inRoom;
+    $("tabbar").hidden = !!inRoom;
+    [...$("tabbar").children].forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === state.tab));
+    $("cal-badge").hidden = !state.unseen;
+    $("cal-badge").textContent = state.unseen;
+  }
+
+  // ---------- グループ ----------
+  function renderRooms() {
+    $("rooms").innerHTML = state.groups.map((g) => {
+      const last = [...g.msgs].reverse().find((m) => m.who !== "sys" && m.who !== "buddy") || g.msgs[g.msgs.length - 1];
+      const lastTxt = g.msgs.length && g.msgs[g.msgs.length - 1].who === "sys" ? "📅 予定をカレンダーに登録しました" : last ? last.text : "";
+      return `<li><button data-room="${g.id}">
+        <span class="avatar" style="background:${COLORS[g.other[0]] || "#888"}">${esc(g.name[0])}</span>
+        <span class="txt"><span class="name">${esc(g.name)} <small>(2)</small></span><span class="last">${esc(lastTxt)}</span></span>
+        <time>${last ? tm(last.t) : ""}</time></button></li>`;
+    }).join("");
+  }
+  function renderRoom() {
+    const g = group(state.room);
+    if (!g) return;
+    $("room-title").textContent = `${g.name} (2)`;
+    $("as").textContent = state.as === "me" ? "自分" : g.other;
+    $("hints").innerHTML = g.hints.map((h) => `<button class="hint">${esc(h)}</button>`).join("");
+    let html = `<span class="date-chip">今日</span>`;
+    html += g.msgs.map((m) => {
       if (m.who === "sys") {
         const ev = state.events.find((e) => e.id === m.id);
         if (!ev) return "";
         const p = planOf(ev);
-        return `<div class="sys"><b>📅 ${m.changed ? "予定を変更しました" : "カレンダーに登録しました"}</b>
-          ${C.md(ev.when)} ${C.hm(ev.when)}　${esc(ev.place)}<br>
-          支度スタート ${C.hm(p.prepStart)} ／ 家を出る ${C.hm(p.leave)}
-          <br><button class="btn sm" data-open="${ev.id}">当日の段取りを見る</button></div>`;
+        return `<div class="sys"><div class="h">📅 ${m.changed ? "予定を変更しました" : "カレンダーに登録しました"}</div>
+          <div class="w">${C.md(ev.when)} ${C.hm(ev.when)}</div>
+          <div>${esc(ev.place)}</div>
+          <div class="t">支度スタート ${C.hm(p.prepStart)}　家を出る ${C.hm(p.leave)}</div>
+          <button class="btn green" data-open="${ev.id}">当日の段取りを見る</button></div>`;
       }
-      if (m.who === "buddy") return `<div class="sys alarm"><b>🔔 見守り通知</b>${esc(m.text)}</div>`;
+      if (m.who === "buddy") return `<div class="sys alarm"><div class="h">🔔 見守り通知</div><div>${esc(m.text)}</div></div>`;
       const me = m.who === "me";
-      return `<div class="m ${me ? "me" : ""}"><span class="who">${me ? "自分" : "ゆうき"}</span><div class="b">${esc(m.text)}</div></div>`;
+      const name = me ? "自分" : g.other;
+      return `<div class="m ${me ? "me" : ""}">
+        ${me ? "" : `<span class="avatar" style="background:${COLORS[name[0]] || "#888"}">${esc(name[0])}</span>`}
+        <div class="col">${me ? "" : `<span class="who">${esc(name)}</span>`}
+          <div class="row"><div class="b">${esc(m.text)}</div><time>${tm(m.t)}</time></div></div></div>`;
     }).join("");
-    box.scrollTop = box.scrollHeight;
+    $("talk").innerHTML = html;
+    $("talk").scrollTop = $("talk").scrollHeight;
+  }
+  function send() {
+    const v = $("text").value.trim();
+    if (!v || !state.room) return;
+    $("text").value = "";
+    post(state.room, state.as, v);
   }
 
+  // ---------- 個人 ----------
+  function renderMe() {
+    const now = new Date();
+    const ev = state.events.find((e) => e.when > now);
+    if (!ev) {
+      $("next").innerHTML = `<div class="empty">まだ予定はありません。グループで約束が決まると自動で入ります。</div>`;
+      return;
+    }
+    const p = planOf(ev);
+    $("next").innerHTML = `<div class="next-card">
+      <span class="when">${C.md(ev.when)} ${C.hm(ev.when)}</span>
+      <span class="meta">${esc(ev.place)}・${esc(ev.title)}</span>
+      <div class="times"><span>支度スタート<b>${C.hm(p.prepStart)}</b></span><span>家を出る<b>${C.hm(p.leave)}</b></span></div>
+      <div><button class="btn green" data-openday="${ev.id}">当日モードを開く</button></div></div>`;
+  }
+
+  // ---------- カレンダー ----------
   function renderCal() {
-    const sel = state.events.find((e) => e.id === state.sel);
-    const ref = sel ? sel.when : new Date();
+    const sel = selEv();
+    const ref = state.calMonth ? new Date(state.calMonth) : sel ? sel.when : new Date();
     const y = ref.getFullYear(), mo = ref.getMonth();
     $("cal-title").textContent = `${y}年${mo + 1}月`;
     const first = new Date(y, mo, 1);
@@ -407,32 +558,30 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
       const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
       if (i >= 35 && d.getMonth() !== mo) break;
       const ev = state.events.find((e) => e.when.toDateString() === d.toDateString());
-      const cls = ["day", d.getMonth() !== mo ? "other" : "", d.toDateString() === today ? "today" : "", ev ? "has" : "", ev && ev.id === state.sel ? "sel" : "", ev && ev.id === flashId ? "flash" : ""].join(" ");
-      html += `<button class="${cls}" ${ev ? `data-open="${ev.id}" aria-label="${C.md(ev.when)} ${esc(ev.place)}"` : 'tabindex="-1" aria-hidden="true"'}>${d.getDate()}</button>`;
+      const cls = ["day", d.getMonth() !== mo ? "other" : "", d.toDateString() === today ? "today" : "", ev ? "has" : "", ev && sel && sel.when.toDateString() === d.toDateString() ? "sel" : "", ev && ev.id === flashId ? "flash" : ""].join(" ");
+      html += `<button class="${cls}" ${ev ? `data-open="${ev.id}" aria-label="${C.md(ev.when)} ${esc(ev.place)}"` : 'tabindex="-1" aria-hidden="true"'}><span>${d.getDate()}</span></button>`;
     }
     $("cal").innerHTML = html;
+    const inMonth = state.events.filter((e) => e.when.getFullYear() === y && e.when.getMonth() === mo);
+    $("ev-list").innerHTML = inMonth.length
+      ? inMonth.map((e) => `<li><button data-open="${e.id}" aria-current="${e.id === state.sel}"><span class="d">${C.md(e.when)} ${C.hm(e.when)}</span><span class="p">${esc(e.place)}・${esc(e.title)}</span></button></li>`).join("")
+      : `<li class="empty">この月の予定はありません</li>`;
+    renderPlan();
   }
-
-  let latePick = false;
-  function renderBoard() {
-    const ev = state.events.find((e) => e.id === state.sel);
-    if (!ev) {
-      $("board").innerHTML = `<div class="board-empty">まだ予定がありません。左のトークで日時と場所を決めて「おけ！」と送ると、ここに当日の段取りが出ます。</div>`;
-      return;
-    }
+  function renderPlan() {
+    const ev = selEv();
+    if (!ev) { $("plan-area").innerHTML = ""; return; }
+    const seg = `<div class="seg" role="tablist">
+      <button role="tab" data-mode="plan" aria-selected="${state.calMode === "plan"}">段取り表</button>
+      <button role="tab" data-mode="day" aria-selected="${state.calMode === "day"}">当日モード</button></div>`;
     const p = planOf(ev);
     const rt = routeFor(ev.place);
-    const tabs = `<div class="tabs" role="tablist">
-        <button role="tab" data-tab="plan" aria-selected="${state.tab === "plan"}">段取り表</button>
-        <button role="tab" data-tab="day" aria-selected="${state.tab === "day"}">当日モード</button>
-      </div>`;
-    if (state.tab === "day") {
-      $("board").innerHTML = tabs + `<div id="day"></div>`;
+    if (state.calMode === "day") {
+      $("plan-area").innerHTML = seg + `<div class="board" id="day"></div>`;
       renderDay(ev, p, rt);
       return;
     }
     const now = new Date();
-    // 家を出てからの乗車ステップ
     const legs = [];
     let t = new Date(+p.leave + rt.walk * MIN);
     rt.legs.forEach((l, i) => {
@@ -440,10 +589,9 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
       legs.push({ at: new Date(t), kind: "ride", label: `<span class="line-chip"><i style="background:${l.color}"></i>${esc(l.line)}</span>`, detail: `${l.from}駅 → ${l.to}駅（${l.min}分）` });
       t = new Date(+t + l.min * MIN);
     });
-    const steps = p.steps.filter((s) => s.kind !== "buffer").map((s) => ({ at: s.at, kind: s.kind, label: esc(s.label), detail: esc(s.detail) }))
+    const steps = p.steps.filter((s) => s.kind !== "buffer").map((s) => ({ at: s.at, kind: s.kind, label: esc(s.label), detail: esc(s.kind === "leave" ? `駅まで徒歩${rt.walk}分` : s.detail) }))
       .concat(legs).sort((a, b) => a.at - b.at);
-    steps.forEach((s) => { if (s.kind === "leave") s.detail = `駅まで徒歩${rt.walk}分`; });
-    $("board").innerHTML = tabs + `
+    $("plan-area").innerHTML = seg + `<div class="board">
       <div class="board-h"><span class="t">${C.md(ev.when)} ${esc(ev.title)}</span><span class="p">${esc(ev.place)}</span></div>
       <div class="big">
         <div><span>支度スタート</span><b>${C.hm(p.prepStart)}</b></div>
@@ -452,35 +600,35 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
       </div>
       <ol class="rows">${steps.map((s) => `<li class="k-${s.kind}${s.at < now ? " done" : ""}"><time>${C.hm(s.at)}</time><span class="lbl"><span>${s.label}</span>${s.detail ? `<small>${s.detail}</small>` : ""}</span></li>`).join("")}</ol>
       <div class="actions">
-        <button class="btn" data-act="eve">前日リマインドを送る</button>
-        <button class="btn" data-act="leave">出発したと報告</button>
-        ${latePick
-          ? `<span class="late-pick">何分遅れる？ ${[5, 10, 15, 30].map((n) => `<button class="btn sm warn" data-late="${n}">${n}分</button>`).join("")}</span>`
-          : `<button class="btn warn" data-act="late">遅れそうと連絡</button>`}
-      </div>`;
+        <button class="btn" data-act="eve">前日リマインド</button>
+        <button class="btn" data-act="leave">出発を報告</button>
+        ${latePick ? [5, 10, 15, 30].map((n) => `<button class="btn sm warn" data-late="${n}">${n}分遅れ</button>`).join("") : `<button class="btn warn" data-act="late">遅れそう</button>`}
+      </div></div>
+      <p class="foot-note">報告ボタンを押すと「${esc(ev.title)}」のトークに自動で送られます。</p>`;
   }
 
   // ---------- 当日モード（デモ時計つき） ----------
   let day = null;
+  let latePick = false;
   const simNow = () => new Date(day.simBase + (Date.now() - day.realBase));
   const setSim = (t) => { day.simBase = +t; day.realBase = Date.now(); day.key = ""; };
   function ensureDay(ev, p) {
     if (day && day.evId === ev.id) return;
     day = { evId: ev.id, awake: false, done: 0, startedAt: null, early: false, buddySent: false, departed: false, key: "" };
-    setSim(new Date(+p.wake - 1 * MIN));
+    setSim(new Date(+p.wake - MIN));
   }
   const fmtLeft = (m) => (m >= 60 ? `${Math.floor(m / 60)}時間${m % 60}分` : `${m}分`);
+  const clock = (m) => (m >= 60 ? `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}` : `${m}分`);
   function ring(frac, color, big, small) {
-    const r = 54, c = 2 * Math.PI * r, f = Math.max(0, Math.min(1, frac));
-    return `<svg class="ring" viewBox="0 0 132 132" role="img" aria-label="${esc(big + " " + small)}">
-      <circle cx="66" cy="66" r="${r}" fill="none" stroke="#25302d" stroke-width="12"></circle>
-      <circle cx="66" cy="66" r="${r}" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="round"
-        stroke-dasharray="${(c * f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 66 66)"></circle>
-      <text x="66" y="68" text-anchor="middle" fill="${color}" font-size="30">${esc(big)}</text>
-      <text x="66" y="92" text-anchor="middle" fill="#7d8a85" font-size="12">${esc(small)}</text></svg>`;
+    const r = 46, c = 2 * Math.PI * r, f = Math.max(0, Math.min(1, frac));
+    return `<svg class="ring" viewBox="0 0 112 112" role="img" aria-label="${esc(big + " " + small)}">
+      <circle cx="56" cy="56" r="${r}" fill="none" stroke="#25302d" stroke-width="10"></circle>
+      <circle cx="56" cy="56" r="${r}" fill="none" stroke="${color}" stroke-width="10" stroke-linecap="round"
+        stroke-dasharray="${(c * f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 56 56)"></circle>
+      <text x="56" y="58" text-anchor="middle" fill="${color}" font-size="24">${esc(big)}</text>
+      <text x="56" y="79" text-anchor="middle" fill="#7d8a85" font-size="10">${esc(small)}</text></svg>`;
   }
-
-  function dayPhase(ev, p) {
+  function dayPhase(p) {
     const now = simNow();
     const tasks = p.steps.filter((s) => s.kind === "task");
     if (day.departed) return { k: "gone" };
@@ -491,22 +639,20 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
     if (pc.allDone || !tasks.length) return { k: "leave", left: Math.ceil((p.leave - now) / MIN) };
     return { k: "task", pc };
   }
-
   function renderDay(ev, p, rt) {
     ensureDay(ev, p);
     const now = simNow();
-    const ph = dayPhase(ev, p);
-    // 見守り: 起床5分後も起きていなければグループへ
+    const ph = dayPhase(p);
     if (ph.k === "wake" && ph.late >= 5 && state.settings.buddy && !day.buddySent) {
       day.buddySent = true;
-      post("buddy", `自分さんがまだ起きていないみたいです（起床 ${C.hm(p.wake)} → 今 ${C.hm(now)}）。LINEか電話で起こしてあげてください`);
+      post(ev.gid, "buddy", `自分さんがまだ起きていないみたいです（起床 ${C.hm(p.wake)} → 今 ${C.hm(now)}）。電話して起こしてあげてください`);
       return;
     }
     const leg = rt.legs[0];
     const trainAt = new Date(+p.leave + rt.walk * MIN);
     const leaveLine = `家を出る ${C.hm(p.leave)} → ${C.hm(trainAt)} ${leg.from}駅 ${leg.line}`;
-    let body = "";
     const act = (html) => `<div class="f-actions">${html}</div>`;
+    let body = "";
     if (ph.k === "sleep") {
       body = `<div class="focus">${ring(1, "#b9a4ff", C.hm(p.wake), "起床")}
         <div><div class="f-eyebrow">おやすみ中</div><div class="f-title">起床まで あと${fmtLeft(ph.left)}</div>
@@ -523,15 +669,14 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
         : ph.left <= 5 ? "あと5分。スマホを置く場所を決めよう"
         : ph.left <= 10 ? "あと10分で支度スタート。今やってることのキリを探そう"
         : `${C.hm(p.prepStart)} になったら手を止める。それまでは好きにしてOK`;
-      body = `<div class="focus">${ring(ph.left / total, "#7ee0a3", ph.left >= 60 ? `${Math.floor(ph.left / 60)}:${String(ph.left % 60).padStart(2, "0")}` : `${ph.left}分`, "支度スタートまで")}
+      body = `<div class="focus">${ring(ph.left / total, "#7ee0a3", clock(ph.left), "支度スタートまで")}
         <div><div class="f-eyebrow">自由時間</div><div class="f-title">${C.hm(p.prepStart)} 支度スタート</div>
         <div class="f-first">${esc(leaveLine)}</div></div></div>
         <div class="banner ${ph.left <= 10 ? "info" : "ok"}">${msg}</div>
         ${act(`<button class="btn" data-day="early">もう始める（前倒し）</button>`)}`;
     } else if (ph.k === "task") {
-      const pc = ph.pc, t = pc.task;
-      const over = pc.overMin > 0;
-      const bigTxt = pc.notStarted || !day.startedAt ? `${t.min}分` : over ? `+${pc.overMin}分` : `${pc.taskRemainMin}分`;
+      const pc = ph.pc, t = pc.task, over = pc.overMin > 0;
+      const bigTxt = !day.startedAt ? `${t.min}分` : over ? `+${pc.overMin}分` : `${pc.taskRemainMin}分`;
       const frac = over ? 1 : day.startedAt ? pc.taskRemainMin / t.min : 1;
       const color = over || pc.slackMin < 0 ? "#ff7a66" : "#f2b33d";
       let banner;
@@ -546,20 +691,20 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
         <div class="f-next">${pc.next ? `次: ${esc(pc.next.label)}（${pc.next.min}分）` : `次: 家を出る ${C.hm(p.leave)}`}</div></div></div>
         ${banner}
         ${act(!day.startedAt && day.done === 0
-          ? `<button class="btn go" data-day="start">始めた！</button><button class="btn warn" data-act="late">遅れそうと連絡</button>`
-          : `<button class="btn go" data-day="next">できた → 次へ</button><button class="btn" data-day="next">スキップ</button><button class="btn warn" data-act="late">遅れそうと連絡</button>`)}
-        ${latePick ? `<div class="f-actions">${[5, 10, 15, 30].map((n) => `<button class="btn sm warn" data-late="${n}">${n}分</button>`).join("")}</div>` : ""}`;
+          ? `<button class="btn go" data-day="start">始めた！</button><button class="btn warn" data-act="late">遅れそう</button>`
+          : `<button class="btn go" data-day="next">できた → 次へ</button><button class="btn" data-day="next">スキップ</button><button class="btn warn" data-act="late">遅れそう</button>`)}
+        ${latePick ? act([5, 10, 15, 30].map((n) => `<button class="btn sm warn" data-late="${n}">${n}分遅れ</button>`).join("")) : ""}`;
     } else if (ph.k === "leave") {
       const ok = ph.left > 0;
-      body = `<div class="focus">${ring(ok ? 1 : 1, ok ? "#7ee0a3" : "#ff7a66", C.hm(p.leave), "家を出る")}
+      body = `<div class="focus">${ring(1, ok ? "#7ee0a3" : "#ff7a66", C.hm(p.leave), "家を出る")}
         <div><div class="f-eyebrow">${ok ? "準備完了" : "出発時刻"}</div>
         <div class="f-title">${ok ? `出発まで あと${fmtLeft(ph.left)}` : "今すぐ家を出る！"}</div>
         <div class="f-first">${C.hm(trainAt)} ${esc(leg.from)}駅 <b>${esc(leg.line)}</b>${rt.legs[1] ? ` → ${esc(rt.legs[1].from)}で${esc(rt.legs[1].line)}` : ""}</div></div></div>
         ${act(`<button class="btn go" data-day="depart">出発した！（グループに報告）</button>`)}`;
     } else {
-      body = `<div class="focus">${ring(1, "#7ee0a3", C.hm(new Date(+day.departedAt + (rt.total + 0) * MIN)), "到着予定")}
+      body = `<div class="focus">${ring(1, "#7ee0a3", C.hm(new Date(+day.departedAt + rt.total * MIN)), "到着予定")}
         <div><div class="f-eyebrow">出発済み</div><div class="f-title">いってらっしゃい！</div>
-        <div class="f-first">グループに出発報告を送りました</div></div></div>`;
+        <div class="f-first">「${esc(ev.title)}」に出発報告を送りました</div></div></div>`;
     }
     $("day").innerHTML = `<div class="sim">デモ時計 <b>${C.hm(now)}</b>
         <button class="btn sm" data-sim="wake">起床時刻へ</button>
@@ -568,93 +713,37 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
         <button class="btn sm" data-sim="+5">+5分</button>
         <button class="btn sm" data-sim="reset">やり直す</button></div>` + body;
   }
-
   function onDay(action) {
-    const ev = state.events.find((e) => e.id === state.sel);
+    const ev = selEv();
     if (!ev || !day) return;
-    const p = planOf(ev);
     const now = simNow();
     if (action === "awake") {
       day.awake = true;
-      if (day.buddySent) post("buddy", "自分さんが起きました。ありがとう！");
+      if (day.buddySent) { post(ev.gid, "buddy", "自分さんが起きました。ありがとう！"); return; }
     }
     if (action === "early" || action === "start") { day.early = true; day.startedAt = +now; }
     if (action === "next") { day.done += 1; day.startedAt = +now; }
     if (action === "depart") {
       day.departed = true; day.departedAt = +now;
-      post("me", "🚃 " + C.messages.leaving({ when: ev.when, place: ev.place }, p, now));
+      post(ev.gid, "me", "🚃 " + C.messages.leaving({ when: ev.when, place: ev.place }, planOf(ev), now));
       return;
     }
-    renderBoard();
+    renderPlan();
   }
   function onSim(action) {
-    const ev = state.events.find((e) => e.id === state.sel);
+    const ev = selEv();
     if (!ev || !day) return;
     const p = planOf(ev);
-    if (action === "reset") { day = null; renderBoard(); return; }
-    if (action === "wake") setSim(p.wake);
-    if (action === "start") { setSim(p.prepStart); day.awake = true; }
-    if (action === "+1") setSim(+simNow() + MIN);
-    if (action === "+5") setSim(+simNow() + 5 * MIN);
-    renderBoard();
+    if (action === "reset") day = null;
+    else if (action === "wake") setSim(p.wake);
+    else if (action === "start") { setSim(p.prepStart); day.awake = true; }
+    else setSim(+simNow() + (action === "+5" ? 5 : 1) * MIN);
+    renderPlan();
   }
 
-  function render() {
-    renderMsgs();
-    renderCal();
-    renderBoard();
-    flashId = null;
-  }
-
-  // ---------- 操作 ----------
-  function send() {
-    const v = $("text").value.trim();
-    if (!v) return;
-    $("text").value = "";
-    post(state.as, v);
-  }
-  $("send").onclick = send;
-  $("text").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) send(); });
-  $("hints").onclick = (e) => {
-    const b = e.target.closest(".hint");
-    if (b) { $("text").value = b.textContent; $("text").focus(); }
-  };
-  function setAs(who) {
-    state.as = who;
-    $("as-me").setAttribute("aria-pressed", who === "me");
-    $("as-yuki").setAttribute("aria-pressed", who === "yuki");
-  }
-  $("as-me").onclick = () => setAs("me");
-  $("as-yuki").onclick = () => setAs("yuki");
-
-  document.addEventListener("click", (e) => {
-    const tb = e.target.closest("[data-tab]");
-    if (tb) { state.tab = tb.dataset.tab; latePick = false; save(); renderBoard(); return; }
-    const dy = e.target.closest("[data-day]");
-    if (dy) { onDay(dy.dataset.day); return; }
-    const sm = e.target.closest("[data-sim]");
-    if (sm) { onSim(sm.dataset.sim); return; }
-    const o = e.target.closest("[data-open]");
-    if (o) { state.sel = o.dataset.open; latePick = false; save(); renderCal(); renderBoard(); return; }
-    const a = e.target.closest("[data-act]");
-    const ev = state.events.find((x) => x.id === state.sel);
-    if (a && ev) {
-      const appt = { when: ev.when, place: ev.place };
-      if (a.dataset.act === "eve") post("me", C.messages.remindEve(appt));
-      if (a.dataset.act === "leave") post("me", "🚃 " + C.messages.leaving(appt, planOf(ev), day && state.tab === "day" ? simNow() : new Date()));
-      if (a.dataset.act === "late") { latePick = true; renderBoard(); }
-      return;
-    }
-    const l = e.target.closest("[data-late]");
-    if (l && ev) {
-      const n = +l.dataset.late;
-      latePick = false;
-      post("me", C.messages.late({ when: ev.when, place: ev.place }, n, new Date(+ev.when + n * MIN)));
-    }
-  });
-
+  // ---------- 設定 ----------
   const NUM = { "s-night": "nightPrepMin", "s-sleep": "sleepHours", "s-wbuf": "wakeBuffer", "s-early": "arriveEarly", "s-fake": "fakeEarly" };
-  function refresh() { save(); renderMsgs(); renderCal(); renderBoard(); }
+  function changed() { day = null; save(); renderMe(); }
   function renderRoutine() {
     $("routine").innerHTML = state.settings.routine.map((r, i) => `<li data-i="${i}">
         <input class="r-name" id="r-name-${i}" value="${esc(r.name)}" aria-label="支度${i + 1}の名前">
@@ -669,53 +758,108 @@ legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--
     const st = state.settings;
     Object.keys(NUM).forEach((id) => {
       $(id).value = st[NUM[id]];
-      $(id).oninput = (e) => { const v = +e.target.value; if (e.target.value !== "" && v >= 0) { st[NUM[id]] = v; day = null; refresh(); } };
+      $(id).oninput = (e) => { const v = +e.target.value; if (e.target.value !== "" && v >= 0) { st[NUM[id]] = v; changed(); } };
     });
     $("s-wake").value = st.usualWake;
-    $("s-wake").oninput = (e) => { st.usualWake = e.target.value; day = null; refresh(); };
+    $("s-wake").oninput = (e) => { st.usualWake = e.target.value; changed(); };
     $("s-dist").value = String(st.distraction);
-    $("s-dist").onchange = (e) => { st.distraction = +e.target.value; day = null; refresh(); };
+    $("s-dist").onchange = (e) => { st.distraction = +e.target.value; changed(); };
     $("s-buddy").checked = !!st.buddy;
     $("s-buddy").onchange = (e) => { st.buddy = e.target.checked; save(); };
     renderRoutine();
-    $("routine").oninput = (e) => {
-      const li = e.target.closest("li");
-      const r = st.routine[+li.dataset.i];
-      if (e.target.classList.contains("r-name")) r.name = e.target.value;
-      else if (e.target.classList.contains("r-first")) r.first = e.target.value;
-      else if (+e.target.value > 0) r.min = +e.target.value;
-      day = null;
-      refresh();
-    };
-    $("routine").onclick = (e) => {
-      const b = e.target.closest("[data-r]");
-      if (!b) return;
-      const i = +b.closest("li").dataset.i;
-      if (b.dataset.r === "del") st.routine.splice(i, 1);
-      else if (i > 0) [st.routine[i - 1], st.routine[i]] = [st.routine[i], st.routine[i - 1]];
-      renderRoutine(); day = null; refresh();
-    };
-    $("add-task").onclick = () => { st.routine.push({ name: "新しい支度", min: 5, first: "" }); renderRoutine(); day = null; refresh(); };
   }
+  $("routine").oninput = (e) => {
+    const li = e.target.closest("li");
+    const r = state.settings.routine[+li.dataset.i];
+    if (e.target.classList.contains("r-name")) r.name = e.target.value;
+    else if (e.target.classList.contains("r-first")) r.first = e.target.value;
+    else if (+e.target.value > 0) r.min = +e.target.value;
+    changed();
+  };
+  $("routine").onclick = (e) => {
+    const b = e.target.closest("[data-r]");
+    if (!b) return;
+    const rt = state.settings.routine, i = +b.closest("li").dataset.i;
+    if (b.dataset.r === "del") rt.splice(i, 1);
+    else if (i > 0) [rt[i - 1], rt[i]] = [rt[i], rt[i - 1]];
+    renderRoutine(); changed();
+  };
+  $("add-task").onclick = () => { state.settings.routine.push({ name: "新しい支度", min: 5, first: "" }); renderRoutine(); changed(); };
+
+  // ---------- 描画・操作 ----------
+  function renderAll() {
+    renderShell();
+    if (state.tab === "me") renderMe();
+    if (state.tab === "cal") renderCal();
+    if (state.tab === "groups") state.room ? renderRoom() : renderRooms();
+    flashId = state.tab === "cal" ? null : flashId;
+  }
+  $("tabbar").onclick = (e) => { const b = e.target.closest("[data-tab]"); if (b) show(b.dataset.tab); };
+  $("back").onclick = () => { state.room = null; save(); renderAll(); };
+  $("rooms").onclick = (e) => { const b = e.target.closest("[data-room]"); if (b) { state.room = b.dataset.room; state.as = "me"; save(); renderAll(); } };
+  $("send").onclick = send;
+  $("text").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.isComposing) send(); });
+  $("hints").onclick = (e) => { const b = e.target.closest(".hint"); if (b) { $("text").value = b.textContent; $("text").focus(); } };
+  $("as").onclick = () => { state.as = state.as === "me" ? "other" : "me"; renderRoom(); };
+  $("cal-prev").onclick = () => { const r = $("cal-title").textContent.match(/(\d+)年(\d+)月/); state.calMonth = +new Date(+r[1], +r[2] - 2, 1); renderCal(); };
+  $("cal-next").onclick = () => { const r = $("cal-title").textContent.match(/(\d+)年(\d+)月/); state.calMonth = +new Date(+r[1], +r[2], 1); renderCal(); };
+
+  document.addEventListener("click", (e) => {
+    const o = e.target.closest("[data-open]");
+    if (o) { state.sel = o.dataset.open; state.calMonth = null; if (state.tab !== "cal") { state.calMode = "plan"; show("cal"); } else { latePick = false; save(); renderCal(); } return; }
+    const od = e.target.closest("[data-openday]");
+    if (od) { state.sel = od.dataset.openday; state.calMode = "day"; state.calMonth = null; show("cal"); return; }
+    const md = e.target.closest("[data-mode]");
+    if (md) { state.calMode = md.dataset.mode; latePick = false; save(); renderPlan(); return; }
+    const dy = e.target.closest("[data-day]");
+    if (dy) { onDay(dy.dataset.day); return; }
+    const sm = e.target.closest("[data-sim]");
+    if (sm) { onSim(sm.dataset.sim); return; }
+    const ev = selEv();
+    const a = e.target.closest("[data-act]");
+    if (a && ev) {
+      const appt = { when: ev.when, place: ev.place };
+      const now = day && state.calMode === "day" ? simNow() : new Date();
+      if (a.dataset.act === "eve") post(ev.gid, "me", C.messages.remindEve(appt));
+      if (a.dataset.act === "leave") post(ev.gid, "me", "🚃 " + C.messages.leaving(appt, planOf(ev), now));
+      if (a.dataset.act === "late") { latePick = true; renderPlan(); }
+      return;
+    }
+    const l = e.target.closest("[data-late]");
+    if (l && ev) {
+      const n = +l.dataset.late;
+      latePick = false;
+      post(ev.gid, "me", C.messages.late({ when: ev.when, place: ev.place }, n, new Date(+ev.when + n * MIN)));
+    }
+  });
 
   function start(reset) {
     state = (!reset && load()) || null;
+    const seeds = fresh();
     if (!state) {
-      state = fresh();
-      SAMPLE.forEach((m) => post(m.who, m.text, true));
+      state = seeds;
+      // サンプルのトークを流して、最初から1件登録された状態にする
+      state.groups.forEach((g) => g.seed.forEach((m) => {
+        g.msgs.push({ who: m.who, text: m.text, t: m.t });
+        if (m.who !== "sys") detect(g);
+      }));
+      state.unseen = 1;
+      save();
     }
-    setAs(state.as || "me");
+    // 保存データにはヒントが無いので補う
+    state.groups.forEach((g) => { const s = seeds.groups.find((x) => x.id === g.id); if (s) g.hints = s.hints; });
+    day = null;
     bindSettings();
-    render();
+    renderAll();
   }
   $("reset").onclick = () => start(true);
   start(false);
-  setInterval(renderBoard, 60 * 1000);
-  // 当日モードは表示中の「分」が変わったときだけ描き直す
+
   setInterval(() => {
-    if (state.tab !== "day" || !day || !$("day")) return;
-    const k = C.hm(simNow());
-    if (k !== day.key) { day.key = k; renderBoard(); }
+    if (state.tab === "cal" && state.calMode === "day" && day && $("day")) {
+      const k = C.hm(simNow());
+      if (k !== day.key) { day.key = k; renderPlan(); }
+    }
   }, 1000);
 })();
 </script>
