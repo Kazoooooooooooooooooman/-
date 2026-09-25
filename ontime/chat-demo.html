@@ -198,6 +198,7 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
 .rows .k-night time { color: #b9a4ff; }
 .rows .k-leave .lbl > span:first-child, .rows .k-start .lbl > span:first-child { font-weight: 700; }
 .rows .k-appt time { color: #7ee0a3; }
+.rows .k-slack time, .rows .k-slack .lbl > span:first-child { color: #7ee0a3; }
 .rows .done { opacity: .4; }
 .line-chip { display: inline-flex; align-items: center; gap: 6px; }
 .line-chip i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
@@ -272,6 +273,7 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
             <label for="s-early">何分前に着く？<input id="s-early" type="number" min="0" max="60"></label>
             <label for="s-fake">サバ読み（分）<input id="s-fake" type="number" min="0" max="60" step="5"></label>
           </div>
+          <p class="help">気が散る係数: 支度の時間は設定どおりのまま、係数の分を「よゆう時間」として出発前にまとめて確保します（例: 支度合計100分 × 1.3 → よゆう30分）。</p>
           <p class="help">サバ読み: 画面の時刻が全部この分だけ早くなります。本当の締め切りを見ないのがコツ。</p>
         </fieldset>
         <fieldset>
@@ -680,7 +682,8 @@ input, select { background: var(--soft); border: 1px solid var(--line); border-r
       const frac = over ? 1 : day.startedAt ? pc.taskRemainMin / t.min : 1;
       const color = over || pc.slackMin < 0 ? "#ff7a66" : "#f2b33d";
       let banner;
-      if (pc.notStarted) banner = `<div class="banner warn">まだ始めてない？ 全部やらなくていいから、最初の一歩だけ → <b>${esc(t.first || t.label)}</b>${pc.slackMin < 0 ? `<br>このままだと出発が${-pc.slackMin}分遅れます。` : ""}</div>`;
+      if (pc.notStarted && now - p.prepStart < 2 * MIN) banner = `<div class="banner info">支度スタート！ 全部じゃなくていい、まずは最初の一歩 → <b>${esc(t.first || t.label)}</b></div>`;
+      else if (pc.notStarted) banner = `<div class="banner warn">まだ始めてない？ 全部やらなくていいから、最初の一歩だけ → <b>${esc(t.first || t.label)}</b>${pc.slackMin < 0 ? `<br>このままだと出発が${-pc.slackMin}分遅れます。` : ""}</div>`;
       else if (pc.slackMin < 0) banner = `<div class="banner warn">このペースだと出発が${-pc.slackMin}分遅れます。${pc.next ? `次の「${esc(pc.next.label)}」を短くしよう。` : ""}間に合わないなら今のうちに連絡を。</div>`;
       else if (pc.slackMin >= 3) banner = `<div class="banner ok">いいペース！ 出発まで ${pc.slackMin}分の余裕があります。</div>`;
       else banner = `<div class="banner info">ぴったりのペース。この調子。</div>`;

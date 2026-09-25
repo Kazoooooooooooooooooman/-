@@ -220,8 +220,11 @@
     const leave = new Date(arriveBy - (travel + s.delayBuffer) * MIN);
 
     const tasks = (s.routine || []).filter((r) => r.name && r.min > 0);
-    const scaled = tasks.map((r) => ({ name: r.name, min: Math.ceil(r.min * s.distraction), first: r.first || "" }));
-    const prepMin = scaled.reduce((a, r) => a + r.min, 0);
+    // 各支度は設定どおりの分数のまま。気が散る係数の分は「よゆう時間」として出発前にまとめて確保する
+    const scaled = tasks.map((r) => ({ name: r.name, min: Number(r.min), first: r.first || "" }));
+    const taskMin = scaled.reduce((a, r) => a + r.min, 0);
+    const slackMin = Math.max(0, Math.ceil(taskMin * (Number(s.distraction) || 1)) - taskMin);
+    const prepMin = taskMin + slackMin;
     const prepStart = new Date(leave - prepMin * MIN);
     const latestWake = new Date(prepStart - s.wakeBuffer * MIN);
     // いつもの起床時刻の方が早ければそちらで起き、支度開始はアラームで区切る
@@ -254,13 +257,15 @@
       step(cur, r.name, "task", `${r.min}分`, { min: r.min, first: r.first });
       cur = new Date(cur.getTime() + r.min * MIN);
     }
+    if (slackMin > 0)
+      step(cur, "よゆう時間（気が散る分）", "slack", `${slackMin}分 ・ 早く終われば全部余裕になる`, { min: slackMin });
     step(leave, "家を出る", "leave", appt.route ? appt.route : `移動 ${travel}分 + 保険 ${s.delayBuffer}分`);
     step(arriveBy, `到着（${s.arriveEarly + (Number(s.fakeEarly) || 0)}分前）`, "arrive", appt.place || "");
     step(when, "約束の時間", "appt", appt.place || "");
     // 同時刻は定義順を保つ
     steps.sort((a, b) => a.at - b.at);
 
-    return { when, wake, latestWake, prepStart, bed, nightPrep, leave, arriveBy, travel, prepMin, steps, settings: s };
+    return { when, wake, latestWake, prepStart, slackMin, bed, nightPrep, leave, arriveBy, travel, prepMin, steps, settings: s };
   }
 
   // 今この瞬間に何をすべきか / 間に合うか

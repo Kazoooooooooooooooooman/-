@@ -126,3 +126,17 @@ test("当日モード: ペースの判定", () => {
   assert.strictEqual(s.overMin, 3);
   assert.strictEqual(s.slackMin, 1); // Aで稼いだ5分をほぼ使い切った
 });
+
+test("支度の分数は設定どおり。気が散る分は「よゆう時間」に分けて出す", () => {
+  const plan = C.buildPlan(
+    { when: new Date(2026, 8, 26, 12, 0), travelMin: 30 },
+    { usualWake: "", distraction: 1.3, routine: [{ name: "勉強", min: 100 }, { name: "朝ごはん", min: 30 }] }
+  );
+  const tasks = plan.steps.filter((s) => s.kind === "task");
+  assert.deepStrictEqual(tasks.map((t) => t.min), [100, 30]);
+  assert.strictEqual(plan.slackMin, 39);
+  const slack = plan.steps.find((s) => s.kind === "slack");
+  assert.strictEqual(+slack.at, +plan.leave - 39 * 60000);
+  // 予定どおりに始めれば、よゆう時間の分だけ余裕がある
+  assert.strictEqual(C.pace(plan, 0, plan.prepStart, plan.prepStart).slackMin, 39);
+});
