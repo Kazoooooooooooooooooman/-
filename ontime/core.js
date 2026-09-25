@@ -198,14 +198,17 @@
     delayBuffer: 5, // 電車遅延・迷子の保険
     wakeBuffer: 10, // 二度寝・ぼーっとする時間
     distraction: 1.3, // 気が散る係数 (支度にかかる時間の倍率)
-    sleepHours: 7,
+    sleepHours: 7, // 0 なら「寝る」を出さない
     usualWake: "07:00", // いつもの起床時刻 (空なら最終ラインで起きる)
+    nightPrepMin: 30, // 寝る何分前に前日の準備をするか (0 なら出さない)
+    fakeEarly: 0, // サバ読み: 全部の時刻をこの分だけ前倒しで見せる
+    // first = 「最初の一歩」。やる気が出ないときに、これだけやればいい超小さい行動
     routine: [
-      { name: "顔を洗う・トイレ", min: 10 },
-      { name: "朝ごはん", min: 15 },
-      { name: "着替え・身だしなみ", min: 15 },
-      { name: "歯みがき", min: 5 },
-      { name: "持ち物チェック・戸締り", min: 5 },
+      { name: "顔を洗う・トイレ", min: 10, first: "洗面所まで歩くだけ" },
+      { name: "朝ごはん", min: 15, first: "パンを1枚トースターに入れる" },
+      { name: "着替え・身だしなみ", min: 15, first: "まず靴下だけはく" },
+      { name: "歯みがき", min: 5, first: "歯ブラシに歯みがき粉をつける" },
+      { name: "持ち物チェック・戸締り", min: 5, first: "カバンを玄関に置く" },
     ],
   };
 
@@ -213,11 +216,11 @@
     const s = Object.assign({}, DEFAULT_SETTINGS, settings || {});
     const when = new Date(appt.when);
     const travel = Math.max(0, Number(appt.travelMin) || 0);
-    const arriveBy = new Date(when - s.arriveEarly * MIN);
+    const arriveBy = new Date(when - (s.arriveEarly + (Number(s.fakeEarly) || 0)) * MIN);
     const leave = new Date(arriveBy - (travel + s.delayBuffer) * MIN);
 
     const tasks = (s.routine || []).filter((r) => r.name && r.min > 0);
-    const scaled = tasks.map((r) => ({ name: r.name, min: Math.ceil(r.min * s.distraction) }));
+    const scaled = tasks.map((r) => ({ name: r.name, min: Math.ceil(r.min * s.distraction), first: r.first || "" }));
     const prepMin = scaled.reduce((a, r) => a + r.min, 0);
     const prepStart = new Date(leave - prepMin * MIN);
     const latestWake = new Date(prepStart - s.wakeBuffer * MIN);
@@ -231,12 +234,13 @@
     }
     const early = wake < latestWake;
     const bed = new Date(wake - s.sleepHours * 60 * MIN);
-    const nightPrep = new Date(bed - 30 * MIN);
+    const nightPrep = new Date(bed - (Number(s.nightPrepMin) || 0) * MIN);
 
     const steps = [];
-    const step = (at, label, kind, detail) => steps.push({ at: new Date(at), label, kind, detail: detail || "" });
-    step(nightPrep, "前日の準備（服・持ち物・充電・ルート確認）", "night", "寝る前に全部そろえておく");
-    step(bed, "寝る", "night", `${s.sleepHours}時間睡眠を確保`);
+    const step = (at, label, kind, detail, extra) =>
+      steps.push(Object.assign({ at: new Date(at), label, kind, detail: detail || "" }, extra));
+    if (s.nightPrepMin > 0) step(nightPrep, "前日の準備（服・持ち物・充電・ルート確認）", "night", "寝る前に全部そろえておく");
+    if (s.sleepHours > 0) step(bed, "寝る", "night", `${s.sleepHours}時間睡眠を確保`);
     if (early) {
       step(wake, "起きる", "wake", `遅くとも ${hm(latestWake)} が最終ライン`);
       step(wake, "自由時間", "buffer", `${hm(prepStart)} のアラームで必ず手を止める`);
@@ -247,11 +251,11 @@
     }
     let cur = new Date(prepStart);
     for (const r of scaled) {
-      step(cur, r.name, "task", `${r.min}分`);
+      step(cur, r.name, "task", `${r.min}分`, { min: r.min, first: r.first });
       cur = new Date(cur.getTime() + r.min * MIN);
     }
     step(leave, "家を出る", "leave", appt.route ? appt.route : `移動 ${travel}分 + 保険 ${s.delayBuffer}分`);
-    step(arriveBy, `到着（${s.arriveEarly}分前）`, "arrive", appt.place || "");
+    step(arriveBy, `到着（${s.arriveEarly + (Number(s.fakeEarly) || 0)}分前）`, "arrive", appt.place || "");
     step(when, "約束の時間", "appt", appt.place || "");
     // 同時刻は定義順を保つ
     steps.sort((a, b) => a.at - b.at);
@@ -271,6 +275,38 @@
     else eta = new Date(now.getTime() + (plan.travel + plan.settings.delayBuffer) * MIN);
     const lateMin = Math.max(0, Math.ceil((eta - plan.when) / MIN));
     return { current: cur, next, eta, lateMin, minutesToLeave: Math.ceil((plan.leave - now) / MIN) };
+  }
+
+  // ---------- 当日モード: 今のペースで間に合うか ----------
+  // done: 終わったタスク数 / startedAt: 今のタスクを始めた時刻 (前のタスクを終えた時刻)
+  // 戻り値 slackMin > 0 なら余裕、< 0 ならこのままだと出発がその分遅れる
+  function pace(plan, done, startedAt, now) {
+    now = new Date(now || Date.now());
+    const tasks = plan.steps.filter((st) => st.kind === "task");
+    const cur = tasks[done] || null;
+    let remain = 0, overMin = 0, taskRemainMin = 0;
+    if (cur) {
+      // まだ手をつけていないタスクは、今から始めても丸々かかる
+      const started = startedAt && new Date(startedAt) <= now ? new Date(startedAt) : null;
+      const end = started ? new Date(+started + cur.min * MIN) : new Date(+now + cur.min * MIN);
+      taskRemainMin = Math.max(0, Math.ceil((end - now) / MIN));
+      overMin = Math.max(0, Math.floor((now - end) / MIN));
+      remain = Math.max(1, (end - now) / MIN);
+      for (const t of tasks.slice(done + 1)) remain += t.min;
+    }
+    const projectedLeave = new Date(+now + remain * MIN);
+    return {
+      task: cur,
+      next: tasks[done + 1] || null,
+      index: done,
+      total: tasks.length,
+      taskRemainMin,
+      overMin,
+      projectedLeave,
+      slackMin: Math.floor((plan.leave - projectedLeave) / MIN),
+      notStarted: done === 0 && !startedAt && now >= plan.prepStart,
+      allDone: !cur,
+    };
   }
 
   // ---------- 表示ユーティリティ ----------
@@ -353,5 +389,5 @@
     return body.join("\r\n") + "\r\n";
   }
 
-  return { normalize, parseMessage, buildPlan, status, buildIcs, routeLinks, messages, hm, md, DEFAULT_SETTINGS };
+  return { normalize, parseMessage, buildPlan, status, pace, buildIcs, routeLinks, messages, hm, md, DEFAULT_SETTINGS };
 });

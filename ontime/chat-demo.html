@@ -139,6 +139,50 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
 .settings { padding: 12px 14px 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
 @media (max-width: 520px) { .settings { grid-template-columns: 1fr; } }
 .settings label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+/* 段取りの設定 */
+.set-body { padding: 4px 14px 14px; display: flex; flex-direction: column; gap: 4px; }
+fieldset { border: 0; border-top: 1px solid var(--line); margin: 0; padding: 10px 0 4px; min-width: 0; }
+legend { font-size: 12px; font-weight: 700; letter-spacing: .08em; color: var(--accent); padding: 0 6px 0 0; }
+.set-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.set-grid label, .routine-h { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); }
+.help { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+.routine { list-style: none; margin: 0 0 8px; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.routine li { display: grid; grid-template-columns: minmax(0, 1fr) 64px auto auto auto; gap: 6px; align-items: center; }
+.routine li .r-first { grid-column: 1 / -1; font-size: 13px; padding: 6px 10px; }
+.routine li span { font-size: 12px; color: var(--muted); }
+.icon-btn { font: inherit; width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.check { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; }
+.check input { margin-top: 4px; }
+
+/* 段取り表 / 当日モード タブ */
+.tabs { display: flex; gap: 4px; padding: 10px 12px 0; }
+.tabs button { font: inherit; font-size: 13px; cursor: pointer; border: 1px solid var(--board-line); border-bottom: 0; border-radius: 8px 8px 0 0; background: transparent; color: var(--board-dim); padding: 6px 12px; }
+.tabs button[aria-selected="true"] { background: var(--board-line); color: #e9efe9; }
+.tabs + * { border-top: 1px solid var(--board-line); }
+
+/* 当日モード */
+.sim { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px 16px; font-size: 12px; color: var(--board-dim); border-bottom: 1px solid var(--board-line); }
+.sim b { font-family: "DotGothic16", ui-monospace, monospace; font-weight: 400; color: var(--amber); font-size: 16px; }
+.sim .btn { background: transparent; color: #e9efe9; border-color: var(--board-line); }
+.focus { padding: 18px 16px; display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 16px; align-items: center; }
+@media (max-width: 460px) { .focus { grid-template-columns: 1fr; justify-items: start; } }
+.ring { width: 132px; height: 132px; }
+.ring text { font-family: "DotGothic16", ui-monospace, monospace; }
+.f-eyebrow { font-size: 12px; letter-spacing: .08em; color: var(--board-dim); }
+.f-title { font-size: 26px; font-weight: 700; line-height: 1.3; margin: 2px 0 6px; text-wrap: balance; }
+.f-first { font-size: 14px; color: #cfd8d3; }
+.f-first b { color: var(--amber); font-weight: 500; }
+.f-next { font-size: 13px; color: var(--board-dim); margin-top: 6px; }
+.banner { margin: 0 16px 12px; border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+.banner.ok { background: #173226; color: #9be3b7; }
+.banner.warn { background: #3b1d18; color: #ffb4a4; }
+.banner.info { background: #2b2614; color: #f5d487; }
+.f-actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 16px 16px; }
+.f-actions .btn { background: transparent; color: #e9efe9; border-color: var(--board-line); }
+.f-actions .btn.go { background: var(--amber); border-color: var(--amber); color: #1b1606; font-weight: 700; font-size: 15px; padding: 10px 18px; }
+.f-actions .btn.warn { background: var(--warn); border-color: var(--warn); color: #fff; }
+.sys.alarm { border-color: var(--warn); background: var(--warn-weak); }
+
 .foot { font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; }
 </style>
 
@@ -186,17 +230,48 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
       </section>
 
       <section class="panel">
-        <div class="panel-h"><h2>自分の設定</h2><span class="sub">1回だけ</span></div>
-        <div class="settings">
-          <label for="s-wake">いつもの起床<input id="s-wake" type="time"></label>
-          <label for="s-dist">気が散る係数
-            <select id="s-dist">
-              <option value="1">×1.0 ちゃんとできる</option>
-              <option value="1.3">×1.3 ちょっと寄り道</option>
-              <option value="1.5">×1.5 スマホ見がち</option>
-            </select>
-          </label>
-          <label for="s-early">何分前に着く<input id="s-early" type="number" min="0" max="60"></label>
+        <div class="panel-h"><h2>自分の段取り</h2><span class="sub">全部自分に合わせて変えられます</span></div>
+        <div class="set-body">
+          <fieldset>
+            <legend>夜</legend>
+            <div class="set-grid">
+              <label for="s-night">前日の準備は寝る何分前？（0でなし）<input id="s-night" type="number" min="0" max="180" step="5"></label>
+              <label for="s-sleep">睡眠時間（0で表示しない）<input id="s-sleep" type="number" min="0" max="12" step="0.5"></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>朝</legend>
+            <div class="set-grid">
+              <label for="s-wake">いつもの起床（空欄ならギリギリまで寝る）<input id="s-wake" type="time"></label>
+              <label for="s-wbuf">起きてからぼーっとする時間（分）<input id="s-wbuf" type="number" min="0" max="60"></label>
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>支度（上から順番にやる）</legend>
+            <ul class="routine" id="routine"></ul>
+            <button class="btn sm" id="add-task">＋ 支度を追加</button>
+            <p class="help">「最初の一歩」は、やる気が出ないときにこれだけやればいい小さい行動。当日モードで大きく出ます。</p>
+          </fieldset>
+          <fieldset>
+            <legend>時間の感覚</legend>
+            <div class="set-grid">
+              <label for="s-dist">気が散る係数
+                <select id="s-dist">
+                  <option value="1">×1.0 ちゃんとできる</option>
+                  <option value="1.3">×1.3 ちょっと寄り道</option>
+                  <option value="1.5">×1.5 スマホ見がち</option>
+                  <option value="2">×2.0 だいたい倍かかる</option>
+                </select>
+              </label>
+              <label for="s-early">何分前に着く？<input id="s-early" type="number" min="0" max="60"></label>
+              <label for="s-fake">サバ読み（分）<input id="s-fake" type="number" min="0" max="60" step="5"></label>
+            </div>
+            <p class="help">サバ読み: 画面に出る時刻が全部この分だけ早くなります。ギリギリまで動けないなら、本当の締め切りを見ないのがコツ。</p>
+          </fieldset>
+          <fieldset>
+            <legend>見守り</legend>
+            <label class="check" for="s-buddy"><input type="checkbox" id="s-buddy"> 起床時刻から5分たっても「起きた」を押さなかったら、グループに知らせる</label>
+          </fieldset>
         </div>
       </section>
     </div>
@@ -242,14 +317,23 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
   ];
 
   let state;
+  function freshSettings() {
+    return {
+      usualWake: "08:00", distraction: 1.3, arriveEarly: 10, nightPrepMin: 30, sleepHours: 7,
+      wakeBuffer: 10, fakeEarly: 0, buddy: true,
+      routine: C.DEFAULT_SETTINGS.routine.map((r) => Object.assign({}, r)),
+    };
+  }
   function fresh() {
-    return { msgs: [], events: [], sel: null, as: "me", settings: { usualWake: "08:00", distraction: 1.3, arriveEarly: 10 } };
+    return { msgs: [], events: [], sel: null, as: "me", tab: "plan", settings: freshSettings() };
   }
   function load() {
     try {
       const s = JSON.parse(localStorage.getItem("ontime-chat") || "null");
       if (s && s.msgs) {
         s.events.forEach((e) => (e.when = new Date(e.when)));
+        s.settings = Object.assign(freshSettings(), s.settings);
+        s.tab = s.tab || "plan";
         return s;
       }
     } catch (e) {}
@@ -264,13 +348,13 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
   // ---------- チャット → 予定の自動登録 ----------
   function post(who, text, silent) {
     state.msgs.push({ who, text });
-    if (who !== "sys") detect(text, silent);
+    if (who === "me" || who === "yuki") detect(text, silent);
     save();
     if (!silent) render();
   }
   function detect(latest, silent) {
     if (!CONFIRM.test(latest)) return;
-    const recent = state.msgs.filter((m) => m.who !== "sys").slice(-10).map((m) => m.text).join("\n");
+    const recent = state.msgs.filter((m) => m.who === "me" || m.who === "yuki").slice(-10).map((m) => m.text).join("\n");
     const r = C.parseMessage(recent, new Date());
     if (!r.when || r.when < new Date()) return;
     const sameDay = state.events.find((e) => e.when.toDateString() === r.when.toDateString());
@@ -303,6 +387,7 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
           支度スタート ${C.hm(p.prepStart)} ／ 家を出る ${C.hm(p.leave)}
           <br><button class="btn sm" data-open="${ev.id}">当日の段取りを見る</button></div>`;
       }
+      if (m.who === "buddy") return `<div class="sys alarm"><b>🔔 見守り通知</b>${esc(m.text)}</div>`;
       const me = m.who === "me";
       return `<div class="m ${me ? "me" : ""}"><span class="who">${me ? "自分" : "ゆうき"}</span><div class="b">${esc(m.text)}</div></div>`;
     }).join("");
@@ -337,6 +422,15 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
     }
     const p = planOf(ev);
     const rt = routeFor(ev.place);
+    const tabs = `<div class="tabs" role="tablist">
+        <button role="tab" data-tab="plan" aria-selected="${state.tab === "plan"}">段取り表</button>
+        <button role="tab" data-tab="day" aria-selected="${state.tab === "day"}">当日モード</button>
+      </div>`;
+    if (state.tab === "day") {
+      $("board").innerHTML = tabs + `<div id="day"></div>`;
+      renderDay(ev, p, rt);
+      return;
+    }
     const now = new Date();
     // 家を出てからの乗車ステップ
     const legs = [];
@@ -349,7 +443,7 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
     const steps = p.steps.filter((s) => s.kind !== "buffer").map((s) => ({ at: s.at, kind: s.kind, label: esc(s.label), detail: esc(s.detail) }))
       .concat(legs).sort((a, b) => a.at - b.at);
     steps.forEach((s) => { if (s.kind === "leave") s.detail = `駅まで徒歩${rt.walk}分`; });
-    $("board").innerHTML = `
+    $("board").innerHTML = tabs + `
       <div class="board-h"><span class="t">${C.md(ev.when)} ${esc(ev.title)}</span><span class="p">${esc(ev.place)}</span></div>
       <div class="big">
         <div><span>支度スタート</span><b>${C.hm(p.prepStart)}</b></div>
@@ -364,6 +458,145 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
           ? `<span class="late-pick">何分遅れる？ ${[5, 10, 15, 30].map((n) => `<button class="btn sm warn" data-late="${n}">${n}分</button>`).join("")}</span>`
           : `<button class="btn warn" data-act="late">遅れそうと連絡</button>`}
       </div>`;
+  }
+
+  // ---------- 当日モード（デモ時計つき） ----------
+  let day = null;
+  const simNow = () => new Date(day.simBase + (Date.now() - day.realBase));
+  const setSim = (t) => { day.simBase = +t; day.realBase = Date.now(); day.key = ""; };
+  function ensureDay(ev, p) {
+    if (day && day.evId === ev.id) return;
+    day = { evId: ev.id, awake: false, done: 0, startedAt: null, early: false, buddySent: false, departed: false, key: "" };
+    setSim(new Date(+p.wake - 1 * MIN));
+  }
+  const fmtLeft = (m) => (m >= 60 ? `${Math.floor(m / 60)}時間${m % 60}分` : `${m}分`);
+  function ring(frac, color, big, small) {
+    const r = 54, c = 2 * Math.PI * r, f = Math.max(0, Math.min(1, frac));
+    return `<svg class="ring" viewBox="0 0 132 132" role="img" aria-label="${esc(big + " " + small)}">
+      <circle cx="66" cy="66" r="${r}" fill="none" stroke="#25302d" stroke-width="12"></circle>
+      <circle cx="66" cy="66" r="${r}" fill="none" stroke="${color}" stroke-width="12" stroke-linecap="round"
+        stroke-dasharray="${(c * f).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 66 66)"></circle>
+      <text x="66" y="68" text-anchor="middle" fill="${color}" font-size="30">${esc(big)}</text>
+      <text x="66" y="92" text-anchor="middle" fill="#7d8a85" font-size="12">${esc(small)}</text></svg>`;
+  }
+
+  function dayPhase(ev, p) {
+    const now = simNow();
+    const tasks = p.steps.filter((s) => s.kind === "task");
+    if (day.departed) return { k: "gone" };
+    if (now < p.wake && !day.awake) return { k: "sleep", left: Math.ceil((p.wake - now) / MIN) };
+    if (!day.awake) return { k: "wake", late: Math.floor((now - p.wake) / MIN) };
+    if (now < p.prepStart && !day.early) return { k: "free", left: Math.ceil((p.prepStart - now) / MIN) };
+    const pc = C.pace(p, day.done, day.startedAt, now);
+    if (pc.allDone || !tasks.length) return { k: "leave", left: Math.ceil((p.leave - now) / MIN) };
+    return { k: "task", pc };
+  }
+
+  function renderDay(ev, p, rt) {
+    ensureDay(ev, p);
+    const now = simNow();
+    const ph = dayPhase(ev, p);
+    // 見守り: 起床5分後も起きていなければグループへ
+    if (ph.k === "wake" && ph.late >= 5 && state.settings.buddy && !day.buddySent) {
+      day.buddySent = true;
+      post("buddy", `自分さんがまだ起きていないみたいです（起床 ${C.hm(p.wake)} → 今 ${C.hm(now)}）。LINEか電話で起こしてあげてください`);
+      return;
+    }
+    const leg = rt.legs[0];
+    const trainAt = new Date(+p.leave + rt.walk * MIN);
+    const leaveLine = `家を出る ${C.hm(p.leave)} → ${C.hm(trainAt)} ${leg.from}駅 ${leg.line}`;
+    let body = "";
+    const act = (html) => `<div class="f-actions">${html}</div>`;
+    if (ph.k === "sleep") {
+      body = `<div class="focus">${ring(1, "#b9a4ff", C.hm(p.wake), "起床")}
+        <div><div class="f-eyebrow">おやすみ中</div><div class="f-title">起床まで あと${fmtLeft(ph.left)}</div>
+        <div class="f-first">${esc(leaveLine)}</div></div></div>`;
+    } else if (ph.k === "wake") {
+      body = `<div class="focus">${ring(1, "#f2b33d", C.hm(p.wake), "起きる時間")}
+        <div><div class="f-eyebrow">アラーム中</div><div class="f-title">起きる時間！</div>
+        <div class="f-first">最初の一歩: <b>カーテンを開ける</b></div></div></div>
+        ${ph.late >= 1 ? `<div class="banner warn">起床時刻から${ph.late}分たっています。${!state.settings.buddy ? "" : day.buddySent ? "グループに見守り通知を送りました。" : "5分たつとグループに見守り通知が行きます。"}</div>` : ""}
+        ${act(`<button class="btn go" data-day="awake">起きた！</button>`)}`;
+    } else if (ph.k === "free") {
+      const total = Math.max(1, (p.prepStart - p.wake) / MIN);
+      const msg = ph.left <= 1 ? "もうすぐ！ 立ち上がって洗面所へ"
+        : ph.left <= 5 ? "あと5分。スマホを置く場所を決めよう"
+        : ph.left <= 10 ? "あと10分で支度スタート。今やってることのキリを探そう"
+        : `${C.hm(p.prepStart)} になったら手を止める。それまでは好きにしてOK`;
+      body = `<div class="focus">${ring(ph.left / total, "#7ee0a3", ph.left >= 60 ? `${Math.floor(ph.left / 60)}:${String(ph.left % 60).padStart(2, "0")}` : `${ph.left}分`, "支度スタートまで")}
+        <div><div class="f-eyebrow">自由時間</div><div class="f-title">${C.hm(p.prepStart)} 支度スタート</div>
+        <div class="f-first">${esc(leaveLine)}</div></div></div>
+        <div class="banner ${ph.left <= 10 ? "info" : "ok"}">${msg}</div>
+        ${act(`<button class="btn" data-day="early">もう始める（前倒し）</button>`)}`;
+    } else if (ph.k === "task") {
+      const pc = ph.pc, t = pc.task;
+      const over = pc.overMin > 0;
+      const bigTxt = pc.notStarted || !day.startedAt ? `${t.min}分` : over ? `+${pc.overMin}分` : `${pc.taskRemainMin}分`;
+      const frac = over ? 1 : day.startedAt ? pc.taskRemainMin / t.min : 1;
+      const color = over || pc.slackMin < 0 ? "#ff7a66" : "#f2b33d";
+      let banner;
+      if (pc.notStarted) banner = `<div class="banner warn">まだ始めてない？ 全部やらなくていいから、最初の一歩だけ → <b>${esc(t.first || t.label)}</b>${pc.slackMin < 0 ? `<br>このままだと出発が${-pc.slackMin}分遅れます。` : ""}</div>`;
+      else if (pc.slackMin < 0) banner = `<div class="banner warn">このペースだと出発が${-pc.slackMin}分遅れます。${pc.next ? `次の「${esc(pc.next.label)}」を短くしよう。` : ""}間に合わないなら今のうちに連絡を。</div>`;
+      else if (pc.slackMin >= 3) banner = `<div class="banner ok">いいペース！ 出発まで ${pc.slackMin}分の余裕があります。</div>`;
+      else banner = `<div class="banner info">ぴったりのペース。この調子。</div>`;
+      body = `<div class="focus">${ring(frac, color, bigTxt, over ? "オーバー中" : "このタスク")}
+        <div><div class="f-eyebrow">いまやること ${pc.index + 1} / ${pc.total}</div>
+        <div class="f-title">${esc(t.label)}</div>
+        ${t.first ? `<div class="f-first">最初の一歩: <b>${esc(t.first)}</b></div>` : ""}
+        <div class="f-next">${pc.next ? `次: ${esc(pc.next.label)}（${pc.next.min}分）` : `次: 家を出る ${C.hm(p.leave)}`}</div></div></div>
+        ${banner}
+        ${act(!day.startedAt && day.done === 0
+          ? `<button class="btn go" data-day="start">始めた！</button><button class="btn warn" data-act="late">遅れそうと連絡</button>`
+          : `<button class="btn go" data-day="next">できた → 次へ</button><button class="btn" data-day="next">スキップ</button><button class="btn warn" data-act="late">遅れそうと連絡</button>`)}
+        ${latePick ? `<div class="f-actions">${[5, 10, 15, 30].map((n) => `<button class="btn sm warn" data-late="${n}">${n}分</button>`).join("")}</div>` : ""}`;
+    } else if (ph.k === "leave") {
+      const ok = ph.left > 0;
+      body = `<div class="focus">${ring(ok ? 1 : 1, ok ? "#7ee0a3" : "#ff7a66", C.hm(p.leave), "家を出る")}
+        <div><div class="f-eyebrow">${ok ? "準備完了" : "出発時刻"}</div>
+        <div class="f-title">${ok ? `出発まで あと${fmtLeft(ph.left)}` : "今すぐ家を出る！"}</div>
+        <div class="f-first">${C.hm(trainAt)} ${esc(leg.from)}駅 <b>${esc(leg.line)}</b>${rt.legs[1] ? ` → ${esc(rt.legs[1].from)}で${esc(rt.legs[1].line)}` : ""}</div></div></div>
+        ${act(`<button class="btn go" data-day="depart">出発した！（グループに報告）</button>`)}`;
+    } else {
+      body = `<div class="focus">${ring(1, "#7ee0a3", C.hm(new Date(+day.departedAt + (rt.total + 0) * MIN)), "到着予定")}
+        <div><div class="f-eyebrow">出発済み</div><div class="f-title">いってらっしゃい！</div>
+        <div class="f-first">グループに出発報告を送りました</div></div></div>`;
+    }
+    $("day").innerHTML = `<div class="sim">デモ時計 <b>${C.hm(now)}</b>
+        <button class="btn sm" data-sim="wake">起床時刻へ</button>
+        <button class="btn sm" data-sim="start">支度スタートへ</button>
+        <button class="btn sm" data-sim="+1">+1分</button>
+        <button class="btn sm" data-sim="+5">+5分</button>
+        <button class="btn sm" data-sim="reset">やり直す</button></div>` + body;
+  }
+
+  function onDay(action) {
+    const ev = state.events.find((e) => e.id === state.sel);
+    if (!ev || !day) return;
+    const p = planOf(ev);
+    const now = simNow();
+    if (action === "awake") {
+      day.awake = true;
+      if (day.buddySent) post("buddy", "自分さんが起きました。ありがとう！");
+    }
+    if (action === "early" || action === "start") { day.early = true; day.startedAt = +now; }
+    if (action === "next") { day.done += 1; day.startedAt = +now; }
+    if (action === "depart") {
+      day.departed = true; day.departedAt = +now;
+      post("me", "🚃 " + C.messages.leaving({ when: ev.when, place: ev.place }, p, now));
+      return;
+    }
+    renderBoard();
+  }
+  function onSim(action) {
+    const ev = state.events.find((e) => e.id === state.sel);
+    if (!ev || !day) return;
+    const p = planOf(ev);
+    if (action === "reset") { day = null; renderBoard(); return; }
+    if (action === "wake") setSim(p.wake);
+    if (action === "start") { setSim(p.prepStart); day.awake = true; }
+    if (action === "+1") setSim(+simNow() + MIN);
+    if (action === "+5") setSim(+simNow() + 5 * MIN);
+    renderBoard();
   }
 
   function render() {
@@ -395,6 +628,12 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
   $("as-yuki").onclick = () => setAs("yuki");
 
   document.addEventListener("click", (e) => {
+    const tb = e.target.closest("[data-tab]");
+    if (tb) { state.tab = tb.dataset.tab; latePick = false; save(); renderBoard(); return; }
+    const dy = e.target.closest("[data-day]");
+    if (dy) { onDay(dy.dataset.day); return; }
+    const sm = e.target.closest("[data-sim]");
+    if (sm) { onSim(sm.dataset.sim); return; }
     const o = e.target.closest("[data-open]");
     if (o) { state.sel = o.dataset.open; latePick = false; save(); renderCal(); renderBoard(); return; }
     const a = e.target.closest("[data-act]");
@@ -402,7 +641,7 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
     if (a && ev) {
       const appt = { when: ev.when, place: ev.place };
       if (a.dataset.act === "eve") post("me", C.messages.remindEve(appt));
-      if (a.dataset.act === "leave") post("me", "🚃 " + C.messages.leaving(appt, planOf(ev), new Date()));
+      if (a.dataset.act === "leave") post("me", "🚃 " + C.messages.leaving(appt, planOf(ev), day && state.tab === "day" ? simNow() : new Date()));
       if (a.dataset.act === "late") { latePick = true; renderBoard(); }
       return;
     }
@@ -414,13 +653,49 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
     }
   });
 
+  const NUM = { "s-night": "nightPrepMin", "s-sleep": "sleepHours", "s-wbuf": "wakeBuffer", "s-early": "arriveEarly", "s-fake": "fakeEarly" };
+  function refresh() { save(); renderMsgs(); renderCal(); renderBoard(); }
+  function renderRoutine() {
+    $("routine").innerHTML = state.settings.routine.map((r, i) => `<li data-i="${i}">
+        <input class="r-name" id="r-name-${i}" value="${esc(r.name)}" aria-label="支度${i + 1}の名前">
+        <input class="r-min" id="r-min-${i}" type="number" min="1" max="120" value="${r.min}" aria-label="支度${i + 1}の分数">
+        <span>分</span>
+        <button class="icon-btn" data-r="up" aria-label="上へ" ${i === 0 ? "disabled" : ""}>↑</button>
+        <button class="icon-btn" data-r="del" aria-label="削除">✕</button>
+        <input class="r-first" id="r-first-${i}" value="${esc(r.first || "")}" placeholder="最初の一歩（例: まず靴下だけはく）" aria-label="支度${i + 1}の最初の一歩">
+      </li>`).join("");
+  }
   function bindSettings() {
-    $("s-wake").value = state.settings.usualWake;
-    $("s-dist").value = String(state.settings.distraction);
-    $("s-early").value = state.settings.arriveEarly;
-    $("s-wake").oninput = (e) => { state.settings.usualWake = e.target.value; save(); render(); };
-    $("s-dist").onchange = (e) => { state.settings.distraction = +e.target.value; save(); render(); };
-    $("s-early").oninput = (e) => { const v = +e.target.value; if (e.target.value !== "" && v >= 0) { state.settings.arriveEarly = v; save(); render(); } };
+    const st = state.settings;
+    Object.keys(NUM).forEach((id) => {
+      $(id).value = st[NUM[id]];
+      $(id).oninput = (e) => { const v = +e.target.value; if (e.target.value !== "" && v >= 0) { st[NUM[id]] = v; day = null; refresh(); } };
+    });
+    $("s-wake").value = st.usualWake;
+    $("s-wake").oninput = (e) => { st.usualWake = e.target.value; day = null; refresh(); };
+    $("s-dist").value = String(st.distraction);
+    $("s-dist").onchange = (e) => { st.distraction = +e.target.value; day = null; refresh(); };
+    $("s-buddy").checked = !!st.buddy;
+    $("s-buddy").onchange = (e) => { st.buddy = e.target.checked; save(); };
+    renderRoutine();
+    $("routine").oninput = (e) => {
+      const li = e.target.closest("li");
+      const r = st.routine[+li.dataset.i];
+      if (e.target.classList.contains("r-name")) r.name = e.target.value;
+      else if (e.target.classList.contains("r-first")) r.first = e.target.value;
+      else if (+e.target.value > 0) r.min = +e.target.value;
+      day = null;
+      refresh();
+    };
+    $("routine").onclick = (e) => {
+      const b = e.target.closest("[data-r]");
+      if (!b) return;
+      const i = +b.closest("li").dataset.i;
+      if (b.dataset.r === "del") st.routine.splice(i, 1);
+      else if (i > 0) [st.routine[i - 1], st.routine[i]] = [st.routine[i], st.routine[i - 1]];
+      renderRoutine(); day = null; refresh();
+    };
+    $("add-task").onclick = () => { st.routine.push({ name: "新しい支度", min: 5, first: "" }); renderRoutine(); day = null; refresh(); };
   }
 
   function start(reset) {
@@ -436,5 +711,11 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 2px s
   $("reset").onclick = () => start(true);
   start(false);
   setInterval(renderBoard, 60 * 1000);
+  // 当日モードは表示中の「分」が変わったときだけ描き直す
+  setInterval(() => {
+    if (state.tab !== "day" || !day || !$("day")) return;
+    const k = C.hm(simNow());
+    if (k !== day.key) { day.key = k; renderBoard(); }
+  }, 1000);
 })();
 </script>

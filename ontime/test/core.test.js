@@ -92,3 +92,37 @@ test(".ics にアラームが入る", () => {
   assert.match(ics, /LOCATION:渋谷\\, 駅/);
   assert.strictEqual((ics.match(/BEGIN:VEVENT/g) || []).length, 5); // 準備・起床・支度開始・出発・約束
 });
+
+test("カスタマイズ: 前日準備・睡眠を消せる / サバ読みで前倒し / 最初の一歩", () => {
+  const a = { when: new Date(2026, 8, 26, 10, 0), travelMin: 30 };
+  const base = C.buildPlan(a, { usualWake: "" });
+  const p = C.buildPlan(a, { usualWake: "", nightPrepMin: 0, sleepHours: 0, fakeEarly: 10 });
+  assert.ok(!p.steps.some((s) => s.kind === "night"));
+  assert.strictEqual((base.leave - p.leave) / 60000, 10);
+  assert.strictEqual(p.steps.find((s) => s.kind === "task").first, "洗面所まで歩くだけ");
+});
+
+test("当日モード: ペースの判定", () => {
+  const plan = C.buildPlan(
+    { when: new Date(2026, 8, 26, 10, 0), travelMin: 30 },
+    { usualWake: "", distraction: 1, arriveEarly: 10, delayBuffer: 5,
+      routine: [{ name: "A", min: 10 }, { name: "B", min: 20 }] }
+  );
+  // 出発 9:15, 支度開始 8:45
+  assert.deepStrictEqual(ymdhm(plan.prepStart).slice(3), [8, 45]);
+  // 予定どおり
+  let s = C.pace(plan, 0, null, new Date(2026, 8, 26, 8, 45));
+  assert.strictEqual(s.slackMin, 0);
+  // 10分ダラダラして何も始めていない → 10分遅れ
+  s = C.pace(plan, 0, null, new Date(2026, 8, 26, 8, 55));
+  assert.strictEqual(s.notStarted, true);
+  assert.strictEqual(s.slackMin, -10);
+  // Aを早めに5分で終わらせた → 5分の余裕
+  s = C.pace(plan, 1, new Date(2026, 8, 26, 8, 50), new Date(2026, 8, 26, 8, 50));
+  assert.strictEqual(s.slackMin, 5);
+  assert.strictEqual(s.task.label, "B");
+  // Bが3分オーバー中
+  s = C.pace(plan, 1, new Date(2026, 8, 26, 8, 50), new Date(2026, 8, 26, 9, 13));
+  assert.strictEqual(s.overMin, 3);
+  assert.strictEqual(s.slackMin, 1); // Aで稼いだ5分をほぼ使い切った
+});
