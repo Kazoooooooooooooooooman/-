@@ -1,4 +1,4 @@
-// node --test ontime/test
+// node --test ontime/test/*.test.js
 const test = require("node:test");
 const assert = require("node:assert");
 const C = require("../core.js");

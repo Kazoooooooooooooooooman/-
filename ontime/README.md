@@ -34,5 +34,5 @@ LINE・Gmailで約束が決まったら、そのトークやメールを貼り�
 ## テスト
 
 ```
-node --test ontime/test
+node --test ontime/test/*.test.js
 ```
