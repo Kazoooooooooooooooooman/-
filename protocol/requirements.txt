@@ -1,0 +1,3 @@
+# サーバー・SDK・ルール型の買い手は追加インストール不要（Python標準ライブラリのみ）
+# Claudeで判断する buyer_claude.py だけ必要:
+anthropic
