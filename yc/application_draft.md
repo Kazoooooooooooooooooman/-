@@ -39,11 +39,11 @@ A marketplace where AI agents buy fresh data
 
 **What is your company going to make? Please describe your product and what it does or will do.**
 
-Seri is a marketplace where AI agents buy training data directly from the people who create it, with no human broker in between.
+Seri is a marketplace where AI agents buy data directly from the people who create it, anywhere in the world, with no human broker in between.
 
-"Seri" is the Japanese word for the auctions at fish markets like Tsukiji, where each lot is sold in minutes before dawn. We do the same for data. Sellers, from individuals to small businesses, connect with three lines of code and stream data such as Japanese Q&A pairs, game controller logs, or shop sales records. Every 5 minutes, new data is bundled into lots and sold in a sealed-bid auction. Buyer agents from AI companies look at each lot, decide what it is worth to them, and bid through our API. The winner pays the second-highest price and gets the data right away, and 90% of the money goes to the people who made it.
+"Seri" is the Japanese word for the auctions at fish markets like Tsukiji, where each lot is sold in minutes before dawn. We do the same for data. Anyone who produces data can sell it: a gamer's controller logs in Seoul, an illustrator's pen strokes in Paris, a shop's sales records in São Paulo, conversations in any language. Sellers connect with three lines of code and stream their data. Every 5 minutes, new data is bundled into lots and sold in a sealed-bid auction. Buyer agents from AI companies look at each lot, decide what it is worth to them, and bid through our API. The winner pays the second-highest price and gets the data right away, and 90% of the money goes to the people who made it.
 
-Today, buying data means sales calls, contracts, and months of waiting. We want it to work like Stripe: a few lines of code, and money and data move automatically.
+Today, buying data means sales calls, contracts, and months of waiting, and most of the world's data never gets sold at all. We want it to work like Stripe: a few lines of code, and money and data move automatically, between anyone on earth and any AI agent.
 
 **Where do you live now, and where would the company be based after YC?**
 
@@ -85,11 +85,13 @@ Planned: a hosted API on Postgres, Stripe Connect for payouts to sellers, automa
 
 **Why did you pick this idea to work on? Do you have domain expertise in this area? How do you know people need what you're making?**
 
-I worked at micro1 on generating Japanese-language data for AI models. I saw two problems up close. AI companies struggle to get good data outside English, and the people who create that data are paid a small share, slowly, through layers of middlemen.
+I worked at micro1 on labelling Japanese-language data for AI models. I saw two problems up close. AI companies struggle to get good data outside English, and the people who create that data are paid a small share, slowly, through layers of middlemen.
+
+I also saw the other side through two friends, young founders who collect data for AI. They can produce good data quickly, but they struggle to find anyone to sell it to. Selling data today means finding buyers one by one, cold emails, and long negotiations, which small teams can't afford. I want a place where anyone who makes data can sell it the moment it exists.
 
 At the same time, AI agents are starting to get budgets and act on their own. They will need to buy data the same way they call an API: instantly, at a price set by what the data is worth to them. Nobody has built that market yet.
 
-I haven't validated demand with paying buyers yet. My next step is to talk to AI teams that need Japanese data and get them to bid on real lots.
+I haven't validated demand with paying buyers yet. My next steps are to put my friends' data on Seri as the first supply, and to talk to AI teams that need non-English data and get them to bid on real lots.
 
 **Who are your competitors? What do you understand about your business that they don't?**
 
