@@ -12,6 +12,8 @@ import {
   Receipt,
   Server,
   ShieldCheck,
+  Sparkles,
+  Square,
   Terminal,
   Timer,
   TrendingUp,
@@ -105,16 +107,65 @@ const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_");
 
 const makeLot = (n) => ({ ...LOTS[n % LOTS.length], id: `lot_${pad(48210 + n, 6)}`, n });
 
-function makeSettlement(lot, bids, created = Date.now()) {
+/* Real AI buyers: each one is a separate Claude call that only sees its own brief. */
+const AI_AGENTS = [
+  { name: "Robo-Motion-Agent", org: "ロボット制御スタートアップ", wants: "人間の細かい手の動き（操作・筆圧・振動）でロボットの動きを学習させたい", style: "慎重派。品質が高く目的に合うものだけ強気に買う", budget: 120 },
+  { name: "NPC-Studio-Agent", org: "ゲーム開発会社", wants: "上手いプレイヤーの操作を真似するゲームNPCを作りたい", style: "ゲーム系データには強気、それ以外はほぼ見送る", budget: 80 },
+  { name: "Creator-Tools-Agent", org: "お絵描き・作曲アプリ会社", wants: "イラストや音楽制作アプリのAIアシスト機能を良くしたい", style: "クリエイター系データを最優先で狙う", budget: 90 },
+  { name: "Retail-Signal-Agent", org: "小売・需要予測会社", wants: "お店の売上や工場の稼働データで需要予測の精度を上げたい", style: "価格重視。安く買えるときだけ買う", budget: 100 },
+];
+
+function buildAgentPrompt(agent, lot) {
+  const sampleVec = Array.from({ length: 6 }, (_, i) => Math.sin((lot.n + 1) * (i + 3)).toFixed(3)).join(", ");
+  return `あなたは「${agent.name}」という自律AI購入エージェントです。${agent.org}のために、AI学習用データを人間の確認なしで自動で買い付けます。
+あなたの目的: ${agent.wants}
+あなたの方針: ${agent.style}
+残り予算: $${agent.budget.toFixed(2)}（落札すると支払い額だけ減ります）
+これまでに落札したデータ: ${agent.wins.length ? agent.wins.join("、") : "なし"}
+
+いま、封印入札オークションに次のデータが出品されています。
+- 名前: ${lot.title} [Feature Vector]
+- 分類: ${lot.tag} / スキーマ: ${lot.schema}
+- 次元: ${lot.dims} / サンプル数: ${lot.samples} / 供給者: ${lot.suppliers}人 / 品質スコア: ${lot.quality}
+- 中身の例: [${sampleVec}, …]（個人情報は除去済みの特徴量ベクトル）
+
+ルール: 最低落札価格は$10。各エージェントは他の入札額を見ずに1回だけ入札します。最高額の入札者が落札し、支払うのは2番目に高い入札額（なければ$10）です。なので、自分にとっての本当の価値をそのまま入札するのが得です。目的に合わない・予算に見合わないなら見送ってかまいません。
+
+次の2行の形式だけで、日本語で答えてください。
+理由: （60文字以内で、なぜその金額か）
+入札: $金額（見送るときは「入札: 見送り」）`;
+}
+
+function parseAgentBid(text, budget) {
+  const reason = ((text.match(/理由[:：]\s*(.+)/) || [])[1] || text.trim().split("\n")[0] || "").trim().slice(0, 90);
+  if (/入札[:：]\s*見送/.test(text)) return { amount: null, reason };
+  const m = text.match(/入札[:：]\s*\$?\s*([\d,]+(?:\.\d+)?)/);
+  if (!m) return { amount: null, reason };
+  const amount = Math.min(Math.round(parseFloat(m[1].replace(/,/g, "")) * 100) / 100, budget);
+  if (!(amount >= RESERVE)) return { amount: null, reason };
+  return { amount, reason };
+}
+
+// Sealed-bid second-price (Vickrey): highest bid wins, pays the runner-up's bid (or the reserve).
+function resolveSealed(bids) {
+  const valid = bids.filter((b) => b.amount != null).sort((a, b) => b.amount - a.amount);
+  if (!valid.length) return { valid, winner: null, price: 0 };
+  return { valid, winner: valid[0], price: valid[1] ? valid[1].amount : RESERVE };
+}
+
+function makeSettlement(lot, bids, created = Date.now(), opts = {}) {
   const top = bids[0];
-  const cents = Math.round(top.amount * 100);
+  const amount = opts.price ?? top.amount;
+  const cents = Math.round(amount * 100);
   const fee = Math.round(cents * PROTOCOL_FEE);
   return {
     id: uid(),
     lotId: lot.id,
     title: lot.title,
     winner: top.agent,
-    amount: top.amount,
+    amount,
+    winningBid: top.amount,
+    auction: opts.auction || "english",
     bidCount: bids.length,
     created,
     evt: "evt_3Q" + randId(22),
@@ -149,6 +200,7 @@ function seedSettlements() {
 function initState() {
   const lot = makeLot(0);
   return {
+    mode: "sim",
     round: 0,
     lot,
     status: "live",
@@ -165,7 +217,60 @@ function initState() {
 
 function reducer(s, a) {
   switch (a.type) {
+    case "SET_MODE": {
+      if (s.mode === a.mode) return s;
+      const lot = makeLot(s.round + 1);
+      return {
+        ...s,
+        mode: a.mode,
+        round: s.round + 1,
+        lot,
+        status: a.mode === "ai" ? "idle" : "live",
+        timeLeft: ROUND_SECONDS,
+        bids: [],
+        log: [{ id: uid(), kind: "open", ai: a.mode === "ai", lot: lot.id, title: lot.title, t: Date.now() }, ...s.log].slice(0, 90),
+      };
+    }
+    case "AI_OPEN": {
+      const fresh = a.lot.id !== s.lot.id;
+      return {
+        ...s,
+        round: a.lot.n,
+        lot: a.lot,
+        status: "bidding",
+        bids: [],
+        log: fresh ? [{ id: uid(), kind: "open", ai: true, lot: a.lot.id, title: a.lot.title, t: Date.now() }, ...s.log].slice(0, 90) : s.log,
+      };
+    }
+    case "AI_SEALED":
+      return { ...s, log: [{ id: uid(), kind: "sealed", agent: a.agent, ms: a.ms, t: Date.now() }, ...s.log].slice(0, 90) };
+    case "AI_ABORT":
+      return { ...s, status: "idle", log: [{ id: uid(), kind: "nosale", lot: s.lot.id, stopped: true, t: Date.now() }, ...s.log].slice(0, 90) };
+    case "AI_SETTLE": {
+      const now = Date.now();
+      const { valid, winner, price } = resolveSealed(a.bids);
+      const reveals = a.bids.map((b) => ({ id: uid(), kind: b.amount != null ? "reveal" : "pass", agent: b.agent, amount: b.amount, reason: b.reason, t: now }));
+      if (!winner) {
+        return { ...s, status: "sold", bids: [], log: [{ id: uid(), kind: "nosale", lot: s.lot.id, t: now }, ...reveals, ...s.log].slice(0, 90) };
+      }
+      const st = makeSettlement(s.lot, valid, now, { price, auction: "sealed_second_price" });
+      return {
+        ...s,
+        status: "sold",
+        bids: valid,
+        settlements: [st, ...s.settlements].slice(0, 24),
+        lastSettlement: st,
+        sessionVolume: s.sessionVolume + st.amount,
+        totalBids: s.totalBids + valid.length,
+        log: [
+          { id: uid(), kind: "settle", lot: s.lot.id, agent: st.winner, amount: st.amount, bid: winner.amount, pi: st.pi, t: now },
+          ...reveals,
+          ...s.log,
+        ].slice(0, 90),
+      };
+    }
     case "TICK": {
+      if (s.mode === "ai") return s;
       if (s.status === "sold") {
         const lot = makeLot(s.round + 1);
         return {
@@ -204,7 +309,7 @@ function reducer(s, a) {
       };
     }
     case "BID": {
-      if (s.status !== "live") return s;
+      if (s.mode === "ai" || s.status !== "live") return s;
       const top = s.bids[0];
       const pool = s.agents.filter((n) => n !== top?.agent);
       const agent = pool[Math.floor(a.r * pool.length)];
@@ -509,22 +614,99 @@ function TimerRing({ timeLeft, sold }) {
   );
 }
 
-function AuctionCore({ state, onSurge, onStripe, surging }) {
-  const { lot, bids, timeLeft, status, settlements } = state;
+function ModeSwitch({ mode, aiStatus, onMode, disabled }) {
+  const opts = [
+    { id: "sim", label: "デモ（ランダム入札）", icon: Timer },
+    { id: "ai", label: "本物のAI（Claude）", icon: Sparkles },
+  ];
+  const aiOff = aiStatus === "absent" || aiStatus === "denied";
+  return (
+    <div>
+      <div className="grid grid-cols-2 gap-1 rounded-xl border p-1" style={{ borderColor: C.line, background: "#09090E" }} role="tablist" aria-label="入札モード">
+        {opts.map((o) => {
+          const on = mode === o.id;
+          const off = disabled || (o.id === "ai" && aiOff);
+          return (
+            <button
+              key={o.id}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              disabled={off}
+              onClick={() => onMode(o.id)}
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-[12px] font-bold transition disabled:cursor-not-allowed disabled:opacity-40"
+              style={{ background: on ? (o.id === "ai" ? C.emerald + "22" : C.purple + "2A") : "transparent", color: on ? (o.id === "ai" ? C.emerald : C.purpleSoft) : C.muted }}
+            >
+              <o.icon size={13} /> {o.label}
+            </button>
+          );
+        })}
+      </div>
+      {aiOff && (
+        <p className="mt-1.5 text-[11px]" style={{ color: C.dim }}>
+          {aiStatus === "denied" ? "Claudeの利用が許可されなかったため、AIモードは使えません。" : "AIモードは claude.ai 上でこのページを開いたときに使えます。"}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function AgentCard({ agent, view, isWinner }) {
+  const phase = view?.phase || "idle";
+  const shown = (view?.text || "").replace(/\n?\s*入札[:：][\s\S]*$/, "").replace(/^理由[:：]\s*/, "");
+  const pill = {
+    idle: ["待機中", C.dim],
+    thinking: ["考え中…", C.purpleSoft],
+    sealed: ["🔒 封印済み", "#5CC8FF"],
+    revealed: view?.amount != null ? [usd(view.amount), C.text] : ["見送り", C.dim],
+    error: ["通信エラー", C.danger],
+  }[phase];
+  return (
+    <div
+      className={`rounded-xl border p-3 ${isWinner ? "adp-flash" : ""}`}
+      style={{ borderColor: isWinner ? C.emerald + "99" : C.line, background: isWinner ? C.emerald + "10" : C.panel2 }}
+    >
+      <div className="flex items-center gap-2">
+        <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: agentColor(agent.name) }} />
+        <span className="adp-mono min-w-0 flex-1 truncate text-[12px] font-bold" style={{ color: agentColor(agent.name) }}>
+          {agent.name}
+        </span>
+        <span key={phase} className={`adp-mono adp-fade shrink-0 rounded px-1.5 py-0.5 text-[11px] font-bold ${phase === "thinking" ? "adp-pulse" : ""}`} style={{ background: "#ffffff0D", color: pill[1] }}>
+          {isWinner ? "落札" : pill[0]}
+        </span>
+      </div>
+      <div className="mt-1 flex justify-between gap-2 text-[11px]" style={{ color: C.dim }}>
+        <span className="truncate">{agent.org}</span>
+        <span className="adp-mono shrink-0">予算 {usd(agent.budget)}</span>
+      </div>
+      <p className="mt-2 min-h-[36px] text-[12px] leading-[18px]" style={{ color: phase === "idle" ? C.dim : "#C9C9D8" }}>
+        {phase === "idle" ? agent.wants : shown || (phase === "thinking" ? "データの価値を検討しています…" : "—")}
+      </p>
+    </div>
+  );
+}
+
+function AuctionCore({ state, onSurge, onStripe, surging, ai }) {
+  const { lot, bids, timeLeft, status, settlements, mode } = state;
   const top = bids[0];
   const sold = status === "sold";
+  const isAI = mode === "ai";
+  const aiResult = isAI && sold ? state.lastSettlement : null;
+  const aiWinner = aiResult && aiResult.lotId === lot.id ? aiResult : null;
   return (
     <Panel
       icon={Gavel}
       className="w-full"
       title="オークション・コア"
       right={
-        <span className="adp-mono whitespace-nowrap rounded px-2 py-0.5 text-[10px]" style={{ background: C.purple + "22", color: C.purpleSoft }}>
-          5分毎 · DEMO 10s
+        <span className="adp-mono whitespace-nowrap rounded px-2 py-0.5 text-[10px]" style={{ background: isAI ? C.emerald + "1F" : C.purple + "22", color: isAI ? C.emerald : C.purpleSoft }}>
+          {isAI ? "封印入札 · 2位価格" : "5分毎 · DEMO 10s"}
         </span>
       }
     >
       <div className="flex flex-1 flex-col gap-4 p-4">
+        <ModeSwitch mode={mode} aiStatus={ai.status} onMode={ai.onMode} disabled={ai.running} />
+
         <div key={lot.id} className={`adp-in relative overflow-hidden rounded-xl border p-4 ${sold ? "adp-flash" : ""}`} style={{ borderColor: sold ? C.emerald + "88" : C.purple + "55", background: `linear-gradient(160deg, ${C.purple}14, transparent 60%), ${C.panel2}` }}>
           <div className="mb-2 flex flex-wrap items-center gap-2">
             <span className="rounded-md px-2 py-0.5 text-[11px] font-bold" style={{ background: C.purple, color: "#fff" }}>
@@ -557,55 +739,108 @@ function AuctionCore({ state, onSurge, onStripe, surging }) {
             <span className="inline-flex items-center gap-1 rounded-md border px-2 py-0.5" style={{ borderColor: C.line, color: C.muted }}>
               <Radio size={12} style={{ color: C.emerald }} /> 直近5分で収集
             </span>
+            <span className="adp-mono inline-flex items-center rounded-md border px-2 py-0.5" style={{ borderColor: C.line, color: C.text }}>
+              最低落札価格（Reserve Price）：<b>$10</b>
+            </span>
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-5">
-          <TimerRing timeLeft={timeLeft} sold={sold} />
-          <div className="min-w-[150px] flex-1">
-            <div className="text-[11px] font-medium uppercase tracking-[0.12em]" style={{ color: C.muted }}>
-              {sold ? "落札価格" : "現在の最高入札"}
+        {isAI ? (
+          <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-1">
+              {ai.agents.map((a) => (
+                <AgentCard key={a.name} agent={a} view={ai.views[a.name]} isWinner={!!aiWinner && aiWinner.winner === a.name} />
+              ))}
             </div>
-            <div key={top ? top.amount : "none"} className="adp-mono adp-pop text-4xl font-bold" style={{ color: top ? C.text : C.dim }}>
-              {top ? usd(top.amount) : "—"}
-            </div>
-            <div className="mt-1 flex items-center gap-1.5 text-[12px]" style={{ color: C.muted }}>
-              {top ? (
-                <>
-                  <span className="h-2 w-2 rounded-full" style={{ background: agentColor(top.agent) }} />
-                  <span key={top.agent} className="adp-fade adp-mono truncate" style={{ color: "#D6D6E4" }}>
-                    {top.agent}
-                  </span>
-                </>
-              ) : (
-                <span>入札待ち…</span>
-              )}
-            </div>
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-[12px]">
-              <span className="adp-mono rounded-md border px-2 py-0.5" style={{ borderColor: C.line, color: C.text }}>
-                最低落札価格（Reserve Price）：<b>$10</b>
-              </span>
-              <span className="adp-mono" style={{ color: C.dim }}>
-                {bids.length} bids
-              </span>
-            </div>
+            {aiWinner && (
+              <div key={aiWinner.id} className="adp-pop rounded-xl border px-3 py-2.5 text-[13px]" style={{ borderColor: C.emerald + "66", background: C.emerald + "10", color: C.text }}>
+                <b style={{ color: C.emerald }}>落札: {aiWinner.winner}</b>
+                <span className="adp-mono">
+                  {" "}
+                  入札 {usd(aiWinner.winningBid)} → 支払い {usd(aiWinner.amount)}
+                </span>
+                <div className="text-[11px]" style={{ color: C.muted }}>
+                  支払いは2番目に高い入札額（なければ最低価格$10）。だからAIは本音の価値で入札するのが得になります。
+                </div>
+              </div>
+            )}
+            {sold && !aiWinner && (
+              <div className="rounded-xl border px-3 py-2.5 text-[13px]" style={{ borderColor: C.line, color: C.muted }}>
+                全エージェントが見送り。$10以上の入札がなかったので不成立です。
+              </div>
+            )}
+            {ai.note && (
+              <div className="rounded-lg px-3 py-2 text-[12px]" style={{ background: C.danger + "14", color: "#FFB3C0" }}>
+                {ai.note}
+              </div>
+            )}
           </div>
-        </div>
-
-        <div className="relative h-1 overflow-hidden rounded-full" style={{ background: "#1A1A26" }}>
-          <div className="adp-sweep absolute inset-y-0 w-1/3" style={{ background: `linear-gradient(90deg, transparent, ${C.purple}, transparent)` }} />
-        </div>
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center gap-5">
+              <TimerRing timeLeft={timeLeft} sold={sold} />
+              <div className="min-w-[150px] flex-1">
+                <div className="text-[11px] font-medium uppercase tracking-[0.12em]" style={{ color: C.muted }}>
+                  {sold ? "落札価格" : "現在の最高入札"}
+                </div>
+                <div key={top ? top.amount : "none"} className="adp-mono adp-pop text-4xl font-bold" style={{ color: top ? C.text : C.dim }}>
+                  {top ? usd(top.amount) : "—"}
+                </div>
+                <div className="mt-1 flex items-center gap-1.5 text-[12px]" style={{ color: C.muted }}>
+                  {top ? (
+                    <>
+                      <span className="h-2 w-2 rounded-full" style={{ background: agentColor(top.agent) }} />
+                      <span key={top.agent} className="adp-fade adp-mono truncate" style={{ color: "#D6D6E4" }}>
+                        {top.agent}
+                      </span>
+                    </>
+                  ) : (
+                    <span>入札待ち…</span>
+                  )}
+                </div>
+                <div className="adp-mono mt-2 text-[12px]" style={{ color: C.dim }}>
+                  {bids.length} bids · ランダムな模擬入札
+                </div>
+              </div>
+            </div>
+            <div className="relative h-1 overflow-hidden rounded-full" style={{ background: "#1A1A26" }}>
+              <div className="adp-sweep absolute inset-y-0 w-1/3" style={{ background: `linear-gradient(90deg, transparent, ${C.purple}, transparent)` }} />
+            </div>
+          </>
+        )}
 
         <div className="grid grid-cols-1 gap-2">
-          <button
-            type="button"
-            onClick={onSurge}
-            className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl px-4 py-3 text-[13px] font-bold text-white transition hover:brightness-110 active:scale-[0.98]"
-            style={{ background: `linear-gradient(135deg, ${C.purple}, #7A5CFF)`, boxShadow: `0 8px 28px -10px ${C.purple}` }}
-          >
-            <Zap size={16} className={surging ? "adp-pulse" : ""} />
-            AIエージェントの入札行動をシミュレート
-          </button>
+          {isAI ? (
+            <>
+              <button
+                type="button"
+                onClick={ai.running ? ai.onStop : ai.onRun}
+                disabled={ai.status !== "ready"}
+                className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13px] font-bold transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40"
+                style={
+                  ai.running
+                    ? { background: "transparent", border: `1px solid ${C.danger}88`, color: C.danger }
+                    : { background: `linear-gradient(135deg, #15B886, ${C.emerald})`, color: "#04130D", boxShadow: `0 8px 28px -12px ${C.emerald}` }
+                }
+              >
+                {ai.running ? <Square size={15} /> : <Sparkles size={16} />}
+                {ai.running ? "停止する" : status === "idle" ? "AIエージェントに入札させる" : "次のロットでAIに入札させる"}
+              </button>
+              <p className="text-center text-[11px]" style={{ color: C.dim }}>
+                4体のエージェントがそれぞれ別々にClaudeに問い合わせて入札額を決めます（見ている人のClaude利用枠を使います）
+              </p>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={onSurge}
+              className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-xl px-4 py-3 text-[13px] font-bold text-white transition hover:brightness-110 active:scale-[0.98]"
+              style={{ background: `linear-gradient(135deg, ${C.purple}, #7A5CFF)`, boxShadow: `0 8px 28px -10px ${C.purple}` }}
+            >
+              <Zap size={16} className={surging ? "adp-pulse" : ""} />
+              AIエージェントの入札行動をシミュレート
+            </button>
+          )}
           <button
             type="button"
             onClick={onStripe}
@@ -664,7 +899,7 @@ function LogLine({ e, fresh }) {
           {time}
           <span style={{ color: C.purpleSoft }}>▶ AUCTION OPEN</span>{" "}
           <span style={{ color: C.muted }}>
-            {e.lot} · reserve $10.00
+            {e.lot} · reserve $10.00{e.ai ? " · 封印入札 (Claude)" : ""}
           </span>
         </div>
       );
@@ -674,6 +909,7 @@ function LogLine({ e, fresh }) {
           {time}
           <span style={{ color: C.emerald }}>■ SETTLED</span> {name(e.agent)}{" "}
           <span style={{ color: C.emerald }}>{usd(e.amount)}</span>
+          {e.bid != null && <span style={{ color: C.muted }}> (入札 {usd(e.bid)} → 2位価格で支払い)</span>}
           <span style={{ color: C.muted }}> · stripe {e.pi.slice(0, 12)}… · delivered</span>
         </div>
       );
@@ -681,7 +917,34 @@ function LogLine({ e, fresh }) {
       return (
         <div className={cls}>
           {time}
-          <span style={{ color: C.muted }}>■ {e.lot} closed below reserve</span>
+          <span style={{ color: C.muted }}>■ {e.lot} {e.stopped ? "stopped by viewer" : "closed · no bid above reserve"}</span>
+        </div>
+      );
+    case "sealed":
+      return (
+        <div className={cls}>
+          {time}
+          {name(e.agent)} <span style={{ color: "#C9C9D8" }}>submitted a sealed bid 🔒</span>
+          <span style={{ color: C.dim }}> · Claude {(e.ms / 1000).toFixed(1)}s</span>
+        </div>
+      );
+    case "reveal":
+    case "pass":
+      return (
+        <div className={cls}>
+          {time}
+          {name(e.agent)}{" "}
+          {e.kind === "reveal" ? (
+            <>
+              <span style={{ color: "#C9C9D8" }}>revealed</span>{" "}
+              <span className="font-bold" style={{ color: C.text }}>
+                {usd(e.amount)}
+              </span>
+            </>
+          ) : (
+            <span style={{ color: C.dim }}>passed</span>
+          )}
+          {e.reason && <div style={{ color: C.muted }}>“{e.reason}”</div>}
         </div>
       );
     case "join":
@@ -713,7 +976,7 @@ function LogLine({ e, fresh }) {
   }
 }
 
-function BidLog({ log, totalBids }) {
+function BidLog({ log, totalBids, ai }) {
   const [bpm, setBpm] = useState(0);
   const start = useRef(Date.now());
   useEffect(() => {
@@ -723,7 +986,7 @@ function BidLog({ log, totalBids }) {
   return (
     <Panel
       icon={Terminal}
-      title="購入AIエージェント 自動入札ログ"
+      title={ai ? "購入AIエージェント 入札ログ（Claude）" : "購入AIエージェント 自動入札ログ"}
       className="w-full"
       right={
         <span className="adp-mono inline-flex items-center gap-1.5 text-[11px]" style={{ color: C.emerald }}>
@@ -830,6 +1093,8 @@ function stripeEvent(s) {
           supplier_count: String(s.suppliers),
           delivery_status: "delivered",
           delivery_uri: `adp://deliveries/${s.lotId}/${s.pi.slice(-8)}.parquet`,
+          auction_type: s.auction,
+          winning_bid_usd: (s.winningBid ?? s.amount).toFixed(2),
           human_in_loop: "false",
         },
         created,
@@ -1017,6 +1282,118 @@ export default function AgentDataProtocol() {
     dispatch({ type: "SURGE" });
   };
 
+  /* ---------- real AI mode: each buyer is its own Claude call ---------- */
+  const sampleRef = useRef(null);
+  const ctlsRef = useRef([]);
+  const [aiStatus, setAiStatus] = useState("checking"); // checking | ready | absent | denied
+  const [aiRunning, setAiRunning] = useState(false);
+  const [aiNote, setAiNote] = useState("");
+  const [aiAgents, setAiAgents] = useState(() => AI_AGENTS.map((a) => ({ ...a, wins: [] })));
+  const [aiViews, setAiViews] = useState({});
+
+  useEffect(() => {
+    let alive = true;
+    const c = typeof window !== "undefined" ? window.claude : undefined;
+    if (!c || typeof c.use !== "function") {
+      setAiStatus("absent");
+      return;
+    }
+    c.use("sample")
+      .then((fn) => {
+        if (!alive) return;
+        sampleRef.current = fn;
+        setAiStatus(fn ? "ready" : "absent");
+      })
+      .catch(() => alive && setAiStatus("absent"));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const setView = (name, patch) => setAiViews((v) => ({ ...v, [name]: { ...v[name], ...patch } }));
+
+  const onMode = (mode) => {
+    if (aiRunning) return;
+    setAiNote("");
+    setAiViews({});
+    dispatch({ type: "SET_MODE", mode });
+  };
+
+  const onRunAI = async () => {
+    const sample = sampleRef.current;
+    if (!sample || aiRunning) return;
+    const lot = state.status === "idle" ? state.lot : makeLot(state.round + 1);
+    const agents = aiAgents;
+    dispatch({ type: "AI_OPEN", lot });
+    setAiRunning(true);
+    setAiNote("");
+    setAiViews(Object.fromEntries(agents.map((a) => [a.name, { phase: "thinking", text: "" }])));
+    ctlsRef.current = agents.map(() => new AbortController());
+
+    const results = await Promise.all(
+      agents.map(async (a, i) => {
+        const t0 = performance.now();
+        try {
+          const { text } = await sample(buildAgentPrompt(a, lot), {
+            modelTier: "quick",
+            cache: false,
+            signal: ctlsRef.current[i].signal,
+            onText: ({ text }) => setView(a.name, { text }),
+          });
+          const ms = Math.round(performance.now() - t0);
+          const bid = parseAgentBid(text, a.budget);
+          setView(a.name, { phase: "sealed", text, amount: bid.amount });
+          dispatch({ type: "AI_SEALED", agent: a.name, ms });
+          return { agent: a.name, ...bid };
+        } catch (e) {
+          const code = (e && e.code) || "upstream_error";
+          if (code !== "cancelled") setView(a.name, { phase: "error", text: e && e.text ? e.text : "" });
+          return { agent: a.name, amount: null, reason: null, error: code };
+        }
+      })
+    );
+    setAiRunning(false);
+
+    const codes = results.map((r) => r.error).filter(Boolean);
+    const fatal = codes.find((c) => ["not_granted", "sampling_disabled", "not_declared", "capability_disabled", "capability_removed"].includes(c));
+    if (fatal) {
+      setAiStatus("denied");
+      setAiViews({});
+      dispatch({ type: "AI_ABORT" });
+      return;
+    }
+    if (codes.includes("cancelled")) {
+      setAiViews({});
+      dispatch({ type: "AI_ABORT" });
+      return;
+    }
+    if (codes.includes("rate_limited")) setAiNote("Claudeの利用が混み合っています。少し待ってからもう一度押してください。");
+    else if (codes.includes("session_expired")) setAiNote("claude.ai に再ログインしてから、もう一度押してください。");
+    else if (codes.length) setAiNote("一部のエージェントがClaudeに接続できず、見送り扱いになりました。");
+
+    const { winner, price } = resolveSealed(results);
+    setAiViews((v) => Object.fromEntries(Object.entries(v).map(([k, x]) => [k, x.phase === "sealed" ? { ...x, phase: "revealed" } : x])));
+    if (winner) {
+      setAiAgents((list) =>
+        list.map((a) => (a.name === winner.agent ? { ...a, budget: Math.round((a.budget - price) * 100) / 100, wins: [...a.wins, lot.title].slice(-4) } : a))
+      );
+    }
+    dispatch({ type: "AI_SETTLE", bids: results });
+  };
+
+  const onStopAI = () => ctlsRef.current.forEach((c) => c.abort());
+
+  const aiProps = {
+    status: aiStatus,
+    running: aiRunning,
+    note: aiNote,
+    agents: aiAgents,
+    views: aiViews,
+    onMode,
+    onRun: onRunAI,
+    onStop: onStopAI,
+  };
+
   const closeToast = React.useCallback(() => setToast(null), []);
   const closeStripe = React.useCallback(() => setStripeOpen(false), []);
 
@@ -1024,7 +1401,7 @@ export default function AgentDataProtocol() {
     <div className="adp-root adp-grid-bg min-h-screen w-full" style={{ background: C.bg, color: C.text }}>
       <style>{GLOBAL_CSS}</style>
       <div className="mx-auto flex max-w-[1400px] flex-col gap-5 px-4 py-6 sm:px-6 lg:py-8">
-        <Header sessionVolume={state.sessionVolume} agentsOnline={state.agents.length} />
+        <Header sessionVolume={state.sessionVolume} agentsOnline={state.mode === "ai" ? aiAgents.length : state.agents.length} />
 
         <main className="grid grid-cols-1 gap-4 lg:grid-cols-12">
           <Panel
@@ -1042,11 +1419,11 @@ export default function AgentDataProtocol() {
           </Panel>
 
           <div className="flex lg:col-span-4">
-            <AuctionCore state={state} onSurge={onSurge} onStripe={() => setStripeOpen(true)} surging={surging} />
+            <AuctionCore state={state} onSurge={onSurge} onStripe={() => setStripeOpen(true)} surging={surging} ai={aiProps} />
           </div>
 
           <div className="flex lg:col-span-4">
-            <BidLog log={state.log} totalBids={state.totalBids} />
+            <BidLog log={state.log} totalBids={state.totalBids} ai={state.mode === "ai"} />
           </div>
         </main>
 
@@ -1054,7 +1431,7 @@ export default function AgentDataProtocol() {
           <span className="inline-flex items-center gap-1.5">
             <Timer size={12} /> 本番: 5分毎に1ロット × 288回/日/市場 · デモ: 10秒ループ
           </span>
-          <span>※ 表示中のエージェント名・金額・Stripeログはすべてデモ用の架空データです。</span>
+          <span>※ デモモードの入札はランダム。AIモードの入札判断は実際のClaudeによるもの。金額・決済・上部の数値は架空のデモ値です。</span>
         </footer>
       </div>
 
