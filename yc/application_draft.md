@@ -117,6 +117,14 @@ As an example: if 1,000 buyer agents each spend $50 a day, that is $50k a day in
 
 **Are you currently fundraising?** → No
 
+**If you have not formed the company yet, describe the planned equity ownership breakdown...**
+
+Kazuma Sasaki, CEO: 100% today, as the only founder.
+
+When a technical cofounder joins as CTO, I plan to give them a large share, around 40-50%, because they will build the production system and should own it as a real partner. Both of us will vest over 4 years with a 1-year cliff. We plan to set aside about 10% as an option pool for early employees. There are no other proposed stockholders.
+
+［確認: CTOに渡す割合はあなたが決めること］
+
 ---
 
 ## Curious
