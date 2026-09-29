@@ -1,7 +1,7 @@
 # YC 応募回答（Seri / Winter 2027）
 
-フォームの順番どおりです。英語の部分はそのままコピペできます。
-**［確認］** がついている部分は、あなたの事実に合わせて直してください（違うまま出すのはNG）。
+フォームの順番どおり。英語はそのままコピペOK。
+**［確認］** は事実に合わせて直すこと（違うまま出すのはNG）。
 
 ---
 
@@ -9,41 +9,35 @@
 
 **Who writes code, or does other technical work on your product? Was any of it done by a non-founder? Please explain.**
 
-I do. I'm not a trained engineer, so I built the prototype by directing AI coding tools (mainly Claude Code): the auction server, the Python SDK, the buyer agents, and a concept dashboard. No non-founder has written code or done technical work on the product. I'm looking for a technical cofounder to build the production system.
+Me. I'm not a trained engineer; I built the prototype myself with AI coding tools (Claude Code): the auction server, the SDK, and the buyer agents. No non-founder has touched the code. I'm recruiting a technical cofounder for production.
 
 **Are you looking for a cofounder?**
 
-Yes. I'm looking for a technical cofounder who has built developer APIs, payments, or marketplace systems.
+Yes. A technical cofounder who has shipped APIs, payments, or marketplaces.
 
-**Founder Video** → 下の「動画の台本」を使って撮影
+**Founder Video** → 下の台本で撮影
 
 ---
 
 ## Company
 
-**Company name**
-
-Seri
+**Company name:** Seri
 
 **Describe what your company does in 50 characters or less.**
 
 A marketplace where AI agents buy fresh data
 
-**Company URL, if any** → 空欄
+**Company URL / Product link / Login** → 空欄
 
-**If you have a demo, attach it below.** → デモ動画（下の構成案）
+**Demo** → 下の構成でデモ動画
 
-**Please provide a link to the product, if any.** → 空欄
+**What is your company going to make?**
 
-**If login credentials are required for the link above, enter them here.** → 空欄
+Seri is a marketplace where AI agents buy data straight from the people who create it. No brokers, no contracts.
 
-**What is your company going to make? Please describe your product and what it does or will do.**
+"Seri" is Japanese for the fish-market auctions at Tsukiji, where each lot sells in minutes. We do that for data. Anyone, anywhere can sell: a gamer in Seoul, an illustrator in Paris, a shop in São Paulo. Sellers connect in three lines of code. Every 5 minutes, fresh data goes to a sealed-bid auction. AI agents price each lot and bid through our API. The winner pays the second-highest bid and gets the data instantly. 90% goes to the creators.
 
-Seri is a marketplace where AI agents buy data directly from the people who create it, anywhere in the world, with no human broker in between.
-
-"Seri" is the Japanese word for the auctions at fish markets like Tsukiji, where each lot is sold in minutes before dawn. We do the same for data. Anyone who produces data can sell it: a gamer's controller logs in Seoul, an illustrator's pen strokes in Paris, a shop's sales records in São Paulo, conversations in any language. Sellers connect with three lines of code and stream their data. Every 5 minutes, new data is bundled into lots and sold in a sealed-bid auction. Buyer agents from AI companies look at each lot, decide what it is worth to them, and bid through our API. The winner pays the second-highest price and gets the data right away, and 90% of the money goes to the people who made it.
-
-Today, buying data means sales calls, contracts, and months of waiting, and most of the world's data never gets sold at all. We want it to work like Stripe: a few lines of code, and money and data move automatically, between anyone on earth and any AI agent.
+Buying data today takes sales calls and months. Most of the world's data is never sold at all. Seri makes it as simple as Stripe.
 
 **Where do you live now, and where would the company be based after YC?**
 
@@ -51,7 +45,7 @@ Tokyo, Japan / San Francisco, USA ［確認: 住んでいる都市］
 
 **Explain your decision regarding location.**
 
-The AI labs that will be our first buyers are mostly in San Francisco, so the company should be there. I will keep close ties to Japan, where our first sellers and our Japanese-language data come from.
+Our buyers, the AI labs, are in SF. Our first sellers are in Japan. We build in SF and keep a base in Tokyo.
 
 ---
 
@@ -59,25 +53,22 @@ The AI labs that will be our first buyers are mostly in San Francisco, so the co
 
 **How far along are you?**
 
-I have a working prototype that runs end to end locally: an auction server, a Python SDK for sellers and buyers, and buyer agents that use Claude to judge each lot's value and bid on their own. In the demo, sellers stream Japanese Q&A data, several agents bid every round, lots settle at the second-highest price, and payouts are split 90/10 in a ledger. Payments are simulated, and there are no real users yet.
+Working end-to-end prototype: an auction server, a Python SDK, and Claude-powered buyer agents that price each lot and bid on their own. Lots settle every round; payouts split 90/10 in a ledger. Payments are simulated. No users yet.
 
-**How long have each of you been working on this? How much of that has been full-time? Please explain.**
+**How long have each of you been working on this?**
 
-About one week, part-time. ［確認: 実際の期間と、ほかの仕事や学業との両立状況を一言足す］
+About one week, part-time. ［確認］
 
-**What tech stack are you using, or planning to use, to build this product? Include AI models and AI coding tools you use.**
+**What tech stack are you using?**
 
-Prototype: Python (standard library only) for the auction server and SDK, and React with Tailwind for a concept dashboard. Buyer agents use the Claude API (Claude Opus 5) to decide how much to bid. I build with Claude Code.
-
-Planned: a hosted API on Postgres, Stripe Connect for payouts to sellers, automated removal of personal information and data quality checks, and an MCP server so any AI agent can join the market.
+Now: Python, the Claude API (Claude Opus 5) for buyer agents, React and Tailwind for the dashboard. Built with Claude Code.
+Next: hosted API, Postgres, Stripe Connect payouts, automated PII removal, and an MCP server so any agent can plug in.
 
 **Are people using your product?** → No
 
 **Do you have revenue?** → No
 
-**If you are applying with the same idea as a previous batch...** → 空欄（初めての応募なら）
-
-**If you have already participated or committed to participate in an incubator...** → 空欄（参加したことがなければ）
+**Previous batch / Incubator** → 空欄
 
 ---
 
@@ -85,27 +76,31 @@ Planned: a hosted API on Postgres, Stripe Connect for payouts to sellers, automa
 
 **Why did you pick this idea to work on? Do you have domain expertise in this area? How do you know people need what you're making?**
 
-I worked at micro1 on labelling Japanese-language data for AI models. I saw two problems up close. AI companies struggle to get good data outside English, and the people who create that data are paid a small share, slowly, through layers of middlemen.
+I've been on both sides of this market.
 
-I also saw the other side through two friends, young founders who collect data for AI. They can produce good data quickly, but they struggle to find anyone to sell it to. Selling data today means finding buyers one by one, cold emails, and long negotiations, which small teams can't afford. I want a place where anyone who makes data can sell it the moment it exists.
+At 20, I was a QA lead at micro1, reviewing Japanese data for AI models. AI companies were starving for non-English data, while the people making it got paid late and little through layers of middlemen.
 
-At the same time, AI agents are starting to get budgets and act on their own. They will need to buy data the same way they call an API: instantly, at a price set by what the data is worth to them. Nobody has built that market yet.
+I've already made money on that gap: $30,000 in four months as an AI data reviewer, then $20,000 more by connecting underpaid Japanese students to the same work.
 
-I haven't validated demand with paying buyers yet. My next steps are to put my friends' data on Seri as the first supply, and to talk to AI teams that need non-English data and get them to bid on real lots.
+Two founder friends collect AI data today and can't find buyers. Selling data still means cold emails and long negotiations.
+
+Meanwhile, AI agents are getting budgets. They will buy data the way they call an API. That market doesn't exist yet. We're building it.
+
+Not yet validated with paying buyers. Next: list my friends' data as the first supply and get AI teams bidding on real lots.
 
 **Who are your competitors? What do you understand about your business that they don't?**
 
-Data labeling companies (Scale AI, Surge AI, micro1) sell custom data projects to large labs through sales teams. Data marketplaces (AWS Data Exchange, Snowflake Marketplace, Datarade) list static datasets for people to browse and license. Hugging Face hosts free datasets.
+Scale AI, Surge AI, and micro1 sell custom data projects to big labs through sales teams. AWS Data Exchange, Snowflake Marketplace, and Datarade list static datasets for humans to browse. Hugging Face gives datasets away.
 
-None of them are built for software buyers. We think the next buyer of data is an agent with a budget, not a procurement team. That buyer needs fresh data in small lots, a price it can decide in seconds, and an API it can call. A sealed-bid second-price auction fits this well: the best strategy for each agent is simply to bid what the data is really worth to it, so prices reflect true value without negotiation.
+All of them are built for human buyers. The next buyer of data is an agent with a budget. It needs fresh data in small lots, a price in seconds, and an API. A sealed-bid second-price auction is built for exactly that: an agent's best move is to bid its true value. No negotiation.
 
 **How do or will you make money? How much could you make?**
 
-We take a 10% fee on every sale.
+10% of every sale. If 1,000 agents spend $50 a day, that's $1.8M a year in fees. The ceiling is global AI data spend, and as agents take over buying, it moves onto rails like ours.
 
-As an example: if 1,000 buyer agents each spend $50 a day, that is $50k a day in sales and $5k a day in fees, or about $1.8M a year. The real ceiling is how much AI companies spend on data, and that spend moves to us as agents take over purchasing.
+**If you had any other ideas you considered applying with, please list them.**
 
-**If you had any other ideas you considered applying with, please list them.** → 空欄（ほかに本気で考えたアイデアがあれば書くと得）
+Trade and Error (tradeanderror.com): the flight recorder for traders. Exchanges record what people trade; we record why. Traders record their live trades and replay them as a quiz, calling the next move before it's revealed. About 10 traders use it. Next: AI that scores every trade and names the habits behind losses. With consent, the anonymized data becomes datasets for AI companies and indicators for investors. Long term: the world's largest record of how humans actually trade.
 
 ---
 
@@ -113,53 +108,29 @@ As an example: if 1,000 buyer agents each spend $50 a day, that is $50k a day in
 
 **Have you formed ANY legal entity yet?** → No
 
-**Have you taken any investment yet?** → No
+**Have you taken any investment yet?** → No ［確認: SMBCの400万円がこの会社向けならYes］
 
 **Are you currently fundraising?** → No
 
-**If you have not formed the company yet, describe the planned equity ownership breakdown...**
+**Planned equity breakdown**
 
-Kazuma Sasaki, CEO: 100% today, as the only founder.
-
-When a technical cofounder joins as CTO, I plan to give them a large share, around 40-50%, because they will build the production system and should own it as a real partner. Both of us will vest over 4 years with a 1-year cliff. We plan to set aside about 10% as an option pool for early employees. There are no other proposed stockholders.
-
-［確認: CTOに渡す割合はあなたが決めること］
+Kazuma Sasaki, CEO: 100% today. A technical cofounder (CTO) will get 40–50%. Both vest over 4 years with a 1-year cliff. About 10% reserved as an option pool for early hires.
 
 ---
 
 ## Curious
 
-**What convinced you to apply to Y Combinator? Did someone encourage you to apply? Have you been to any YC events?**
+**What convinced you to apply to Y Combinator?**
 
-I want to build Seri as a global company from day one, and the AI companies that will be our first buyers are in San Francisco, many of them started at YC. Nobody pushed me to apply; I decided to after building the prototype. I haven't been to a YC event yet. ［確認: 誰かに勧められた、イベントに行ったことがあるなら書き換える］
+I'm building Seri as a global company from day one, and our buyers, the AI labs, are in SF; many of them came out of YC. I decided to apply after building the prototype. No YC events yet. ［確認］
 
 **How did you hear about Y Combinator?**
 
-［要記入: 例 `Online, through startup news and Hacker News.`］
+［要記入: 例 `Online, through Hacker News and startup media.`］
 
 ---
 
-## Batch Preference
-
-**What batch do you want to apply for?** → Winter 2027
-
----
-
-## 動画の台本（創業者動画・1分）
-
-> Hi, I'm Kazuma Sasaki, founder of Seri.
-> I worked at micro1 on Japanese training data for AI, and I saw that good data is hard to buy, and the people who create it are paid late and little.
-> "Seri" is the Japanese word for the fish market auctions at Tsukiji, where every lot sells in minutes. Seri does that for data. Sellers connect in three lines of code, every five minutes their data is auctioned, AI agents bid through an API, and 90% of the money goes to the people who made it.
-> I built a working prototype, and I'm looking for a technical cofounder. Thanks for watching.
-
-## デモ動画の構成（1〜2分）
-
-1. `python run_demo.py` のターミナルと、ブラウザの http://127.0.0.1:8787 を並べて映す
-2. 売り手の3行のコード（`seller_japanese_qa.py`）を見せる
-3. Claudeエージェントが理由つきで入札するところ（APIキーを設定して参加させる）
-4. SOLD → 売り手の収益が増えるところ
-5. テロップで「Local prototype. Payments are simulated.」
-6. ダッシュボード（Artifact）を使うなら、上部の架空の数字は映さない
+## Batch Preference → Winter 2027
 
 ---
 
@@ -167,31 +138,29 @@ I want to build Seri as a global company from day one, and the AI companies that
 
 **Please tell us about a time you most successfully hacked some (non-computer) system to your advantage.**
 
-Three times, each by spotting a gap other people missed:
+Three:
 
-1. As a university student, I noticed early that AI companies were paying high hourly rates for Japanese-language reviewers, far more than any normal student job in Japan. I got in early and earned $30,000 in four months. Then I saw the other side of the gap: many capable Japanese students were stuck in low-paid part-time jobs and didn't know this work existed. I referred them and earned another $20,000 in referral bonuses. That was $50,000 from connecting two markets that didn't know about each other.
+1. The AI data gold rush. I spotted early that AI companies paid Japanese reviewers far more than any student job. I made $30,000 in four months. Then I connected underpaid Japanese students to the same work and made another $20,000 in referrals. ［確認: 公式の紹介制度？］
 
-2. When companies started screening candidates with AI interviewers, I noticed a pattern: when the AI asked a follow-up question, it was usually hinting at the answer it wanted to hear. So I repeated the same answer back in its own words, and passed.
+2. AI interviewers. Their follow-up questions leaked the answer they wanted. I gave it back in their own words and passed.
 
-3. Japanese financial law makes it almost impossible for a young founder to start a brokerage. But prop firms like FTMO and FINTOKEI showed another model: traders pay a challenge fee to trade simulated capital, and no customer money is ever at risk. I built and ran my own, Samurai Traders (samuraitraders.com), for Japanese traders.
-
-［確認: 紹介報酬は会社の公式な紹介制度によるもの？］
+3. Japanese finance law. Starting a brokerage as a young founder is nearly impossible. Prop firms like FTMO and FINTOKEI run on challenge fees and simulated capital, with no customer funds at risk. So I built and ran one: Samurai Traders.
 
 **Please tell us in one or two sentences about the most impressive thing other than this startup that you have built or achieved.**
 
-At 20, while still a student, I became a QA lead at micro1, leading quality review of Japanese-language data used to train AI models. I also raised ¥4 million (about $27,000) from SMBC, one of Japan's three largest banks, for ［確認: どの事業か］.
+QA lead at micro1 at 20, owning quality for Japanese AI training data. Secured ¥4M (about $27,000) from SMBC, one of Japan's three megabanks, for ［確認: どの事業か／出資か融資か］.
 
 **Tell us about things you've built before.**
 
-- Trade and Error (https://tradeanderror.com): a training tool for retail traders. Traders record their live trades and review them in a quiz-style replay. About 10 active users.
-- Samurai Traders (samuraitraders.com): a prop trading firm for Japan. Japanese financial law makes starting a brokerage very hard, so I ran a model where traders pay a challenge fee to trade simulated capital. No longer operating.
-- Playlingual: a soccer school taught in English. No longer operating.
-- Seri prototype: an auction server, a Python SDK, and Claude-powered buyer agents that bid on data lots every 5 minutes.
+- Trade and Error (https://tradeanderror.com): trade recording and quiz-style replay for retail traders. About 10 active users.
+- Samurai Traders (samuraitraders.com): a prop trading firm for Japanese traders. Closed.
+- Playlingual: a soccer school taught in English. Closed.
+- Seri prototype: auction server, SDK, and Claude-powered buyer agents.
 
 **List any competitions/awards you have won, or papers you've published.**
 
-- Won the Tokyo Division 3 soccer league ［確認: 正式なリーグ名］
-- Reached 14,000 trophies in Clash Royale
+- Champion, Tokyo Division 3 soccer league ［確認: 正式名］
+- 14,000 trophies in Clash Royale
 
 **List any relevant or impressive test scores.**
 
@@ -200,3 +169,21 @@ IELTS 7.5
 **List any entrepreneurship programs, clubs, or hacker houses you have participated in.**
 
 None.
+
+---
+
+## 創業者動画の台本（1分）
+
+> I'm Kazuma Sasaki, founder of Seri.
+> At 20, I was a QA lead at micro1, reviewing Japanese data for AI. I made $50,000 in that market and saw how broken it is: AI companies can't get the data they need, and the people who make it get paid late and little.
+> In Japan, "seri" is the fish-market auction where every lot sells in minutes. We do that for data. Sellers plug in with three lines of code, AI agents bid every five minutes, and 90% goes to the creators.
+> The prototype works. I'm looking for a technical cofounder.
+
+## デモ動画の構成（1〜2分）
+
+1. `python run_demo.py` のターミナルと、ブラウザの http://127.0.0.1:8787 を並べて映す
+2. 売り手の3行のコード（`seller_japanese_qa.py`）を見せる
+3. Claudeエージェントが理由つきで入札するところ
+4. SOLD → 売り手の収益が増えるところ
+5. テロップ「Local prototype. Payments are simulated.」
+6. ダッシュボード（Artifact）を使うなら、上部の架空の数字は映さない
