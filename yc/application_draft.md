@@ -41,7 +41,7 @@ Buying data today takes sales calls and months. Most of the world's data is neve
 
 **Where do you live now, and where would the company be based after YC?**
 
-Tokyo, Japan / San Francisco, USA ［確認: 住んでいる都市］
+Tokyo, Japan / San Francisco, USA
 
 **Explain your decision regarding location.**
 
@@ -78,7 +78,7 @@ Next: hosted API, Postgres, Stripe Connect payouts, automated PII removal, and a
 
 I've been on both sides of this market.
 
-At 20, I was a QA lead at micro1, reviewing Japanese data for AI models. AI companies were starving for non-English data, while the people making it got paid late and little through layers of middlemen.
+At 20, I became the Japanese QA lead at micro1, setting quality standards for a multilingual audio data pipeline used to train frontier AI models. AI companies were starving for non-English data, while the people making it got paid late and little through layers of middlemen.
 
 I've already made money on that gap: $30,000 in four months as an AI data reviewer, then $20,000 more by connecting underpaid Japanese students to the same work.
 
@@ -148,7 +148,7 @@ Three:
 
 **Please tell us in one or two sentences about the most impressive thing other than this startup that you have built or achieved.**
 
-QA lead at micro1 at 20, owning quality for Japanese AI training data. Secured ¥4M (about $27,000) from SMBC, one of Japan's three megabanks, for ［確認: どの事業か／出資か融資か］.
+Became the Japanese QA lead at micro1 at 20: I designed the reviewer workflow and scoring rubrics from scratch and trained annotators to frontier-lab quality bars. Secured ¥4M (about $27,000) from SMBC, one of Japan's three megabanks, for ［確認: どの事業か／出資か融資か］.
 
 **Tell us about things you've built before.**
 
@@ -175,7 +175,7 @@ None.
 ## 創業者動画の台本（1分）
 
 > I'm Kazuma Sasaki, founder of Seri.
-> At 20, I was a QA lead at micro1, reviewing Japanese data for AI. I made $50,000 in that market and saw how broken it is: AI companies can't get the data they need, and the people who make it get paid late and little.
+> At 20, I became the Japanese QA lead at micro1, setting quality standards for AI training data. I made $50,000 in that market and saw how broken it is: AI companies can't get the data they need, and the people who make it get paid late and little.
 > In Japan, "seri" is the fish-market auction where every lot sells in minutes. We do that for data. Sellers plug in with three lines of code, AI agents bid every five minutes, and 90% goes to the creators.
 > The prototype works. I'm looking for a technical cofounder.
 
