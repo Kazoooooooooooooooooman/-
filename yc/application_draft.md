@@ -167,7 +167,13 @@ I want to build Seri as a global company from day one, and the AI companies that
 
 **Please tell us about a time you most successfully hacked some (non-computer) system to your advantage.**
 
-As a university student, I noticed early that AI companies were paying high hourly rates for Japanese-language reviewers, far more than any normal student job in Japan. I got in early and earned $30,000 in four months. Then I saw the other side of the gap: many capable Japanese students were stuck in low-paid part-time jobs and didn't know this work existed. I referred them, and earned another $20,000 in referral bonuses. Together, $50,000 from spotting a price gap between two markets that didn't know about each other.
+Three times, each by spotting a gap other people missed:
+
+1. As a university student, I noticed early that AI companies were paying high hourly rates for Japanese-language reviewers, far more than any normal student job in Japan. I got in early and earned $30,000 in four months. Then I saw the other side of the gap: many capable Japanese students were stuck in low-paid part-time jobs and didn't know this work existed. I referred them and earned another $20,000 in referral bonuses. That was $50,000 from connecting two markets that didn't know about each other.
+
+2. When companies started screening candidates with AI interviewers, I noticed a pattern: when the AI asked a follow-up question, it was usually hinting at the answer it wanted to hear. So I repeated the same answer back in its own words, and passed.
+
+3. Japanese financial law makes it almost impossible for a young founder to start a brokerage. But prop firms like FTMO and FINTOKEI showed another model: traders pay a challenge fee to trade simulated capital, and no customer money is ever at risk. I built and ran my own, Samurai Traders (samuraitraders.com), for Japanese traders.
 
 ［確認: 紹介報酬は会社の公式な紹介制度によるもの？］
 
