@@ -76,17 +76,17 @@ Next: hosted API, Postgres, Stripe Connect payouts, automated PII removal, and a
 
 **Why did you pick this idea to work on? Do you have domain expertise in this area? How do you know people need what you're making?**
 
-I've been on both sides of this market.
+I watched a deal die inside the company I worked for.
 
-At 20, I became the Japanese QA lead at micro1, setting quality standards for a multilingual audio data pipeline used to train frontier AI models. AI companies were starving for non-English data, while the people making it got paid late and little through layers of middlemen.
+At 20, I became the Japanese QA lead at micro1, setting quality standards for a multilingual audio pipeline used to train frontier AI models. A friend runs Kataro, a company that sells Japanese voice data, and asked me if micro1 would buy it. I knew the demand was real; I was reviewing that kind of data every day. I messaged the CEO and the head of human data directly. The CEO never replied. The data manager said he'd check. A month later: nothing.
 
-I've already made money on that gap: $30,000 in four months as an AI data reviewer, then $20,000 more by connecting underpaid Japanese students to the same work.
+The buyer needed the data. The seller had it. The deal died waiting on a human.
 
-Two founder friends collect AI data today and can't find buyers. Selling data still means cold emails and long negotiations.
+That's the data market today: cold DMs, sales calls, weeks of silence. Meanwhile, AI agents are getting budgets. So give every AI company an agent that knows exactly what data it needs, and let it buy on the spot at a fair price. And make it as simple as Stripe: three lines of code on each side.
 
-Meanwhile, AI agents are getting budgets. They will buy data the way they call an API. That market doesn't exist yet. We're building it.
+I've made money on this gap before: $30,000 in four months as an AI data reviewer, then $20,000 more by connecting underpaid Japanese students to the same work.
 
-Not yet validated with paying buyers. Next: list my friends' data as the first supply and get AI teams bidding on real lots.
+Not yet validated with paying buyers. Next: list Kataro's voice data as the first supply and get AI teams bidding on real lots. ［確認: Kataroは出品に同意している？］
 
 **Who are your competitors? What do you understand about your business that they don't?**
 
@@ -175,8 +175,9 @@ None.
 ## 創業者動画の台本（1分）
 
 > I'm Kazuma Sasaki, founder of Seri.
-> At 20, I became the Japanese QA lead at micro1, setting quality standards for AI training data. I made $50,000 in that market and saw how broken it is: AI companies can't get the data they need, and the people who make it get paid late and little.
-> In Japan, "seri" is the fish-market auction where every lot sells in minutes. We do that for data. Sellers plug in with three lines of code, AI agents bid every five minutes, and 90% goes to the creators.
+> I was the Japanese QA lead at micro1. A friend's company had exactly the Japanese voice data we needed. I messaged our CEO. No reply. A month later, still nothing. The deal died waiting on a human.
+> Seri fixes that. AI agents that know what data their company needs bid on it every five minutes. Sellers plug in with three lines of code, and 90% goes to the people who made the data.
+> In Japan, "seri" is the fish-market auction where every lot sells in minutes. We do that for data.
 > The prototype works. I'm looking for a technical cofounder.
 
 ## デモ動画の構成（1〜2分）
