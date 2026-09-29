@@ -160,3 +160,37 @@ I want to build Seri as a global company from day one, and the AI companies that
 4. SOLD → 売り手の収益が増えるところ
 5. テロップで「Local prototype. Payments are simulated.」
 6. ダッシュボード（Artifact）を使うなら、上部の架空の数字は映さない
+
+---
+
+## Accomplishments
+
+**Please tell us about a time you most successfully hacked some (non-computer) system to your advantage.**
+
+As a university student, I noticed early that AI companies were paying high hourly rates for Japanese-language reviewers, far more than any normal student job in Japan. I got in early and earned $30,000 in four months. Then I saw the other side of the gap: many capable Japanese students were stuck in low-paid part-time jobs and didn't know this work existed. I referred them, and earned another $20,000 in referral bonuses. Together, $50,000 from spotting a price gap between two markets that didn't know about each other.
+
+［確認: 紹介報酬は会社の公式な紹介制度によるもの？］
+
+**Please tell us in one or two sentences about the most impressive thing other than this startup that you have built or achieved.**
+
+At 20, while still a student, I became a QA lead at micro1, leading quality review of Japanese-language data used to train AI models. I also raised ¥4 million (about $27,000) from SMBC, one of Japan's three largest banks, for ［確認: どの事業か］.
+
+**Tell us about things you've built before.**
+
+- Trade and Error (https://tradeanderror.com): a training tool for retail traders. Traders record their live trades and review them in a quiz-style replay. About 10 active users.
+- Samurai Traders (samuraitraders.com): a prop trading firm for Japan. Japanese financial law makes starting a brokerage very hard, so I ran a model where traders pay a challenge fee to trade simulated capital. No longer operating.
+- Playlingual: a soccer school taught in English. No longer operating.
+- Seri prototype: an auction server, a Python SDK, and Claude-powered buyer agents that bid on data lots every 5 minutes.
+
+**List any competitions/awards you have won, or papers you've published.**
+
+- Won the Tokyo Division 3 soccer league ［確認: 正式なリーグ名］
+- Reached 14,000 trophies in Clash Royale
+
+**List any relevant or impressive test scores.**
+
+IELTS 7.5
+
+**List any entrepreneurship programs, clubs, or hacker houses you have participated in.**
+
+None.
