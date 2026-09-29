@@ -175,10 +175,11 @@ None.
 ## 創業者動画の台本（1分）
 
 > I'm Kazuma Sasaki, founder of Seri.
-> I was the Japanese QA lead at micro1. A friend's company had exactly the Japanese voice data we needed. I messaged our CEO. No reply. A month later, still nothing. The deal died waiting on a human.
-> Seri fixes that. AI agents that know what data their company needs bid on it every five minutes. Sellers plug in with three lines of code, and 90% goes to the people who made the data.
+> Seri is a marketplace where AI agents buy data directly from the people who make it. Sellers plug in with three lines of code. Every five minutes, AI agents bid on fresh data, and 90% goes to the creators.
+> Why? I was the Japanese QA lead at micro1. A friend's company had exactly the Japanese voice data we needed. I messaged our CEO. No reply. A month later, still nothing. The buyer needed it, the seller had it, and the deal died waiting on a human.
+> Seri removes that wait. Every AI company gets an agent that knows what data it needs and buys it on the spot.
 > In Japan, "seri" is the fish-market auction where every lot sells in minutes. We do that for data.
-> The prototype works. I'm looking for a technical cofounder.
+> The prototype works, and I'm looking for a technical cofounder.
 
 ## デモ動画の構成（1〜2分）
 
