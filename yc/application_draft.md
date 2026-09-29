@@ -96,7 +96,7 @@ All of them are built for human buyers. The next buyer of data is an agent with 
 
 **How do or will you make money? How much could you make?**
 
-10% of every sale. If 1,000 agents spend $50 a day, that's $1.8M a year in fees. The ceiling is global AI data spend, and as agents take over buying, it moves onto rails like ours.
+10% of every sale, and the goal is $1B a year. The math: 20,000 buyer agents (for example, 2,000 AI teams running 10 agents each) spending $1,400 a day is $10.2B a year in data sales and $1.02B in fees. That's ambitious but not crazy: the leading human-data companies already earn over $1B a year selling by hand. As agents take over buying, that spend moves onto rails like ours.
 
 **If you had any other ideas you considered applying with, please list them.**
 
