@@ -3,19 +3,19 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Martian+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
 <style>
-/* Layout: a pre-dawn fish market. Three stations side by side (AI company console · the auction board · a creator's phone),
-   lit by ice-blue for actions and sodium-lamp amber for money. Single dark look by design. */
+/* Layout: a dashboard. Sidebar (bottom bar on phones) with four tabs; each tab does one job.
+   Palette: pre-dawn market — indigo night, ice blue for actions, lamp amber for money. Single dark look by design. */
 :root {
   --night: #0A1120;
-  --night-2: #111A2C;
-  --night-3: #18233A;
+  --panel: #111A2C;
+  --raise: #18233A;
   --line: #24324D;
   --ink: #EAF0FA;
   --mute: #8C9AB3;
   --ice: #8FD0FF;
-  --ice-deep: #2E6FB0;
   --lamp: #FFBE3D;
-  --lamp-soft: rgba(255, 190, 61, .14);
+  --lamp-soft: rgba(255, 190, 61, .13);
+  --ice-soft: rgba(143, 208, 255, .12);
   --good: #5BD69A;
   --warn: #FF8A5B;
   --display: "Dela Gothic One", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
@@ -25,660 +25,651 @@
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
-html, body { margin: 0; }
-body {
-  background: var(--night);
-  background-image: radial-gradient(1200px 500px at 80% -10%, rgba(143, 208, 255, .10), transparent 60%),
-                    radial-gradient(900px 400px at 0% 0%, rgba(255, 190, 61, .06), transparent 60%);
-  color: var(--ink);
-  font: 15px/1.6 var(--body);
-  padding-inline: 16px;
-  padding-block: 0 40px;
-  min-height: 100%;
-}
+html, body { margin: 0; height: 100%; }
+body { background: var(--night); color: var(--ink); font: 15px/1.65 var(--body); }
 button { font: inherit; color: inherit; cursor: pointer; }
-button:focus-visible, input:focus-visible { outline: 2px solid var(--ice); outline-offset: 2px; }
-.num, .data { font-family: var(--data); font-variant-numeric: tabular-nums; }
+button:focus-visible, input:focus-visible, a:focus-visible { outline: 2px solid var(--ice); outline-offset: 2px; }
+.num { font-family: var(--data); font-variant-numeric: tabular-nums; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
 
-/* ---------- top bar & ticker ---------- */
-.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; margin-inline: -16px; padding: 12px 16px;
-       background: rgba(10, 17, 32, .86); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
-       display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; }
-.brand { display: flex; align-items: baseline; gap: 10px; }
-.brand b { font: 26px/1 var(--display); letter-spacing: .02em; }
+/* ---------- shell ---------- */
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100%; }
+.side { border-right: 1px solid var(--line); background: #0C1426; padding: 22px 14px; display: flex; flex-direction: column; gap: 22px;
+        position: sticky; top: 0; height: 100vh; }
+.brand { display: flex; align-items: baseline; gap: 8px; padding: 0 8px; }
+.brand b { font: 28px/1 var(--display); }
 .brand b i { color: var(--lamp); font-style: normal; }
 .brand span { color: var(--mute); font-size: 12px; letter-spacing: .2em; }
-.live { display: inline-flex; align-items: center; gap: 6px; font: 600 11px/1 var(--data); color: var(--good);
-        border: 1px solid rgba(91, 214, 154, .35); padding: 4px 8px; border-radius: 999px; letter-spacing: .12em; }
-.live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--good); animation: blink 1.4s infinite; }
-@keyframes blink { 50% { opacity: .25; } }
-.ticker { overflow: hidden; min-width: 0; mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-.ticker-track { display: flex; gap: 36px; width: max-content; animation: slide 60s linear infinite; font: 12px/1.4 var(--data); color: var(--mute); }
-.ticker-track span b { color: var(--lamp); font-weight: 600; }
-@keyframes slide { to { transform: translateX(-50%); } }
+.nav { display: flex; flex-direction: column; gap: 4px; }
+.nav a { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; padding: 11px 12px; border-radius: 12px;
+         color: var(--mute); text-decoration: none; font-weight: 700; }
+.nav a small { display: block; font-weight: 400; font-size: 12px; color: var(--mute); }
+.nav a:hover { background: var(--panel); color: var(--ink); }
+.nav a[aria-current="page"] { background: var(--raise); color: var(--ink); box-shadow: inset 3px 0 0 var(--ice); }
+.badge { font: 600 11px/1 var(--data); padding: 4px 7px; border-radius: 999px; background: var(--lamp-soft); color: var(--lamp); }
+.badge.live { background: rgba(91, 214, 154, .12); color: var(--good); }
+.side-foot { margin-top: auto; font-size: 12px; color: var(--mute); padding: 0 8px; }
 
-/* ---------- intro ---------- */
-.wrap { max-width: 1320px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
-.intro { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 24px; align-items: end; padding-top: 28px; }
-.intro h1 { font: clamp(34px, 5vw, 60px)/1.08 var(--display); margin: 0; letter-spacing: .01em; text-wrap: balance; }
-.intro h1 em { font-style: normal; color: var(--lamp); }
-.intro p { color: var(--mute); margin: 12px 0 0; max-width: 46ch; }
-.counters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.counter { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--night-2); min-width: 0; }
-.counter small { display: block; color: var(--mute); font-size: 12px; }
-.counter b { display: block; font: 22px/1.3 var(--display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.counter b.money { color: var(--lamp); }
+.main { padding: 28px 32px 60px; min-width: 0; }
+.page { max-width: 1060px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+.stack { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.page-head { display: flex; flex-direction: column; gap: 6px; }
+.page-head h1 { font: 30px/1.25 var(--display); }
+.page-head p { margin: 0; color: var(--mute); max-width: 62ch; }
+.eyebrow { font: 600 11px/1 var(--data); letter-spacing: .16em; text-transform: uppercase; color: var(--ice); margin: 0; }
 
-.tabs { display: none; gap: 6px; background: var(--night-2); border: 1px solid var(--line); border-radius: 999px; padding: 4px; }
-.tabs button { flex: 1; border: 0; background: transparent; padding: 10px 8px; border-radius: 999px; font-weight: 700; font-size: 14px; color: var(--mute); }
-.tabs button[aria-selected="true"] { background: var(--ink); color: var(--night); }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.card h2 { font-size: 17px; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.hint { color: var(--mute); font-size: 13px; margin: 0; }
+.cols { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.tile { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; min-width: 0; }
+.tile small { display: block; color: var(--mute); font-size: 12px; }
+.tile b { display: block; font: 600 21px/1.4 var(--data); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile b.money { color: var(--lamp); }
+.btn { border: 0; border-radius: 12px; padding: 12px 18px; font-weight: 700; background: var(--ice); color: #06121F; text-decoration: none; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+.btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--ink); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th { text-align: left; white-space: nowrap; font-weight: 500; font-size: 12px; color: var(--mute); padding: 0 8px 8px 0; }
+td { padding: 10px 8px 10px 0; border-top: 1px solid var(--line); vertical-align: top; }
+td.r, th.r { text-align: right; }
+.scroll-x { overflow-x: auto; }
+.pill { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--mute); white-space: nowrap; }
+.pill.good { background: rgba(91, 214, 154, .12); color: var(--good); }
+.pill.lamp { background: var(--lamp-soft); color: var(--lamp); }
+.pill.ice { background: var(--ice-soft); color: var(--ice); }
 
-/* ---------- stage ---------- */
-.stage { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 390px; gap: 18px; align-items: start; }
-.panel { background: var(--night-2); border: 1px solid var(--line); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-.panel-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
-.panel-head h2 { font: 20px/1.2 var(--display); margin: 0; }
-.eyebrow { font: 600 11px/1 var(--data); letter-spacing: .16em; text-transform: uppercase; color: var(--ice); }
+/* ---------- overview ---------- */
+.hero h1 { font: clamp(30px, 4.4vw, 48px)/1.2 var(--display); }
+.hero h1 em { color: var(--lamp); font-style: normal; }
+.flow { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.step { position: relative; padding: 16px 18px 16px 16px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); text-decoration: none; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.step:first-child { border-radius: 16px 0 0 16px; }
+.step:last-child { border-radius: 0 16px 16px 0; }
+.step + .step { border-left: 0; }
+.step:hover { background: var(--raise); }
+.step .who { font: 600 11px var(--data); color: var(--ice); letter-spacing: .1em; }
+.step b { font-size: 16px; }
+.step span:last-child { font-size: 13px; color: var(--mute); }
+.step:not(:last-child)::after { content: "→"; position: absolute; right: -11px; top: 50%; transform: translateY(-50%); z-index: 1;
+  width: 22px; height: 22px; border-radius: 50%; background: var(--night); border: 1px solid var(--line); display: grid; place-items: center; font-size: 12px; color: var(--mute); }
+.step.ai { background: linear-gradient(160deg, var(--ice-soft), var(--panel) 70%); }
+.mini { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+.mini b { font-size: 16px; }
 
-/* console */
-.field { display: flex; flex-direction: column; gap: 8px; }
-.field > span { font-size: 13px; color: var(--mute); display: flex; justify-content: space-between; }
-.field > span b { color: var(--ink); font-family: var(--data); font-weight: 600; }
-input[type=range] { width: 100%; accent-color: var(--ice); }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { border: 1px solid var(--line); background: var(--night-3); padding: 7px 11px; border-radius: 999px; font-size: 13px; color: var(--ink); }
-.chip small { color: var(--mute); font-family: var(--data); margin-left: 4px; }
-.chip[aria-pressed="true"] { border-color: var(--ice); background: rgba(143, 208, 255, .12); color: var(--ice); }
-.chip[aria-pressed="true"] small { color: var(--ice); }
-.toggle { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: var(--mute); cursor: pointer; }
-.toggle input { margin-top: 3px; accent-color: var(--lamp); }
-.quote { border-radius: 16px; padding: 16px; background: linear-gradient(160deg, var(--night-3), var(--night-2)); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
-.quote .total { font: 38px/1.1 var(--display); }
-.quote .formula { font: 12px/1.6 var(--data); color: var(--mute); overflow-wrap: anywhere; }
-.quote .share { font-size: 13px; color: var(--lamp); }
-.cta { border: 0; border-radius: 14px; padding: 15px; font-weight: 700; font-size: 16px; background: var(--ice); color: #06121F; transition: transform .15s; }
-.cta:hover { transform: translateY(-1px); }
-.cta:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-.myorder { border: 1px dashed var(--line); border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
-.myorder[hidden] { display: none; }
-.progress { height: 8px; background: var(--night-3); border-radius: 999px; overflow: hidden; }
-.progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--ice-deep), var(--ice)); transition: width .6s ease; }
-.grades { display: flex; gap: 12px; font: 12px var(--data); color: var(--mute); flex-wrap: wrap; }
-.grades b { color: var(--ink); }
-.card-json { font: 11.5px/1.6 var(--data); color: var(--mute); background: #070C17; border-radius: 12px; padding: 12px; overflow-x: auto; margin: 0; white-space: pre; }
-.card-json b { color: var(--ice); font-weight: 400; }
+/* ---------- auction ---------- */
+.lot { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; }
+.lot h2 { font: 22px/1.3 var(--display); margin-top: 4px; }
+.lot .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.clock { width: 104px; height: 104px; position: relative; flex: none; }
+.clock svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.clock .track { stroke: var(--raise); }
+.clock .fill { stroke: var(--ice); transition: stroke-dashoffset .25s linear; }
+.clock.end .fill { stroke: var(--lamp); }
+.clock span { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; text-align: center; font: 600 24px/1 var(--data); }
+.clock span small { display: block; font: 11px var(--body); color: var(--mute); margin-top: 4px; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.fact { background: var(--raise); border-radius: 12px; padding: 10px 12px; }
+.fact small { display: block; color: var(--mute); font-size: 12px; }
+.fact b { font: 600 16px var(--data); }
+.bids { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; min-height: 60px; }
+.bid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 12px; background: var(--raise); border: 1px solid var(--line); animation: drop .4s ease; }
+.bid b { font-size: 14px; }
+.bid small { display: block; color: var(--mute); font-size: 12px; }
+.bid .amt { font: 600 15px var(--data); }
+.bid .sealed { color: var(--mute); font: 12px var(--data); }
+.bid.mine { border-color: rgba(143, 208, 255, .6); }
+.bid.win { border-color: var(--lamp); background: linear-gradient(90deg, var(--lamp-soft), var(--raise) 70%); }
+.bid.win .amt { color: var(--lamp); }
+.bid.under { opacity: .5; }
+@keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
+.waiting { color: var(--mute); font-size: 13px; margin: 0; }
+.result { border-radius: 14px; padding: 16px; background: linear-gradient(150deg, #1D2B47, var(--panel) 75%); border: 1px solid #2B3B5C; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.result small { display: block; color: var(--mute); font-size: 12px; }
+.result b { font: 600 20px var(--data); }
+.result b.money { color: var(--lamp); }
+.result .headline { grid-column: 1 / -1; font-size: 15px; margin: 0; }
+.result .headline b { font: inherit; font-weight: 700; }
+.why { font-size: 13px; color: var(--mute); border-left: 2px solid var(--line); padding-left: 12px; margin: 0; }
+.why b { color: var(--ink); }
 
-/* board */
-.board-prices { width: 100%; border-collapse: collapse; font-size: 13px; }
-.board-prices th { text-align: left; color: var(--mute); font-weight: 500; font-size: 11px; padding: 0 0 6px; }
-.board-prices td { padding: 8px 0; border-top: 1px solid var(--line); }
-.board-prices td.num { text-align: right; font-family: var(--data); }
-.up { color: var(--good); } .down { color: var(--warn); }
-.feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; max-height: 620px; overflow: hidden; }
-.tag { display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 10px 12px; border-radius: 12px;
-       background: var(--night-3); border: 1px solid var(--line); animation: drop .5s ease; }
-.tag time { font: 11px/1.7 var(--data); color: var(--mute); }
-.tag p { margin: 0; font-size: 13.5px; line-height: 1.5; min-width: 0; }
-.tag p small { display: block; color: var(--mute); font-size: 12px; }
-.tag .amt { font: 600 13px/1.7 var(--data); white-space: nowrap; }
-.tag.order { border-left: 3px solid var(--ice); }
-.tag.pay .amt, .tag.royalty .amt { color: var(--lamp); }
-.tag.royalty { border-color: rgba(255, 190, 61, .45); background: linear-gradient(90deg, var(--lamp-soft), var(--night-3) 60%); }
-.tag.review .amt { color: var(--good); }
-.tag.mine { box-shadow: inset 0 0 0 1px rgba(255, 190, 61, .55); }
-@keyframes drop { from { opacity: 0; transform: translateY(-8px); } }
-
-/* phone */
-.phone { position: sticky; top: 76px; border-radius: 42px; padding: 12px; background: #05080F; border: 1px solid #2A3753;
-         box-shadow: 0 30px 80px rgba(0, 0, 0, .45), inset 0 0 0 1px rgba(255, 255, 255, .03); }
-.screen { position: relative; border-radius: 32px; overflow: hidden; background: var(--night-2); height: 760px; display: flex; flex-direction: column; }
-.status { display: flex; justify-content: space-between; padding: 12px 22px 4px; font: 600 12px var(--data); color: var(--ink); }
-.scroll { overflow-y: auto; padding: 8px 14px 20px; display: flex; flex-direction: column; gap: 12px; flex: 1; scrollbar-width: none; }
-.scroll::-webkit-scrollbar { display: none; }
-.hello { display: flex; justify-content: space-between; align-items: center; padding: 4px 4px 0; }
-.hello b { font: 18px var(--display); }
-.hello small { display: block; color: var(--mute); font-size: 12px; }
-.lvl { font: 600 11px var(--data); color: var(--night); background: var(--lamp); padding: 5px 9px; border-radius: 999px; }
-.wallet { border-radius: 22px; padding: 16px; background: linear-gradient(150deg, #1D2B47 0%, #121B2E 70%); border: 1px solid #2B3B5C; display: grid; grid-template-columns: 1fr auto; gap: 8px 12px; align-items: center; }
-.wallet small { color: var(--mute); font-size: 12px; }
-.wallet .big { font: 34px/1.05 var(--display); color: var(--lamp); }
-.wallet .split { grid-column: 1 / -1; display: flex; gap: 14px; font-size: 12px; color: var(--mute); }
+/* ---------- sell ---------- */
+.wallet { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; align-items: center; }
+.wallet .big { font: 38px/1.1 var(--display); color: var(--lamp); }
+.wallet .split { grid-column: 1 / -1; display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; color: var(--mute); }
 .wallet .split b { color: var(--ink); font-family: var(--data); font-weight: 600; }
-.ring { width: 96px; height: 96px; position: relative; }
+.ring { width: 104px; height: 104px; position: relative; }
 .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.ring .track { stroke: var(--night-3); }
+.ring .track { stroke: var(--raise); }
 .ring .fill { stroke: var(--lamp); transition: stroke-dashoffset .9s ease; }
-.ring span { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; font: 600 11px/1.2 var(--data); }
-.ring span small { display: block; color: var(--mute); font: 9.5px/1.3 var(--body); }
-.balances { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.bal { background: var(--night-3); border-radius: 14px; padding: 10px 12px; }
-.bal small { color: var(--mute); font-size: 11px; display: block; }
-.bal b { font: 600 16px var(--data); }
-.section-title { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 4px 0; }
-.section-title h3 { margin: 0; font-size: 15px; }
-.section-title small { color: var(--mute); font-size: 12px; }
-.job { border-radius: 18px; padding: 14px; background: var(--night-3); border: 1px solid var(--line); display: flex; flex-direction: column; gap: 8px; animation: drop .5s ease; }
-.job.featured { border-color: rgba(143, 208, 255, .6); background: linear-gradient(160deg, rgba(143, 208, 255, .10), var(--night-3) 55%); }
-.job-top { display: flex; gap: 6px; flex-wrap: wrap; font-size: 11px; }
-.pill { padding: 3px 8px; border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--mute); }
-.pill.ice { color: var(--ice); background: rgba(143, 208, 255, .12); }
-.pill.lamp { color: var(--lamp); background: var(--lamp-soft); }
-.job p { margin: 0; font-size: 14px; }
-.job-bottom { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.job-pay b { font: 22px var(--display); }
-.job-pay small { display: block; color: var(--mute); font-size: 11px; }
-.rec-btn { border: 0; border-radius: 12px; padding: 10px 14px; background: var(--ice); color: #06121F; font-weight: 700; font-size: 13px; white-space: nowrap; }
-.assets-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.assets-strip div { background: var(--night-3); border-radius: 14px; padding: 10px; text-align: center; }
-.assets-strip b { display: block; font: 18px var(--display); }
-.assets-strip small { color: var(--mute); font-size: 11px; }
-.next-level { font-size: 12px; color: var(--mute); padding: 0 4px; }
-.next-level .progress { margin-top: 6px; }
-
-/* phone notification + sheet */
-.notice { position: absolute; left: 10px; right: 10px; top: 10px; z-index: 5; border-radius: 18px; padding: 12px 14px;
-          background: rgba(24, 35, 58, .96); border: 1px solid rgba(255, 190, 61, .5); backdrop-filter: blur(8px);
-          display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: center; transform: translateY(-140%); transition: transform .45s cubic-bezier(.2, .9, .3, 1.2); }
-.notice.show { transform: translateY(0); }
-.notice .dot { width: 34px; height: 34px; border-radius: 10px; background: var(--lamp); color: var(--night); display: grid; place-items: center; font: 16px var(--display); }
-.notice p { margin: 0; font-size: 13px; line-height: 1.4; }
-.notice p b { color: var(--lamp); font-family: var(--data); }
-.notice p small { color: var(--mute); display: block; font-size: 11.5px; }
-.sheet { position: absolute; inset: 0; z-index: 4; background: rgba(5, 8, 15, .6); display: flex; align-items: flex-end; }
-.sheet-body { width: 100%; background: var(--night-2); border-radius: 26px 26px 0 0; border-top: 1px solid var(--line); padding: 18px 18px 22px; display: flex; flex-direction: column; gap: 12px; animation: up .35s ease; }
-@keyframes up { from { transform: translateY(40%); opacity: 0; } }
-.sheet h4 { margin: 0; font: 17px var(--display); }
-.sheet p { margin: 0; font-size: 13px; color: var(--mute); }
-.wave { width: 100%; height: 70px; background: var(--night-3); border-radius: 14px; }
-.rec-row { display: flex; align-items: center; gap: 14px; }
-.big-rec { width: 72px; height: 72px; border-radius: 50%; border: 0; background: var(--warn); color: #fff; font-weight: 700; flex: none; box-shadow: 0 0 0 6px rgba(255, 138, 91, .18); }
+.ring span { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; text-align: center; font: 600 14px/1.2 var(--data); }
+.ring span small { display: block; font: 10px/1.35 var(--body); color: var(--mute); }
+.choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.choice { text-align: left; border: 1px solid var(--line); background: var(--raise); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 2px; }
+.choice small { color: var(--mute); font-size: 12px; }
+.choice[aria-pressed="true"] { border-color: var(--ice); background: var(--ice-soft); }
+.recorder { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: center; }
+.big-rec { width: 68px; height: 68px; border-radius: 50%; border: 0; background: var(--warn); color: #fff; font-weight: 700; box-shadow: 0 0 0 6px rgba(255, 138, 91, .16); }
 .big-rec.on { background: var(--ink); color: var(--night); animation: pulse 1.2s infinite; }
 @keyframes pulse { 50% { box-shadow: 0 0 0 12px rgba(234, 240, 250, .08); } }
-.timer { font: 600 26px var(--data); }
-.hint { font-size: 12px; color: var(--mute); }
-.hint.bad { color: var(--warn); }
+.wave { width: 100%; height: 56px; background: var(--raise); border-radius: 12px; display: block; }
 .checks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-.checks li { display: grid; grid-template-columns: 22px 1fr auto; gap: 8px; align-items: center; font-size: 13px; opacity: .35; transition: opacity .3s; }
+.checks li { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 13.5px; opacity: .35; transition: opacity .3s; }
 .checks li.done { opacity: 1; }
 .checks li i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line); display: grid; place-items: center; font-style: normal; font-size: 11px; }
 .checks li.done i { border-color: var(--good); background: var(--good); color: var(--night); }
 .checks li span { font: 12px var(--data); color: var(--mute); }
-.agent-label { font: 600 11px var(--data); color: var(--ice); letter-spacing: .1em; }
-.paid { text-align: center; display: flex; flex-direction: column; gap: 6px; padding: 6px 0; }
-.paid .grade { font: 13px var(--data); color: var(--good); }
-.paid .plus { font: 44px/1 var(--display); color: var(--lamp); }
-.paid .split { font-size: 12px; color: var(--mute); }
-.sheet-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.ghost { border: 1px solid var(--line); background: transparent; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 14px; }
-.solid { border: 0; background: var(--ice); color: #06121F; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 14px; }
-.celebrate { position: absolute; inset: 0; z-index: 6; display: grid; place-items: center; background: rgba(5, 8, 15, .72); text-align: center; padding: 24px; }
-.celebrate div { display: flex; flex-direction: column; gap: 8px; align-items: center; animation: up .4s ease; }
-.celebrate b { font: 30px/1.2 var(--display); color: var(--lamp); }
-.celebrate p { margin: 0; color: var(--ink); font-size: 14px; max-width: 26ch; }
+.ok-box { border-radius: 14px; padding: 14px; background: rgba(91, 214, 154, .08); border: 1px solid rgba(91, 214, 154, .35); font-size: 14px; display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
 
-/* footer */
-.rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.rule { border-top: 2px solid var(--line); padding-top: 10px; font-size: 13px; color: var(--mute); }
-.rule b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 2px; }
-.fine { color: var(--mute); font-size: 12px; }
+/* ---------- buy ---------- */
+.code { font: 13px/1.8 var(--data); background: #070C17; border: 1px solid var(--line); border-radius: 14px; padding: 16px; overflow-x: auto; margin: 0; white-space: pre; color: #C9D6EA; }
+.code .k { color: var(--ice); } .code .s { color: var(--lamp); } .code .c { color: #5E6D88; }
+.slider { display: flex; flex-direction: column; gap: 6px; }
+.slider span { display: flex; justify-content: space-between; font-size: 13px; color: var(--mute); }
+.slider span b { color: var(--ink); font-family: var(--data); font-weight: 600; }
+input[type=range] { width: 100%; accent-color: var(--ice); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--raise); padding: 7px 12px; border-radius: 999px; font-size: 13px; }
+.chip[aria-pressed="true"] { border-color: var(--ice); background: var(--ice-soft); color: var(--ice); }
+.status-line { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--mute); }
+.status-line b { color: var(--ink); font-family: var(--data); }
 
-@media (max-width: 1180px) {
-  .stage { grid-template-columns: minmax(0, 1fr) 390px; }
-  #console { grid-column: 1 / -1; order: 3; }
+/* toast */
+.toast { position: fixed; right: 20px; bottom: 20px; z-index: 30; max-width: 340px; border-radius: 14px; padding: 12px 14px; background: rgba(24, 35, 58, .97);
+         border: 1px solid rgba(255, 190, 61, .5); box-shadow: 0 16px 40px rgba(0, 0, 0, .4); font-size: 13.5px; transform: translateY(40px); opacity: 0; pointer-events: none; transition: transform .4s cubic-bezier(.2, .9, .3, 1.2), opacity .3s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast b { color: var(--lamp); font-family: var(--data); }
+
+/* ---------- phone ---------- */
+.mobile-brand { display: none; align-items: baseline; gap: 8px; margin-bottom: 14px; }
+.mobile-brand b { font: 24px/1 var(--display); }
+.mobile-brand b i { color: var(--lamp); font-style: normal; }
+.mobile-brand span { color: var(--mute); font-size: 12px; }
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .side { position: fixed; bottom: 0; left: 0; right: 0; top: auto; height: auto; z-index: 20; padding: 6px 8px calc(6px + env(safe-area-inset-bottom, 0px));
+          flex-direction: row; border-right: 0; border-top: 1px solid var(--line); background: rgba(12, 20, 38, .97); }
+  .brand, .side-foot { display: none; }
+  .nav { flex-direction: row; width: 100%; }
+  .nav a { flex: 1; grid-template-columns: 1fr; text-align: center; padding: 10px 4px; font-size: 14px; }
+  .nav a small, .nav a .badge { display: none; }
+  .nav a[aria-current="page"] { box-shadow: inset 0 3px 0 var(--ice); }
+  .main { padding: 18px 16px 110px; }
+  .mobile-brand { display: flex; }
+  .cols { grid-template-columns: minmax(0, 1fr); }
+  .tiles { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .flow { grid-template-columns: minmax(0, 1fr); }
+  .step:first-child { border-radius: 16px 16px 0 0; }
+  .step:last-child { border-radius: 0 0 16px 16px; }
+  .step + .step { border-left: 1px solid var(--line); border-top: 0; }
+  .step:not(:last-child)::after { content: "↓"; right: 50%; top: auto; bottom: -11px; transform: translateX(50%); }
+  .choices { grid-template-columns: minmax(0, 1fr); }
+  .fact b { font-size: 14px; }
+  .result { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .toast { left: 16px; right: 16px; bottom: calc(76px + env(safe-area-inset-bottom, 0px)); max-width: none; }
+  .page-head h1 { font-size: 24px; }
 }
-@media (max-width: 860px) {
-  .intro { grid-template-columns: 1fr; }
-  .tabs { display: flex; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 64px); z-index: 15; }
-  .stage { grid-template-columns: minmax(0, 1fr); }
-  .stage > * { display: none; }
-  .stage > .active { display: flex; }
-  .stage > .phone.active { display: block; }
-  #console { order: 0; }
-  .phone { position: static; border-radius: 34px; padding: 8px; max-width: 420px; width: 100%; margin: 0 auto; }
-  .screen { height: 720px; border-radius: 28px; }
-  .rules { grid-template-columns: 1fr 1fr; }
-  .bar { grid-template-columns: auto; }
-  .ticker { display: none; }
-}
-@media (max-width: 520px) {
-  .counters { grid-template-columns: 1fr 1fr; }
-  .counters .counter:last-child { grid-column: 1 / -1; }
-  .rules { grid-template-columns: 1fr; }
-}
-@media (prefers-reduced-motion: reduce) {
-  *, *::before { animation: none !important; transition: none !important; }
-}
+@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
 </style>
 
-<header class="bar">
-  <div class="brand"><b>Seri<i>.</i></b><span>競り</span><span class="live">LIVE</span></div>
-  <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
-</header>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><b>Seri<i>.</i></b><span>競り</span></div>
+    <nav class="nav" aria-label="メニュー">
+      <a href="#overview" data-tab="overview"><span>概要<small>Seriとは</small></span></a>
+      <a href="#auction" data-tab="auction"><span>競り<small>AIが自動で買う</small></span><span class="badge live" id="nav-clock">LIVE</span></a>
+      <a href="#sell" data-tab="sell"><span>売る<small>データを出す人</small></span><span class="badge" id="nav-earn">¥0</span></a>
+      <a href="#buy" data-tab="buy"><span>買う<small>AI企業のエージェント</small></span></a>
+    </nav>
+    <p class="side-foot">デモ: 動きはシミュレーションです。金額はSeriのルールで計算しています。会社名は架空です。</p>
+  </aside>
 
-<div class="wrap">
-  <section class="intro">
-    <div>
-      <h1>AIを育てた人が、<br><em>AIから稼ぎ続ける。</em></h1>
-      <p>AIエージェントがデータを注文し、あなたが録音し、QAエージェントが数秒で目利きする。合格した瞬間に支払い。同じデータが別の会社に売れるたびに、印税が入り続ける。</p>
-    </div>
-    <div class="counters">
-      <div class="counter"><small>今日の取引額</small><b class="num" id="c-gmv">—</b></div>
-      <div class="counter"><small>作った人に支払った額</small><b class="num money" id="c-paid">—</b></div>
-      <div class="counter"><small>稼働中のAIエージェント</small><b class="num" id="c-agents">—</b></div>
-    </div>
-  </section>
+  <main class="main">
+    <div class="mobile-brand"><b>Seri<i>.</i></b><span>競り · デモ</span></div>
 
-  <nav class="tabs" role="tablist" aria-label="画面の切り替え">
-    <button role="tab" id="tab-phone" aria-selected="true" data-target="phone">クリエイター</button>
-    <button role="tab" id="tab-board" aria-selected="false" data-target="board">マーケット</button>
-    <button role="tab" id="tab-console" aria-selected="false" data-target="console">AI企業</button>
-  </nav>
-
-  <main class="stage" id="stage">
-    <!-- AI company console -->
-    <section class="panel" id="console" aria-labelledby="console-title">
-      <div class="panel-head"><div><p class="eyebrow">AI企業</p><h2 id="console-title">データを注文する</h2></div><span class="fine">あなたが買い手なら</span></div>
-      <div class="field"><span>データの種類</span>
-        <div class="chips" id="f-category"></div></div>
-      <div class="field"><span>件数 <b id="v-units"></b></span><input type="range" id="f-units" min="10" max="1000" step="10" value="200"></div>
-      <div class="field"><span>1件あたりの価格 <b id="v-price"></b></span><input type="range" id="f-price" min="100" max="1000" step="10" value="400"></div>
-      <div class="field"><span>誰に作ってほしいか（品質の順位）</span><div class="chips" id="f-tier"></div></div>
-      <div class="field"><span>職種（確認済みの人だけ）</span><div class="chips" id="f-industry"></div></div>
-      <label class="toggle"><input type="checkbox" id="f-promo"> <span>注文を目立たせる（+¥5,000）— クリエイターの一覧の先頭に表示。支払いと審査には影響しません</span></label>
-      <div class="quote">
-        <small class="fine">お支払い額</small>
-        <span class="total num" id="q-total">—</span>
-        <span class="formula" id="q-formula"></span>
-        <span class="share" id="q-share"></span>
+    <!-- ================= 概要 ================= -->
+    <section class="page" data-page="overview">
+      <div class="page-head hero">
+        <p class="eyebrow">Seriとは</p>
+        <h1>データの競りを、<em>AIが自動でやる。</em></h1>
+        <p>Seriは、AIの学習に使うデータの市場です。人が出したデータをSeriのAIが検査し、AI企業のエージェントが競りで自動的に買います。代金の90%はデータを出した人へ。</p>
       </div>
-      <button class="cta" id="order-btn" type="button">注文する</button>
-      <div class="myorder" id="myorder" hidden>
-        <div class="panel-head"><strong id="mo-title"></strong><span class="fine num" id="mo-count"></span></div>
-        <div class="progress"><i id="mo-bar"></i></div>
-        <div class="grades" id="mo-grades"></div>
-        <pre class="card-json" id="mo-card" hidden></pre>
+
+      <div class="flow">
+        <a class="step" href="#sell"><span class="who">人</span><b>① データを出す</b><span>声や会話を録音して提出</span></a>
+        <a class="step ai" href="#sell"><span class="who">SERI AI</span><b>② 検査する</b><span>数秒で品質を判定（A・B・C）</span></a>
+        <a class="step ai" href="#auction"><span class="who">AIエージェント</span><b>③ 競りで買う</b><span>各社のAIが自動で入札</span></a>
+        <a class="step" href="#sell"><span class="who">お金</span><b>④ 90%を出した人へ</b><span>同じデータが売れるたびにまた入る</span></a>
+      </div>
+
+      <div class="tiles">
+        <div class="tile"><small>今日の競り</small><b class="num" id="t-rounds">—</b></div>
+        <div class="tile"><small>今日の落札額</small><b class="num" id="t-gmv">—</b></div>
+        <div class="tile"><small>出した人に支払った額</small><b class="num money" id="t-paid">—</b></div>
+        <div class="tile"><small>参加中のAIエージェント</small><b class="num" id="t-agents">—</b></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>いまの競り</h2><a class="btn ghost" href="#auction">競りを見る</a></div>
+        <div class="mini"><div><b id="o-lot">—</b><p class="hint" id="o-status"></p></div><span class="pill ice num" id="o-clock">—</span></div>
       </div>
     </section>
 
-    <!-- market board -->
-    <section class="panel" id="board" aria-labelledby="board-title">
-      <div class="panel-head"><div><p class="eyebrow">マーケット</p><h2 id="board-title">いま、市場で起きていること</h2></div><span class="live">LIVE</span></div>
-      <table class="board-prices" aria-label="今朝の相場">
-        <thead><tr><th>今朝の相場（1件あたり）</th><th class="num">平均</th><th class="num">前日比</th></tr></thead>
-        <tbody id="prices"></tbody>
-      </table>
-      <ol class="feed" id="feed" aria-live="polite"></ol>
-    </section>
+    <!-- ================= 競り ================= -->
+    <section class="page" data-page="auction" hidden>
+      <div class="page-head">
+        <p class="eyebrow">競り · Seri AI</p>
+        <h1>AIエージェントが、データを競り落とす</h1>
+        <p>データのまとまり（ロット）ごとに、各社のAIエージェントが金額を伏せた入札を自動で出します。締め切ると一斉に開けて、一番高い会社が落札します。</p>
+      </div>
 
-    <!-- creator phone -->
-    <section class="phone active" id="phone" aria-label="クリエイターのスマホ">
-      <div class="screen" id="screen">
-        <div class="status"><span id="clock">9:41</span><span>5G ▮▮▮</span></div>
-        <div class="notice" id="notice" role="status"><span class="dot">¥</span><p id="notice-text"></p></div>
-        <div class="scroll">
-          <div class="hello"><div><small>おはようございます</small><b>花子さん</b></div><span class="lvl">看護師 · レギュラー</span></div>
-          <div class="wallet">
-            <div><small id="month-label">今月の収入</small><div class="big num" id="w-month">—</div></div>
-            <div class="ring" aria-label="月3万円の目標"><svg viewBox="0 0 84 84"><circle class="track" cx="42" cy="42" r="36" fill="none" stroke-width="8"/><circle class="fill" id="ring" cx="42" cy="42" r="36" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="226.2" stroke-dashoffset="226.2"/></svg><span id="ring-text"></span></div>
-            <div class="split"><span>作業代 <b id="w-task">—</b></span><span>印税 <b id="w-royalty">—</b></span></div>
+      <div class="cols">
+        <div class="card">
+          <div class="lot">
+            <div><p class="eyebrow" id="a-lotno">ロット</p><h2 id="a-title">—</h2><div class="meta" id="a-meta"></div></div>
+            <div class="clock" id="a-clock"><svg viewBox="0 0 104 104"><circle class="track" cx="52" cy="52" r="44" fill="none" stroke-width="8"/><circle class="fill" id="a-ring" cx="52" cy="52" r="44" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="0"/></svg><span id="a-sec">—</span></div>
           </div>
-          <div class="balances">
-            <div class="bal"><small>今すぐ使える</small><b class="num" id="w-available">—</b></div>
-            <div class="bal"><small>確認待ち（14日後）</small><b class="num" id="w-held">—</b></div>
+          <div class="facts">
+            <div class="fact"><small>件数</small><b id="a-units">—</b></div>
+            <div class="fact"><small>最低価格</small><b id="a-reserve">—</b></div>
+            <div class="fact"><small>入札した会社</small><b id="a-count">0社</b></div>
           </div>
-          <div class="section-title"><h3>あなたに届いた仕事</h3><small>看護師の上位3%</small></div>
-          <div id="jobs" style="display:contents"></div>
-          <div class="section-title"><h3>あなたのデータ資産</h3><small>売れるたびに印税</small></div>
-          <div class="assets-strip">
-            <div><b class="num" id="a-count">—</b><small>資産</small></div>
-            <div><b class="num" id="a-sold">—</b><small>売れた回数</small></div>
-            <div><b class="num" id="a-buyers">—</b><small>買った会社</small></div>
-          </div>
-          <div class="next-level">次の「プロ」まで: あなたのデータを買った会社 <b id="lvl-buyers"></b> / 30社<div class="progress"><i id="lvl-bar"></i></div></div>
+          <ul class="bids" id="a-bids" aria-live="polite"></ul>
+          <div class="result" id="a-result" hidden></div>
         </div>
-        <div class="sheet" id="sheet" hidden></div>
-        <div class="celebrate" id="celebrate" hidden></div>
+
+        <div class="stack">
+          <div class="card">
+            <h2>しくみ</h2>
+            <p class="why"><b>金額は伏せたまま:</b> 締め切りまで、どの会社も他社の入札額を見られません。</p>
+            <p class="why"><b>2番目の価格で払う:</b> 落札した会社は「2番目に高い入札額」を払います。だから各社のAIは、本当に払える額をそのまま入札します。</p>
+            <p class="why"><b>最低価格:</b> 出した人の取り分を守るため、これより低いと売れません。</p>
+            <p class="why"><b>90%が出した人へ:</b> 落札額の90%。うち70%はすぐ、30%は買い手の確認（14日）のあとに確定。</p>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2>これまでの競り</h2><button class="btn ghost" id="pause" type="button">一時停止</button></div>
+            <div class="scroll-x"><table><thead><tr><th>ロット</th><th>落札した会社</th><th class="r">価格</th><th class="r">出した人へ</th></tr></thead><tbody id="history"></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 売る ================= -->
+    <section class="page" data-page="sell" hidden>
+      <div class="page-head">
+        <p class="eyebrow">売る · 花子さん（看護師）の画面</p>
+        <h1>データを出すと、競りで売れる</h1>
+        <p>録音して提出すると、SeriのAIが品質を検査し、合格したら次の競りに出品されます。売れるたびに、落札額の90%が入ります。</p>
+      </div>
+
+      <div class="cols">
+        <div class="card">
+          <h2>データを出す</h2>
+          <div class="choices" id="s-kinds"></div>
+          <div class="recorder"><button class="big-rec" id="s-rec" type="button" aria-pressed="false">録音</button><canvas class="wave" id="s-wave" width="600" height="112"></canvas></div>
+          <p class="hint" id="s-hint">デモではマイクの代わりにサンプル音声を使います。5秒以上話すと提出できます。</p>
+          <button class="btn" id="s-submit" type="button" disabled>提出する</button>
+          <div id="s-check" hidden>
+            <p class="eyebrow">Seri AI · 検査中</p>
+            <ul class="checks" id="s-steps"></ul>
+          </div>
+          <div class="ok-box" id="s-ok" hidden></div>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <div class="wallet">
+              <div><small class="hint" id="s-month-label">今月の収入</small><div class="big num" id="s-month">—</div></div>
+              <div class="ring" aria-label="月3万円の目標"><svg viewBox="0 0 104 104"><circle class="track" cx="52" cy="52" r="44" fill="none" stroke-width="8"/><circle class="fill" id="s-ring" cx="52" cy="52" r="44" fill="none" stroke-width="8" stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="276.5"/></svg><span id="s-ring-text"></span></div>
+              <div class="split"><span>今すぐ使える <b id="s-now">—</b></span><span>14日後に確定 <b id="s-held">—</b></span></div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>あなたのデータ</h2>
+            <div class="scroll-x"><table><thead><tr><th>データ</th><th>状態</th><th class="r">入った額</th></tr></thead><tbody id="s-lots"></tbody></table></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 買う ================= -->
+    <section class="page" data-page="buy" hidden>
+      <div class="page-head">
+        <p class="eyebrow">買う · AI企業の画面</p>
+        <h1>自分のAIエージェントを、競りに参加させる</h1>
+        <p>欲しいデータと予算を決めるだけで、あなたの会社のAIエージェントが競りに自動で入札します。人が交渉や確認をする必要はありません。</p>
+      </div>
+
+      <div class="cols">
+        <div class="card">
+          <h2>エージェントの設定</h2>
+          <div class="slider"><span>1件あたりの上限 <b id="b-max-v"></b></span><input type="range" id="b-max" min="100" max="600" step="10" value="320"></div>
+          <div class="slider"><span>1日の予算 <b id="b-budget-v"></b></span><input type="range" id="b-budget" min="10000" max="200000" step="5000" value="50000"></div>
+          <div class="slider"><span>欲しいデータ</span></div>
+          <div class="chips" id="b-wants"></div>
+          <button class="btn" id="b-join" type="button">競りに参加させる</button>
+          <div class="status-line" id="b-status" hidden>
+            <span>状態 <b id="b-state">参加中</b></span><span>落札 <b id="b-won">0件</b></span><span>使った額 <b id="b-spent">¥0</b></span><span>予算の残り <b id="b-left">—</b></span>
+          </div>
+          <p class="hint" id="b-next" hidden>「競り」のタブを開くと、あなたのエージェントの入札が見られます。</p>
+        </div>
+        <div class="card">
+          <h2>つなぐのは3行だけ</h2>
+          <p class="hint">エンジニアが自社のAIに組み込むコードです。左の設定がそのまま入ります。</p>
+          <pre class="code" id="b-code"></pre>
+          <p class="hint">落札したデータは品質レポート（データカード）付きで届き、AIがそのまま読み込めます。</p>
+        </div>
       </div>
     </section>
   </main>
-
-  <section class="rules" aria-label="Seriのルール">
-    <div class="rule"><b>90%が作った人へ</b>売れた代金の90%。うち70%はすぐ、30%は買い手の確認期間（14日）のあとに確定。</div>
-    <div class="rule"><b>売れるたびに印税</b>標準ライセンスのデータはカタログに並び、別の会社が買うたびに収入になる。</div>
-    <div class="rule"><b>順位と職種で高くなる</b>上位10%は2倍、確認済みの職種は1.2倍（仮）。上乗せ分も90%が作った人へ。</div>
-    <div class="rule"><b>責任は売り手が持つ</b>問題が認められたら全額返金。まず作った人の保留分から、足りない分はSeriが負担。</div>
-  </section>
-  <p class="fine">デモ: 動きはシミュレーションですが、金額はすべてSeriの実際のルールで計算しています。会社名は架空です。音声認識とAIによるルール確認（QAエージェント）は開発中の機能です。</p>
 </div>
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 (() => {
   const $ = (s) => document.querySelector(s);
   const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const rnd = (a, b) => a + Math.random() * (b - a);
-  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // ---------- Seri's rules (same numbers as the real backend config) ----------
-  const R = {
-    creatorShare: 0.9, nowShare: 0.7, promoFee: 5000, catalogBase: 150,
-    grades: { A: 1.5, B: 1.0, C: 0.7 },
-    categories: { ja: { label: "日本語の音声", floor: 100 }, en: { label: "英語の音声", floor: 100 } },
-    tiers: { any: { label: "誰でも", m: 1.0 }, top50: { label: "上位50%", m: 1.2 }, top25: { label: "上位25%", m: 1.5 }, top10: { label: "上位10%", m: 2.0 } },
-    industries: { "": { label: "指定なし", m: 1.0 }, nurse: { label: "看護師", m: 1.2 }, accountant: { label: "経理", m: 1.2 }, engineer: { label: "エンジニア", m: 1.2 }, sales: { label: "営業", m: 1.2 } },
-  };
-  const unitAmount = (o) => Math.round(o.price * R.industries[o.industry].m * R.tiers[o.tier].m);
-  const creatorCut = (amount) => Math.floor(amount * R.creatorShare);
-  const split = (cut) => { const now = Math.floor(cut * R.nowShare); return { now, held: cut - now }; };
-  const catalogPrice = (g) => Math.round(R.catalogBase * R.grades[g]);
+  // ---------- rules (same numbers as the Seri backend) ----------
+  const SHARE = 0.9, NOW = 0.7, BASE = 150, GRADE = { A: 1.5, B: 1.0, C: 0.7 };
+  const creatorCut = (price) => Math.floor(price * SHARE);
+  const splitCut = (cut) => { const n = Math.floor(cut * NOW); return { now: n, held: cut - n }; };
+  const ROUND_SEC = 12, REVEAL_SEC = 5;
 
-  const AGENTS = ["北斗LLMラボ", "Nami Speech", "Acme音声AI", "Orbit Robotics", "Kumo Health AI", "Sora Translate"];
-  const ORDER_IDEAS = [
-    ["ja", "関西弁の自然な会話", "any", ""], ["ja", "コールセンターの問い合わせ対応", "top50", ""], ["en", "Read product reviews aloud", "any", ""],
-    ["ja", "服薬指導の説明", "top25", "nurse"], ["ja", "経費精算の手順の説明", "top50", "accountant"], ["ja", "家電への話しかけ（命令）", "any", ""],
-    ["en", "Customer support calls", "top50", ""], ["ja", "エラーの原因の説明", "top25", "engineer"], ["ja", "商談の電話の再現", "top50", "sales"],
+  const KINDS = [
+    { id: "talk", label: "日本語の会話", sub: "自然な話し言葉", tags: ["日本語", "会話"] },
+    { id: "nurse", label: "看護師の申し送り", sub: "確認済みの看護師だけ · ×1.2", tags: ["日本語", "看護師"], industry: 1.2 },
+    { id: "en", label: "英語の会話", sub: "日英バイリンガル", tags: ["英語", "会話"] },
   ];
-  const CREATORS = ["看護師のクリエイター", "大阪のクリエイター", "日英バイリンガルのクリエイター", "経理のクリエイター", "学生のクリエイター", "エンジニアのクリエイター", "営業のクリエイター"];
+  const AGENTS = [
+    { name: "北斗LLMラボ", note: "日本語の会話が足りない", likes: "talk", k: 1.30 },
+    { name: "Nami Speech", note: "音声認識の精度を上げたい", likes: "talk", k: 1.18 },
+    { name: "Kumo Health AI", note: "医療の専門データを集めている", likes: "nurse", k: 1.40 },
+    { name: "Sora Translate", note: "翻訳用に英語が欲しい", likes: "en", k: 1.25 },
+    { name: "Acme音声AI", note: "コールセンター向け", likes: "talk", k: 1.05 },
+    { name: "Orbit Robotics", note: "家電の音声操作", likes: "en", k: 0.95 },
+  ];
+  const CREATORS = ["大阪のクリエイター", "日英バイリンガルのクリエイター", "学生のクリエイター", "看護師のクリエイター", "福岡のクリエイター"];
 
   // ---------- state ----------
   const S = {
-    me: { task: 24120, royalty: 2640, available: 18480, held: 8280, assets: 100, sold: 212, buyers: 4 },
-    stats: { gmv: 1284300, paid: 1155870, agents: 12 },
-    jobs: [
-      { id: 1, agent: "北斗LLMラボ", cat: "ja", text: "夜勤の申し送りを、実際の場面のように（個人名は出さない）", price: 600, tier: "top25", industry: "nurse", promo: true, units: 100, delivered: 38 },
-      { id: 2, agent: "Nami Speech", cat: "ja", text: "週末の過ごし方について、自然な話し言葉で", price: 400, tier: "any", industry: "", promo: false, units: 200, delivered: 121 },
-      { id: 3, agent: "Acme音声AI", cat: "en", text: "Describe your hometown in English", price: 500, tier: "any", industry: "", promo: false, units: 100, delivered: 64 },
+    stats: { rounds: 186, gmv: 842600, paid: 758340, agents: 23 },
+    me: { month: 24310, now: 17017, held: 7293 },
+    myLots: [
+      { id: 101, kind: "nurse", units: 20, grade: "A", status: "sold", earned: 6480, sales: 2 },
+      { id: 117, kind: "talk", units: 20, grade: "A", status: "sold", earned: 4212, sales: 1 },
     ],
-    prices: [
-      { label: "日本語の音声", v: 312, d: 0.04 }, { label: "英語の音声", v: 298, d: -0.01 }, { label: "看護師 × 日本語", v: 648, d: 0.07 },
-      { label: "方言（関西弁）", v: 420, d: 0.03 }, { label: "日英バイリンガル", v: 505, d: 0.05 },
+    queue: [], lotNo: 188, paused: false, pausedAt: 0,
+    history: [
+      { lot: { id: 187, kind: "talk", units: 20 }, who: "北斗LLMラボ", price: 6300, cut: creatorCut(6300) },
+      { lot: { id: 186, kind: "nurse", units: 20 }, who: "Kumo Health AI", price: 7200, cut: creatorCut(7200) },
+      { lot: { id: 185, kind: "en", units: 30 }, who: "Sora Translate", price: 4900, cut: creatorCut(4900) },
     ],
-    myOrder: null, nextId: 10, goalHit: false, busy: false,
+    you: { on: false, max: 320, budget: 50000, spent: 0, won: 0, wants: new Set(["talk"]) },
+    round: null,
   };
 
   // ---------- helpers ----------
-  const now = () => { const d = new Date(); return d.toTimeString().slice(0, 8); };
-  function countTo(node, to, ms = 900) {
-    const from = Number(node.dataset.v || 0);
-    node.dataset.v = to;
+  function countTo(node, to, ms = 800) {
+    const from = Number(node.dataset.v || 0); node.dataset.v = to;
     if (reduce || from === to) { node.textContent = yen(to); return; }
     const t0 = performance.now();
     const step = (t) => { const k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); node.textContent = yen(from + (to - from) * e); if (k < 1) requestAnimationFrame(step); };
     requestAnimationFrame(step);
   }
-  function feed(kind, html, amt = "", mine = false) {
-    const li = el("li", `tag ${kind}${mine ? " mine" : ""}`, `<time>${now()}</time><p>${html}</p><span class="amt">${amt}</span>`);
-    const list = $("#feed");
-    list.prepend(li);
-    while (list.children.length > 30) list.lastChild.remove();
-    const t = $("#ticker");
-    const plain = li.querySelector("p").textContent.replace(/\s+/g, " ").slice(0, 60);
-    const item = el("span", "", `${esc(plain)} <b>${esc(amt)}</b>`);
-    t.prepend(item); t.append(item.cloneNode(true));
-    while (t.children.length > 24) { t.lastChild.remove(); }
-  }
-  let noticeTimer;
-  function notify(html) {
-    $("#notice-text").innerHTML = html;
-    $("#notice").classList.add("show");
-    clearTimeout(noticeTimer);
-    noticeTimer = setTimeout(() => $("#notice").classList.remove("show"), 3600);
-  }
+  let toastTimer;
+  function toast(html) { const t = $("#toast"); t.innerHTML = html; t.classList.add("show"); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 4000); }
+  const kindOf = (id) => KINDS.find((k) => k.id === id);
+  const lotValue = (lot) => lot.units * BASE * GRADE[lot.grade] * (kindOf(lot.kind).industry || 1);
 
-  // ---------- render ----------
-  function renderWallet() {
-    const m = S.me, month = m.task + m.royalty;
-    countTo($("#w-month"), month); countTo($("#w-task"), m.task); countTo($("#w-royalty"), m.royalty);
-    countTo($("#w-available"), m.available); countTo($("#w-held"), m.held);
-    const goal = 30000, k = Math.min(1, month / goal);
-    $("#ring").style.strokeDashoffset = String(226.2 * (1 - k));
-    $("#ring-text").innerHTML = month >= goal ? `達成<small>月3万円</small>` : `${Math.round(k * 100)}%<small>あと${yen(goal - month)}</small>`;
-    $("#a-count").textContent = m.assets; $("#a-sold").textContent = m.sold; $("#a-buyers").textContent = m.buyers + "社";
-    $("#lvl-buyers").textContent = m.buyers;
-    $("#lvl-bar").style.width = Math.min(100, m.buyers / 30 * 100) + "%";
-    if (month >= goal && !S.goalHit) { S.goalHit = true; setTimeout(celebrate, 900); }
+  // ---------- tabs ----------
+  const TABS = ["overview", "auction", "sell", "buy"];
+  function show(tab) {
+    if (!TABS.includes(tab)) tab = "overview";
+    document.querySelectorAll("[data-page]").forEach((p) => { p.hidden = p.dataset.page !== tab; });
+    document.querySelectorAll(".nav a").forEach((a) => a.dataset.tab === tab ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+    scrollTo(0, 0);
   }
-  function renderStats() {
-    countTo($("#c-gmv"), S.stats.gmv); countTo($("#c-paid"), S.stats.paid);
-    $("#c-agents").textContent = S.stats.agents + "体";
-  }
-  function renderPrices() {
-    $("#prices").innerHTML = S.prices.map((p) => `<tr><td>${p.label}</td><td class="num">${yen(p.v)}</td><td class="num ${p.d >= 0 ? "up" : "down"}">${p.d >= 0 ? "▲" : "▼"}${Math.abs(p.d * 100).toFixed(1)}%</td></tr>`).join("");
-  }
-  function renderJobs() {
-    const jobs = [...S.jobs].sort((a, b) => (b.promo - a.promo) || (b.id - a.id)).slice(0, 5);
-    $("#jobs").replaceChildren(...jobs.map((j) => {
-      const cut = creatorCut(unitAmount(j));
-      const card = el("div", `job${j.promo ? " featured" : ""}`);
-      card.innerHTML = `<div class="job-top">${j.promo ? '<span class="pill ice">注目</span>' : ""}<span class="pill">${esc(j.agent)}</span><span class="pill">${R.categories[j.cat].label}</span>${j.tier !== "any" ? `<span class="pill lamp">${R.tiers[j.tier].label}</span>` : ""}${j.industry ? `<span class="pill ice">${R.industries[j.industry].label}</span>` : ""}</div>
-        <p>${esc(j.text)}</p>
-        <div class="job-bottom"><div class="job-pay"><b class="num">${yen(cut)}</b><small>1件あたりのあなたの取り分 · 残り${j.units - j.delivered}件</small></div></div>`;
-      const btn = el("button", "rec-btn", "録音する"); btn.type = "button"; btn.onclick = () => openRecorder(j);
-      card.querySelector(".job-bottom").append(btn);
-      return card;
-    }));
-  }
+  addEventListener("hashchange", () => show(location.hash.slice(1)));
+  show(location.hash.slice(1));
 
-  // ---------- recorder (the creator's core moment) ----------
-  function openRecorder(job) {
-    if (S.busy) return;
-    S.busy = true;
-    const sheet = $("#sheet"); sheet.hidden = false;
-    const cut = creatorCut(unitAmount(job));
-    sheet.innerHTML = `<div class="sheet-body" role="dialog" aria-label="録音">
-      <h4>${esc(job.text)}</h4>
-      <p>${esc(job.agent)} · 5〜120秒 · 合格すると ${yen(cut)}</p>
-      <canvas class="wave" id="wave" width="600" height="140"></canvas>
-      <div class="rec-row"><button class="big-rec" id="big-rec" type="button" aria-pressed="false">録音</button><div><div class="timer" id="timer">0.0秒</div><div class="hint" id="hint">デモではマイクの代わりにサンプル音声を使います</div></div></div>
-      <div class="sheet-actions"><button class="ghost" id="rec-cancel" type="button">やめる</button><button class="solid" id="rec-submit" type="button" disabled>提出する</button></div>
-    </div>`;
-    const canvas = $("#wave"), ctx = canvas.getContext("2d");
-    let t0 = 0, raf = 0, on = false, secs = 0, bars = [];
-    const draw = () => {
-      secs = (performance.now() - t0) / 1000;
-      $("#timer").textContent = secs.toFixed(1) + "秒";
-      bars.push(0.25 + Math.abs(Math.sin(secs * 7.1) * Math.sin(secs * 2.3)) * 0.7 + Math.random() * 0.12);
-      if (bars.length > 90) bars.shift();
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const w = canvas.width / 90;
-      bars.forEach((b, i) => { const h = b * canvas.height * 0.8; ctx.fillStyle = i > 80 ? "#FFBE3D" : "#8FD0FF"; ctx.fillRect(i * w + 1, (canvas.height - h) / 2, w - 2, h); });
-      if (secs >= 8) return stop();
-      raf = requestAnimationFrame(draw);
-    };
-    const stop = () => {
-      cancelAnimationFrame(raf); on = false;
-      $("#big-rec").classList.remove("on"); $("#big-rec").textContent = "録り直す"; $("#big-rec").setAttribute("aria-pressed", "false");
-      const ok = secs >= 5;
-      $("#hint").textContent = ok ? "よさそうです。提出するとQAエージェントが確認します。" : `短すぎます（${secs.toFixed(1)}秒）。5秒以上話してください。`;
-      $("#hint").className = ok ? "hint" : "hint bad";
-      $("#rec-submit").disabled = !ok;
-    };
-    $("#big-rec").onclick = () => {
-      if (on) return stop();
-      on = true; bars = []; t0 = performance.now();
-      $("#big-rec").classList.add("on"); $("#big-rec").textContent = "停止"; $("#big-rec").setAttribute("aria-pressed", "true");
-      $("#hint").textContent = "話してください…（8秒で自動停止）"; $("#hint").className = "hint"; $("#rec-submit").disabled = true;
-      raf = requestAnimationFrame(draw);
-    };
-    $("#rec-cancel").onclick = () => { cancelAnimationFrame(raf); closeSheet(); };
-    $("#rec-submit").onclick = () => runChecks(job, secs);
-  }
-  function closeSheet() { $("#sheet").hidden = true; $("#sheet").innerHTML = ""; S.busy = false; }
-
-  function runChecks(job, secs) {
-    const grade = Math.random() < 0.78 ? "A" : "B";
-    const level = rnd(-24, -18).toFixed(1), err = rnd(1.8, 4.2).toFixed(1);
-    const steps = [
-      ["長さ・形式", `${secs.toFixed(1)}秒 · 16kHz`], ["音量・音割れ・無音", `${level} dBFS · 0.00% · ${Math.round(rnd(3, 9))}%`],
-      ["重複チェック", "SHA-256 一致なし"], ["音声認識で聞き直し", `誤り率 ${err}%`], ["ルール確認", "個人情報なし · 本人の声"], ["品質の判定", `グレード ${grade}`],
-    ];
-    $("#sheet").innerHTML = `<div class="sheet-body" role="dialog" aria-label="QAエージェントの確認">
-      <span class="agent-label">QA AGENT · 目利き中</span><h4>品質を確認しています</h4>
-      <ul class="checks">${steps.map(([a, b]) => `<li><i>✓</i>${a}<span>${b}</span></li>`).join("")}</ul></div>`;
-    const items = [...document.querySelectorAll(".checks li")];
-    items.forEach((li, i) => setTimeout(() => li.classList.add("done"), (reduce ? 0 : 420) * (i + 1)));
-    setTimeout(() => pay(job, grade), (reduce ? 50 : 420) * (items.length + 1) + 200);
-  }
-
-  function pay(job, grade) {
-    const amount = unitAmount(job), cut = creatorCut(amount), { now: nowPart, held } = split(cut);
-    S.me.task += cut; S.me.available += nowPart; S.me.held += held; S.me.assets += 1;
-    S.stats.gmv += amount; S.stats.paid += cut;
-    job.delivered = Math.min(job.units, job.delivered + 1);
-    if (S.myOrder && S.myOrder.id === job.id) deliverMine(1, grade);
-    $("#sheet").innerHTML = `<div class="sheet-body" role="dialog" aria-label="合格">
-      <div class="paid"><span class="grade">合格 · 品質 ${grade} · 2.6秒で判定</span><span class="plus num">+${yen(cut)}</span>
-      <span class="split">今すぐ ${yen(nowPart)} ・ 14日後に確定 ${yen(held)}（買い手の確認期間）</span>
-      <span class="split">このデータはあなたの資産になり、カタログで売れるたびに印税が入ります</span></div>
-      <div class="sheet-actions"><button class="ghost" id="done-close" type="button">閉じる</button><button class="solid" id="done-next" type="button">続けて録音</button></div></div>`;
-    $("#done-close").onclick = closeSheet;
-    $("#done-next").onclick = () => { closeSheet(); openRecorder(job); };
-    feed("review", `審査 合格（${grade}） · 花子さん<small>${esc(job.agent)}「${esc(job.text.slice(0, 18))}…」 · QAエージェント 2.6秒</small>`, grade, true);
-    feed("pay", `支払い → 花子さん<small>今すぐ ${yen(nowPart)} ・ 保留 ${yen(held)}</small>`, yen(cut), true);
-    renderWallet(); renderStats(); renderJobs();
-  }
-
-  function celebrate() {
-    const c = $("#celebrate");
-    c.hidden = false;
-    c.innerHTML = `<div><span class="agent-label">GOAL</span><b>今月 3万円 達成</b><p>Seriが約束する「全員の土台」。次は月10万円、副業として成立するラインです。</p><button class="solid" type="button" id="cel-ok">続ける</button></div>`;
-    $("#cel-ok").onclick = () => { c.hidden = true; };
-  }
-
-  // ---------- buyer console ----------
-  const F = { cat: "ja", tier: "any", industry: "" };
-  function chipGroup(id, entries, key) {
-    const box = $(id);
-    box.replaceChildren(...entries.map(([k, label, m]) => {
-      const b = el("button", "chip", `${label}${m ? `<small>×${m}</small>` : ""}`); b.type = "button";
-      b.setAttribute("aria-pressed", String(F[key] === k));
-      b.onclick = () => { F[key] = k; [...box.children].forEach((c) => c.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); quote(); };
-      return b;
-    }));
-  }
-  chipGroup("#f-category", Object.entries(R.categories).map(([k, v]) => [k, v.label]), "cat");
-  chipGroup("#f-tier", Object.entries(R.tiers).map(([k, v]) => [k, v.label, v.m]), "tier");
-  chipGroup("#f-industry", Object.entries(R.industries).map(([k, v]) => [k, v.label, k ? v.m : null]), "industry");
-  function currentOrder() {
-    return { cat: F.cat, tier: F.tier, industry: F.industry, units: Number($("#f-units").value), price: Number($("#f-price").value), promo: $("#f-promo").checked };
-  }
-  function quote() {
-    const o = currentOrder(), unit = unitAmount(o), total = unit * o.units, invoice = total + (o.promo ? R.promoFee : 0);
-    $("#v-units").textContent = o.units.toLocaleString("ja-JP") + "件";
-    $("#v-price").textContent = yen(o.price);
-    countTo($("#q-total"), invoice, 400);
-    $("#q-formula").textContent = `${o.units.toLocaleString()}件 × ${yen(o.price)} × 職種 ${R.industries[o.industry].m} × 順位 ${R.tiers[o.tier].m}${o.promo ? " ＋ 目立たせる ¥5,000" : ""}`;
-    $("#q-share").textContent = `作った人に届く額: ${yen(creatorCut(unit) * o.units)}（1件 ${yen(creatorCut(unit))}・90%）`;
-  }
-  ["#f-units", "#f-price", "#f-promo"].forEach((s) => $(s).addEventListener("input", quote));
-
-  $("#order-btn").onclick = () => {
-    const o = currentOrder();
-    const job = { id: S.nextId++, agent: "あなたの会社", cat: o.cat, text: o.cat === "en" ? "Talk about your weekend in English" : "週末の過ごし方について、自然な話し言葉で",
-                  price: o.price, tier: o.tier, industry: o.industry, promo: o.promo, units: o.units, delivered: 0 };
-    S.jobs.unshift(job);
-    S.myOrder = { id: job.id, units: o.units, delivered: 0, grades: { A: 0, B: 0, C: 0 }, total: unitAmount(o) * o.units, job };
-    $("#order-btn").disabled = true; $("#order-btn").textContent = "集まるのを待っています…";
-    $("#myorder").hidden = false; $("#mo-card").hidden = true;
-    $("#mo-title").textContent = `あなたの注文 · ${R.categories[o.cat].label} ${o.units.toLocaleString()}件`;
-    renderMine();
-    const cut = creatorCut(unitAmount(o));
-    feed("order", `あなたの会社が注文 · ${R.categories[o.cat].label} ${o.units.toLocaleString()}件<small>${R.tiers[o.tier].label}${o.industry ? " · " + R.industries[o.industry].label : ""}${o.promo ? " · 注目" : ""}</small>`, yen(unitAmount(o) * o.units));
-    renderJobs();
-    notify(`<small>新しい仕事${o.promo ? "（注目）" : ""}</small>あなたの会社 · 1件 <b>${yen(cut)}</b>`);
-    if (matchMedia("(max-width: 860px)").matches) feed("order", "クリエイターのスマホに届きました<small>「クリエイター」の画面で録音できます</small>");
-  };
-  function deliverMine(n, grade) {
-    const m = S.myOrder; if (!m || m.delivered >= m.units) return;
-    const k = Math.min(n, m.units - m.delivered);
-    m.delivered += k;
-    if (grade) m.grades[grade] += k;
-    else for (let i = 0; i < k; i++) { const r = Math.random(); m.grades[r < 0.6 ? "A" : r < 0.92 ? "B" : "C"] += 1; }
-    m.job.delivered = m.delivered;
-    renderMine();
-  }
-  function renderMine() {
-    const m = S.myOrder; if (!m) return;
-    $("#mo-count").textContent = `${m.delivered.toLocaleString()} / ${m.units.toLocaleString()}件`;
-    $("#mo-bar").style.width = (m.delivered / m.units * 100) + "%";
-    $("#mo-grades").innerHTML = `<span>品質 A <b>${m.grades.A}</b></span><span>B <b>${m.grades.B}</b></span><span>C <b>${m.grades.C}</b></span><span>作った人 <b>${Math.max(1, Math.ceil(m.delivered / 7))}人</b></span>`;
-    if (m.delivered >= m.units && $("#mo-card").hidden) {
-      const card = { schema: "seri.datacard.v1", items: m.units, creators: Math.ceil(m.units / 7), grades: m.grades,
-                     license: "standard", verification: { automatic_checks: true, qa_agent: "asr + rules", human_spot_check: "5%", consent_version: "2026-10-01" },
-                     refund_window_days: 14, impersonation_prohibited: true };
-      $("#mo-card").innerHTML = "<b>データカード</b>（買い手のAIが読む検証レポート）\n" + esc(JSON.stringify(card, null, 2));
-      $("#mo-card").hidden = false;
-      $("#order-btn").disabled = false; $("#order-btn").textContent = "もう一度注文する";
-      S.jobs = S.jobs.filter((j) => j.id !== m.id); renderJobs();
-      feed("order", `あなたの注文が完了 · ${m.units.toLocaleString()}件を納品<small>品質 A ${m.grades.A} · B ${m.grades.B} · C ${m.grades.C}</small>`, "完了");
+  // ---------- auction ----------
+  function makeLot() {
+    if (S.queue.length) return S.queue.shift();
+    const sold = S.myLots.filter((l) => l.status === "sold");
+    if (sold.length && Math.random() < 0.3) {   // one of Hanako's lots sells again: a royalty
+      const l = pick(sold);
+      return { id: l.id, kind: l.kind, units: l.units, grade: l.grade, owner: "あなた（花子さん）", mine: true, resale: l.sales + 1 };
     }
+    return { id: ++S.lotNo, kind: pick(KINDS).id, units: pick([10, 20, 30, 50]), grade: Math.random() < 0.7 ? "A" : "B", owner: pick(CREATORS), mine: false };
   }
-
-  // ---------- the market keeps moving ----------
+  function startRound() {
+    const lot = makeLot(), value = lotValue(lot);
+    lot.reserve = Math.round(value * 0.8 / 100) * 100;
+    const bidders = AGENTS.filter(() => Math.random() < 0.8).map((a) => ({
+      name: a.name, note: a.note, at: rnd(1, ROUND_SEC - 1.5),
+      amount: Math.round(value * a.k * (a.likes === lot.kind ? 1.25 : 0.9) * rnd(0.82, 1.18) / 100) * 100,
+    }));
+    const y = S.you;
+    if (y.on && y.wants.has(lot.kind) && y.budget - y.spent > 0) {
+      const amount = Math.round(Math.min(y.max * lot.units, y.budget - y.spent) / 100) * 100;
+      bidders.push({ name: "あなたのエージェント", note: `上限 1件${yen(y.max)} · 予算の残り ${yen(y.budget - y.spent)}`, amount, at: 0.6, mine: true });
+    }
+    S.round = { lot, bidders, t0: performance.now(), shown: new Set(), done: false };
+    const k = kindOf(lot.kind);
+    $("#a-lotno").textContent = `ロット #${lot.id}${lot.resale ? ` · ${lot.resale}回目の販売` : ""}`;
+    $("#a-title").textContent = `${k.label} ${lot.units}件`;
+    $("#a-meta").innerHTML = [`品質 ${lot.grade}`, ...k.tags].map((t) => `<span class="pill">${t}</span>`).join("")
+      + `<span class="pill ${lot.mine ? "lamp" : ""}">出した人: ${esc(lot.owner)}</span>` + (lot.resale ? '<span class="pill lamp">再販 → 印税</span>' : "");
+    $("#a-units").textContent = `${lot.units}件`;
+    $("#a-reserve").textContent = yen(lot.reserve);
+    $("#a-count").textContent = "0社";
+    $("#a-bids").innerHTML = '<p class="waiting">各社のAIエージェントが、このデータにいくら払うか計算しています…</p>';
+    $("#a-result").hidden = true;
+    $("#a-clock").classList.remove("end");
+    $("#o-lot").textContent = `ロット #${lot.id} · ${k.label} ${lot.units}件（品質 ${lot.grade}）`;
+    $("#o-status").textContent = "各社のAIエージェントが入札中（金額は締め切りまで伏せられています）";
+  }
   function tick() {
-    const r = Math.random();
-    if (S.myOrder && S.myOrder.delivered < S.myOrder.units && Math.random() < 0.5) {
-      const batch = Math.max(1, Math.ceil(S.myOrder.units / 10));
-      deliverMine(batch);
-      const unit = unitAmount(S.myOrder.job), cut = creatorCut(unit);
-      S.stats.gmv += unit * batch; S.stats.paid += cut * batch;
-      feed("pay", `支払い → ${pick(CREATORS)} ほか<small>あなたの注文に ${batch}件が合格 · 1件 ${yen(cut)}</small>`, yen(cut * batch));
-    } else if (r < 0.28) {
-      const [cat, text, tier, industry] = pick(ORDER_IDEAS), agent = pick(AGENTS);
-      const price = Math.round(rnd(250, 700) / 10) * 10, units = pick([50, 100, 200, 300, 500]);
-      const job = { id: S.nextId++, agent, cat, text, price, tier, industry, promo: Math.random() < 0.2, units, delivered: 0 };
-      S.jobs.unshift(job); S.jobs = S.jobs.slice(0, 8);
-      S.stats.agents = Math.min(40, S.stats.agents + (Math.random() < 0.3 ? 1 : 0));
-      feed("order", `${agent}のエージェントが注文 · ${text}<small>${R.categories[cat].label} ${units}件 · ${R.tiers[tier].label}${industry ? " · " + R.industries[industry].label : ""}</small>`, yen(unitAmount(job) * units));
-      renderJobs();
-      notify(`<small>新しい仕事</small>${esc(agent)} · 1件 <b>${yen(creatorCut(unitAmount(job)))}</b>`);
-    } else if (r < 0.62) {
-      // a catalog resale: an AI agent licenses existing assets, and some are Hanako's
-      const agent = pick(AGENTS), grade = Math.random() < 0.7 ? "A" : "B", price = catalogPrice(grade), n = pick([1, 2, 3]);
-      const cut = creatorCut(price) * n, { now: nowPart, held } = split(cut);
-      S.me.royalty += cut; S.me.available += nowPart; S.me.held += held; S.me.sold += n;
-      if (Math.random() < 0.35 && S.me.buyers < 30) S.me.buyers += 1;
-      S.stats.gmv += price * n; S.stats.paid += cut;
-      feed("royalty", `印税 → 花子さん<small>${agent}のエージェントがカタログから${n}件を購入（品質 ${grade}）</small>`, yen(cut), true);
-      notify(`<small>印税が入りました</small>${esc(agent)} があなたのデータを${n}件購入 <b>+${yen(cut)}</b>`);
-      renderWallet();
-    } else {
-      const job = pick(S.jobs), who = pick(CREATORS);
-      if (job) {
-        const cut = creatorCut(unitAmount(job)), g = Math.random() < 0.65 ? "A" : "B";
-        job.delivered = Math.min(job.units, job.delivered + 1);
-        S.stats.gmv += unitAmount(job); S.stats.paid += cut;
-        feed("review", `審査 合格（${g}） · ${who}<small>${esc(job.agent)} · QAエージェント ${rnd(1.8, 3.4).toFixed(1)}秒</small>`, g);
-        feed("pay", `支払い → ${who}`, yen(cut));
-        renderJobs();
+    if (S.paused || !S.round) return;
+    const r = S.round, el = (performance.now() - r.t0) / 1000, left = Math.max(0, ROUND_SEC - el);
+    if (!r.done) {
+      for (const b of r.bidders) if (!r.shown.has(b) && el >= b.at) {
+        if (!r.shown.size) $("#a-bids").innerHTML = "";
+        r.shown.add(b);
+        const li = document.createElement("li");
+        li.className = "bid" + (b.mine ? " mine" : "");
+        li.innerHTML = `<div><b>${esc(b.name)}</b><small>${esc(b.note)}</small></div><span class="sealed">入札済み · 金額は非公開</span>`;
+        $("#a-bids").append(li);
+        $("#a-count").textContent = `${r.shown.size}社`;
       }
+      $("#a-sec").innerHTML = `${Math.ceil(left)}<small>秒</small>`;
+      $("#a-ring").style.strokeDashoffset = String(276.5 * (1 - left / ROUND_SEC));
+      $("#nav-clock").textContent = `${Math.ceil(left)}秒`;
+      $("#o-clock").textContent = `締め切りまで ${Math.ceil(left)}秒`;
+      if (left <= 0) reveal();
+    } else if (el >= ROUND_SEC + REVEAL_SEC) {
+      startRound();
     }
-    if (Math.random() < 0.3) { const p = pick(S.prices); p.d = Math.max(-0.08, Math.min(0.12, p.d + rnd(-0.01, 0.015))); p.v = Math.round(p.v * (1 + rnd(-0.004, 0.008))); renderPrices(); }
+  }
+  function reveal() {
+    const r = S.round, lot = r.lot;
+    r.done = true;
+    $("#a-clock").classList.add("end");
+    $("#a-sec").innerHTML = `開票<small>締め切り</small>`;
+    $("#nav-clock").textContent = "開票";
+    $("#o-clock").textContent = "開票";
+    const valid = r.bidders.filter((b) => b.amount >= lot.reserve).sort((a, b) => b.amount - a.amount);
+    const all = [...r.bidders].sort((a, b) => b.amount - a.amount);
+    $("#a-bids").innerHTML = all.length ? all.map((b) => {
+      const win = valid.length && b === valid[0], under = b.amount < lot.reserve;
+      return `<li class="bid${b.mine ? " mine" : ""}${win ? " win" : ""}${under ? " under" : ""}"><div><b>${esc(b.name)}${win ? " · 落札" : ""}</b><small>${under ? "最低価格に届かず" : esc(b.note)}</small></div><span class="amt">${yen(b.amount)}</span></li>`;
+    }).join("") : '<p class="waiting">入札がありませんでした。</p>';
+    const res = $("#a-result");
+    res.hidden = false;
+    if (!valid.length) {
+      res.innerHTML = `<p class="headline">不成立: 最低価格 ${yen(lot.reserve)} に届く入札がありませんでした。データは次の競りに回ります。</p>`;
+      $("#o-status").textContent = "不成立（最低価格に届かず）";
+      addHistory(lot, "不成立", 0, 0);
+      if (lot.mine && !lot.resale) S.queue.push(lot);
+      return;
+    }
+    const winner = valid[0];
+    const price = valid.length > 1 ? valid[1].amount : lot.reserve;   // second price, or the reserve
+    const cut = creatorCut(price), { now, held } = splitCut(cut);
+    res.innerHTML = `<p class="headline"><b>${esc(winner.name)}</b> が落札。払うのは2番目の価格 <b>${yen(price)}</b>（入札額は ${yen(winner.amount)}）</p>
+      <div><small>落札額</small><b class="num">${yen(price)}</b></div>
+      <div><small>出した人へ（90%）</small><b class="num money">${yen(cut)}</b></div>
+      <div><small>Seri（10%）</small><b class="num">${yen(price - cut)}</b></div>`;
+    $("#o-status").textContent = `${winner.name} が ${yen(price)} で落札 · 出した人へ ${yen(cut)}`;
+    S.stats.rounds += 1; S.stats.gmv += price; S.stats.paid += cut;
+    if (winner.mine) {
+      S.you.spent += price; S.you.won += lot.units; renderYou();
+      toast(`あなたのエージェントが落札しました <b>${yen(price)}</b><br>${esc(kindOf(lot.kind).label)} ${lot.units}件がデータカード付きで届きました`);
+    }
+    if (lot.mine) {
+      S.me.month += cut; S.me.now += now; S.me.held += held;
+      const mine = S.myLots.find((l) => l.id === lot.id);
+      if (mine) { mine.status = "sold"; mine.earned += cut; mine.sales += 1; }
+      toast(lot.resale ? `印税が入りました <b>+${yen(cut)}</b><br>同じデータが${lot.resale}社目に売れました` : `あなたのデータが売れました <b>+${yen(cut)}</b><br>今すぐ ${yen(now)} · 14日後に ${yen(held)}`);
+      renderMe();
+    }
+    addHistory(lot, winner.name, price, cut);
     renderStats();
   }
+  function addHistory(lot, who, price, cut) {
+    S.history.unshift({ lot, who, price, cut });
+    S.history = S.history.slice(0, 8);
+    renderHistory();
+  }
+  function renderHistory() {
+    $("#history").innerHTML = S.history.map((h) => `<tr><td>#${h.lot.id} ${esc(kindOf(h.lot.kind).label)} ${h.lot.units}件${h.lot.mine ? ' <span class="pill lamp">あなた</span>' : ""}</td><td>${esc(h.who)}</td><td class="r num">${h.price ? yen(h.price) : "—"}</td><td class="r num">${h.cut ? yen(h.cut) : "—"}</td></tr>`).join("");
+  }
+  $("#pause").onclick = () => {
+    if (!S.paused) { S.paused = true; S.pausedAt = performance.now() - S.round.t0; }
+    else { S.paused = false; S.round.t0 = performance.now() - S.pausedAt; }
+    $("#pause").textContent = S.paused ? "再開" : "一時停止";
+  };
 
-  // ---------- mobile tabs ----------
-  document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
-    document.querySelectorAll(".tabs button").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
-    document.querySelectorAll("#stage > *").forEach((p) => p.classList.toggle("active", p.id === b.dataset.target));
+  // ---------- sell ----------
+  let kind = "nurse";
+  $("#s-kinds").replaceChildren(...KINDS.map((k) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "choice";
+    b.innerHTML = `<b>${k.label}</b><small>${k.sub}</small>`;
+    b.setAttribute("aria-pressed", String(k.id === kind));
+    b.onclick = () => { kind = k.id; document.querySelectorAll(".choice").forEach((c) => c.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); };
+    return b;
   }));
-  const syncDesktop = () => { if (!matchMedia("(max-width: 860px)").matches) document.querySelectorAll("#stage > *").forEach((p) => p.classList.add("active")); };
-  syncDesktop();
-  addEventListener("resize", () => { if (!matchMedia("(max-width: 860px)").matches) syncDesktop(); else { const sel = document.querySelector(".tabs [aria-selected=true]").dataset.target; document.querySelectorAll("#stage > *").forEach((p) => p.classList.toggle("active", p.id === sel)); } });
+  const canvas = $("#s-wave"), ctx = canvas.getContext("2d");
+  let rec = null;
+  function drawWave(bars) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const w = canvas.width / 80;
+    ctx.fillStyle = "#8FD0FF";
+    bars.forEach((b, i) => { const h = b * canvas.height * 0.8; ctx.fillRect(i * w + 1, (canvas.height - h) / 2, w - 2, h); });
+  }
+  function stopRec() {
+    if (!rec) return;
+    cancelAnimationFrame(rec.raf);
+    const secs = rec.secs; rec = null;
+    $("#s-rec").classList.remove("on"); $("#s-rec").textContent = "録り直す"; $("#s-rec").setAttribute("aria-pressed", "false");
+    const ok = secs >= 5;
+    $("#s-hint").textContent = ok ? `${secs.toFixed(1)}秒 録音しました。提出するとSeriのAIが検査します。` : `短すぎます（${secs.toFixed(1)}秒）。5秒以上話してください。`;
+    $("#s-submit").disabled = !ok;
+    $("#s-submit").dataset.secs = secs.toFixed(1);
+  }
+  $("#s-rec").onclick = () => {
+    if (rec) return stopRec();
+    $("#s-ok").hidden = true; $("#s-check").hidden = true;
+    rec = { t0: performance.now(), bars: [], secs: 0, raf: 0 };
+    $("#s-rec").classList.add("on"); $("#s-rec").textContent = "停止"; $("#s-rec").setAttribute("aria-pressed", "true");
+    $("#s-submit").disabled = true;
+    const loop = () => {
+      if (!rec) return;
+      rec.secs = (performance.now() - rec.t0) / 1000;
+      rec.bars.push(0.25 + Math.abs(Math.sin(rec.secs * 7) * Math.sin(rec.secs * 2.2)) * 0.7 + Math.random() * 0.1);
+      if (rec.bars.length > 80) rec.bars.shift();
+      drawWave(rec.bars);
+      $("#s-hint").textContent = `録音中 ${rec.secs.toFixed(1)}秒（8秒で自動で止まります）`;
+      if (rec.secs >= 8) return stopRec();
+      rec.raf = requestAnimationFrame(loop);
+    };
+    rec.raf = requestAnimationFrame(loop);
+  };
+  $("#s-submit").onclick = () => {
+    $("#s-submit").disabled = true;
+    const grade = Math.random() < 0.75 ? "A" : "B", secs = $("#s-submit").dataset.secs;
+    const steps = [["長さ・形式", `${secs}秒 · 16kHz`], ["音量・音割れ・無音", `${rnd(-24, -18).toFixed(1)} dBFS · 0.00%`], ["同じデータの重複", "なし"],
+                   ["AIが聞き直して文字に起こす", `誤り率 ${rnd(1.8, 4).toFixed(1)}%`], ["ルール確認", "個人情報なし · 本人の声"], ["品質の判定", `グレード ${grade}`]];
+    $("#s-steps").innerHTML = steps.map(([a, b]) => `<li><i>✓</i>${a}<span>${b}</span></li>`).join("");
+    $("#s-check").hidden = false; $("#s-ok").hidden = true;
+    const items = [...document.querySelectorAll("#s-steps li")], gap = reduce ? 0 : 420;
+    items.forEach((li, i) => setTimeout(() => li.classList.add("done"), gap * (i + 1)));
+    setTimeout(() => {
+      // in the demo, one submission stands for a lot of 20 recordings
+      const lot = { id: ++S.lotNo, kind, units: 20, grade, owner: "あなた（花子さん）", mine: true };
+      S.queue.push(lot);
+      S.myLots.unshift({ id: lot.id, kind, units: 20, grade, status: "queued", earned: 0, sales: 0 });
+      renderMe();
+      $("#s-ok").hidden = false;
+      $("#s-ok").innerHTML = `<span>合格（品質 ${grade}）· 2.5秒で判定。<b>ロット #${lot.id}</b> として次の競りに出品しました。</span><a href="#auction" class="btn">競りを見に行く</a>`;
+      $("#s-rec").textContent = "録音";
+    }, gap * (items.length + 1) + 200);
+  };
+  function renderMe() {
+    const m = S.me;
+    countTo($("#s-month"), m.month); countTo($("#s-now"), m.now); countTo($("#s-held"), m.held);
+    $("#nav-earn").textContent = yen(m.month);
+    const goal = 30000, k = Math.min(1, m.month / goal);
+    $("#s-ring").style.strokeDashoffset = String(276.5 * (1 - k));
+    $("#s-ring-text").innerHTML = m.month >= goal ? `達成<small>月3万円</small>` : `${Math.round(k * 100)}%<small>月3万円まで<br>あと${yen(goal - m.month)}</small>`;
+    const label = { queued: '<span class="pill ice">競り待ち</span>', sold: '<span class="pill good">売れた</span>' };
+    $("#s-lots").innerHTML = S.myLots.slice(0, 8).map((l) => `<tr><td>#${l.id} ${esc(kindOf(l.kind).label)} ${l.units}件 · ${l.grade}</td><td>${label[l.status]}${l.sales > 1 ? ` <span class="pill lamp">${l.sales}社に販売</span>` : ""}</td><td class="r num">${l.earned ? yen(l.earned) : "—"}</td></tr>`).join("");
+  }
+
+  // ---------- buy ----------
+  $("#b-wants").replaceChildren(...KINDS.map((k) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = k.label;
+    b.setAttribute("aria-pressed", String(S.you.wants.has(k.id)));
+    b.onclick = () => { S.you.wants.has(k.id) ? S.you.wants.delete(k.id) : S.you.wants.add(k.id); b.setAttribute("aria-pressed", String(S.you.wants.has(k.id))); renderYou(); };
+    return b;
+  }));
+  ["#b-max", "#b-budget"].forEach((s) => $(s).addEventListener("input", () => { S.you.max = Number($("#b-max").value); S.you.budget = Number($("#b-budget").value); renderYou(); }));
+  $("#b-join").onclick = () => {
+    S.you.on = !S.you.on;
+    renderYou(); renderStats();
+    if (S.you.on) toast("あなたのエージェントが競りに参加しました<br>条件に合うロットに自動で入札します");
+  };
+  function renderYou() {
+    const y = S.you, wants = [...y.wants].map((id) => kindOf(id).label);
+    $("#b-max-v").textContent = yen(y.max); $("#b-budget-v").textContent = yen(y.budget);
+    $("#b-join").textContent = y.on ? "参加をやめる" : "競りに参加させる";
+    $("#b-join").className = y.on ? "btn ghost" : "btn";
+    $("#b-status").hidden = !y.on; $("#b-next").hidden = !y.on;
+    $("#b-state").textContent = y.budget - y.spent > 0 ? "参加中" : "予算を使い切りました";
+    $("#b-won").textContent = `${y.won}件`; $("#b-spent").textContent = yen(y.spent); $("#b-left").textContent = yen(Math.max(0, y.budget - y.spent));
+    $("#b-code").innerHTML = `<span class="k">import</span> seri
+agent = seri.Agent(api_key=<span class="s">"sk_live_…"</span>)
+agent.bid(want=[${wants.map((w) => `<span class="s">"${w}"</span>`).join(", ")}], max_price=<span class="s">${y.max}</span>, budget=<span class="s">${y.budget}</span>)
+<span class="c"># 条件に合うロットが出るたびに自動で入札し、落札したデータを受け取ります</span>`;
+  }
+
+  // ---------- overview ----------
+  function renderStats() {
+    $("#t-rounds").textContent = S.stats.rounds + "回";
+    countTo($("#t-gmv"), S.stats.gmv); countTo($("#t-paid"), S.stats.paid);
+    $("#t-agents").textContent = S.stats.agents + (S.you.on ? 1 : 0) + "体";
+  }
 
   // ---------- start ----------
-  const d = new Date(); $("#month-label").textContent = `${d.getMonth() + 1}月の収入`;
-  setInterval(() => { $("#clock").textContent = new Date().toTimeString().slice(0, 5); }, 1000);
-  [
-    ["order", "Kumo Health AIのエージェントが注文 · 服薬指導の説明<small>日本語の音声 100件 · 上位25% · 看護師</small>", "¥97,200"],
-    ["royalty", "印税 → 花子さん<small>Sora Translateのエージェントがカタログから2件を購入（品質 A）</small>", "¥404", true],
-    ["review", "審査 合格（A） · 大阪のクリエイター<small>Nami Speech · QAエージェント 2.2秒</small>", "A"],
-    ["pay", "支払い → 大阪のクリエイター<small>今すぐ ¥252 ・ 保留 ¥108</small>", "¥360"],
-  ].reverse().forEach((a) => feed(...a));
-  renderPrices(); renderJobs(); renderWallet(); renderStats(); quote();
-  setTimeout(() => notify(`<small>印税が入りました</small>Sora Translate があなたのデータを2件購入 <b>+¥404</b>`), 1200);
-  setInterval(tick, reduce ? 4200 : 2600);
+  $("#s-month-label").textContent = `${new Date().getMonth() + 1}月の収入`;
+  renderHistory(); renderMe(); renderYou(); renderStats(); startRound();
+  setInterval(tick, 250);
 })();
 </script>
