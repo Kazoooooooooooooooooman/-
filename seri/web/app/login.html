@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+<title>Seri ログイン</title>
+</head><body>
+<div class="wrap">
+  <header class="top"><a class="brand" href="/">Seri<span>.</span></a></header>
+  <div class="tabs" role="tablist">
+    <button type="button" role="tab" id="tab-login" aria-selected="true">ログイン</button>
+    <button type="button" role="tab" id="tab-signup" aria-selected="false">アカウント作成</button>
+  </div>
+
+  <form id="login" class="card">
+    <h2>ログイン</h2>
+    <label>メールアドレス<input type="email" name="email" required autocomplete="email"></label>
+    <label>パスワード<input type="password" name="password" required autocomplete="current-password"></label>
+    <button type="submit">ログイン</button>
+  </form>
+
+  <form id="signup" class="card" hidden>
+    <h2>アカウント作成</h2>
+    <label>使い方
+      <select name="role" id="role">
+        <option value="creator">クリエイター（データを作って稼ぐ）</option>
+        <option value="buyer">企業（データを注文する）</option>
+      </select>
+    </label>
+    <label>お名前<input name="name" required maxlength="100" autocomplete="name"></label>
+    <label id="org-field" hidden>会社名<input name="org" maxlength="200" autocomplete="organization"></label>
+    <label>メールアドレス<input type="email" name="email" required autocomplete="email"></label>
+    <label>パスワード（10文字以上）<input type="password" name="password" required minlength="10" autocomplete="new-password"></label>
+    <div id="creator-fields" class="card">
+      <label>職種（任意・あとで確認します）<select name="industry" id="industry"></select></label>
+      <p class="muted" id="consent-text"></p>
+      <label class="row"><input type="checkbox" id="consent" class="checkbox"> <span>上の内容に同意します</span></label>
+    </div>
+    <button type="submit" class="accent">作成して始める</button>
+  </form>
+  <p id="msg" class="msg" hidden></p>
+</div>
+<script type="module" src="/assets/login.js"></script>
+</body></html>

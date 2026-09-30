@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seri — AIを育てた人が、AIから稼ぎ続ける</title>
+<meta name="description" content="Seriは、あなたが作ったデータを、AIに使われるたびにお金を生む資産に変えるマーケットです。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="/">Seri<span>.</span></a>
+    <a class="btn secondary" href="/app/login.html">ログイン</a>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Seri · 競り</p>
+    <h1>AIを育てた人が、AIから稼ぎ続ける。</h1>
+    <p>あなたの声や言葉、仕事の判断をデータにして、AI企業に売れる資産に。作業代に加えて、売れるたびに印税が入ります。代金の90%は作った人へ。</p>
+    <div class="row">
+      <a class="btn accent" href="#join">クリエイターとして参加する</a>
+      <a class="btn ghost-dark" href="#buyers">データを買いたい企業の方</a>
+    </div>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">仕組み</p>
+    <h2>注文から支払いまで、人間の返事待ちがない</h2>
+    <div class="steps">
+      <div><b>注文</b><span class="muted">AI企業が欲しいデータを注文</span></div>
+      <div><b>作る</b><span class="muted">スマホで録音・入力して提出</span></div>
+      <div><b>目利き</b><span class="muted">品質と同意を検証（Seri Verified）</span></div>
+      <div><b>販売</b><span class="muted">ライセンスでAI企業へ</span></div>
+      <div><b>支払い</b><span class="muted">作業代＋印税、90%が作り手へ</span></div>
+    </div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h3>全部見える</h3>
+      <p class="muted">誰に、どのライセンスで、いくらで売れて、あなたにいくら入ったか。すべて表示します。</p>
+    </div>
+    <div class="card">
+      <h3>安く買い叩かせない</h3>
+      <p class="muted">データの種類ごとに最低価格を決めています。品質の高い人ほど高い注文を受けられます。</p>
+    </div>
+    <div class="card">
+      <h3>あなたの声を守る</h3>
+      <p class="muted">本人の声を使ったなりすましへの利用は禁止。同意の内容は記録され、いつでも確認できます。</p>
+    </div>
+  </section>
+
+  <section class="card" id="join">
+    <p class="eyebrow">クリエイター募集</p>
+    <h2>最初の100人を募集しています</h2>
+    <p class="muted">日本語・英語の音声からスタートします。看護師、経理、エンジニア、営業などの専門職の方も歓迎します。</p>
+    <form id="wl-creator" class="row">
+      <label class="grow">メールアドレス<input type="email" name="email" required autocomplete="email"></label>
+      <button type="submit" class="accent">参加を申し込む</button>
+    </form>
+    <p id="wl-creator-msg" class="msg" hidden></p>
+    <p class="muted">すぐに始めたい方は <a href="/app/login.html?role=creator">アカウントを作成</a></p>
+  </section>
+
+  <section class="card" id="buyers">
+    <p class="eyebrow">AI企業の方へ</p>
+    <h2>権利処理済み・同意済みの日本語と英語のデータを、注文から数日で</h2>
+    <p class="muted">業界や品質の順位を指定して注文できます。すべてのデータに品質検証のレポート（データカード）が付きます。</p>
+    <form id="wl-buyer" class="grid">
+      <label>会社のメールアドレス<input type="email" name="email" required autocomplete="email"></label>
+      <label>欲しいデータ（任意）<input name="note" maxlength="500" placeholder="例: 関西弁の会話音声 30時間"></label>
+      <button type="submit">問い合わせる</button>
+    </form>
+    <p id="wl-buyer-msg" class="msg" hidden></p>
+    <p class="muted">料金の試算は <a href="/app/login.html?role=buyer">アカウント作成後の注文画面</a> でできます。</p>
+  </section>
+
+  <footer>© 2026 Seri · お問い合わせは上のフォームから</footer>
+</div>
+<script type="module" src="/assets/landing.js"></script>
+</body>
+</html>

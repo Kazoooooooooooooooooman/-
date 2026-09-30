@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+<title>Seri クリエイター</title>
+</head><body>
+<div class="wrap">
+  <header class="top"><a class="brand" href="/">Seri<span>.</span></a><div class="row"><span class="muted" id="who"></span><button type="button" class="secondary" id="logout">ログアウト</button></div></header>
+
+  <section class="grid">
+    <div class="card kpi"><span class="muted">今すぐ使える収入</span><span class="big" id="available">—</span></div>
+    <div class="card kpi"><span class="muted">確認待ち（14日後に確定）</span><span class="big" id="held">—</span></div>
+  </section>
+
+  <section class="card" id="recorder" hidden>
+    <p class="eyebrow">録音</p>
+    <h2 id="rec-title"></h2>
+    <p id="rec-instructions"></p>
+    <p class="muted" id="rec-rules"></p>
+    <div class="row">
+      <button type="button" class="rec" id="rec-btn" aria-pressed="false">録音</button>
+      <div class="grow">
+        <div class="meter" aria-hidden="true"><i id="level"></i></div>
+        <p class="num muted" id="timer">0.0 秒</p>
+      </div>
+    </div>
+    <audio id="preview" controls hidden></audio>
+    <p id="rec-check" class="msg" hidden></p>
+    <div class="row">
+      <button type="button" class="accent" id="submit" disabled>提出する</button>
+      <button type="button" class="secondary" id="cancel">やめる</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>いま受けられる仕事</h2>
+    <div id="tasks" class="grid"></div>
+  </section>
+
+  <section class="card">
+    <h2>提出したデータ</h2>
+    <div class="table"><table><thead><tr><th>#</th><th>注文</th><th>長さ</th><th>状態</th><th>理由</th></tr></thead><tbody id="subs"></tbody></table></div>
+  </section>
+
+  <section class="card">
+    <h2>売れた記録</h2>
+    <p class="muted">誰に、どのライセンスで、いくらで売れて、あなたにいくら入ったか。</p>
+    <div class="table"><table><thead><tr><th>買い手</th><th>データ</th><th>ライセンス</th><th>価格</th><th>あなたの取り分</th></tr></thead><tbody id="sales"></tbody></table></div>
+  </section>
+  <p id="msg" class="msg" hidden></p>
+</div>
+<script type="module" src="/assets/creator.js"></script>
+</body></html>

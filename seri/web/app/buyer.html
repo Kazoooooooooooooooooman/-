@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+<title>Seri 注文</title>
+</head><body>
+<div class="wrap">
+  <header class="top"><a class="brand" href="/">Seri<span>.</span></a><div class="row"><span class="muted" id="who"></span><button type="button" class="secondary" id="logout">ログアウト</button></div></header>
+
+  <form id="order" class="card">
+    <p class="eyebrow">新しい注文</p>
+    <h2>欲しいデータを注文する</h2>
+    <div class="grid">
+      <label>データの種類<select name="category" id="category"></select></label>
+      <label>件数<input type="number" name="units" min="1" value="100" required></label>
+      <label>1件あたりの価格（円）<input type="number" name="unit_price_jpy" min="1" value="300" required></label>
+      <label>誰に作ってほしいか<select name="tier" id="tier"></select></label>
+      <label>業界・職種<select name="industry" id="industry"></select></label>
+      <label>ライセンス<select name="license" id="license"></select></label>
+    </div>
+    <label>作ってほしい内容（クリエイターに表示されます）<textarea name="instructions" maxlength="2000" placeholder="例: 週末の過ごし方について、自然な話し言葉で30秒〜1分話してください"></textarea></label>
+    <div class="card">
+      <span class="muted">注文額</span>
+      <span class="big" id="total">—</span>
+      <span class="muted num" id="formula"></span>
+    </div>
+    <button type="submit" class="accent">注文する</button>
+    <p class="muted">注文後、請求書をお送りします。入金を確認したら、クリエイターへの募集が始まります。</p>
+  </form>
+  <p id="msg" class="msg" hidden></p>
+
+  <section class="card">
+    <h2>あなたの注文</h2>
+    <div class="table"><table>
+      <thead><tr><th>#</th><th>内容</th><th>進み具合</th><th>金額</th><th>状態</th><th>納品</th></tr></thead>
+      <tbody id="orders"></tbody>
+    </table></div>
+  </section>
+</div>
+<script type="module" src="/assets/buyer.js"></script>
+</body></html>
