@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from conftest import H, client, make_staff, make_wav, signup
+from conftest import H, client, give_assets, make_staff, make_wav, signup
 
 from app import ledger, models
 from app.db import SessionLocal
@@ -118,7 +118,8 @@ def test_full_flow(fresh_email):
     sid = s1.json()["id"]
     assert reviewer_c.post(f"/api/review/{sid}", json={"decision": "reject"}, headers=H).status_code == 400
     assert reviewer_c.get(f"/api/review/{sid}/audio").status_code == 200
-    assert reviewer_c.post(f"/api/review/{sid}", json={"decision": "approve"}, headers=H).json()["status"] == "approved"
+    assert reviewer_c.post(f"/api/review/{sid}", json={"decision": "approve"}, headers=H).status_code == 400  # grade required
+    assert reviewer_c.post(f"/api/review/{sid}", json={"decision": "approve", "grade": "B"}, headers=H).json()["status"] == "approved"
 
     # money: unit = 333; creator 90% = 299 (floor); 70% now = 209, held = 90; seri = 34
     e = creator.get("/api/earnings").json()
@@ -149,9 +150,27 @@ def test_full_flow(fresh_email):
     db.close()
 
 
-def test_last_unit_takes_leftover_yen():
-    o = models.Order(total_jpy=1000, units=3)
-    assert [ledger.unit_amount(o, i) for i in range(3)] == [333, 333, 334]
+def test_last_unit_takes_leftover_yen(fresh_email):
+    buyer, admin = client(), make_staff(fresh_email("admin"), "admin")
+    signup(buyer, fresh_email(), "buyer")
+    creator = client()
+    cu = signup(creator, fresh_email(), "creator")
+    o = buyer.post("/api/orders", json={"category": "ja_voice", "units": 3, "unit_price_jpy": 333, "tier": "any"},
+                   headers=H).json()
+    admin.post(f"/api/admin/orders/{o['id']}/mark-paid", headers=H)
+    asset_ids = give_assets(cu["id"], 3)
+    db = SessionLocal()
+    order = db.get(models.Order, o["id"])
+    ledger.post(db, [("cash:escrow", 1), (f"order:{order.id}", -1)], "one extra yen")  # 1000 yen over 3 units
+    amounts = []
+    for aid in asset_ids:
+        amt = ledger.next_unit_amount(db, order)
+        amounts.append(amt)
+        ledger.settle(db, order, db.get(models.Asset, aid), amt, "task")
+    assert amounts == [333, 333, 334]
+    assert ledger.order_remaining(db, order) == 0
+    db.rollback()
+    db.close()
 
 
 def test_unbalanced_posting_refused():

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+<title>Seri 資産と収入</title>
+</head><body>
+<div class="wrap">
+  <header class="top" id="shell"></header>
+
+  <section class="kpis" id="totals"></section>
+
+  <section class="card">
+    <p class="eyebrow">データ資産</p>
+    <h2>あなたのデータ</h2>
+    <p class="muted" id="royalty-note"></p>
+    <div class="table"><table>
+      <thead><tr><th>#</th><th>種類</th><th>品質</th><th>売れた回数</th><th>あなたの収入</th><th>カタログ</th><th></th></tr></thead>
+      <tbody id="assets"></tbody>
+    </table></div>
+  </section>
+
+  <section class="card">
+    <h2>売れた記録</h2>
+    <p class="muted">誰に、どのライセンスで、いくらで売れて、あなたにいくら入ったか。</p>
+    <div class="table"><table>
+      <thead><tr><th>日付</th><th>買い手</th><th>種類</th><th>データ</th><th>ライセンス</th><th>価格</th><th>あなたの取り分</th></tr></thead>
+      <tbody id="sales"></tbody>
+    </table></div>
+  </section>
+  <p id="msg" class="msg" hidden></p>
+</div>
+<script type="module" src="/assets/assets.js"></script>
+</body></html>

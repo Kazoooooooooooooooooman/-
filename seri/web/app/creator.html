@@ -2,17 +2,41 @@
 <html lang="ja"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
 <link rel="stylesheet" href="/assets/app.css">
-<title>Seri クリエイター</title>
+<title>Seri ホーム</title>
 </head><body>
 <div class="wrap">
-  <header class="top"><a class="brand" href="/">Seri<span>.</span></a><div class="row"><span class="muted" id="who"></span><button type="button" class="secondary" id="logout">ログアウト</button></div></header>
+  <header class="top" id="shell"></header>
+
+  <div class="banner" id="consent-banner" hidden>
+    <b>同意書が新しくなりました</b>
+    <p id="consent-new"></p>
+    <div><button type="button" class="accent small" id="consent-accept">内容を確認して同意する</button></div>
+  </div>
+  <div class="banner" id="suspended-banner" hidden><b>現在、新しい仕事を受けられません。</b><span>運営からのご連絡をご確認ください。</span></div>
+
+  <section class="card">
+    <p class="eyebrow" id="month-label">今月の収入</p>
+    <span class="big" id="month-total">—</span>
+    <div class="split"><span>作業代 <b class="num" id="month-task">—</b></span><span>印税 <b class="num" id="month-royalty">—</b></span></div>
+    <div id="goals" class="grid"></div>
+    <p class="muted">Seriの「成功」の定義です。まず月3万円を全員の土台にします。</p>
+  </section>
 
   <section class="grid">
     <div class="card kpi"><span class="muted">今すぐ使える収入</span><span class="big" id="available">—</span></div>
-    <div class="card kpi"><span class="muted">確認待ち（14日後に確定）</span><span class="big" id="held">—</span></div>
+    <div class="card kpi"><span class="muted">確認待ち（<span id="hold-days">14</span>日後に確定）</span><span class="big" id="held">—</span>
+      <span class="muted">買い手の確認期間中です。データに問題があった時はここから返金されます。</span></div>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">あなたのレベル</p>
+    <div class="level"><span class="badge" id="level-badge">—</span><div><b id="level-perk"></b><p class="muted" id="level-next"></p></div></div>
+    <div class="steps-level" id="level-steps"></div>
+    <div class="table"><table><thead><tr><th>カテゴリー</th><th>品質スコア</th><th>審査数</th><th>全体の順位</th><th>職種の中の順位</th></tr></thead><tbody id="ranks"></tbody></table></div>
   </section>
 
   <section class="card" id="recorder" hidden>
@@ -42,13 +66,8 @@
 
   <section class="card">
     <h2>提出したデータ</h2>
-    <div class="table"><table><thead><tr><th>#</th><th>注文</th><th>長さ</th><th>状態</th><th>理由</th></tr></thead><tbody id="subs"></tbody></table></div>
-  </section>
-
-  <section class="card">
-    <h2>売れた記録</h2>
-    <p class="muted">誰に、どのライセンスで、いくらで売れて、あなたにいくら入ったか。</p>
-    <div class="table"><table><thead><tr><th>買い手</th><th>データ</th><th>ライセンス</th><th>価格</th><th>あなたの取り分</th></tr></thead><tbody id="sales"></tbody></table></div>
+    <div class="table"><table><thead><tr><th>#</th><th>注文</th><th>長さ</th><th>状態</th><th>品質</th><th>理由</th></tr></thead><tbody id="subs"></tbody></table></div>
+    <div><button type="button" class="secondary small" id="subs-more" hidden>すべて表示</button></div>
   </section>
   <p id="msg" class="msg" hidden></p>
 </div>

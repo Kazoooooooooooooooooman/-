@@ -1,32 +1,76 @@
-import { api, $, show, el, yen, requireUser, logout, statusLabel, pill } from "/assets/api.js";
+import { api, $, show, el, yen, requireUser, statusLabel, pill, bar, date, rankText } from "/assets/api.js";
 import { toWav } from "/assets/wav.js";
 
 const me = await requireUser(["creator"]);
 if (me) {
-  $("#who").textContent = me.name + (me.industry ? `（${me.industry_verified ? "確認済み" : "確認待ち"}）` : "");
-  $("#logout").onclick = logout;
   const meta = await api("/api/meta");
   const msg = $("#msg");
   let current = null, recorder = null, chunks = [], started = 0, tick = null, stream = null, result = null, raf = null;
+  $("#hold-days").textContent = meta.hold_days;
+  $("#suspended-banner").hidden = !me.suspended;
 
-  async function loadAll() {
-    const [tasks, subs, earn] = await Promise.all([api("/api/tasks"), api("/api/submissions/mine"), api("/api/earnings")]);
-    $("#available").textContent = yen(earn.available_jpy);
-    $("#held").textContent = yen(earn.held_jpy);
-    $("#tasks").replaceChildren(...(tasks.length ? tasks.map((t) => el("div", { class: "card task" },
-      el("div", { class: "row" }, pill([t.category_label, ""]), t.tier !== "any" ? pill([t.tier_label, "good"]) : "", t.industry ? pill([t.industry_label, "wait"]) : ""),
+  if (!me.consent_current) {
+    $("#consent-banner").hidden = false;
+    $("#consent-new").textContent = `同意書（${meta.consent.version}）: ${meta.consent.text}`;
+    $("#consent-accept").onclick = async () => {
+      await api("/api/account/consent", { method: "POST", json: { version: meta.consent.version } });
+      $("#consent-banner").hidden = true; show(msg, "同意を記録しました。");
+    };
+  }
+
+  function renderDashboard(d) {
+    $("#month-label").textContent = `${d.month.label}の収入`;
+    $("#month-total").textContent = yen(d.month.total_jpy);
+    $("#month-task").textContent = yen(d.month.task_jpy);
+    $("#month-royalty").textContent = d.royalties_on ? yen(d.month.royalty_jpy) : "レギュラーから";
+    $("#goals").replaceChildren(...d.goals.map((g) => el("div", { class: "goal" },
+      el("b", {}, `${yen(g.jpy)}　${g.label}`), el("span", { class: "muted num" }, g.reached ? "達成" : `あと${yen(g.jpy - d.month.total_jpy)}`),
+      bar(g.progress, g.reached ? "" : "gold"))));
+    $("#available").textContent = yen(d.available_jpy);
+    $("#held").textContent = yen(d.held_jpy);
+    $("#level-badge").textContent = d.level.label;
+    $("#level-perk").textContent = d.level.perk;
+    $("#level-next").textContent = d.next ? `次の「${d.next.label}」まで: ${d.next.needs.join("、")}` : "最上位のレベルです";
+    const order = Object.keys(meta.levels);
+    $("#level-steps").replaceChildren(...order.filter((k) => k !== "new").map((k) =>
+      el("span", { class: order.indexOf(k) <= order.indexOf(d.level.key) ? "on" : "" }, meta.levels[k].label)));
+    $("#ranks").replaceChildren(...(d.stats.ranks.length ? d.stats.ranks.map((r) => el("tr", {},
+      el("td", {}, r.category_label), el("td", { class: "num" }, Math.round(r.score * 100)), el("td", { class: "num" }, r.reviewed),
+      el("td", {}, rankText(r.percentile)),
+      el("td", {}, me.industry ? (me.industry_verified ? rankText(r.industry_percentile) : "職種の確認待ち") : "—"),
+    )) : [el("tr", {}, el("td", { colspan: 5, class: "muted" }, "審査を受けると品質スコアが表示されます"))]));
+  }
+
+  function taskCard(t) {
+    const notes = [];
+    if (!t.royalties) notes.push("買い切りのため、この仕事のデータには印税がつきません");
+    if (t.license === "term_exclusive") notes.push("6ヶ月の独占のあと、カタログで印税の対象になります");
+    return el("div", { class: "card task" },
+      el("div", { class: "row" },
+        t.promoted ? pill(["注目", "feat"]) : "", pill([t.category_label, ""]),
+        t.tier !== "any" ? pill([t.tier_label, "gold"]) : "", t.industry ? pill([t.industry_label, "wait"]) : "",
+        pill([t.license_label, ""])),
       el("p", {}, t.instructions || "自由に話してください"),
       el("p", { class: "big" }, yen(t.you_earn_jpy)),
-      el("p", { class: "muted" }, `1件あたりのあなたの取り分 · あと${t.your_remaining}件まで`),
-      el("button", { type: "button", class: "accent", onclick: () => openRecorder(t) }, "録音する"),
-    )) : [el("p", { class: "muted" }, "今は受けられる仕事がありません。新しい注文が入るとここに表示されます。")]));
-    $("#subs").replaceChildren(...(subs.length ? subs.map((s) => el("tr", {},
+      el("p", { class: "muted" }, `1件あたりのあなたの取り分 · あと${t.your_remaining}件まで · 締切 ${date(t.deadline_at)}`),
+      ...notes.map((n) => el("p", { class: "muted" }, n)),
+      el("button", { type: "button", class: "accent", onclick: () => openRecorder(t) }, "録音する"));
+  }
+
+  let showAllSubs = false;
+  $("#subs-more").onclick = () => { showAllSubs = true; loadAll(); };
+
+  async function loadAll() {
+    const [dash, tasks, subs] = await Promise.all([api("/api/creator/dashboard"), api("/api/tasks"), api("/api/submissions/mine")]);
+    renderDashboard(dash);
+    $("#tasks").replaceChildren(...(tasks.length ? tasks.map(taskCard)
+      : [el("p", { class: "muted" }, "今は受けられる仕事がありません。新しい注文が入るとここに表示されます。")]));
+    const shown = showAllSubs ? subs : subs.slice(0, 10);
+    $("#subs-more").hidden = showAllSubs || subs.length <= 10;
+    $("#subs").replaceChildren(...(subs.length ? shown.map((s) => el("tr", {},
       el("td", {}, s.id), el("td", {}, "#" + s.order_id), el("td", { class: "num" }, s.duration_sec ? s.duration_sec + " 秒" : "—"),
-      el("td", {}, pill(statusLabel[s.status] || [s.status])), el("td", {}, s.reason || ""),
-    )) : [el("tr", {}, el("td", { colspan: 5, class: "muted" }, "まだ提出はありません"))]));
-    $("#sales").replaceChildren(...(earn.sales.length ? earn.sales.map((s) => el("tr", {},
-      el("td", {}, s.buyer), el("td", {}, s.category), el("td", {}, s.license), el("td", { class: "num" }, yen(s.price_jpy)), el("td", { class: "num" }, yen(s.you_jpy)),
-    )) : [el("tr", {}, el("td", { colspan: 5, class: "muted" }, "まだ売れたデータはありません"))]));
+      el("td", {}, pill(statusLabel[s.status] || [s.status])), el("td", {}, s.grade || "—"), el("td", {}, s.reason || ""),
+    )) : [el("tr", {}, el("td", { colspan: 6, class: "muted" }, "まだ提出はありません"))]));
   }
 
   function openRecorder(t) {

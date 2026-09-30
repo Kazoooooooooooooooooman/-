@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Seri — AIを育てた人が、AIから稼ぎ続ける</title>
 <meta name="description" content="Seriは、あなたが作ったデータを、AIに使われるたびにお金を生む資産に変えるマーケットです。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
 <link rel="stylesheet" href="/assets/app.css">
@@ -13,50 +14,97 @@
 <div class="wrap">
   <header class="top">
     <a class="brand" href="/">Seri<span>.</span></a>
-    <a class="btn secondary" href="/app/login.html">ログイン</a>
+    <a class="btn secondary small" href="/app/">ログイン</a>
   </header>
 
   <section class="hero">
     <p class="eyebrow">Seri · 競り</p>
     <h1>AIを育てた人が、AIから稼ぎ続ける。</h1>
-    <p>あなたの声や言葉、仕事の判断をデータにして、AI企業に売れる資産に。作業代に加えて、売れるたびに印税が入ります。代金の90%は作った人へ。</p>
+    <p>あなたの声や言葉、仕事の判断をデータにして、AI企業に売れる資産に。作った瞬間の作業代に加えて、売れるたびに印税が入ります。代金の90%は作った人へ。</p>
     <div class="row">
       <a class="btn accent" href="#join">クリエイターとして参加する</a>
       <a class="btn ghost-dark" href="#buyers">データを買いたい企業の方</a>
     </div>
+    <p class="muted-dark">持たざる者が、持てる時代をつくる。</p>
   </section>
+
+  <section class="kpis" id="public-stats" hidden></section>
 
   <section class="card">
     <p class="eyebrow">仕組み</p>
     <h2>注文から支払いまで、人間の返事待ちがない</h2>
     <div class="steps">
       <div><b>注文</b><span class="muted">AI企業が欲しいデータを注文</span></div>
-      <div><b>作る</b><span class="muted">スマホで録音・入力して提出</span></div>
-      <div><b>目利き</b><span class="muted">品質と同意を検証（Seri Verified）</span></div>
-      <div><b>販売</b><span class="muted">ライセンスでAI企業へ</span></div>
+      <div><b>作る</b><span class="muted">スマホで録音して提出</span></div>
+      <div><b>目利き</b><span class="muted">自動チェックと人の審査で品質を保証</span></div>
+      <div><b>販売</b><span class="muted">ライセンスでAI企業へ。何度でも</span></div>
       <div><b>支払い</b><span class="muted">作業代＋印税、90%が作り手へ</span></div>
     </div>
   </section>
 
   <section class="grid">
     <div class="card">
-      <h3>全部見える</h3>
-      <p class="muted">誰に、どのライセンスで、いくらで売れて、あなたにいくら入ったか。すべて表示します。</p>
+      <p class="eyebrow">収入1</p>
+      <h3>作業代</h3>
+      <p class="muted">注文に合わせてデータを作ると、合格した時点で支払い。70%はすぐ、30%は買い手の確認期間（14日）のあとに確定します。</p>
     </div>
     <div class="card">
+      <p class="eyebrow">収入2</p>
+      <h3>印税</h3>
+      <p class="muted">合格したデータはあなたの資産としてカタログに並び、別の会社に売れるたびに収入が入ります。時間を売るのではなく、資産が残ります。</p>
+    </div>
+    <div class="card">
+      <p class="eyebrow">全部見える</p>
+      <h3>誰に、いくらで</h3>
+      <p class="muted">どの会社に、どのライセンスで、いくらで売れて、あなたにいくら入ったか。すべて画面で確認できます。</p>
+    </div>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">レベル</p>
+    <h2>底辺からトップまで、データで食べていける</h2>
+    <div class="table"><table>
+      <thead><tr><th>レベル</th><th>条件の例</th><th>できること</th></tr></thead>
+      <tbody>
+        <tr><td><b>ビギナー</b></td><td>最初の1件が合格</td><td>注文に応じた作業代</td></tr>
+        <tr><td><b>レギュラー</b></td><td>合格100件、品質Aが90%以上</td><td>データがカタログに並び、売れるたびに印税</td></tr>
+        <tr><td><b>プロ</b></td><td>30社以上に売れた</td><td>指名の注文、最低価格の引き上げ</td></tr>
+        <tr><td><b>トップ</b></td><td>専門分野で上位1%</td><td>AI企業の定期購読、スカウト</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted">品質の順位が上がるほど、高い注文（上位50%は1.2倍、上位25%は1.5倍、上位10%は2倍）を受けられます。看護師・経理・エンジニア・営業などの職種は、確認済みの人だけが受けられる専門の注文があります。</p>
+  </section>
+
+  <section class="card">
+    <p class="eyebrow">Seriの約束</p>
+    <h2>「稼げる」を数字で約束し、結果を公開します</h2>
+    <div class="grid">
+      <div class="kpi"><span class="big">80%</span><span class="muted">月10時間以上取り組む人のうち、月3万円以上を稼ぐ人の割合の目標</span></div>
+      <div class="kpi"><span class="big">30%</span><span class="muted">月10万円以上（副業として成立）の目標</span></div>
+      <div class="kpi"><span class="big">上位5〜10%</span><span class="muted">月30万円以上（それで生活できる）の目標</span></div>
+    </div>
+    <p class="muted">そのために、クリエイターは注文の量に合わせて少しずつ受け入れます。自己資金で「稼げた」ことにはしません。</p>
+  </section>
+
+  <section class="grid">
+    <div class="card">
       <h3>安く買い叩かせない</h3>
-      <p class="muted">データの種類ごとに最低価格を決めています。品質の高い人ほど高い注文を受けられます。</p>
+      <p class="muted">データの種類ごとに最低価格を決めています。広告やスポンサーは表示の順番にだけ影響し、品質の評価と価格には一切影響しません。</p>
     </div>
     <div class="card">
       <h3>あなたの声を守る</h3>
-      <p class="muted">本人の声を使ったなりすましへの利用は禁止。同意の内容は記録され、いつでも確認できます。</p>
+      <p class="muted">本人の声を使ったなりすましへの利用は禁止。同意の内容は記録され、いつでも確認・ダウンロードできます。</p>
+    </div>
+    <div class="card">
+      <h3>基準は公開</h3>
+      <p class="muted">何が合格で何が不合格かは <a href="/standard.html">Seri Standard</a> として公開しています。不合格には必ず理由が届きます。</p>
     </div>
   </section>
 
   <section class="card" id="join">
     <p class="eyebrow">クリエイター募集</p>
     <h2>最初の100人を募集しています</h2>
-    <p class="muted">日本語・英語の音声からスタートします。看護師、経理、エンジニア、営業などの専門職の方も歓迎します。</p>
+    <p class="muted">日本語・英語の音声からスタートします。看護師、経理、エンジニア、営業などの専門職の方、方言や日英バイリンガルの方も歓迎します。</p>
     <form id="wl-creator" class="row">
       <label class="grow">メールアドレス<input type="email" name="email" required autocomplete="email"></label>
       <button type="submit" class="accent">参加を申し込む</button>
@@ -67,8 +115,12 @@
 
   <section class="card" id="buyers">
     <p class="eyebrow">AI企業の方へ</p>
-    <h2>権利処理済み・同意済みの日本語と英語のデータを、注文から数日で</h2>
-    <p class="muted">業界や品質の順位を指定して注文できます。すべてのデータに品質検証のレポート（データカード）が付きます。</p>
+    <h2>同意済み・検証済みの日本語と英語のデータを、注文から数日で</h2>
+    <div class="grid">
+      <div><b>注文する</b><p class="muted">欲しい内容、件数、価格、作る人の順位と職種を指定。締切までに集まらない時の扱いも注文時に選べます。</p></div>
+      <div><b>カタログから買う</b><p class="muted">審査済みのデータをその場で選んで購入。入金確認後すぐにダウンロードできます。</p></div>
+      <div><b>品質の保証</b><p class="muted">すべてに品質グレードとデータカード（機械で読める検証レポート）付き。問題があれば14日以内の報告で全額返金します。</p></div>
+    </div>
     <form id="wl-buyer" class="grid">
       <label>会社のメールアドレス<input type="email" name="email" required autocomplete="email"></label>
       <label>欲しいデータ（任意）<input name="note" maxlength="500" placeholder="例: 関西弁の会話音声 30時間"></label>
@@ -78,7 +130,15 @@
     <p class="muted">料金の試算は <a href="/app/login.html?role=buyer">アカウント作成後の注文画面</a> でできます。</p>
   </section>
 
-  <footer>© 2026 Seri · お問い合わせは上のフォームから</footer>
+  <footer>
+    <div>© 2026 Seri（株式会社Seri 設立準備中）</div>
+    <nav aria-label="サイトの情報">
+      <a href="/standard.html">Seri Standard（品質基準）</a>
+      <a href="/terms.html">利用規約</a>
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/tokushoho.html">特定商取引法に基づく表記</a>
+    </nav>
+  </footer>
 </div>
 <script type="module" src="/assets/landing.js"></script>
 </body>

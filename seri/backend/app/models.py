@@ -27,6 +27,9 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(300))
     industry: Mapped[str] = mapped_column(String(40), default="")  # creator's claimed industry
     industry_verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    accept_buyout: Mapped[bool] = mapped_column(Boolean, default=False)  # creator opts in to buyout orders
+    suspended: Mapped[bool] = mapped_column(Boolean, default=False)  # no new work, assets leave the catalog
+    deletion_requested_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
@@ -46,6 +49,11 @@ class Consent(Base):
     accepted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
+def aware(dt: datetime | None) -> datetime | None:
+    """SQLite drops time zones; every stored time is UTC."""
+    return dt.replace(tzinfo=timezone.utc) if dt and dt.tzinfo is None else dt
+
+
 class Waitlist(Base):
     __tablename__ = "waitlist"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -56,9 +64,12 @@ class Waitlist(Base):
 
 
 class Order(Base):
+    """A buyer's purchase. kind=commission: creators make new data. kind=catalog: re-license existing assets."""
+
     __tablename__ = "orders"
     id: Mapped[int] = mapped_column(primary_key=True)
     buyer_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    kind: Mapped[str] = mapped_column(String(20), default="commission")
     category: Mapped[str] = mapped_column(String(40))
     instructions: Mapped[str] = mapped_column(Text, default="")
     units: Mapped[int] = mapped_column(Integer)
@@ -68,9 +79,26 @@ class Order(Base):
     license: Mapped[str] = mapped_column(String(20))
     tier_multiplier: Mapped[float] = mapped_column()
     industry_multiplier: Mapped[float] = mapped_column()
-    total_jpy: Mapped[int] = mapped_column(Integer)
-    status: Mapped[str] = mapped_column(String(20), default="awaiting_payment")  # awaiting_payment | open | filled
+    total_jpy: Mapped[int] = mapped_column(Integer)  # the data amount; creators are paid from this
+    promo_fee_jpy: Mapped[int] = mapped_column(Integer, default=0)  # featuring fee, Seri revenue, on the same invoice
+    refunded_jpy: Mapped[int] = mapped_column(Integer, default=0)
+    fallback: Mapped[str] = mapped_column(String(20), default="extend")
+    deadline_days: Mapped[int] = mapped_column(Integer, default=14)
+    deadline_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)  # set when paid
+    # awaiting_payment | open | filled | closed (ended by deadline with a refund) | cancelled (before payment)
+    status: Mapped[str] = mapped_column(String(20), default="awaiting_payment")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+
+
+class OrderItem(Base):
+    """One catalog asset in a catalog order, at the price quoted when ordered."""
+
+    __tablename__ = "order_items"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), index=True)
+    asset_id: Mapped[int] = mapped_column(ForeignKey("assets.id"))
+    price_jpy: Mapped[int] = mapped_column(Integer)
+    status: Mapped[str] = mapped_column(String(20), default="reserved")  # reserved | sold | refunded
 
 
 class Submission(Base):
@@ -99,6 +127,11 @@ class Asset(Base):
     category: Mapped[str] = mapped_column(String(40))
     sha256: Mapped[str] = mapped_column(String(64))
     consent_id: Mapped[int] = mapped_column(ForeignKey("consents.id"))
+    grade: Mapped[str] = mapped_column(String(1), default="B")
+    duration_sec: Mapped[float] = mapped_column(default=0.0)
+    listed: Mapped[bool] = mapped_column(Boolean, default=True)  # the creator may take it off the catalog
+    exclusive_until: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    status: Mapped[str] = mapped_column(String(20), default="active")  # active | removed (after an upheld complaint)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
@@ -111,8 +144,10 @@ class Sale(Base):
     order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"), index=True)
     buyer_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     license: Mapped[str] = mapped_column(String(20))
+    kind: Mapped[str] = mapped_column(String(20), default="task")  # task (made to order) | royalty (catalog resale)
     amount_jpy: Mapped[int] = mapped_column(Integer)
     creator_jpy: Mapped[int] = mapped_column(Integer)
+    refunded: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
 
 
@@ -134,6 +169,22 @@ class Hold(Base):
     amount_jpy: Mapped[int] = mapped_column(Integer)
     release_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     released: Mapped[bool] = mapped_column(Boolean, default=False)
+    cancelled: Mapped[bool] = mapped_column(Boolean, default=False)  # used for a refund instead
+
+
+class Dispute(Base):
+    """A buyer's complaint about one delivered item, raised inside the review window."""
+
+    __tablename__ = "disputes"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    sale_id: Mapped[int] = mapped_column(ForeignKey("sales.id"), unique=True)
+    buyer_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
+    reason: Mapped[str] = mapped_column(String(1000))
+    status: Mapped[str] = mapped_column(String(20), default="open")  # open | upheld | rejected
+    resolution: Mapped[str] = mapped_column(String(500), default="")
+    resolved_by: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
 
 class AuditLog(Base):

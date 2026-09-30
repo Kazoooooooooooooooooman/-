@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+<title>Seri アカウント</title>
+</head><body>
+<div class="wrap">
+  <header class="top" id="shell"></header>
+  <p id="msg" class="msg" hidden></p>
+
+  <section class="card">
+    <p class="eyebrow">アカウント</p>
+    <h2 id="name"></h2>
+    <div class="table"><table><tbody id="profile"></tbody></table></div>
+  </section>
+
+  <section class="card" id="work" hidden>
+    <h2>仕事の受け方</h2>
+    <label class="row"><input type="checkbox" class="checkbox" id="accept-buyout"> <span>「完全買い切り」の仕事も受ける</span></label>
+    <p class="muted">買い切りは、1社だけが永久に使えるライセンスです。作業代は高めですが、そのデータにはその後の印税がつきません。</p>
+  </section>
+
+  <form class="card" id="password">
+    <h2>パスワードを変える</h2>
+    <div class="grid">
+      <label>今のパスワード<input type="password" name="current" required autocomplete="current-password"></label>
+      <label>新しいパスワード（10文字以上）<input type="password" name="new" required minlength="10" autocomplete="new-password"></label>
+    </div>
+    <div><button type="submit">変更する</button></div>
+    <p class="muted">変更すると、ほかの端末からはログアウトされます。</p>
+  </form>
+
+  <section class="card" id="consents-card" hidden>
+    <h2>同意の記録</h2>
+    <div id="consents"></div>
+  </section>
+
+  <section class="card">
+    <h2>あなたのデータ</h2>
+    <p class="muted">Seriが持っているあなたの情報（プロフィール、同意、提出、売れた記録など）を、いつでもダウンロードできます。</p>
+    <div><button type="button" class="secondary" id="export">自分のデータをダウンロード（JSON）</button></div>
+    <h3>アカウントの削除</h3>
+    <p class="muted" id="delete-note">依頼するとすぐに、新しい仕事の受付とデータの販売が止まります。その後、法律で保存が必要な記録（支払いの記録など）を除いて削除します。すでにAIの学習に使われたデータは、モデルから取り除けません。</p>
+    <div><button type="button" class="secondary" id="delete">削除を依頼する</button></div>
+  </section>
+</div>
+<script type="module" src="/assets/account.js"></script>
+</body></html>

@@ -2,31 +2,30 @@
 <html lang="ja"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
 <link rel="stylesheet" href="/assets/app.css">
-<title>Seri 審査と運営</title>
+<title>Seri 審査</title>
 </head><body>
 <div class="wrap">
-  <header class="top"><a class="brand" href="/">Seri<span>.</span></a><div class="row"><span class="muted" id="who"></span><button type="button" class="secondary" id="logout">ログアウト</button></div></header>
+  <header class="top" id="shell"></header>
   <p id="msg" class="msg" hidden></p>
 
   <section class="card">
     <p class="eyebrow">目利き</p>
     <h2>審査待ちのデータ</h2>
+    <details class="card">
+      <summary>審査の基準（Seri Standard 音声 v1）</summary>
+      <ul>
+        <li><b>A</b>: 指示どおりの内容で、自然に話していて聞き取りやすい。雑音がほぼない。</li>
+        <li><b>B</b>: 内容は指示どおり。少し雑音や言いよどみがあるが、学習に問題なく使える。</li>
+        <li><b>C</b>: 使えるが、雑音・早口・棒読みなどの弱点がある。</li>
+        <li><b>不合格</b>: 本人以外の声、合成音声、指示と違う内容、個人情報（本名・住所・電話番号など）を含む、聞き取れない。理由は作った人に届くので、直し方がわかるように書いてください。</li>
+      </ul>
+      <p class="muted">機械のチェック（長さ・音量・音割れ・無音・重複）はすでに通過しています。必ず最後まで聞いてから判断してください。</p>
+    </details>
     <div id="queue" class="grid"></div>
-  </section>
-
-  <section class="card" id="admin" hidden>
-    <p class="eyebrow">運営</p>
-    <h2>注文と入金</h2>
-    <div class="table"><table><thead><tr><th>#</th><th>内容</th><th>進み具合</th><th>金額</th><th>状態</th><th></th></tr></thead><tbody id="orders"></tbody></table></div>
-    <div class="row">
-      <button type="button" class="secondary" id="release">確認期間が過ぎた保留分を確定する</button>
-      <button type="button" class="secondary" id="check">お金の台帳を検査する</button>
-    </div>
-    <h3>参加の申し込み</h3>
-    <div class="table"><table><thead><tr><th>メール</th><th>種類</th><th>メモ</th></tr></thead><tbody id="waitlist"></tbody></table></div>
   </section>
 </div>
 <script type="module" src="/assets/review.js"></script>

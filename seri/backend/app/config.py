@@ -29,12 +29,22 @@ CREATOR_SHARE_PCT = 90  # creators get 90% of each sale
 IMMEDIATE_PCT = 70  # of the creator share, paid right away; the rest is held
 HOLD_DAYS = 14  # held part is released after the buyer's review window
 
-# Order tiers: who may fulfil the order, and the price multiplier
+ORDER_CAP_PCT = 20  # one creator may fill at most 20% of an order, so earnings spread across people
+PROMO_FEE_JPY = 5000  # (仮) flat fee to feature an order. Changes display order only, never price or review
+
+# Order tiers: who may fulfil the order, the price multiplier, and the default time to fill it.
+# Listed from lowest to highest; a missed deadline can step an order down one tier.
 TIERS = {
-    "any": {"label": "誰でも", "multiplier": 1.0, "min_percentile": 0.0},
-    "top50": {"label": "上位50%", "multiplier": 1.2, "min_percentile": 0.5},
-    "top25": {"label": "上位25%", "multiplier": 1.5, "min_percentile": 0.75},
-    "top10": {"label": "上位10%", "multiplier": 2.0, "min_percentile": 0.9},
+    "any": {"label": "誰でも", "multiplier": 1.0, "min_percentile": 0.0, "days": 14},
+    "top50": {"label": "上位50%", "multiplier": 1.2, "min_percentile": 0.5, "days": 21},
+    "top25": {"label": "上位25%", "multiplier": 1.5, "min_percentile": 0.75, "days": 28},
+    "top10": {"label": "上位10%", "multiplier": 2.0, "min_percentile": 0.9, "days": 42},
+}
+# What happens when an order is not filled by its deadline (the buyer picks when ordering)
+FALLBACKS = {
+    "extend": "期限を延ばす",
+    "downgrade": "1つ下の段階に落として差額を返金",
+    "refund": "集まった分で終了し残りを返金",
 }
 MIN_REVIEWS_FOR_RANK = 5  # creators need this many reviewed items before they get a rank
 
@@ -48,17 +58,44 @@ INDUSTRIES = {
 }
 
 # Data categories. floor_jpy = the lowest unit price a buyer may offer (仮).
+# catalog_jpy = list price of one grade-B item re-licensed from the catalog (仮).
 CATEGORIES = {
-    "ja_voice": {"label": "日本語の音声", "floor_jpy": 100, "min_sec": 5, "max_sec": 120},
-    "en_voice": {"label": "英語の音声", "floor_jpy": 100, "min_sec": 5, "max_sec": 120},
+    "ja_voice": {"label": "日本語の音声", "floor_jpy": 100, "catalog_jpy": 150, "min_sec": 5, "max_sec": 120},
+    "en_voice": {"label": "英語の音声", "floor_jpy": 100, "catalog_jpy": 150, "min_sec": 5, "max_sec": 120},
 }
 
+# Licenses. Standard is non-exclusive: the asset can be sold again and again, paying a royalty each time.
+# exclusive_days: how long no one else may buy it (None = never exclusive, 0 = forever).
 LICENSES = {
-    "standard": "標準（非独占）",
-    "term_exclusive": "期間独占",
-    "buyout": "完全買い切り",
-    "evaluation": "評価用",
+    "standard": {"label": "標準（非独占）", "exclusive_days": None},
+    "term_exclusive": {"label": "期間独占（6ヶ月）", "exclusive_days": 180},
+    "buyout": {"label": "完全買い切り", "exclusive_days": 0},
+    "evaluation": {"label": "評価用", "exclusive_days": 0},
 }
+
+# Quality grades a reviewer gives on approval. Weight feeds the quality score, multiplier the catalog price (仮).
+GRADES = {
+    "A": {"label": "A（とても良い）", "weight": 1.0, "multiplier": 1.5},
+    "B": {"label": "B（良い）", "weight": 0.75, "multiplier": 1.0},
+    "C": {"label": "C（使える）", "weight": 0.5, "multiplier": 0.7},
+}
+
+# Creator levels (仮). Each level needs the one before it.
+LEVEL_RULES = {
+    "regular": {"approved": 100, "a_rate": 0.9},  # royalties: assets enter the catalog
+    "pro": {"buyers": 30},  # sold to 30+ different companies
+    "top": {"percentile": 0.99},  # top 1% in a category (or within their verified industry)
+}
+LEVELS = {
+    "new": {"label": "はじめて", "perk": "最初の合格を目指しましょう"},
+    "beginner": {"label": "ビギナー", "perk": "注文に応じた作業代"},
+    "regular": {"label": "レギュラー", "perk": "データがカタログに載り、売れるたびに印税"},
+    "pro": {"label": "プロ", "perk": "指名の注文、最低価格の引き上げ"},
+    "top": {"label": "トップ", "perk": "AI企業の定期購読、スカウト"},
+}
+
+# Monthly income goals (Seri's definition of success for people working 10+ hours a month)
+GOALS_JPY = [(30_000, "全員の土台"), (100_000, "副業として成立"), (300_000, "それで生活できる")]
 
 # Audio checks
 MIN_SAMPLE_RATE = 16000

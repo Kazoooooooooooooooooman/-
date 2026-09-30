@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プライバシーポリシー — Seri</title>
+<meta name="description" content="Seriのプライバシーポリシー（ドラフト）">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="/">Seri<span>.</span></a>
+    <a class="btn secondary small" href="/app/">ログイン</a>
+  </header>
+  <p class="draft">この文書は公開前のドラフトです。弁護士の確認を経て正式版にします。【】の部分は会社の設立後に記入します。</p>
+
+  <article class="card legal">
+    <h1>プライバシーポリシー</h1>
+    <p>【株式会社Seri】（以下「当社」）は、個人情報の保護に関する法律その他の法令を守り、利用者の情報を次のとおり扱います。声は、その人を識別できる個人情報として扱います。</p>
+
+    <h2>1. 取得する情報</h2>
+    <ul>
+      <li>登録情報: 氏名、メールアドレス、会社名（企業）、職種（クリエイター、任意）</li>
+      <li>職種の確認のための書類（資格証など。確認後は【保存期間】で削除）</li>
+      <li>提出されたデータ: 音声と、その検査結果</li>
+      <li>同意の記録: 同意書の版、日時、本文の指紋（SHA-256）</li>
+      <li>取引の記録: 注文、販売、支払い、返金</li>
+      <li>利用の記録: ログイン、操作の記録、IPアドレス</li>
+    </ul>
+
+    <h2>2. 利用目的</h2>
+    <ol>
+      <li>本サービスの提供（注文、審査、販売、支払い）</li>
+      <li>クリエイターの同意に基づく、AI企業等へのデータの利用許諾</li>
+      <li>品質の管理、不正の防止、セキュリティの確保</li>
+      <li>お問い合わせへの対応、重要なお知らせ</li>
+      <li>個人を特定できない形に加工した統計の作成と公開（例: 成功率）</li>
+    </ol>
+
+    <h2>3. 第三者への提供</h2>
+    <p>クリエイターが同意した範囲で、提出データをAI企業・研究機関に提供します。買い手には氏名とメールアドレスを開示しません（確認済みの職種は表示します）。それ以外は、法令に基づく場合を除き、本人の同意なく第三者に提供しません。</p>
+
+    <h2>4. 外国にある第三者への提供</h2>
+    <p>買い手には外国（例: アメリカ合衆国）の企業が含まれます。提供の前に、その国の個人情報保護制度と、提供先が講じる措置について、法令に従い情報を提供します。【国ごとの情報を記載】</p>
+
+    <h2>5. 委託</h2>
+    <p>サーバー（Amazon Web Services、東京リージョン）、決済（【Stripe等】）、メール送信などを外部に委託します。委託先は適切に監督します。</p>
+
+    <h2>6. 安全管理</h2>
+    <ul>
+      <li>通信と保存データの暗号化、パスワードのハッシュ化（scrypt）</li>
+      <li>役割ごとのアクセス制限（例: 買い手は購入したデータのみ取得可能）</li>
+      <li>すべての重要な操作の記録と定期的な確認</li>
+      <li>不合格の音声は保存しない、など必要な情報だけを持つ設計</li>
+      <li>ISO/IEC 27001 と SOC 2 の基準に沿った管理体制の整備（取得を目指しています）</li>
+    </ul>
+
+    <h2>7. Cookie</h2>
+    <p>ログインの状態を保つためのCookieのみを使います。広告や行動の追跡のためのCookieは使いません。</p>
+
+    <h2>8. 保存期間</h2>
+    <p>アカウントの削除依頼後、法令で保存が必要な記録（取引・支払いの記録など）を除き、【◯日以内】に削除します。</p>
+
+    <h2>9. 開示・訂正・削除などの請求</h2>
+    <p>アカウント画面から、当社が持つあなたの情報をいつでもダウンロードできます。訂正、利用停止、削除の請求は、下記の窓口で受け付けます。すでにAIの学習に使われたデータは、モデルから取り除けません。</p>
+
+    <h2>10. お問い合わせ窓口</h2>
+    <p>【株式会社Seri 個人情報保護管理者】【メールアドレス】【所在地】</p>
+    <p class="muted">制定: 【2026年　月　日】</p>
+  </article>
+
+  <footer>
+    <div>© 2026 Seri（株式会社Seri 設立準備中）</div>
+    <nav aria-label="サイトの情報">
+      <a href="/standard.html">Seri Standard（品質基準）</a>
+      <a href="/terms.html">利用規約</a>
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/tokushoho.html">特定商取引法に基づく表記</a>
+    </nav>
+  </footer>
+</div>
+</body>
+</html>

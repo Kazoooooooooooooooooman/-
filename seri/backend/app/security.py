@@ -63,6 +63,23 @@ def throttle_reset(email: str):
     _failures.pop(email, None)
 
 
+_hits: dict[str, list[float]] = defaultdict(list)
+
+
+def rate_limit(key: str, limit: int, window_s: int):
+    """Simple per-key limiter (in memory; use Redis or the load balancer when running more than one server)."""
+    now = time.time()
+    recent = [t for t in _hits[key] if now - t < window_s]
+    if len(recent) >= limit:
+        raise HTTPException(429, "短い時間にリクエストが多すぎます。しばらくしてからお試しください")
+    recent.append(now)
+    _hits[key] = recent
+
+
+def client_ip(request: Request) -> str:
+    return request.client.host if request.client else ""
+
+
 # ---------- sessions ----------
 
 
@@ -77,6 +94,10 @@ def start_session(db: DBSession, user: models.User, response):
     db.commit()
     response.set_cookie(COOKIE, token, httponly=True, secure=COOKIE_SECURE, samesite="lax",
                         max_age=SESSION_HOURS * 3600, path="/")
+
+
+def end_all_sessions(db: DBSession, user: models.User):
+    db.query(models.Session).filter_by(user_id=user.id).delete()
 
 
 def end_session(db: DBSession, request: Request, response):

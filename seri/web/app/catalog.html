@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+<title>Seri カタログ</title>
+</head><body>
+<div class="wrap">
+  <header class="top" id="shell"></header>
+
+  <section class="card">
+    <p class="eyebrow">カタログ</p>
+    <h2>検証済みのデータを、今すぐ</h2>
+    <p class="muted">すべて Seri の自動チェックと人の審査に合格し、作った人の同意を記録したデータです。ライセンスは標準（非独占・AIの学習用）。入金を確認したらすぐにダウンロードできます。</p>
+    <form id="filters" class="grid">
+      <label>データの種類<select name="category" id="category"></select></label>
+      <label>品質<select name="grade" id="grade"><option value="">すべて</option></select></label>
+      <label>作った人の職種（確認済み）<select name="industry" id="industry"></select></label>
+    </form>
+  </section>
+
+  <section class="card">
+    <div class="row"><h2 class="grow">データ一覧</h2><span class="muted" id="count"></span></div>
+    <div class="row">
+      <button type="button" class="secondary small" id="select-all">表示中をすべて選ぶ</button>
+      <button type="button" class="secondary small" id="clear">選択をやめる</button>
+    </div>
+    <div class="table"><table>
+      <thead><tr><th></th><th>#</th><th>品質</th><th>長さ</th><th>職種</th><th>価格</th></tr></thead>
+      <tbody id="items"></tbody>
+    </table></div>
+  </section>
+
+  <section class="card">
+    <span class="muted">選んだデータ</span>
+    <span class="big" id="total">¥0</span>
+    <span class="muted" id="selected">0件</span>
+    <button type="button" class="accent" id="buy" disabled>選んだデータを注文する</button>
+    <p class="muted">代金の90%は、そのデータを作った人に印税として届きます。</p>
+  </section>
+  <p id="msg" class="msg" hidden></p>
+</div>
+<script type="module" src="/assets/catalog.js"></script>
+</body></html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seri Standard — 日本語・英語音声 v1</title>
+<meta name="description" content="Seriが何を合格とし、どう検証するかの公開基準です。">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+JP:wght@400;600&display=swap">
+<link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="/">Seri<span>.</span></a>
+    <a class="btn secondary small" href="/app/">ログイン</a>
+  </header>
+
+  <article class="card legal">
+    <p class="eyebrow">Seri Standard</p>
+    <h1>日本語・英語音声 v1</h1>
+    <p>Seriは築地のセリの「目利き」です。品質が保証されているから、買い手のAIは中身を1件ずつ確かめずに買えます。その基準をここに公開します。基準は実績に合わせて改訂し、版を明記します。</p>
+
+    <h2>1. 機械のチェック（提出した瞬間）</h2>
+    <div class="table"><table>
+      <thead><tr><th>項目</th><th>基準</th></tr></thead>
+      <tbody>
+        <tr><td>形式</td><td>WAV（16bit）。アプリが自動で変換します</td></tr>
+        <tr><td>サンプルレート</td><td>16,000Hz 以上</td></tr>
+        <tr><td>長さ</td><td>5〜120秒（注文によって異なります）</td></tr>
+        <tr><td>音量</td><td>話している部分の平均が −40 dBFS 以上</td></tr>
+        <tr><td>音割れ</td><td>割れているサンプルが 0.1% 以下</td></tr>
+        <tr><td>無音</td><td>無音（−50 dBFS 未満）の部分が 60% 以下</td></tr>
+        <tr><td>重複</td><td>過去に提出された音声と同一のものは受け付けません（SHA-256で照合）</td></tr>
+      </tbody>
+    </table></div>
+    <p>ここで不合格になった音声は<b>保存しません</b>。録音画面でも同じ基準で事前にチェックします。</p>
+
+    <h2>2. 人の審査</h2>
+    <p>機械のチェックを通った音声は、訓練を受けたレビュアーが最後まで聞いて判断します。自分の提出は審査できません。</p>
+    <div class="table"><table>
+      <thead><tr><th>判定</th><th>意味</th></tr></thead>
+      <tbody>
+        <tr><td><b>A</b></td><td>指示どおりの内容で、自然に話していて聞き取りやすい。雑音がほぼない</td></tr>
+        <tr><td><b>B</b></td><td>内容は指示どおり。少し雑音や言いよどみがあるが、学習に問題なく使える</td></tr>
+        <tr><td><b>C</b></td><td>使えるが、雑音・早口・棒読みなどの弱点がある</td></tr>
+        <tr><td><b>不合格</b></td><td>本人以外の声、合成音声、指示と違う内容、個人情報（本名・住所・電話番号など）を含む、聞き取れない</td></tr>
+      </tbody>
+    </table></div>
+    <p>不合格には必ず理由を付け、作った人に届けます。</p>
+
+    <h2>3. 品質スコアと順位</h2>
+    <p>品質スコアは、カテゴリーごとの審査結果（A=1.0、B=0.75、C=0.5、不合格=0）の平均です（件数が少ないうちは50%に寄せて計算）。買い手からの問題の報告が認められた場合は、不合格1件として数えます。5件以上審査を受けると順位がつき、確認済みの職種の中での順位も出します。<span class="muted">（計算式は仮のもので、運用しながら改訂します）</span></p>
+
+    <h2>4. 買い手への保証</h2>
+    <ul>
+      <li>すべての納品にデータカード（機械で読める検証レポート: 件数、品質グレード、長さ、SHA-256、同意書の版）を付けます</li>
+      <li>各データの納品から14日以内に問題を報告でき、認められると全額を返金します</li>
+      <li>返金はまず作った人の保留分（代金の約27%）から行い、足りない分はSeriが負担します</li>
+    </ul>
+
+    <h2>5. 同意と禁止事項</h2>
+    <p>すべてのデータは、作った本人が同意書（版と日時を記録）に同意したうえで提出されています。本人の声を使ったなりすまし（声の複製による別の発言の生成）への利用は、どのライセンスでも禁止です。一度AIの学習に使われたデータは、モデルから取り除けないことを、作る人に事前に伝えています。</p>
+
+    <h2>6. これから</h2>
+    <p>音声認識AIによる聞き直し（書き起こしとの誤り率）と、Claudeによるルールと匿名化の確認を加えたQAエージェントを導入し、人の審査はAIが迷ったものと抜き打ちに集中させる予定です。</p>
+    <p class="muted">版: v1（2026年10月） · お問い合わせ: トップページのフォームから</p>
+  </article>
+
+  <footer>
+    <div>© 2026 Seri（株式会社Seri 設立準備中）</div>
+    <nav aria-label="サイトの情報">
+      <a href="/standard.html">Seri Standard（品質基準）</a>
+      <a href="/terms.html">利用規約</a>
+      <a href="/privacy.html">プライバシーポリシー</a>
+      <a href="/tokushoho.html">特定商取引法に基づく表記</a>
+    </nav>
+  </footer>
+</div>
+</body>
+</html>
