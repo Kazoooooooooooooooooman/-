@@ -246,17 +246,17 @@ tr.mine td { font-weight: 700; }
     months: ["4月", "5月", "6月", "7月", "8月", "9月"],
     task: [58320, 97200, 124740, 142560, 163080, 186300],
     royalty: [0, 4860, 11340, 19440, 31590, 42480],
-    confirmed: 201420, inReview: 27360, assetValue: 1286400,
+    confirmed: 52380, inReview: 27360, assetValue: 1286400,
     history: [["2026/09/10", "8月分", 189540], ["2026/08/10", "7月分", 158760], ["2026/07/10", "6月分", 131220]],
     assets: [
-      ["SA-10482", "看護師の申し送り（夜勤）", 20, "A", 94, 64800, "standard", 4, 38880, "active"],
-      ["SA-10477", "服薬指導の説明", 20, "A", 92, 52200, "standard", 3, 29160, "active"],
-      ["SA-10431", "退院時の患者説明", 30, "A", 95, 71500, "term", 1, 48600, "exclusive"],
-      ["SA-10420", "医療用語の読み上げ", 50, "B", 81, 33000, "standard", 5, 22950, "active"],
-      ["SA-10388", "看護記録の口述", 20, "A", 93, 0, "buyout", 1, 43200, "sold"],
-      ["SA-10366", "日常会話（関西弁）", 20, "B", 78, 18400, "standard", 2, 8100, "active"],
-      ["SA-10352", "病棟の電話対応", 30, "A", 90, 46800, "standard", 3, 27540, "active"],
-      ["SA-10341", "看護師の申し送り（日勤）", 20, "A", 93, 61200, "eval", 1, 32400, "exclusive"],
+      ["SA-10482", "看護師の申し送り（夜勤）", 20, "A", 94, 64800, "standard", 4, 38880, "active", "medical"],
+      ["SA-10477", "服薬指導の説明", 20, "A", 92, 52200, "standard", 3, 29160, "active", "medical"],
+      ["SA-10431", "退院時の患者説明", 30, "A", 95, 71500, "term", 1, 48600, "exclusive", "medical"],
+      ["SA-10420", "医療用語の読み上げ", 50, "B", 81, 33000, "standard", 5, 22950, "active", "medical"],
+      ["SA-10388", "看護記録の口述", 20, "A", 93, 0, "buyout", 1, 43200, "sold", "medical"],
+      ["SA-10366", "日常会話（関西弁）", 20, "B", 78, 18400, "standard", 2, 8100, "active", "dialect"],
+      ["SA-10352", "病棟の電話対応", 30, "A", 90, 46800, "standard", 3, 27540, "active", "medical"],
+      ["SA-10341", "看護師の申し送り（日勤）", 20, "A", 93, 61200, "eval", 1, 32400, "exclusive", "medical"],
     ],
     rfqs: [
       { id: "RFQ-2609-031", buyer: "Kumo Health AI株式会社", title: "服薬指導の説明（高齢の患者向け）", units: 300, price: 600, tier: "top25", industry: "nurse", license: "standard", due: "10/21", cap: 60 },
@@ -282,7 +282,7 @@ tr.mine td { font-weight: 700; }
   const ops = {
     cash: [
       ["買い手の前受金（未使用のデポジット）", 14200000, "注文に使われるまで買い手のお金", "—"],
-      ["パートナーへの未払金（検収済み）", 11380000, "54人のパートナーへ支払い", "10/10"],
+      ["パートナーへの未払金（検収済み）", 2840000, "54人へ今週金曜に支払い（週次）", "10/2"],
       ["検収中の売上（未確定）", 2160000, "14日の検収のあと未払金に移る", "順次"],
       ["預り源泉所得税", 1020000, "個人パートナー分を国へ納付", "10/10"],
       ["預り消費税", 1380000, "買い手から預かった消費税", "申告時"],
@@ -290,12 +290,15 @@ tr.mine td { font-weight: 700; }
     ],
     calendar: [
       ["10/01", "北斗LLMラボ デポジットの自動チャージ", 3000000],
-      ["10/03", "9月分の請求書を発行（適格請求書）", 0],
-      ["10/10", "パートナー54人へ9月分を支払い", -11380000],
+      ["10/02", "パートナーへ週次の支払い", -2840000],
+      ["10/09", "パートナーへ週次の支払い", -2910000],
       ["10/10", "源泉所得税の納付", -1020000],
       ["10/15", "クラウド・AI検査の費用", -412000],
+      ["10/16", "パートナーへ週次の支払い", -2980000],
+      ["10/23", "パートナーへ週次の支払い", -3050000],
       ["10/25", "人件費・業務委託費", -900000],
-      ["10/31", "Nami Speech 請求書払い（与信枠）", 2640000],
+      ["10/30", "パートナーへ週次の支払い", -3120000],
+      ["10/31", "後払い決済サービスから入金（Nami Speech分・手数料差引）", 2575000],
     ],
     months: ["4月", "5月", "6月", "7月", "8月", "9月"],
     gmv: [2100000, 4600000, 7900000, 11200000, 14900000, 18420000],
@@ -345,25 +348,91 @@ tr.mine td { font-weight: 700; }
   function niceStep(raw) { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; }
   function roundTop(x, y, w, h, r) { r = Math.min(r, h, w / 2); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; }
 
+  // ================= categories (asset shelf) =================
+  // base: 1分（テキストは1件）あたりの基準単価 · S: 資格・希少性の係数 · lam: 1件が1ヶ月に再販される見込み回数 · cat: カタログでの1件の価格
+  const CATS = [
+    { id: "medical", name: "専門説明（医療・看護）", fmt: "音声", base: 300, S: 1.3, lam: 0.10, cat: 340, spec: "1〜5分", need: "看護師・医師の資格", mine: 2400 },
+    { id: "legal", name: "専門説明（法務・税務）", fmt: "音声", base: 320, S: 1.3, lam: 0.07, cat: 360, spec: "1〜5分", need: "士業の登録", mine: 0 },
+    { id: "judgment", name: "専門判断（ケースへの回答）", fmt: "テキスト", unit: "件", base: 400, S: 1.3, lam: 0.05, cat: 450, spec: "1ケース 300〜800字", need: "資格・実務経験", mine: 0 },
+    { id: "present", name: "プレゼンテーション", fmt: "音声＋スライド", base: 220, S: 1.0, lam: 0.08, cat: 260, spec: "3〜10分", need: "", mine: 120 },
+    { id: "sales", name: "商談・営業トーク", fmt: "音声（ロールプレイ）", base: 250, S: 1.1, lam: 0.09, cat: 280, spec: "2〜8分", need: "", mine: 0 },
+    { id: "phone", name: "電話応対", fmt: "音声", base: 180, S: 1.0, lam: 0.06, cat: 200, spec: "1〜5分", need: "", mine: 180 },
+    { id: "bilingual", name: "日英バイリンガル会話", fmt: "音声", base: 260, S: 1.2, lam: 0.06, cat: 280, spec: "2〜10分", need: "", mine: 280 },
+    { id: "dialect", name: "方言の会話", fmt: "音声", base: 200, S: 1.1, lam: 0.04, cat: 220, spec: "2〜10分", need: "", mine: 140 },
+    { id: "reading", name: "読み上げ（マニュアル等）", fmt: "音声", base: 120, S: 1.0, lam: 0.012, cat: 130, spec: "1〜3分", need: "", mine: 0 },
+  ];
+  const catOf = (id) => CATS.find((c) => c.id === id);
+  // 査定額 = 件数 × 12ヶ月 × 月の再販見込み × カタログ価格 × 90%（品質Aは1.2倍・Bは0.9倍）。買い切りは再販がないので0
+  const assetValue = (r) => r[6] === "buyout" ? 0 : Math.round(r[2] * 12 * catOf(r[10]).lam * catOf(r[10]).cat * 0.9 * (r[3] === "A" ? 1.2 : 0.9));
+  const vaultValue = () => Math.round(CATS.reduce((s, c) => s + c.mine * 12 * c.lam * c.cat * 0.9, 0));
+  const QA_COST = 13.3;                                  // AI検査・抜き取り審査・決済・返金引当（1件あたり）
+  const selfOpen = (c) => 12 * c.lam * c.cat * 0.20 > QA_COST;   // 自主制作を受け付けるのは、検査費用を回収できる分類だけ
+  const QUALITY = { A: 1.5, B: 1.0 };
+  const MULT_CAP = 3.0;                                  // 品質×希少性の上限
+  const A_SHARE = { any: 0.55, top50: 0.65, top25: 0.75, top10: 0.85 };  // 作り手の順位ごとのA判定の割合（実績から更新）
+  // 独占の上乗せ = 独占の間にあきらめる再販収益の見込み × 1.2
+  const exclusivityPremium = (c, license) => {
+    if (license === "standard") return 0;
+    if (license === "term") return 6 * c.lam * c.cat * 1.2;
+    let s = 0; for (let m = 0; m < 24; m++) s += c.lam * c.cat * Math.pow(0.97, m);   // 買い切り・評価用: 24ヶ月分を月3%ずつ減衰
+    return s * 1.2;
+  };
+  function priceItem(c, minutes, grade, license) {
+    const len = c.unit === "件" ? 1 : minutes;
+    return c.base * len * Math.min(MULT_CAP, QUALITY[grade] * c.S) + exclusivityPremium(c, license);
+  }
+
+  // ================= line chart =================
+  function lineChart({ labels, series, names, unit = "百万円", h = 240 }) {
+    const W = 640, H = h, L = 52, B = 26, T = 14;
+    const vals = series.flat().filter((v) => v != null), hi = Math.max(...vals), lo = Math.min(0, ...vals);
+    const step = niceStep((hi - lo) / 4), top = Math.ceil(hi / step) * step, bot = Math.floor(lo / step) * step;
+    const x = (i) => L + (W - L) * i / (labels.length - 1), y = (v) => T + (H - T - B) * (top - v) / (top - bot);
+    let g = "";
+    for (let v = bot; v <= top + 1e-9; v += step) g += `<line class="grid-line" x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" ${v === 0 ? 'style="stroke:var(--ink-2)"' : ""}/><text class="axis" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+    labels.forEach((lab, i) => { if (i % 6 === 5 || i === 0) g += `<text class="axis" x="${x(i)}" y="${H - 6}" text-anchor="middle">${lab}</text>`; });
+    const lines = series.map((arr, s) => {
+      const pts = arr.map((v, i) => v == null ? null : `${x(i)},${y(v)}`).filter(Boolean);
+      const lastI = arr.reduce((k, v, i) => v != null ? i : k, 0);
+      return `<polyline fill="none" stroke="var(--series-${s + 1})" stroke-width="2" stroke-linejoin="round" points="${pts.join(" ")}"/>
+              <circle cx="${x(lastI)}" cy="${y(arr[lastI])}" r="4" fill="var(--series-${s + 1})" stroke="var(--surface)" stroke-width="2"/>`;
+    }).join("");
+    const id = "l" + Math.random().toString(36).slice(2, 8);
+    setTimeout(() => {
+      const box = document.getElementById(id); if (!box) return;
+      const svg = box.querySelector("svg"), tip = box.querySelector(".tip"), cross = box.querySelector(".cross");
+      svg.addEventListener("mousemove", (e) => {
+        const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * W;
+        const i = Math.max(0, Math.min(labels.length - 1, Math.round((px - L) / (W - L) * (labels.length - 1))));
+        cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.style.display = "";
+        tip.innerHTML = `${labels[i]}<br>` + series.map((a, s) => `${names[s]} <b>${a[i] == null ? "資金ショート" : a[i] + unit}</b>`).join("<br>");
+        tip.style.left = (x(i) / W * r.width) + "px"; tip.style.top = "8px"; tip.hidden = false;
+      });
+      svg.addEventListener("mouseleave", () => { tip.hidden = true; cross.style.display = "none"; });
+    });
+    const legend = `<div class="legend">${names.map((nm, s) => `<span><i style="background:var(--series-${s + 1})"></i>${nm}</span>`).join("")}</div>`;
+    return `${legend}<div class="chart" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(names.join("と"))}">${g}<line class="cross grid-line" y1="${T}" y2="${H - B}" style="display:none;stroke:var(--mute)"/>${lines}<rect x="${L}" y="${T}" width="${W - L}" height="${H - T - B}" fill="transparent"/></svg><div class="tip" hidden></div></div>`;
+  }
+
   // ================= pages =================
   const head = (crumb, title, desc, right = "") => `<div class="head"><div><div class="crumb">${crumb}</div><h1>${title}</h1><p>${desc}</p></div>${right}</div>`;
   const kpi = (label, value, sub = "") => `<div class="kpi"><small>${label}</small><b class="num">${value}</b><span>${sub}</span></div>`;
   const lic = (k) => R.licenses[k][0];
-  const unitValue = (o) => o.price * R.tiers[o.tier][1] * R.industries[o.industry][1] * R.licenses[o.license][1];
+  const unitValue = (o) => o.unit ?? o.price * R.tiers[o.tier][1] * R.industries[o.industry][1] * R.licenses[o.license][1];
 
   const P = {
     // ---------- partner ----------
     "partner-overview"() {
       const m = partner.months.length - 1, month = partner.task[m] + partner.royalty[m], prev = partner.task[m - 1] + partner.royalty[m - 1];
       const vat = Math.round(partner.confirmed * R.vat), wh = withholding(partner.confirmed), pay = partner.confirmed + vat - wh;
-      const value = partner.assetValue;
+      const value = vaultValue();
       return head("データ提供パートナー", "概要", "あなたのデータ資産から生まれた収益と、次回のお支払い。")
-        + `<div class="kpis">${kpi("9月のライセンス収益", yen(month), `<span class="up">前月比 +${pct(month / prev - 1)}</span>`)}${kpi("次回のお支払い（10/10）", yen(pay), "検収済み分 · 源泉徴収後")}${kpi("データ資産の査定額", yen(value), "Seri AI · 今後12ヶ月の予想収益")}${kpi("有効なライセンス", "37件", "利用企業 9社")}</div>`
+        + `<div class="kpis">${kpi("9月のライセンス収益", yen(month), `<span class="up">前月比 +${pct(month / prev - 1)}</span>`)}${kpi("次回のお支払い（10/2 金）", yen(pay), "毎週日曜締め · 源泉徴収後")}${kpi("データ資産の査定額", yen(value), "Seri AI · 今後12ヶ月の予想収益")}${kpi("有効なライセンス", "37件", "利用企業 9社")}</div>`
         + `<div class="grid-2"><div class="card"><div class="card-h"><div><h2>月別のライセンス収益</h2><p>受託（依頼に応えて作ったデータ）と再販（同じデータが別の企業に売れた分）</p></div></div><div class="card-b">${barChart({ labels: partner.months, series: [partner.task, partner.royalty], names: ["受託", "再販"] })}</div></div>
-           <div class="card"><div class="card-h"><h2>10/10のお支払い</h2><span class="chip good">確定</span></div><div class="card-b">
+           <div class="card"><div class="card-h"><h2>10/2（金）のお支払い</h2><span class="chip good">確定</span></div><div class="card-b">
              <dl class="kv"><dt>検収済みのライセンス料</dt><dd class="num">${yen(partner.confirmed)}</dd><dt>消費税（10%）</dt><dd class="num">${yen(vat)}</dd><dt>源泉徴収税（10.21%）</dt><dd class="num">${yen(-wh)}</dd><dt class="total">お振込額</dt><dd class="total num">${yen(pay)}</dd></dl>
-             <p class="note">検収中の ${yen(partner.inReview)} は、検収が終わり次第 11/10 のお支払いに入ります。振込手数料はSeriが負担します。</p></div></div></div>`
-        + `<div class="card"><div class="card-h"><h2>最近の取引</h2><a class="btn sec sm" href="#partner-assets">データ資産を見る</a></div><div class="tbl-wrap"><table><thead><tr><th>日付</th><th>取引</th><th>企業</th><th>ライセンス</th><th class="r">あなたの収益</th><th>状態</th></tr></thead><tbody>
+             <p class="note">検収中の ${yen(partner.inReview)} は、検収が終わった週の金曜に支払われます。振込手数料はSeriが負担します。</p></div></div></div>`
+        + `<div class="card"><div class="card-h"><h2>最近の取引</h2><a class="btn sec sm" href="#partner-vault">資産の棚を見る</a></div><div class="tbl-wrap"><table><thead><tr><th>日付</th><th>取引</th><th>企業</th><th>ライセンス</th><th class="r">あなたの収益</th><th>状態</th></tr></thead><tbody>
            ${[["9/29", "再販 · SA-10482 看護師の申し送り（夜勤）", "Kumo Health AI", "standard", 11664, "検収中"], ["9/28", "受託 · RFQ-2609-028 に18件納品", "北斗LLMラボ", "standard", 17496, "検収中"], ["9/24", "再販 · SA-10477 服薬指導の説明", "Sora Translate", "standard", 9720, "確定"], ["9/20", "受託 · 退院時の患者説明 30件", "Nami Speech", "term", 48600, "確定"], ["9/16", "再販 · SA-10352 病棟の電話対応", "Acme Voice", "standard", 9180, "確定"]]
               .map(([d, t, b, l, v, s]) => `<tr><td class="num">${d}</td><td>${t}</td><td>${b}</td><td>${lic(l)}</td><td class="r num">${yen(v)}</td><td>${chip(s, s === "確定" ? "good" : "warn")}</td></tr>`).join("")}</tbody></table></div></div>`;
     },
@@ -371,17 +440,17 @@ tr.mine td { font-weight: 700; }
       const rows = partner.assets;
       const sel = state.asset ?? 0, a = rows[sel];
       const state2 = { active: ["販売中", "good"], exclusive: ["独占中", "info"], sold: ["売却済み", ""] };
-      return head("データ提供パートナー", "データ資産", "合格したデータは、あなたの資産として登録されます。Seri AIが品質を判定し、今後12ヶ月に生む収益を査定します。")
-        + `<div class="kpis">${kpi("登録済みの資産", "148ロット", "3,120件のデータ")}${kpi("査定額の合計", yen(partner.assetValue), "今後12ヶ月の予想収益")}${kpi("平均品質スコア", "91 / 100", "看護師の上位6%")}${kpi("累計の再販回数", "112回", "受託後に別の企業へ")}</div>`
+      return head("データ提供パートナー", "資産の明細", "登録済みの資産1件ずつの品質、ライセンス、利用企業、査定額。査定額は売れた実績から毎週更新します（ベイズ推定: 分類の平均から始め、実際の販売回数で補正）。")
+        + `<div class="kpis">${kpi("登録済みの資産", "148ロット", "3,120件のデータ")}${kpi("査定額の合計", yen(vaultValue()), "今後12ヶ月の予想再販収益")}${kpi("平均品質スコア", "91 / 100", "看護師の上位6%")}${kpi("累計の再販回数", "112回", "受託後に別の企業へ")}</div>`
         + `<div class="grid-2"><div class="card"><div class="card-h"><h2>資産の一覧</h2><p>行を選ぶと査定の根拠を表示</p></div><div class="tbl-wrap"><table><thead><tr><th>資産</th><th>品質</th><th>ライセンス</th><th class="r">利用企業</th><th class="r">累計収益</th><th class="r">査定額</th><th>状態</th></tr></thead><tbody>
-          ${rows.map((r, i) => `<tr class="click${i === sel ? " sel" : ""}" data-asset="${i}"><td>${r[1]}<span class="sub id">${r[0]} · ${r[2]}件</span></td><td>${r[3]} <span class="note num">${r[4]}</span></td><td>${lic(r[6])}</td><td class="r num">${r[7]}社</td><td class="r num">${yen(r[8])}</td><td class="r num">${r[5] ? yen(r[5]) : "—"}</td><td>${chip(...state2[r[9]])}</td></tr>`).join("")}
+          ${rows.map((r, i) => `<tr class="click${i === sel ? " sel" : ""}" data-asset="${i}"><td>${r[1]}<span class="sub id">${r[0]} · ${r[2]}件</span></td><td>${r[3]} <span class="note num">${r[4]}</span></td><td>${lic(r[6])}</td><td class="r num">${r[7]}社</td><td class="r num">${yen(r[8])}</td><td class="r num">${assetValue(r) ? yen(assetValue(r)) : "—"}</td><td>${chip(...state2[r[9]])}</td></tr>`).join("")}
           </tbody></table></div></div>
           <div class="card"><div class="card-h"><div><h2>Seri AIの査定</h2><p class="id">${a[0]}</p></div>${chip(a[3] === "A" ? "品質 A" : "品質 B", "info")}</div><div class="card-b">
             <b>${a[1]} · ${a[2]}件</b>
             <dl class="kv"><dt>品質スコア</dt><dd class="num">${a[4]} / 100</dd><dt>音声認識の誤り率</dt><dd class="num">${(100 - a[4]) / 3 > 0 ? ((100 - a[4]) / 3).toFixed(1) : "0.0"}%</dd><dt>専門性</dt><dd>確認済みの看護師（免許確認）</dd>
-              <dt>需要（直近90日）</dt><dd>看護師 × 日本語の依頼 +38%</dd><dt>希少性</dt><dd>同じ条件の提供者 214人</dd><dt>類似取引の相場</dt><dd class="num">1件 ¥540〜¥720</dd>
-              <dt class="total">査定額（12ヶ月）</dt><dd class="total num">${a[5] ? yen(a[5]) : "売却済み"}</dd></dl>
-            <p class="note">査定額 ＝ 予想される販売回数 × 相場 × あなたの取り分90%。${a[6] === "standard" ? "標準ライセンスなので、別の企業にも繰り返し販売されます。" : a[6] === "buyout" ? "完全買い切りのため、今後の再販はありません。" : "独占期間が終わると標準ライセンスに戻り、再販の対象になります。"}</p>
+              <dt>需要（直近90日）</dt><dd>看護師 × 日本語の依頼 +38%</dd><dt>希少性</dt><dd>同じ条件の提供者 214人</dd><dt>月の再販見込み（1件）</dt><dd class="num">${catOf(a[10]).lam.toFixed(2)}回 · カタログ ${yen(catOf(a[10]).cat)}</dd>
+              <dt class="total">査定額（12ヶ月）</dt><dd class="total num">${assetValue(a) ? yen(assetValue(a)) : "売却済み"}</dd></dl>
+            <p class="note">査定額 ＝ 件数 × 12ヶ月 × 月の再販見込み × カタログ価格 × 90%（品質で補正）。${a[6] === "standard" ? "標準ライセンスなので、別の企業にも繰り返し販売されます。" : a[6] === "buyout" ? "完全買い切りのため、今後の再販はありません。" : "独占期間が終わると標準ライセンスに戻り、再販の対象になります。"}</p>
           </div></div></div>`;
     },
     "partner-rfq"() {
@@ -395,16 +464,32 @@ tr.mine td { font-weight: 700; }
           }).join("")}</tbody></table></div></div>
           <div class="card"><div class="card-b"><label class="row"><input type="checkbox" id="accept-buyout" ${state.acceptBuyout ? "checked" : ""}> 完全買い切りの依頼も受ける</label><p class="note">買い切りは単価が3倍（仮）ですが、そのデータはあなたの資産に残らず、再販の収益もありません。</p></div></div>`;
     },
+    "partner-vault"() {
+      const mine = CATS.reduce((s, c) => s + c.mine, 0);
+      const myValue = vaultValue();
+      return head("データ提供パートナー", "資産の棚", "依頼がなくても、自分のスキルや声を分類ごとに資産として登録できます。Seri AIが検査・査定し、カタログや企業の依頼に自動で割り当てます。")
+        + `<div class="kpis">${kpi("棚にある資産", mine + "件", `${CATS.filter((c) => c.mine).length}つの分類`)}${kpi("棚の査定額", yen(myValue), "今後12ヶ月の予想再販収益（あなたの取り分）")}${kpi("受付中の分類", CATS.filter(selfOpen).length + " / " + CATS.length, "需要がある分類だけ受付")}${kpi("登録から販売開始まで", "平均2日", "Seri AI検査＋抜き取り審査")}</div>`
+        + `<div class="card"><div class="card-h"><div><h2>分類</h2><p>1件あたりの予想収益 ＝ 12ヶ月 × 月の再販見込み × カタログ価格 × 90%</p></div></div><div class="tbl-wrap"><table><thead><tr><th>分類</th><th>形式・仕様</th><th>必要な条件</th><th class="r">基準単価</th><th class="r">月の再販見込み</th><th class="r">1件の予想収益（12ヶ月）</th><th class="r">あなたの資産</th><th>受付</th></tr></thead><tbody>
+          ${CATS.map((c) => { const open = selfOpen(c), per = 12 * c.lam * c.cat * 0.9;
+            return `<tr><td><b>${c.name}</b></td><td>${c.fmt}<span class="sub">${c.spec}</span></td><td>${c.need || "—"}</td><td class="r num">${yen(c.base)}/${c.unit || "分"}</td><td class="r num">${c.lam.toFixed(3)}回</td><td class="r num">${yen(per)}</td><td class="r num">${c.mine}件</td>
+              <td>${open ? `<button class="btn sm" data-vault="${c.id}">登録する</button>` : chip("受付停止", "")}</td></tr>`; }).join("")}
+          </tbody></table></div></div>`
+        + `<div class="grid-2e"><div class="card"><div class="card-h"><h2>登録の流れ</h2></div><div class="card-b"><div class="flow">
+            ${[["分類を選ぶ", "仕様（長さ・内容・同意の範囲）を確認"], ["録音・作成する", "スマホやパソコンから提出"], ["Seri AIが検査・査定", "品質A/B/Cと査定額をつける"], ["棚に登録", "カタログに並び、合う依頼に自動で割り当て"], ["売れるたびに収益", "標準ライセンスなら何度でも"]]
+              .map(([t, d], i) => `<div class="fstep"><span class="no">${i + 1}</span><div><b>${t}</b><p>${d}</p></div></div>`).join("")}</div></div></div>
+          <div class="card"><div class="card-h"><h2>受付停止の理由</h2></div><div class="card-b"><div class="callout">1件の登録には、検査・審査などで約 ¥${QA_COST} かかります。12ヶ月でその費用を回収できる見込み（Seriの取り分 20% × 予想売上 &gt; ¥${QA_COST}）がある分類だけ、自主制作を受け付けます。売れない在庫を増やさず、登録した人の手間を無駄にしないためです。</div>
+            <p class="note">需要は毎週更新します。停止中の分類でも、企業からの依頼があれば受託できます。</p></div></div></div>`;
+    },
     "partner-pay"() {
-      const rows = [["2026/10/10", "9月分", partner.confirmed, "予定"], ...partner.history.map(([d, m, v]) => [d, m, v, "支払済"])];
+      const weeks = [["10/02（金）", "9/21〜9/27", 52380, "予定"], ["9/25（金）", "9/14〜9/20", 48960, "支払済"], ["9/18（金）", "9/7〜9/13", 44730, "支払済"], ["9/11（金）", "8/31〜9/6", 55350, "支払済"]];
       const ytd = partner.task.reduce((s, v) => s + v, 0) + partner.royalty.reduce((s, v) => s + v, 0);
-      return head("データ提供パートナー", "お支払い・税務", "毎月末で締め、翌月10日にお振込みします。明細は確定申告にそのまま使えます。")
-        + `<div class="kpis">${kpi("次回のお支払い", "10/10", "月末締め · 翌月10日払い")}${kpi("今年の収益（税抜）", yen(ytd), "4月〜9月")}${kpi("源泉徴収税（今年の見込み）", yen(withholding(ytd)), "1月に支払調書をお送りします")}${kpi("インボイス登録", "登録済み", partner.invoiceNo)}</div>`
-        + `<div class="card"><div class="card-h"><h2>支払明細</h2><p>ライセンス料＋消費税−源泉徴収税＝お振込額</p></div><div class="tbl-wrap"><table><thead><tr><th>お支払い日</th><th>対象</th><th class="r">ライセンス料</th><th class="r">消費税</th><th class="r">源泉徴収税</th><th class="r">お振込額</th><th>状態</th></tr></thead><tbody>
-          ${rows.map(([d, m, v, s]) => { const vat = Math.round(v * R.vat), wh = withholding(v); return `<tr><td class="num">${d}</td><td>${m}</td><td class="r num">${yen(v)}</td><td class="r num">${yen(vat)}</td><td class="r num">${yen(-wh)}</td><td class="r num"><b>${yen(v + vat - wh)}</b></td><td>${chip(s, s === "予定" ? "warn" : "good")}</td></tr>`; }).join("")}
+      return head("データ提供パートナー", "お支払い・税務", "毎週日曜に締めて、その週の金曜にお振込みします。明細は確定申告にそのまま使えます。")
+        + `<div class="kpis">${kpi("次回のお支払い", "10/2（金）", "毎週日曜締め · 金曜払い")}${kpi("今年の収益（税抜）", yen(ytd), "4月〜9月")}${kpi("源泉徴収税（今年の見込み）", yen(withholding(ytd)), "1月に支払調書をお送りします")}${kpi("インボイス登録", "登録済み", partner.invoiceNo)}</div>`
+        + `<div class="card"><div class="card-h"><h2>支払明細</h2><p>ライセンス料＋消費税−源泉徴収税＝お振込額 · ¥3,000未満は翌週に繰り越し</p></div><div class="tbl-wrap"><table><thead><tr><th>お支払い日</th><th>対象の週</th><th class="r">ライセンス料</th><th class="r">消費税</th><th class="r">源泉徴収税</th><th class="r">お振込額</th><th>状態</th></tr></thead><tbody>
+          ${weeks.map(([d, w, v, s]) => { const vat = Math.round(v * R.vat), wh = withholding(v); return `<tr><td class="num">${d}</td><td class="num">${w}</td><td class="r num">${yen(v)}</td><td class="r num">${yen(vat)}</td><td class="r num">${yen(-wh)}</td><td class="r num"><b>${yen(v + vat - wh)}</b></td><td>${chip(s, s === "予定" ? "warn" : "good")}</td></tr>`; }).join("")}
           </tbody></table></div></div>
           <div class="grid-2e"><div class="card"><div class="card-h"><h2>登録情報</h2></div><div class="card-b"><dl class="kv"><dt>名義</dt><dd>${partner.name}（個人事業主）</dd><dt>適格請求書発行事業者</dt><dd class="num">${partner.invoiceNo}</dd><dt>振込先</dt><dd>○○銀行 渋谷支店 普通 ****321</dd><dt>本人確認</dt><dd>${chip("確認済み", "good")}</dd><dt>職種の確認</dt><dd>${chip("看護師免許 確認済み", "good")}</dd></dl></div></div>
-          <div class="card"><div class="card-h"><h2>契約</h2></div><div class="card-b"><dl class="kv"><dt>データ提供・ライセンス基本契約</dt><dd>2026/06/12 締結</dd><dt>同意書</dt><dd>第2026-10-01版</dd><dt>なりすまし利用の禁止</dt><dd>全ライセンス共通</dd></dl><p class="note">Seriはあなたからデータの利用許諾を受け、AI企業に再許諾します。データの権利はあなたに残ります。</p></div></div></div>`;
+          <div class="card"><div class="card-h"><h2>契約</h2></div><div class="card-b"><dl class="kv"><dt>データ提供・ライセンス基本契約</dt><dd>2026/06/12 締結</dd><dt>同意書</dt><dd>第2026-10-01版</dd><dt>なりすまし利用の禁止</dt><dd>全ライセンス共通</dd><dt>不正時の返還</dt><dd>12ヶ月（本人以外の声など）</dd></dl><p class="note">Seriはあなたからデータの利用許諾を受け、AI企業に再許諾します。データの権利はあなたに残ります。</p></div></div></div>`;
     },
 
     // ---------- buyer ----------
@@ -416,24 +501,25 @@ tr.mine td { font-weight: 700; }
           ${buyer.orders.map((o) => `<tr><td>${o.title}<span class="sub id">${o.id}</span></td><td>${R.tiers[o.tier][0]}${o.industry ? " · " + R.industries[o.industry][0] : ""} · ${lic(o.license)}</td><td class="r num">${yen(unitValue(o) * o.units)}</td><td class="num">${o.done.toLocaleString()} / ${o.units.toLocaleString()}件</td><td>${chip(o.status, o.status === "完了" ? "good" : o.status === "検収中" ? "warn" : "info")}</td><td class="num">${o.due}</td></tr>`).join("")}</tbody></table></div></div>`;
     },
     "buyer-procure"() {
-      return head("AI企業", "調達", "条件を入れると、その場で見積もりが出ます。確定するとデポジットから充当し、条件に合うパートナーへ依頼が届きます。")
+      return head("AI企業", "調達", "分類・長さ・品質・ライセンスを選ぶと、その場で見積もりが出ます。代金は納品されたデータの品質で精算します。")
         + `<div class="grid-2"><div class="card"><div class="card-h"><h2>新しい依頼</h2></div><div class="card-b"><div class="form">
-            <label class="field">データの種類<select id="q-kind">${Object.entries(R.kinds).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
+            <label class="field">分類<select id="q-cat">${CATS.map((c) => `<option value="${c.id}">${c.name}</option>`).join("")}</select></label>
             <label class="field">件数<input id="q-units" type="number" min="10" step="10" value="500"></label>
-            <label class="field">1件あたりの単価（円）<input id="q-price" type="number" min="100" step="10" value="400"></label>
-            <label class="field">作り手の品質順位<select id="q-tier">${Object.entries(R.tiers).map(([k, v]) => `<option value="${k}">${v[0]} ×${v[1]}</option>`).join("")}</select></label>
-            <label class="field">職種（確認済み）<select id="q-industry">${Object.entries(R.industries).map(([k, v]) => `<option value="${k}">${v[0]} ×${v[1]}</option>`).join("")}</select></label>
-            <label class="field">ライセンス<select id="q-license">${Object.entries(R.licenses).map(([k, v]) => `<option value="${k}">${v[0]} ×${v[1]}</option>`).join("")}</select></label>
-          </div><p class="note">品質・職種・ライセンスの倍率は（仮）。すべてのデータは Seri AI の検査と人の抜き取り審査を通ってから納品されます。</p></div></div>
+            <label class="field" id="q-min-wrap">1件の長さ（分）<input id="q-min" type="number" min="0.5" max="10" step="0.5" value="2"></label>
+            <label class="field">作り手の品質順位<select id="q-tier">${Object.entries(R.tiers).map(([k, v]) => `<option value="${k}">${v[0]}</option>`).join("")}</select></label>
+            <label class="field">受け取る品質<select id="q-grade"><option value="AB">A と B（それぞれの価格で精算）</option><option value="A">A のみ</option></select></label>
+            <label class="field">ライセンス<select id="q-license">${Object.entries(R.licenses).map(([k, v]) => `<option value="${k}">${v[0]}</option>`).join("")}</select></label>
+          </div>
+          <div class="callout"><b>価格の式:</b> 基準単価 × 長さ × 品質（A 1.5 / B 1.0）× 希少性（資格が必要な分類 1.2〜1.3）＋ 独占の上乗せ。品質×希少性は最大3倍まで。作り手の順位は「誰が受けられるか」を決め、価格は届いたデータの品質で決まります。</div></div></div>
           <div class="card"><div class="card-h"><h2>見積もり</h2><span class="chip info">デポジットから充当</span></div><div class="card-b" id="quote"></div></div></div>`;
     },
     "buyer-deliveries"() {
-      return head("AI企業", "納品・検収", "納品から14日以内に検収してください。問題があれば差し戻せます。期限を過ぎると自動で検収され、パートナーへの支払いが確定します。")
+      return head("AI企業", "納品・検収", "Seriが統計的な抜き取り検査で合格にしたロットは、自動で検収されます。受け取りから30日以内なら、隠れた問題を報告して全額返金を受けられます。")
         + `<div class="card"><div class="tbl-wrap"><table><thead><tr><th>納品</th><th class="r">件数</th><th>品質（Seri AI）</th><th>検収期限</th><th>データカード</th><th></th></tr></thead><tbody>
           ${buyer.deliveries.map((d, i) => `<tr><td><span class="id">${d.id}</span><span class="sub">${d.order}</span></td><td class="r num">${d.units}件</td><td class="num">A ${pct(d.a, 0)} · B ${pct(d.b, 0)} · C ${pct(d.c, 0)}</td><td class="num">${d.due}</td><td><span class="note">seri.datacard.v1 · SHA-256 · 同意書の版</span></td>
             <td>${d.state === "open" ? `<div class="row"><button class="btn sm" data-accept-dlv="${i}">検収する</button><button class="btn sec sm" data-reject-dlv="${i}">差し戻す</button></div>` : d.state === "rejected" ? chip("差し戻し済み", "bad") : chip("検収済み", "good")}</td></tr>`).join("")}
           </tbody></table></div></div>
-          <div class="callout"><b>差し戻しと返金:</b> 検収期間中に問題が認められたデータは全額を返金します（デポジットに戻ります）。その分はパートナーへ支払われません。</div>`;
+          <div class="callout"><b>30日保証:</b> 受け取り後30日以内に問題が認められたデータは全額を返金します（デポジットに戻ります）。本人以外の声などの不正は、パートナーへ支払った分を12ヶ月まで返還請求します。</div>`;
     },
     "buyer-billing"() {
       return head("AI企業", "請求・契約", "月末締めで適格請求書を発行し、デポジットから充当します。ライセンスの範囲とAPIキーもここで管理します。")
@@ -449,7 +535,7 @@ tr.mine td { font-weight: 700; }
       const total = ops.cash.reduce((s, c) => s + c[1], 0), mine = ops.cash[ops.cash.length - 1][1];
       let bal = total;
       return head("Seri運営", "資金", "口座のお金のうち、どれが誰のものかを分けて管理します。前受金とパートナーへの未払金はSeriのお金ではありません。")
-        + `<div class="kpis">${kpi("口座残高", yen(total), "9/30 時点")}${kpi("Seriが自由に使える資金", yen(mine), `口座残高の ${pct(mine / total)}`)}${kpi("10月の入出金の差し引き（予定）", yen(ops.calendar.reduce((s, c) => s + c[2], 0)), "9月に受け取った前受金からの支払いを含む")}${kpi("与信枠の利用", "¥264万 / ¥500万", "請求書払いの企業 1社")}</div>`
+        + `<div class="kpis">${kpi("口座残高", yen(total), "9/30 時点")}${kpi("Seriが自由に使える資金", yen(mine), `口座残高の ${pct(mine / total)}`)}${kpi("10月の入出金の差し引き（予定）", yen(ops.calendar.reduce((s, c) => s + c[2], 0)), "9月の前受金からの支払いを含む")}${kpi("Seriが負う未回収リスク", "¥0", "後払いは決済サービスが保証")}</div>`
         + `<div class="grid-2"><div class="card"><div class="card-h"><h2>口座残高の内訳</h2><p>分別管理: 前受金・未払金・預り税は別口座</p></div><div class="tbl-wrap"><table><thead><tr><th>区分</th><th class="r">金額</th><th class="hide-sm" style="width:22%">割合</th><th>支払期日</th></tr></thead><tbody>
           ${ops.cash.map(([k, v, d, due], i) => `<tr class="${i === ops.cash.length - 1 ? "mine" : ""}"><td>${k}<span class="sub">${d}</span></td><td class="r num">${yen(v)}</td><td class="hide-sm"><div class="hbar"><i style="width:${(v / total * 100).toFixed(1)}%"></i></div></td><td class="num">${due}</td></tr>`).join("")}
           </tbody></table></div></div>
@@ -458,25 +544,34 @@ tr.mine td { font-weight: 700; }
           </tbody></table></div></div></div>`
         + `<div class="card"><div class="card-h"><h2>資金の原則</h2></div><div class="card-b">
             <div class="callout"><b>1. 先に受け取り、あとで払う。</b> 買い手はデポジット（前受金）で先に入金。パートナーへの支払いは、入金済みで検収が終わった分だけ。Seriが立て替えることはありません。</div>
-            <div class="callout"><b>2. 他人のお金を分けて持つ。</b> 前受金・パートナーへの未払金・預り税は、Seriの運転資金と別の口座で管理します。</div>
-            <div class="callout"><b>3. 請求書払いは審査した企業だけ。</b> 与信枠は1社あたり最大 ¥500万。未回収のリスクをSeriの手元資金で吸収できる範囲に抑えます。</div>
-            <div class="callout warn"><b>要確認（専門家）:</b> デポジットの残高が前払式支払手段にあたるか（資金決済法）、データのライセンス料が源泉徴収の対象か、海外企業への販売の消費税（輸出免税）。</div></div></div>`;
+            <div class="callout"><b>2. 他人のお金を分けて持つ。</b> 前受金・未払金・預り税は別口座。運転資金に使うのは「自由に使える資金」だけ。</div>
+            <div class="callout"><b>3. 後払いは保証付きの決済サービス経由。</b> 請求書払いを望む企業には、与信と回収を代行するBtoB後払い決済サービス（手数料2〜3%）を使います。Seri自身が与信を出す場合は、未回収の合計を「自由に使える資金」の30%以内に抑えます。</div>
+            <div class="callout warn"><b>要確認（専門家）:</b> デポジットが前払式支払手段にあたるか（資金決済法）、ライセンス料の源泉徴収、海外企業への販売の消費税（輸出免税）。</div></div></div>`;
     },
     "ops-flow"() {
-      const stages = [["①", "依頼・契約", "6件", "¥486万", "見積 → 基本契約 → 個別の依頼", ""], ["②", "入金", "2件待ち", "¥300万", "デポジットの入金を確認", "money"], ["③", "募集・制作", "14案件", "1,820件", "職種・順位で合うパートナーに配信", ""], ["④", "Seri AI検査", "64件", "平均2.4秒", "自動判定 94% · 残りは人へ", "ai"], ["⑤", "抜き取り審査", "22件", "5%抽出", "人が聞いて最終確認", ""], ["⑥", "納品・検収", "3,410件", "¥216万", "14日以内 · 期限後は自動検収", ""], ["⑦", "精算", "54人", "¥1,138万", "月末締め · 翌月10日払い", "money"]];
-      return head("Seri運営", "取引フロー", "依頼から支払いまでの7段階。どこに何件、いくら止まっているかを見て、詰まりを先に解消します。")
+      const stages = [["①", "依頼・見積", "6件", "¥486万", "分類・長さ・品質で自動見積", ""], ["②", "入金", "2件待ち", "¥300万", "デポジットの入金を確認", "money"], ["③", "募集・制作", "14案件", "1,820件", "最低話者数を満たすよう配分", ""], ["④", "Seri AI全件検査", "64件", "平均2.4秒", "品質A/B/Cと査定額", "ai"], ["⑤", "統計的な抜き取り", "週次ロット", "181件/ロット", "不良4件以下なら合格", "ai"], ["⑥", "自動検収", "3,410件", "¥216万", "合格ロットは即検収 · 30日保証", ""], ["⑦", "週次精算", "54人", "毎週金曜", "日曜締め · 源泉徴収", "money"]];
+      const fixes = [
+        ["支払いが遅い", "検収14日＋月末締め＋翌月10日", "平均38.7日・最長54日", "統計的な抜き取りで即検収＋毎週精算", "平均10日・最長13日"],
+        ["人の審査が一律5%", "ロットの大きさに関係なく5%", "品質の保証がない", "週ごとの分類別ロットから181件を抽出し不良4件以下で合格", "不良5%以上のロットを95%の確率で止める"],
+        ["1件単位の価格", "5秒でも2分でも同じ値段", "短いデータで稼ぐ抜け道", "長さ（分）単位の価格", "抜け道がなくなる"],
+        ["順位で価格が決まる", "上位10%の人がCを出しても2倍", "払った品質と届いた品質がずれる", "届いた品質（A/B）で精算、順位は受けられる人の条件だけ", "支払った額 ＝ 受け取った品質"],
+        ["独占の倍率が固定", "買い切りは一律3倍", "人気のデータは安すぎ、不人気は高すぎ", "あきらめる再販収益の見込み×1.2を上乗せ", "作り手が損をしない"],
+        ["1人20%までの上限", "希少な職種では集まらない", "上位10%の依頼が埋まらない", "買い手が「最低話者数」を指定し、上限＝件数÷話者数", "必要な多様性だけを守る"],
+        ["与信枠¥500万", "1社の未払いで倒産しうる", "手元資金¥140万に対し大きすぎ", "後払いは保証付き決済サービス経由", "未回収リスク ¥0"],
+      ];
+      return head("Seri運営", "取引フロー", "依頼から支払いまでの7段階。AIが全件を検査し、人は統計的に決めた件数だけを確認します。")
         + `<div class="pipe">${stages.map(([n, t, v, m, d, k]) => `<div class="stage ${k}"><span class="n">${n}</span><b>${t}</b><span class="v">${v}</span><span class="note num">${m}</span><span class="d">${d}</span></div>`).join("")}</div>`
-        + `<div class="grid-2e"><div class="card"><div class="card-h"><h2>品質とリスク（9月）</h2></div><div class="tbl-wrap"><table><tbody>
+        + `<div class="card"><div class="card-h"><div><h2>見直した点</h2><p>前の流れの弱点と、その直し方</p></div></div><div class="tbl-wrap"><table><thead><tr><th>弱点</th><th>前の流れ</th><th>何が困るか</th><th>新しい流れ</th><th>効果</th></tr></thead><tbody>
+          ${fixes.map(([a, b, c, d, e]) => `<tr><td><b>${a}</b></td><td>${b}</td><td>${c}</td><td>${d}</td><td>${chip(e, "good")}</td></tr>`).join("")}</tbody></table></div></div>`
+        + `<div class="grid-2e"><div class="card"><div class="card-h"><h2>抜き取り検査の設計</h2></div><div class="card-b"><dl class="kv">
+            <dt>1ロットから抜き取る件数</dt><dd class="num">181件</dd><dt>合格の条件</dt><dd>不良 4件以下</dd><dt>不良5%のロットを誤って通す確率</dt><dd class="num">4.9%</dd><dt>不良1%のロットを誤って止める確率</dt><dd class="num">3.6%</dd>
+            <dt>2,000件のロットで人が聞く割合</dt><dd class="num">9.0%</dd><dt>10,000件のロットで人が聞く割合</dt><dd class="num">1.8%</dd></dl>
+            <p class="note">二項分布で計算。ロットが大きいほど人の審査の割合が下がるので、納品を週ごと・分類ごとにまとめて大きなロットにします。</p></div></div>
+          <div class="card"><div class="card-h"><h2>品質とリスク（9月）</h2></div><div class="tbl-wrap"><table><tbody>
             <tr><td>Seri AIの自動判定率</td><td class="r num">94.1%</td><td>${chip("目標 90%以上", "good")}</td></tr>
-            <tr><td>人の抜き取り審査との一致率</td><td class="r num">97.3%</td><td>${chip("目標 95%以上", "good")}</td></tr>
-            <tr><td>差し戻し率（検収時）</td><td class="r num">1.8%</td><td>${chip("目標 3%未満", "good")}</td></tr>
-            <tr><td>返金率</td><td class="r num">0.4%</td><td>${chip("目標 1%未満", "good")}</td></tr>
-            <tr><td>締切を過ぎた依頼</td><td class="r num">2件</td><td>${chip("要対応", "warn")}</td></tr></tbody></table></div></div>
-          <div class="card"><div class="card-h"><h2>今日の対応</h2></div><div class="tbl-wrap"><table><tbody>
-            <tr><td>ORD-2609-009 · 締切超過 · 残り 42件</td><td>${chip("順位を1段下げて差額を返金", "warn")}</td></tr>
-            <tr><td>パートナー 3人の職種確認（免許証）</td><td>${chip("審査待ち", "info")}</td></tr>
-            <tr><td>Sora Translate の与信審査</td><td>${chip("決算書の確認中", "info")}</td></tr>
-            <tr><td>DLV-007-03 差し戻し 6件の確認</td><td>${chip("パートナーへ理由を送付", "info")}</td></tr></tbody></table></div></div></div>`;
+            <tr><td>抜き取り審査との一致率</td><td class="r num">97.3%</td><td>${chip("目標 95%以上", "good")}</td></tr>
+            <tr><td>不合格になったロット</td><td class="r num">1 / 23</td><td>${chip("全件を人が再確認", "warn")}</td></tr>
+            <tr><td>30日保証での返金率</td><td class="r num">0.4%</td><td>${chip("目標 1%未満", "good")}</td></tr></tbody></table></div></div></div>`;
     },
     "ops-revenue"() {
       const g = ops.gmv[5], rev = g * (R.buyerFee + (1 - R.partnerShare)), items = g / 300, u = ops.unit;
@@ -486,21 +581,53 @@ tr.mine td { font-weight: 700; }
         + `<div class="grid-2"><div class="card"><div class="card-h"><div><h2>月別の取引額</h2><p>データ価格の合計（サービス料・税別）</p></div></div><div class="card-b">${barChart({ labels: ops.months, series: [ops.gmv], names: ["取引額"] })}</div></div>
           <div class="card"><div class="card-h"><h2>1件あたりの収支（¥300のデータ）</h2></div><div class="card-b"><dl class="kv">
             <dt>買い手の支払い</dt><dd class="num">${yen(u.price * 1.1)}<span class="note"> ＋税</span></dd><dt>パートナーへ（90%）</dt><dd class="num">${yen(-u.price * .9)}</dd><dt class="total">Seriの収益</dt><dd class="total num">${yen(u.price * .2)}</dd>
-            <dt>AI検査（音声認識＋ルール確認）</dt><dd class="num">−¥${u.qa}</dd><dt>人の抜き取り審査（5%）</dt><dd class="num">−¥${u.spot}</dd><dt>決済・振込</dt><dd class="num">−¥${u.pay}</dd><dt>返金の引当</dt><dd class="num">−¥${u.refund}</dd>
-            <dt class="total">1件あたりの粗利</dt><dd class="total num">¥${(u.price * .2 - u.qa - u.spot - u.pay - u.refund).toFixed(1)}</dd></dl>
-            <p class="note">AIの自動判定率が上がるほど、人の審査コストが下がり粗利が増えます。</p></div></div></div>`;
+            <dt>AI検査（音声認識＋ルール確認）</dt><dd class="num">−¥${u.qa}</dd><dt>人の抜き取り審査</dt><dd class="num">−¥${u.spot}</dd><dt>決済・振込</dt><dd class="num">−¥${u.pay}</dd><dt>返金の引当</dt><dd class="num">−¥${u.refund}</dd>
+            <dt class="total">1件あたりの粗利（新規）</dt><dd class="total num">¥${(u.price * .2 - u.qa - u.spot - u.pay - u.refund).toFixed(1)}</dd><dt>1件あたりの粗利（再販）</dt><dd class="num">¥58.2</dd></dl>
+            <p class="note">再販は検査が済んでいるため、原価は決済分だけ。再販の割合が増えるほど粗利率が上がります。</p></div></div></div>`;
+    },
+    "ops-finance"() {
+      const S = {"fixed": [4.9, 3.8, 2.7, 76.7, 70.9, 65.1, 59.4, 53.7, 48.1, 42.6, 37.1, 31.7, 26.4, 21.1, 15.9, 10.8, 5.7, 0.7, -1.2, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null], "staged": [4.9, 3.8, 2.7, 76.7, 75.7, 74.7, 73.8, 72.9, 72.1, 71.3, 70.7, 70.1, 69.6, 69.0, 68.5, 67.8, 67.1, 66.4, 65.6, 64.9, 64.2, 63.4, 62.7, 61.9, 61.0, 60.1, 59.2, 58.2, 57.3, 56.1, 55.1, 54.2, 53.1, 52.0, 51.1, 50.0]};
+      const months = Array.from({ length: 36 }, (_, i) => `${i + 1}ヶ月`);
+      const be = [["¥120万（創業者＋業務委託）", 1.2e6], ["¥300万", 3e6], ["¥600万（6人）", 6e6], ["¥2,500万（25人）", 25e6]];
+      const mNew = 0.1557, mRes = 0.194;
+      return head("Seri運営", "財務", "利益の式、損益分岐点、3年間の資金の推移、倒産の確率。数字は仮定にもとづくシミュレーションで、予測ではありません。")
+        + `<div class="kpis">${kpi("粗利率（新規のデータ）", "15.6%", "取引額に対して")}${kpi("粗利率（再販）", "19.4%", "検査費用がかからない")}${kpi("倒産確率（固定費を先に増やす）", "88%", "36ヶ月以内 · 2万回の試行")}${kpi("倒産確率（段階的に採用）", "2.5%", "同じ条件・採用のルールだけ変更")}</div>`
+        + `<div class="grid-2"><div class="card"><div class="card-h"><div><h2>Seriが自由に使える資金の推移（中央値）</h2><p>4ヶ月目に7,500万円を調達した場合 · 単位 百万円</p></div></div><div class="card-b">${lineChart({ labels: months, series: [S.fixed, S.staged], names: ["固定費を先に¥600万へ", "粗利に合わせて段階的に採用"] })}
+            <p class="note">固定費を先に増やすと、半分以上の試行で19ヶ月目に資金が尽きます。粗利に合わせて増やすと、36ヶ月後も中央値で5,000万円が残ります。</p></div></div>
+          <div class="card"><div class="card-h"><h2>利益の式</h2></div><div class="card-b">
+            <div class="callout"><b>月の利益 ＝ 取引額 × 粗利率 − 固定費</b><br>粗利率 ＝ 15.6% ×（1 − 再販の割合）＋ 19.4% × 再販の割合</div>
+            <div class="tbl-wrap"><table><thead><tr><th>固定費（月）</th><th class="r">損益分岐の取引額（月）</th><th class="r">再販50%のとき</th></tr></thead><tbody>
+            ${be.map(([l, F]) => `<tr><td>${l}</td><td class="r num">${man(F / mNew)}</td><td class="r num">${man(F / (mNew * .5 + mRes * .5))}</td></tr>`).join("")}</tbody></table></div>
+            <p class="note">取引額が損益分岐を超えるまでは、毎月「固定費 − 取引額×粗利率」ずつ資金が減ります。</p></div></div></div>`
+        + `<div class="grid-2e"><div class="card"><div class="card-h"><div><h2>シナリオ別の倒産確率（36ヶ月）</h2><p>毎月の成長率にばらつき（標準偏差25%）、毎月3%の確率で最大の顧客が離れる（取引額−40%）</p></div></div><div class="tbl-wrap"><table><thead><tr><th>シナリオ</th><th class="r">倒産確率</th><th>黒字化の中央値</th></tr></thead><tbody>
+            <tr><td>自己資金¥600万 · 固定費¥120万 · 調達なし</td><td class="r num">96%</td><td>—（6ヶ月目に資金切れ）</td></tr>
+            <tr><td>調達¥7,500万 · 固定費を5ヶ月目から¥600万</td><td class="r num">88%</td><td>19ヶ月目</td></tr>
+            <tr><td>同上 · 手数料を25%に上げる</td><td class="r num">83%</td><td>19ヶ月目</td></tr>
+            <tr class="mine"><td>調達¥7,500万 · 粗利に合わせて段階的に採用</td><td class="r num">2.5%</td><td>16ヶ月目</td></tr>
+            <tr><td>同上 · 成長が半分</td><td class="r num">0.3%</td><td>23ヶ月目</td></tr>
+            <tr><td>同上 · 最初の取引額が月¥200万</td><td class="r num">9.7%</td><td>8ヶ月目</td></tr></tbody></table></div></div>
+          <div class="card"><div class="card-h"><div><h2>調達しない場合の倒産確率</h2><p>自己資金¥600万 · 36ヶ月 · 固定費 × 最初の月の取引額</p></div></div><div class="tbl-wrap"><table><thead><tr><th>固定費（月）</th><th class="r">¥50万</th><th class="r">¥100万</th><th class="r">¥200万</th><th class="r">¥300万</th></tr></thead><tbody>
+            <tr><td>¥30万</td><td class="r num">3%</td><td class="r num">0%</td><td class="r num">0%</td><td class="r num">0%</td></tr>
+            <tr><td>¥50万</td><td class="r num">20%</td><td class="r num">6%</td><td class="r num">1%</td><td class="r num">0%</td></tr>
+            <tr><td>¥80万</td><td class="r num">61%</td><td class="r num">26%</td><td class="r num">6%</td><td class="r num">2%</td></tr>
+            <tr><td>¥120万</td><td class="r num">96%</td><td class="r num">72%</td><td class="r num">30%</td><td class="r num">12%</td></tr></tbody></table></div></div></div>`
+        + `<div class="card"><div class="card-h"><h2>倒産を防ぐルール</h2></div><div class="card-b">
+            <div class="callout"><b>1. 採用は粗利に合わせる。</b> 次の段階（¥120万 → ¥300万 → ¥600万 → ¥1,200万）へ進むのは、直近3ヶ月の粗利が次の固定費の半分を超え、かつ差額の12ヶ月分の資金があるときだけ。</div>
+            <div class="callout"><b>2. 顧客のお金には手をつけない。</b> 前受金・未払金・預り税は別口座。倒産の多くは、預かり金を運転資金に使ってしまうことから起きます。</div>
+            <div class="callout"><b>3. 最初の3ヶ月は固定費を月¥50万以下に。</b> 調達前は創業者と業務委託だけで回し、最初の取引額を月¥100万以上にすることを優先します。</div>
+            <div class="callout warn"><b>一番の弱点:</b> 取引額が小さいうちは、20%の手数料では固定費を賄えません。倒産確率を決めるのは手数料率より「最初の取引額」と「固定費を増やす速さ」です。</div></div></div>`;
     },
     "ops-model"() {
       const steps = [
-        ["企業が依頼する", "AI企業が条件（種類・件数・単価・品質順位・職種・ライセンス）を入れると、その場で見積もり。基本契約を結んだうえで依頼を確定。", "買い手 → Seri", "デポジット（前受金）で先に入金。データ価格＋サービス料10%＋消費税"],
-        ["パートナーが作る", "条件に合う個人事業主・専門職に依頼が届く。1人が受けられるのは20%まで。", "—", "まだお金は動かない"],
-        ["Seri AIが検査・査定", "長さ・音質・重複・音声認識での聞き直し・個人情報のチェックを数秒で。品質A/B/Cと査定額を付ける。5%は人が抜き取りで確認。", "Seriの原価", "1件あたり約¥11（AI ¥6＋人 ¥5）"],
-        ["納品・検収（14日）", "データカード付きで納品。企業は14日以内に検収か差し戻し。期限後は自動で検収。", "前受金 → 未払金", "検収した分だけ、パートナーへの未払金として確定"],
-        ["精算（月末締め・翌月10日）", "パートナーへライセンス料を支払い、個人の源泉徴収税を納付。企業には適格請求書を発行し、デポジットから充当。", "Seri → パートナー", "ライセンス料（データ価格の90%）＋消費税−源泉徴収税"],
-        ["資産として再販", "標準ライセンスのデータはパートナーの資産としてカタログに残り、別の企業に何度でも販売される。", "買い手 → Seri → パートナー", "再販のたびに同じ計算で収益が発生（追加の制作コストなし）"],
+        ["企業が依頼する", "分類・長さ・品質・ライセンスを選ぶと、その場で見積もり。基本契約を結んで依頼を確定。", "買い手 → Seri", "デポジットで先に入金（後払いは保証付き決済サービス経由）。品質Aの上限額を預かる"],
+        ["棚から割り当てる／パートナーが作る", "条件に合う資産が棚にあれば、制作なしで即納品。足りない分だけ条件に合うパートナーへ依頼。最低話者数を満たすように配分。", "—", "まだお金は動かない"],
+        ["Seri AIが全件を検査・査定", "長さ・音質・重複・音声認識での聞き直し・個人情報のチェック。品質A/B/Cと査定額をつける。", "Seriの原価", "1件あたり約¥6"],
+        ["統計的な抜き取りと自動検収", "週ごと・分類ごとのロットから181件を人が確認し、不良4件以下なら合格。合格ロットはその場で検収。", "前受金 → 未払金", "届いた品質で精算。Bだった分の差額はデポジットに戻る"],
+        ["週次の精算", "日曜に締めて金曜に支払い。個人の源泉徴収税は翌月10日に納付。企業には月末に適格請求書。", "Seri → パートナー", "ライセンス料（データ価格の90%）＋消費税−源泉徴収税"],
+        ["資産として再販", "標準ライセンスのデータは棚に残り、別の企業に何度でも販売。30日保証の期間が過ぎた資産から優先。", "買い手 → Seri → パートナー", "再販のたびに同じ計算。検査済みなのでSeriの原価は決済分だけ"],
       ];
       return head("Seri運営", "事業モデル", "誰が、何に、いつ、いくら払うか。運営の流れとお金の流れを1枚にまとめたものです。")
-        + `<div class="kpis">${kpi("Seriの取り分", "データ価格の20%", "パートナー側10%＋買い手側10%")}${kpi("パートナーの取り分", "90%", "＋消費税 − 源泉徴収税")}${kpi("お金の順番", "先に受け取る", "デポジット → 検収 → 支払い")}${kpi("支払いサイト", "翌月10日", "月末締め")}</div>`
+        + `<div class="kpis">${kpi("Seriの取り分", "データ価格の20%", "パートナー側10%＋買い手側10%")}${kpi("パートナーの取り分", "90%", "＋消費税 − 源泉徴収税")}${kpi("お金の順番", "先に受け取る", "デポジット → 検収 → 支払い")}${kpi("パートナーへの支払い", "毎週金曜", "日曜締め · 平均10日で入金")}</div>`
         + `<div class="card"><div class="card-h"><h2>取引の流れとお金の動き</h2></div><div class="card-b"><div class="flow">${steps.map(([t, d, who, m], i) => `<div class="fstep"><span class="no">${i + 1}</span><div><b>${t}</b><p>${d}</p></div><div class="money"><b>${who}</b><br>${m}</div></div>`).join("")}</div></div></div>`
         + `<div class="grid-2e"><div class="card"><div class="card-h"><h2>収益の柱</h2></div><div class="tbl-wrap"><table><thead><tr><th>いつから</th><th>収益</th><th>内容</th></tr></thead><tbody>
             <tr><td>今</td><td>取引手数料 20%</td><td>受託と再販のすべての取引</td></tr>
@@ -516,9 +643,9 @@ tr.mine td { font-weight: 700; }
 
   // ================= navigation =================
   const NAV = {
-    partner: { who: ["佐藤 美咲 · 看護師（個人事業主）", "佐"], label: "データ提供パートナー", items: [["overview", "概要"], ["assets", "データ資産", "148"], ["rfq", "案件", "4"], ["pay", "お支払い・税務"]], foot: ["佐藤 美咲", "インボイス登録済み · 本人確認済み"] },
+    partner: { who: ["佐藤 美咲 · 看護師（個人事業主）", "佐"], label: "データ提供パートナー", items: [["overview", "概要"], ["vault", "資産の棚"], ["assets", "資産の明細", "148"], ["rfq", "案件", "4"], ["pay", "お支払い・税務"]], foot: ["佐藤 美咲", "インボイス登録済み · 本人確認済み"] },
     buyer: { who: ["北斗LLMラボ株式会社 · 調達部", "北"], label: "AI企業", items: [["overview", "概要"], ["procure", "調達"], ["deliveries", "納品・検収", "2"], ["billing", "請求・契約"]], foot: ["北斗LLMラボ株式会社", "デポジット方式 · 基本契約済み"] },
-    ops: { who: ["Seri株式会社 · 運営", "S"], label: "Seri運営", items: [["cash", "資金"], ["flow", "取引フロー"], ["revenue", "収益"], ["model", "事業モデル"]], foot: ["Seri株式会社（設立準備中）", "数字はデモ用のサンプル"] },
+    ops: { who: ["Seri株式会社 · 運営", "S"], label: "Seri運営", items: [["cash", "資金"], ["finance", "財務"], ["flow", "取引フロー"], ["revenue", "収益"], ["model", "事業モデル"]], foot: ["Seri株式会社（設立準備中）", "数字はデモ用のサンプル"] },
   };
   const state = { portal: "partner", page: "overview", asset: 0, acceptBuyout: false };
 
@@ -553,30 +680,45 @@ tr.mine td { font-weight: 700; }
     if (ab) ab.addEventListener("change", () => { state.acceptBuyout = ab.checked; render(); });
     document.querySelectorAll("[data-accept-dlv]").forEach((b) => b.addEventListener("click", () => {
       const d = buyer.deliveries[+b.dataset.acceptDlv]; d.state = "done"; render();
-      toast(`${d.id}（${d.units}件）を検収しました。パートナーへの支払いが確定し、10/10に支払われます。`);
+      toast(`${d.id}（${d.units}件）を検収しました。パートナーへの支払いが確定し、今週金曜に支払われます。`);
     }));
     document.querySelectorAll("[data-reject-dlv]").forEach((b) => b.addEventListener("click", () => {
       const d = buyer.deliveries[+b.dataset.rejectDlv]; d.state = "rejected"; render();
       toast(`${d.id}を差し戻しました。該当データの代金はデポジットに戻ります。`);
     }));
+    document.querySelectorAll("[data-vault]").forEach((b) => b.addEventListener("click", () => {
+      const c = CATS.find((x) => x.id === b.dataset.vault);
+      toast(`「${c.name}」の登録を始めます（${c.spec}）。録音・提出は本番のアプリで行います。`);
+    }));
     if ($("#quote")) {
       const calc = () => {
-        const o = { units: +$("#q-units").value || 0, price: +$("#q-price").value || 0, tier: $("#q-tier").value, industry: $("#q-industry").value, license: $("#q-license").value };
-        const unit = unitValue(o), data = Math.round(unit * o.units), fee = Math.round(data * R.buyerFee), tax = Math.round((data + fee) * R.vat), total = data + fee + tax;
-        const ok = total <= buyer.deposit;
-        $("#quote").innerHTML = `<dl class="kv"><dt>1件あたり</dt><dd class="num">${yen(unit)}</dd><dt>データ価格（${o.units.toLocaleString()}件）</dt><dd class="num">${yen(data)}</dd><dt>サービス料（10%）</dt><dd class="num">${yen(fee)}</dd><dt>消費税（10%）</dt><dd class="num">${yen(tax)}</dd><dt class="total">お支払い合計</dt><dd class="total num">${yen(total)}</dd></dl>
-          <p class="note">うちパートナーへ ${yen(data * R.partnerShare)}（データ価格の90%）· 納期の目安 ${o.tier === "top10" ? 42 : o.tier === "top25" ? 28 : o.tier === "top50" ? 21 : 14}日</p>
-          <div class="callout ${ok ? "" : "warn"}">${ok ? `デポジット残高 ${yen(buyer.deposit)} から充当します。` : `デポジット残高が ${yen(total - buyer.deposit)} 足りません。確定すると不足分の請求書を発行します。`}</div>
-          <button class="btn" id="q-submit" ${o.units < 10 || o.price < 100 ? "disabled" : ""}>依頼を確定する</button>`;
+        const c = CATS.find((x) => x.id === $("#q-cat").value);
+        $("#q-min-wrap").hidden = c.unit === "件";
+        const units = +$("#q-units").value || 0, minutes = +$("#q-min").value || 0, tier = $("#q-tier").value, onlyA = $("#q-grade").value === "A", license = $("#q-license").value;
+        const pA = priceItem(c, minutes, "A", license), pB = priceItem(c, minutes, "B", license), prem = exclusivityPremium(c, license);
+        const aShare = onlyA ? 1 : A_SHARE[tier];
+        const maxData = Math.round(pA * units), expData = Math.round((pA * aShare + pB * (1 - aShare)) * units);
+        const fee = Math.round(maxData * R.buyerFee), tax = Math.round((maxData + fee) * R.vat), total = maxData + fee + tax;
+        const ok = total <= buyer.deposit, len = c.unit === "件" ? "1件" : `${minutes}分`;
+        $("#quote").innerHTML = `<dl class="kv">
+            <dt>1件（品質A）</dt><dd class="num">${yen(pA)}</dd>${onlyA ? "" : `<dt>1件（品質B）</dt><dd class="num">${yen(pB)}</dd>`}
+            <dt class="note">内訳</dt><dd class="note num">¥${c.base} × ${len} × ${Math.min(MULT_CAP, QUALITY.A * c.S).toFixed(2)}${prem ? ` ＋ 独占 ${yen(prem)}` : ""}</dd>
+            <dt>データ価格の上限（全件A · ${units.toLocaleString()}件）</dt><dd class="num">${yen(maxData)}</dd>
+            <dt>見込み（Aが${Math.round(aShare * 100)}%の場合）</dt><dd class="num">${yen(expData)}</dd>
+            <dt>サービス料（10%）</dt><dd class="num">${yen(fee)}</dd><dt>消費税（10%）</dt><dd class="num">${yen(tax)}</dd>
+            <dt class="total">預かる額（上限）</dt><dd class="total num">${yen(total)}</dd></dl>
+          <p class="note">届いたデータの品質で精算し、差額はデポジットに戻します。うちパートナーへ データ価格の90% · 納期の目安 ${tier === "top10" ? 42 : tier === "top25" ? 28 : tier === "top50" ? 21 : 14}日${c.need ? ` · 条件: ${c.need}` : ""}</p>
+          <div class="callout ${ok ? "" : "warn"}">${ok ? `デポジット残高 ${yen(buyer.deposit)} から預かります。` : `デポジット残高が ${yen(total - buyer.deposit)} 足りません。確定すると不足分の請求書を発行します。`}</div>
+          <button class="btn" id="q-submit" ${units < 10 || (c.unit !== "件" && minutes <= 0) ? "disabled" : ""}>依頼を確定する</button>`;
         $("#q-submit").onclick = () => {
           const id = `ORD-2609-0${15 + buyer.orders.length}`;
-          buyer.orders.unshift({ id, title: R.kinds[$("#q-kind").value], kind: $("#q-kind").value, ...o, done: 0, status: "募集中", due: "11/" + (o.tier === "any" ? "13" : "27") });
+          buyer.orders.unshift({ id, title: c.name, units, unit: Math.round(pA), price: Math.round(pA), tier, industry: "", license, done: 0, status: "募集中", due: "11/" + (tier === "any" ? "13" : "27") });
           if (ok) buyer.deposit -= total;
-          toast(`${id} を確定しました。条件に合うパートナーへ依頼が届きます。`);
+          toast(`${id} を確定しました。棚の在庫から割り当て、足りない分を条件に合うパートナーへ依頼します。`);
           location.hash = "buyer-overview";
         };
       };
-      ["#q-kind", "#q-units", "#q-price", "#q-tier", "#q-industry", "#q-license"].forEach((s) => $(s).addEventListener("input", calc));
+      ["#q-cat", "#q-units", "#q-min", "#q-tier", "#q-grade", "#q-license"].forEach((sel) => $(sel).addEventListener("input", calc));
       calc();
     }
   }
