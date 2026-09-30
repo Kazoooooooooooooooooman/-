@@ -307,7 +307,7 @@ tr.mine td { font-weight: 700; }
 
   // ================= chart =================
   function barChart({ labels, series, names, fmt = yen, h = 220 }) {
-    const W = 640, H = h, L = 64, B = 26, T = 18, n = labels.length;
+    const W = innerWidth < 760 ? 400 : 640, H = h, L = 64, B = 26, T = 18, n = labels.length;
     const totals = labels.map((_, i) => series.reduce((s, arr) => s + arr[i], 0));
     const max = Math.max(...totals), step = niceStep(max / 4), top = Math.ceil(max / step) * step;
     const y = (v) => T + (H - T - B) * (1 - v / top), bw = Math.min(46, (W - L) / n * 0.5);
@@ -384,7 +384,7 @@ tr.mine td { font-weight: 700; }
 
   // ================= line chart =================
   function lineChart({ labels, series, names, unit = "百万円", h = 240 }) {
-    const W = 640, H = h, L = 52, B = 26, T = 14;
+    const W = innerWidth < 760 ? 400 : 640, H = h, L = 52, B = 26, T = 14;
     const vals = series.flat().filter((v) => v != null), hi = Math.max(...vals), lo = Math.min(0, ...vals);
     const step = niceStep((hi - lo) / 4), top = Math.ceil(hi / step) * step, bot = Math.floor(lo / step) * step;
     const x = (i) => L + (W - L) * i / (labels.length - 1), y = (v) => T + (H - T - B) * (top - v) / (top - bot);
@@ -414,6 +414,72 @@ tr.mine td { font-weight: 700; }
     return `${legend}<div class="chart" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(names.join("と"))}">${g}<line class="cross grid-line" y1="${T}" y2="${H - B}" style="display:none;stroke:var(--mute)"/>${lines}<rect x="${L}" y="${T}" width="${W - L}" height="${H - T - B}" fill="transparent"/></svg><div class="tip" hidden></div></div>`;
   }
 
+  // ================= asset growth (cumulative, never goes down) =================
+  // 週ごとの確定収益を月の合計から配分し、累計にする。30日保証が過ぎて確定した分だけを数えるので、累計は減らない。
+  function weeklyGrowth() {
+    const fridays = Array.from({ length: 26 }, (_, i) => new Date(2026, 3, 3 + 7 * i));
+    const byMonth = {};
+    fridays.forEach((d, i) => { (byMonth[d.getMonth()] ||= []).push(i); });
+    const task = new Array(26).fill(0), roy = new Array(26).fill(0), wave = [0.21, 0.27, 0.23, 0.29, 0.25];
+    Object.values(byMonth).forEach((idx, m) => {
+      const w = idx.map((_, k) => wave[k]), sum = w.reduce((a, b) => a + b, 0);
+      [[task, partner.task[m]], [roy, partner.royalty[m]]].forEach(([arr, total]) => {
+        let left = total;
+        idx.forEach((i, k) => { const v = k === idx.length - 1 ? left : Math.round(total * w[k] / sum); arr[i] = v; left -= v; });
+      });
+    });
+    let a = 0, b = 0;
+    return { labels: fridays.map((d) => `${d.getMonth() + 1}/${d.getDate()}`), task: task.map((v) => (a += v)), royalty: roy.map((v) => (b += v)), weekTask: task, weekRoy: roy };
+  }
+  function growthChart(gr) {
+    const narrow = innerWidth < 760, W = narrow ? 400 : 960, H = narrow ? 240 : 280, L = 52, B = 26, T = 22, n = gr.labels.length, every = narrow ? 8 : 4;
+    const total = gr.task.map((v, i) => v + gr.royalty[i]), top0 = total[n - 1];
+    const step = niceStep(top0 / 4), top = Math.ceil(top0 * 1.08 / step) * step;
+    const x = (i) => L + (W - L) * i / (n - 1), y = (v) => T + (H - T - B) * (1 - v / top);
+    let g = "";
+    for (let v = 0; v <= top; v += step) g += `<line class="grid-line" x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text class="axis" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${man(v)}</text>`;
+    gr.labels.forEach((lab, i) => { if ((i % every === 0 && n - 1 - i >= every / 2) || i === n - 1) g += `<text class="axis" x="${x(i)}" y="${H - 6}" text-anchor="${i === n - 1 ? "end" : "middle"}">${lab}</text>`; });
+    const pts = (arr) => arr.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+    const base = `${x(n - 1)},${y(0)} ${x(0)},${y(0)}`;
+    // 受託（下の帯）と再販（上に積む帯）。境目に2pxの地色の線を引いて帯を分ける
+    const areas = `<polygon class="s1" points="${pts(gr.task)} ${base}"/>
+      <polygon class="s2" points="${pts(total)} ${gr.task.map((v, i) => `${x(i)},${y(v)}`).reverse().join(" ")}"/>
+      <polyline fill="none" stroke="var(--surface)" stroke-width="2" points="${pts(gr.task)}"/>
+      <polyline fill="none" stroke="var(--ink)" stroke-width="2" points="${pts(total)}"/>
+      <circle cx="${x(n - 1)}" cy="${y(total[n - 1])}" r="4.5" fill="var(--ink)" stroke="var(--surface)" stroke-width="2"/>
+      <text class="lbl" x="${x(n - 1) - 8}" y="${y(total[n - 1]) - 10}" text-anchor="end">${yen(total[n - 1])}</text>`;
+    // ¥10万ごとの節目
+    let marks = "";
+    for (let m = 100000; m < top0; m += 100000) {
+      const i = total.findIndex((v) => v >= m); if (i < 0) continue;
+      marks += `<circle cx="${x(i)}" cy="${y(total[i])}" r="3" fill="var(--surface)" stroke="var(--ink-2)" stroke-width="1.5"/>`;
+    }
+    const id = "g" + Math.random().toString(36).slice(2, 8);
+    setTimeout(() => {
+      const box = document.getElementById(id); if (!box) return;
+      const svg = box.querySelector("svg"), tip = box.querySelector(".tip"), cross = box.querySelector(".cross");
+      svg.addEventListener("mousemove", (e) => {
+        const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) / r.width * W;
+        const i = Math.max(0, Math.min(n - 1, Math.round((px - L) / (W - L) * (n - 1))));
+        cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.style.display = "";
+        tip.innerHTML = `${gr.labels[i]}の週まで<br>累計 <b>${yen(total[i])}</b><br>受託 <b>${yen(gr.task[i])}</b> · 再販 <b>${yen(gr.royalty[i])}</b><br>この週 <b>+${yen(gr.weekTask[i] + gr.weekRoy[i])}</b>`;
+        tip.style.left = Math.min(r.width - 90, Math.max(90, x(i) / W * r.width)) + "px"; tip.style.top = "6px"; tip.hidden = false;
+      });
+      svg.addEventListener("mouseleave", () => { tip.hidden = true; cross.style.display = "none"; });
+    });
+    return `<div class="legend"><span><i style="background:var(--series-1)"></i>受託の累計</span><span><i style="background:var(--series-2)"></i>再販の累計</span><span><i style="background:var(--ink);height:2px;vertical-align:3px"></i>合計</span></div>
+      <div class="chart" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="累計のライセンス収益の推移。${gr.labels[0]}から${gr.labels[n - 1]}までに${yen(total[n - 1])}">${g}${areas}${marks}<line class="cross grid-line" y1="${T}" y2="${H - B}" style="display:none;stroke:var(--mute)"/><rect x="${L}" y="${T}" width="${W - L}" height="${H - T - B}" fill="transparent"/></svg><div class="tip" hidden></div></div>`;
+  }
+  // 分類ごとの資産の件数（累計）の小さなチャート
+  const SHAPE = { medical: [0.08, 0.22, 0.4, 0.58, 0.8, 1], present: [0, 0, 0.25, 0.5, 0.75, 1], phone: [0.2, 0.35, 0.5, 0.7, 0.85, 1], bilingual: [0, 0.1, 0.3, 0.55, 0.8, 1], dialect: [0.3, 0.45, 0.6, 0.75, 0.9, 1] };
+  function spark(c) {
+    if (!c.mine) return '<span class="note">—</span>';
+    const v = (SHAPE[c.id] || [0, 0.2, 0.4, 0.6, 0.8, 1]).map((f) => Math.round(f * c.mine)), w = 84, h = 24;
+    const pts = v.map((val, i) => `${(i / (v.length - 1) * (w - 6) + 3).toFixed(1)},${(h - 3 - val / c.mine * (h - 6)).toFixed(1)}`);
+    const last = pts[pts.length - 1].split(",");
+    return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${c.name}の資産 4月${v[0]}件から9月${v[5]}件"><polyline fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round" points="${pts.join(" ")}"/><circle cx="${last[0]}" cy="${last[1]}" r="3" fill="var(--series-1)"/></svg>`;
+  }
+
   // ================= pages =================
   const head = (crumb, title, desc, right = "") => `<div class="head"><div><div class="crumb">${crumb}</div><h1>${title}</h1><p>${desc}</p></div>${right}</div>`;
   const kpi = (label, value, sub = "") => `<div class="kpi"><small>${label}</small><b class="num">${value}</b><span>${sub}</span></div>`;
@@ -425,10 +491,12 @@ tr.mine td { font-weight: 700; }
     "partner-overview"() {
       const m = partner.months.length - 1, month = partner.task[m] + partner.royalty[m], prev = partner.task[m - 1] + partner.royalty[m - 1];
       const vat = Math.round(partner.confirmed * R.vat), wh = withholding(partner.confirmed), pay = partner.confirmed + vat - wh;
-      const value = vaultValue();
+      const value = vaultValue(), gr = weeklyGrowth(), cum = gr.task[gr.task.length - 1] + gr.royalty[gr.royalty.length - 1];
       return head("データ提供パートナー", "概要", "あなたのデータ資産から生まれた収益と、次回のお支払い。")
+        + `<div class="card"><div class="card-h"><div><h2>資産から生まれた収益の累計</h2><p>確定した収益だけを積み上げています。一度入った収益は減りません。</p></div><div style="text-align:right"><b class="num" style="font-size:24px">${yen(cum)}</b><div class="note"><span class="up">今月 +${yen(month)}</span> · 再販の割合 ${pct(gr.royalty[gr.royalty.length - 1] / cum)}</div></div></div><div class="card-b">${growthChart(gr)}
+            <p class="note">○は¥10万ごとの節目。再販（オレンジ）は、一度作った資産が別の企業に売れて入った収益です。資産が増えるほど、この帯が太くなります。</p></div></div>`
         + `<div class="kpis">${kpi("9月のライセンス収益", yen(month), `<span class="up">前月比 +${pct(month / prev - 1)}</span>`)}${kpi("次回のお支払い（10/2 金）", yen(pay), "毎週日曜締め · 源泉徴収後")}${kpi("データ資産の査定額", yen(value), "Seri AI · 今後12ヶ月の予想収益")}${kpi("有効なライセンス", "37件", "利用企業 9社")}</div>`
-        + `<div class="grid-2"><div class="card"><div class="card-h"><div><h2>月別のライセンス収益</h2><p>受託（依頼に応えて作ったデータ）と再販（同じデータが別の企業に売れた分）</p></div></div><div class="card-b">${barChart({ labels: partner.months, series: [partner.task, partner.royalty], names: ["受託", "再販"] })}</div></div>
+        + `<div class="grid-2"><div class="card"><div class="card-h"><div><h2>月別のライセンス収益</h2><p>受託（依頼に応えて作ったデータ）と再販（同じデータが別の企業に売れた分）</p></div></div><div class="card-b">${barChart({ labels: partner.months, series: [partner.task, partner.royalty], names: ["受託", "再販"], h: 180 })}</div></div>
            <div class="card"><div class="card-h"><h2>10/2（金）のお支払い</h2><span class="chip good">確定</span></div><div class="card-b">
              <dl class="kv"><dt>検収済みのライセンス料</dt><dd class="num">${yen(partner.confirmed)}</dd><dt>消費税（10%）</dt><dd class="num">${yen(vat)}</dd><dt>源泉徴収税（10.21%）</dt><dd class="num">${yen(-wh)}</dd><dt class="total">お振込額</dt><dd class="total num">${yen(pay)}</dd></dl>
              <p class="note">検収中の ${yen(partner.inReview)} は、検収が終わった週の金曜に支払われます。振込手数料はSeriが負担します。</p></div></div></div>`
@@ -469,9 +537,9 @@ tr.mine td { font-weight: 700; }
       const myValue = vaultValue();
       return head("データ提供パートナー", "資産の棚", "依頼がなくても、自分のスキルや声を分類ごとに資産として登録できます。Seri AIが検査・査定し、カタログや企業の依頼に自動で割り当てます。")
         + `<div class="kpis">${kpi("棚にある資産", mine + "件", `${CATS.filter((c) => c.mine).length}つの分類`)}${kpi("棚の査定額", yen(myValue), "今後12ヶ月の予想再販収益（あなたの取り分）")}${kpi("受付中の分類", CATS.filter(selfOpen).length + " / " + CATS.length, "需要がある分類だけ受付")}${kpi("登録から販売開始まで", "平均2日", "Seri AI検査＋抜き取り審査")}</div>`
-        + `<div class="card"><div class="card-h"><div><h2>分類</h2><p>1件あたりの予想収益 ＝ 12ヶ月 × 月の再販見込み × カタログ価格 × 90%</p></div></div><div class="tbl-wrap"><table><thead><tr><th>分類</th><th>形式・仕様</th><th>必要な条件</th><th class="r">基準単価</th><th class="r">月の再販見込み</th><th class="r">1件の予想収益（12ヶ月）</th><th class="r">あなたの資産</th><th>受付</th></tr></thead><tbody>
+        + `<div class="card"><div class="card-h"><div><h2>分類</h2><p>1件あたりの予想収益 ＝ 12ヶ月 × 月の再販見込み × カタログ価格 × 90%</p></div></div><div class="tbl-wrap"><table><thead><tr><th>分類</th><th>形式・仕様</th><th>必要な条件</th><th class="r">基準単価</th><th class="r">月の再販見込み</th><th class="r">1件の予想収益（12ヶ月）</th><th class="r">あなたの資産</th><th>4月からの伸び</th><th>受付</th></tr></thead><tbody>
           ${CATS.map((c) => { const open = selfOpen(c), per = 12 * c.lam * c.cat * 0.9;
-            return `<tr><td><b>${c.name}</b></td><td>${c.fmt}<span class="sub">${c.spec}</span></td><td>${c.need || "—"}</td><td class="r num">${yen(c.base)}/${c.unit || "分"}</td><td class="r num">${c.lam.toFixed(3)}回</td><td class="r num">${yen(per)}</td><td class="r num">${c.mine}件</td>
+            return `<tr><td><b>${c.name}</b></td><td>${c.fmt}<span class="sub">${c.spec}</span></td><td>${c.need || "—"}</td><td class="r num">${yen(c.base)}/${c.unit || "分"}</td><td class="r num">${c.lam.toFixed(3)}回</td><td class="r num">${yen(per)}</td><td class="r num">${c.mine.toLocaleString()}件</td><td>${spark(c)}</td>
               <td>${open ? `<button class="btn sm" data-vault="${c.id}">登録する</button>` : chip("受付停止", "")}</td></tr>`; }).join("")}
           </tbody></table></div></div>`
         + `<div class="grid-2e"><div class="card"><div class="card-h"><h2>登録の流れ</h2></div><div class="card-b"><div class="flow">
