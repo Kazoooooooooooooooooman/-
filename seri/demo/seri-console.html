@@ -1,0 +1,586 @@
+<title>Seri Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an enterprise console. Top bar with the three portals (partner · AI company · Seri operations),
+   a left rail per portal, and pages built from KPI tiles, tables and one chart each where a trend matters. */
+:root {
+  --bg: #F3F5F8; --surface: #FFFFFF; --surface-2: #F8FAFC; --line: #E2E7EE; --line-2: #D3DAE4;
+  --ink: #0F1B2D; --ink-2: #44526A; --mute: #6B778A;
+  --accent: #1F4FA3; --accent-ink: #FFFFFF; --accent-soft: #E9EFFA;
+  --good: #127A52; --good-soft: #E3F4EC; --warn: #9A5B00; --warn-soft: #FFF3DC; --bad: #B42318; --bad-soft: #FDECEA;
+  --series-1: #2a78d6; --series-2: #eb6834;
+  --shadow: 0 1px 2px rgba(15, 27, 45, .05), 0 1px 1px rgba(15, 27, 45, .03);
+  --sans: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic UI", "Noto Sans JP", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0D1117; --surface: #151B23; --surface-2: #1A212B; --line: #27303C; --line-2: #333E4C;
+  --ink: #E6EDF5; --ink-2: #B7C2D0; --mute: #8B97A8;
+  --accent: #7FA7F0; --accent-ink: #0D1117; --accent-soft: #1B2842;
+  --good: #4CC38A; --good-soft: #13291F; --warn: #E3A14A; --warn-soft: #2D2414; --bad: #F07167; --bad-soft: #331A18;
+  --series-1: #3987e5; --series-2: #d95926; --shadow: none; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0D1117; --surface: #151B23; --surface-2: #1A212B; --line: #27303C; --line-2: #333E4C;
+  --ink: #E6EDF5; --ink-2: #B7C2D0; --mute: #8B97A8;
+  --accent: #7FA7F0; --accent-ink: #0D1117; --accent-soft: #1B2842;
+  --good: #4CC38A; --good-soft: #13291F; --warn: #E3A14A; --warn-soft: #2D2414; --bad: #F07167; --bad-soft: #331A18;
+  --series-1: #3987e5; --series-2: #d95926; --shadow: none; color-scheme: dark; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 14px/1.7 var(--sans); }
+button, select, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+h1, h2, h3 { margin: 0; text-wrap: balance; }
+p { margin: 0; }
+
+/* top bar */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; height: 56px; background: var(--surface); border-bottom: 1px solid var(--line);
+       display: grid; grid-template-columns: 220px minmax(0, 1fr) auto; align-items: center; gap: 16px; padding: 0 20px; }
+.logo { display: flex; align-items: baseline; gap: 8px; font-weight: 700; font-size: 20px; letter-spacing: .02em; }
+.logo i { font-style: normal; color: var(--accent); }
+.logo small { font-size: 11px; color: var(--mute); font-weight: 400; letter-spacing: .08em; }
+.portals { display: inline-flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; justify-self: start; }
+.portals button { border: 0; background: transparent; padding: 6px 14px; border-radius: 8px; font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.portals button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 700; box-shadow: var(--shadow), 0 0 0 1px var(--line); }
+.who { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.avatar { width: 30px; height: 30px; border-radius: 8px; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 700; font-size: 13px; }
+.demo { font-size: 11px; border: 1px solid var(--line-2); color: var(--mute); padding: 2px 8px; border-radius: 999px; }
+.portal-select { display: none; }
+
+/* shell */
+.shell { display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: calc(100vh - 56px); }
+.rail { border-right: 1px solid var(--line); background: var(--surface); padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; }
+.rail-label { font-size: 11px; color: var(--mute); letter-spacing: .08em; padding: 8px 10px 6px; }
+.rail a { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 8px; color: var(--ink-2); text-decoration: none; font-size: 14px; }
+.rail a:hover { background: var(--surface-2); color: var(--ink); }
+.rail a[aria-current="page"] { background: var(--accent-soft); color: var(--accent); font-weight: 700; }
+.rail .count { font: 500 11px var(--mono); color: var(--mute); }
+.rail-foot { margin-top: auto; border-top: 1px solid var(--line); padding: 12px 10px 0; font-size: 12px; color: var(--mute); display: flex; flex-direction: column; gap: 2px; }
+.rail-foot b { color: var(--ink); font-size: 13px; }
+
+.main { padding: 24px 28px 64px; min-width: 0; }
+.page { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+.head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+.head h1 { font-size: 22px; }
+.head p { color: var(--mute); max-width: 70ch; margin-top: 4px; }
+.crumb { font-size: 12px; color: var(--mute); }
+
+/* building blocks */
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; box-shadow: var(--shadow); min-width: 0; }
+.kpi small { display: block; font-size: 12px; color: var(--mute); }
+.kpi b { display: block; font: 500 22px/1.35 var(--mono); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.kpi span { font-size: 12px; color: var(--ink-2); }
+.kpi .up { color: var(--good); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); min-width: 0; }
+.card-h { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.card-h h2 { font-size: 15px; }
+.card-h p { font-size: 12px; color: var(--mute); }
+.card-b { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.grid-2e { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; font-weight: 400; font-size: 12px; color: var(--mute); padding: 10px 12px; background: var(--surface-2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; white-space: nowrap; }
+td .sub { display: block; font-size: 12px; color: var(--mute); }
+tr.click { cursor: pointer; }
+tr.click:hover td { background: var(--surface-2); }
+tr.sel td { background: var(--accent-soft); }
+.id { font: 12px var(--mono); color: var(--mute); }
+.chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 2px 8px; border-radius: 6px; background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); white-space: nowrap; }
+.chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .8; }
+.chip.plain::before { display: none; }
+.chip.good { background: var(--good-soft); color: var(--good); border-color: transparent; }
+.chip.warn { background: var(--warn-soft); color: var(--warn); border-color: transparent; }
+.chip.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
+.chip.info { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+.btn { border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); border-radius: 8px; padding: 7px 14px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+.btn.sec { background: var(--surface); color: var(--ink); border-color: var(--line-2); font-weight: 400; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn.sm { padding: 4px 10px; font-size: 12px; }
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.note { font-size: 12px; color: var(--mute); }
+.callout { border: 1px solid var(--line); border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--ink-2); }
+.callout b { color: var(--ink); }
+.callout.warn { border-left-color: var(--warn); }
+dl.kv { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px 16px; margin: 0; font-size: 13px; }
+dl.kv dt { color: var(--mute); }
+dl.kv dd { margin: 0; text-align: right; }
+dl.kv dd.total { font-weight: 700; border-top: 1px solid var(--line); padding-top: 8px; }
+dl.kv dt.total { border-top: 1px solid var(--line); padding-top: 8px; color: var(--ink); font-weight: 700; }
+
+/* chart */
+.chart { position: relative; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart .grid-line { stroke: var(--line); stroke-width: 1; }
+.chart .axis { fill: var(--mute); font: 11px var(--mono); }
+.chart .lbl { fill: var(--ink-2); font: 11px var(--mono); }
+.chart .s1 { fill: var(--series-1); } .chart .s2 { fill: var(--series-2); }
+.chart .hit { fill: transparent; }
+.chart g.hover rect, .chart g.hover path { opacity: .82; }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; padding: 8px 10px; border-radius: 8px; white-space: nowrap; transform: translate(-50%, -100%); z-index: 3; }
+.tip b { font-family: var(--mono); font-weight: 500; }
+
+/* bars in tables (cash breakdown) */
+.hbar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; min-width: 60px; }
+.hbar i { display: block; height: 100%; background: var(--ink-2); border-radius: 3px; }
+tr.mine .hbar i { background: var(--good); }
+tr.mine td { font-weight: 700; }
+
+/* pipeline */
+.pipe { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; }
+.stage { border: 1px solid var(--line); background: var(--surface); padding: 12px; min-width: 0; position: relative; display: flex; flex-direction: column; gap: 4px; }
+.stage + .stage { border-left: 0; }
+.stage:first-child { border-radius: 12px 0 0 12px; }
+.stage:last-child { border-radius: 0 12px 12px 0; }
+.stage .n { font: 11px var(--mono); color: var(--mute); }
+.stage b { font-size: 13px; }
+.stage .v { font: 500 18px var(--mono); }
+.stage .d { font-size: 11.5px; color: var(--mute); }
+.stage.ai { background: var(--accent-soft); }
+.stage.money { background: var(--good-soft); }
+
+/* flow (business model) */
+.flow { display: flex; flex-direction: column; gap: 0; }
+.fstep { display: grid; grid-template-columns: 44px minmax(0, 1fr) minmax(0, 220px); gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.fstep:last-child { border-bottom: 0; }
+.fstep .no { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--line-2); display: grid; place-items: center; font: 500 13px var(--mono); color: var(--ink-2); }
+.fstep b { display: block; font-size: 14px; }
+.fstep p { font-size: 13px; color: var(--ink-2); }
+.fstep .money { font-size: 12px; color: var(--mute); border-left: 2px solid var(--line); padding-left: 10px; }
+.fstep .money b { font-size: 13px; color: var(--ink); }
+
+/* form */
+.form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--mute); }
+.field input, .field select { border: 1px solid var(--line-2); background: var(--surface); border-radius: 8px; padding: 8px 10px; font-size: 14px; color: var(--ink); width: 100%; }
+
+.toast { position: fixed; right: 20px; bottom: 20px; z-index: 40; background: var(--ink); color: var(--bg); padding: 12px 16px; border-radius: 10px; font-size: 13px; max-width: 360px;
+         opacity: 0; transform: translateY(12px); pointer-events: none; transition: opacity .25s, transform .25s; }
+.toast.show { opacity: 1; transform: none; }
+
+@media (max-width: 1080px) {
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-2, .grid-2e { grid-template-columns: minmax(0, 1fr); }
+  .pipe { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .stage, .stage + .stage, .stage:first-child, .stage:last-child { border: 1px solid var(--line); border-radius: 10px; }
+}
+@media (max-width: 760px) {
+  .top { grid-template-columns: auto minmax(0, 1fr); padding: 0 16px; }
+  .portals, .who .name { display: none; }
+  .portal-select { display: block; justify-self: end; border: 1px solid var(--line-2); background: var(--surface); border-radius: 8px; padding: 6px 8px; font-size: 13px; }
+  .who { display: none; }
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .rail { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--line); padding: 8px 12px; gap: 4px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 56px); z-index: 15; }
+  .rail-label, .rail-foot, .rail .count { display: none; }
+  .rail a { white-space: nowrap; }
+  .main { padding: 18px 16px 48px; }
+  .form { grid-template-columns: minmax(0, 1fr); }
+  .kpi b { font-size: 17px; white-space: normal; overflow-wrap: anywhere; }
+  .hide-sm { display: none; }
+  .head h1 { font-size: 20px; }
+  .fstep { grid-template-columns: 36px minmax(0, 1fr); }
+  .fstep .money { grid-column: 2; }
+  .toast { left: 16px; right: 16px; max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="logo">Seri<i>.</i><small>DATA LICENSING</small></div>
+  <div class="portals" role="group" aria-label="画面の切り替え">
+    <button type="button" data-portal="partner">データ提供パートナー</button>
+    <button type="button" data-portal="buyer">AI企業</button>
+    <button type="button" data-portal="ops">Seri運営</button>
+  </div>
+  <select class="portal-select" id="portal-select" aria-label="画面の切り替え">
+    <option value="partner">データ提供パートナー</option><option value="buyer">AI企業</option><option value="ops">Seri運営</option>
+  </select>
+  <div class="who"><span class="demo">デモ</span><span class="name" id="who-name"></span><span class="avatar" id="who-avatar"></span></div>
+</header>
+
+<div class="shell">
+  <nav class="rail" id="rail" aria-label="メニュー"></nav>
+  <main class="main"><div class="page" id="page"></div></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const yen = (n) => (n < 0 ? "−" : "") + "¥" + Math.abs(Math.round(n)).toLocaleString("ja-JP");
+  const man = (n) => "¥" + (n / 10000).toLocaleString("ja-JP", { maximumFractionDigits: 1 }) + "万";
+  const pct = (x, d = 1) => (x * 100).toFixed(d) + "%";
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const chip = (t, k = "") => `<span class="chip ${k}">${esc(t)}</span>`;
+  let toastT;
+  const toast = (m) => { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 3600); };
+
+  // ================= business rules (仮) =================
+  // データ価格 P = 件数 × 単価 × 順位 × 職種 × ライセンス
+  // パートナー: Pの90%（ライセンス料）＋消費税（インボイス登録者）−源泉徴収10.21%（個人・要税理士確認）
+  // AI企業: P ＋ サービス料10% ＋ 消費税10%（国内）
+  // Seri: Pの20%（パートナー側10% ＋ 買い手側10%）
+  const R = {
+    partnerShare: 0.90, buyerFee: 0.10, vat: 0.10, withholding: 0.1021,
+    tiers: { any: ["誰でも", 1.0], top50: ["上位50%", 1.2], top25: ["上位25%", 1.5], top10: ["上位10%", 2.0] },
+    industries: { "": ["指定なし", 1.0], nurse: ["看護師", 1.2], accountant: ["経理・税務", 1.2], engineer: ["エンジニア", 1.2], legal: ["法務", 1.2] },
+    licenses: { standard: ["標準（非独占）", 1.0], term: ["期間独占（6ヶ月）", 2.0], eval: ["評価用", 2.0], buyout: ["完全買い切り", 3.0] },
+    kinds: { ja_talk: "日本語の会話音声", ja_pro: "専門職の業務音声", en_talk: "英語の会話音声", ja_text: "専門職の判断テキスト" },
+  };
+  const withholding = (x) => Math.floor(x * R.withholding);
+
+  // ================= sample data =================
+  const partner = {
+    name: "佐藤 美咲", role: "看護師 · 個人事業主", invoiceNo: "T3010123456789",
+    months: ["4月", "5月", "6月", "7月", "8月", "9月"],
+    task: [58320, 97200, 124740, 142560, 163080, 186300],
+    royalty: [0, 4860, 11340, 19440, 31590, 42480],
+    confirmed: 201420, inReview: 27360, assetValue: 1286400,
+    history: [["2026/09/10", "8月分", 189540], ["2026/08/10", "7月分", 158760], ["2026/07/10", "6月分", 131220]],
+    assets: [
+      ["SA-10482", "看護師の申し送り（夜勤）", 20, "A", 94, 64800, "standard", 4, 38880, "active"],
+      ["SA-10477", "服薬指導の説明", 20, "A", 92, 52200, "standard", 3, 29160, "active"],
+      ["SA-10431", "退院時の患者説明", 30, "A", 95, 71500, "term", 1, 48600, "exclusive"],
+      ["SA-10420", "医療用語の読み上げ", 50, "B", 81, 33000, "standard", 5, 22950, "active"],
+      ["SA-10388", "看護記録の口述", 20, "A", 93, 0, "buyout", 1, 43200, "sold"],
+      ["SA-10366", "日常会話（関西弁）", 20, "B", 78, 18400, "standard", 2, 8100, "active"],
+      ["SA-10352", "病棟の電話対応", 30, "A", 90, 46800, "standard", 3, 27540, "active"],
+      ["SA-10341", "看護師の申し送り（日勤）", 20, "A", 93, 61200, "eval", 1, 32400, "exclusive"],
+    ],
+    rfqs: [
+      { id: "RFQ-2609-031", buyer: "Kumo Health AI株式会社", title: "服薬指導の説明（高齢の患者向け）", units: 300, price: 600, tier: "top25", industry: "nurse", license: "standard", due: "10/21", cap: 60 },
+      { id: "RFQ-2609-028", buyer: "北斗LLMラボ株式会社", title: "看護師の申し送り（夜勤）", units: 500, price: 600, tier: "top25", industry: "nurse", license: "standard", due: "10/14", cap: 100, accepted: 18 },
+      { id: "RFQ-2609-024", buyer: "Sora Translate株式会社", title: "医療現場の日英通訳の会話", units: 200, price: 800, tier: "any", industry: "", license: "term", due: "10/28", cap: 40 },
+      { id: "RFQ-2609-019", buyer: "Orbit Robotics株式会社", title: "病院内の案内（ロボット向け）", units: 400, price: 350, tier: "top50", industry: "", license: "buyout", due: "11/04", cap: 80 },
+    ],
+  };
+  const buyer = {
+    name: "北斗LLMラボ株式会社", person: "調達部 田中", deposit: 2480000, credit: "デポジット方式",
+    orders: [
+      { id: "ORD-2609-014", title: "看護師の申し送り（夜勤）", kind: "ja_pro", units: 500, price: 600, tier: "top25", industry: "nurse", license: "standard", done: 312, status: "制作中", due: "10/14" },
+      { id: "ORD-2609-011", title: "日本語の日常会話", kind: "ja_talk", units: 2000, price: 300, tier: "any", industry: "", license: "standard", done: 2000, status: "検収中", due: "10/08" },
+      { id: "CAT-2609-006", title: "カタログ購入 · 日本語の会話（品質A）", kind: "ja_talk", units: 1200, price: 190, tier: "any", industry: "", license: "standard", done: 1200, status: "完了", due: "—" },
+    ],
+    deliveries: [
+      { id: "DLV-011-07", order: "ORD-2609-011", units: 480, a: 0.71, b: 0.26, c: 0.03, due: "10/08", state: "open" },
+      { id: "DLV-014-05", order: "ORD-2609-014", units: 60, a: 0.83, b: 0.17, c: 0, due: "10/12", state: "open" },
+      { id: "DLV-011-06", order: "ORD-2609-011", units: 520, a: 0.69, b: 0.28, c: 0.03, due: "10/01", state: "done" },
+    ],
+    invoices: [["INV-2609-0042", "2026年9月分", "10/03 発行予定", null], ["INV-2608-0031", "2026年8月分", "2026/09/03", 1202630], ["INV-2607-0019", "2026年7月分", "2026/08/03", 864490]],
+  };
+  const ops = {
+    cash: [
+      ["買い手の前受金（未使用のデポジット）", 14200000, "注文に使われるまで買い手のお金", "—"],
+      ["パートナーへの未払金（検収済み）", 11380000, "54人のパートナーへ支払い", "10/10"],
+      ["検収中の売上（未確定）", 2160000, "14日の検収のあと未払金に移る", "順次"],
+      ["預り源泉所得税", 1020000, "個人パートナー分を国へ納付", "10/10"],
+      ["預り消費税", 1380000, "買い手から預かった消費税", "申告時"],
+      ["Seriが自由に使える資金", 1400000, "手数料収益の累計 − 経費", "—"],
+    ],
+    calendar: [
+      ["10/01", "北斗LLMラボ デポジットの自動チャージ", 3000000],
+      ["10/03", "9月分の請求書を発行（適格請求書）", 0],
+      ["10/10", "パートナー54人へ9月分を支払い", -11380000],
+      ["10/10", "源泉所得税の納付", -1020000],
+      ["10/15", "クラウド・AI検査の費用", -412000],
+      ["10/25", "人件費・業務委託費", -900000],
+      ["10/31", "Nami Speech 請求書払い（与信枠）", 2640000],
+    ],
+    months: ["4月", "5月", "6月", "7月", "8月", "9月"],
+    gmv: [2100000, 4600000, 7900000, 11200000, 14900000, 18420000],
+    unit: { price: 300, qa: 6, spot: 5, pay: 1.5, refund: 0.8 },
+  };
+
+  // ================= chart =================
+  function barChart({ labels, series, names, fmt = yen, h = 220 }) {
+    const W = 640, H = h, L = 64, B = 26, T = 18, n = labels.length;
+    const totals = labels.map((_, i) => series.reduce((s, arr) => s + arr[i], 0));
+    const max = Math.max(...totals), step = niceStep(max / 4), top = Math.ceil(max / step) * step;
+    const y = (v) => T + (H - T - B) * (1 - v / top), bw = Math.min(46, (W - L) / n * 0.5);
+    let g = "";
+    for (let v = 0; v <= top; v += step) g += `<line class="grid-line" x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text class="axis" x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${man(v)}</text>`;
+    let bars = "";
+    labels.forEach((lab, i) => {
+      const cx = L + (W - L) / n * (i + .5);
+      let base = 0, segs = "";
+      series.forEach((arr, s) => {
+        const v = arr[i]; if (!v) return;
+        const y0 = y(base), y1 = y(base + v), hgt = Math.max(0, y0 - y1 - (base > 0 ? 2 : 0));
+        const isTop = s === series.length - 1 || series.slice(s + 1).every((a) => !a[i]);
+        segs += isTop ? `<path class="s${s + 1}" d="${roundTop(cx - bw / 2, y1, bw, hgt, 4)}"/>` : `<rect class="s${s + 1}" x="${cx - bw / 2}" y="${y1}" width="${bw}" height="${hgt}"/>`;
+        base += v;
+      });
+      bars += `<g>${segs}</g><rect class="hit" data-i="${i}" x="${cx - (W - L) / n / 2}" y="${T}" width="${(W - L) / n}" height="${H - T - B}"/>
+               <text class="axis" x="${cx}" y="${H - 6}" text-anchor="middle">${lab}</text>`;
+      if (i === n - 1) bars += `<text class="lbl" x="${cx}" y="${y(totals[i]) - 8}" text-anchor="middle">${fmt(totals[i])}</text>`;
+    });
+    const id = "c" + Math.random().toString(36).slice(2, 8);
+    setTimeout(() => {
+      const box = document.getElementById(id); if (!box) return;
+      const tip = box.querySelector(".tip");
+      box.querySelectorAll(".hit").forEach((r) => {
+        r.addEventListener("mouseenter", () => {
+          const i = +r.dataset.i, bb = r.getBoundingClientRect(), cb = box.getBoundingClientRect();
+          tip.innerHTML = `${labels[i]}<br>` + series.map((a, s) => `${names[s]} <b>${fmt(a[i])}</b>`).join("<br>") + (series.length > 1 ? `<br>合計 <b>${fmt(totals[i])}</b>` : "");
+          tip.style.left = (bb.left - cb.left + bb.width / 2) + "px"; tip.style.top = (y(totals[i]) / H * cb.height - 6) + "px"; tip.hidden = false;
+          r.previousElementSibling.classList.add("hover");
+        });
+        r.addEventListener("mouseleave", () => { tip.hidden = true; r.previousElementSibling.classList.remove("hover"); });
+      });
+    });
+    const legend = names.length > 1 ? `<div class="legend">${names.map((nm, s) => `<span><i style="background:var(--series-${s + 1})"></i>${nm}</span>`).join("")}</div>` : "";
+    return `${legend}<div class="chart" id="${id}"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(names.join("と"))}の推移">${g}${bars}</svg><div class="tip" hidden></div></div>`;
+  }
+  function niceStep(raw) { const p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p; return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p; }
+  function roundTop(x, y, w, h, r) { r = Math.min(r, h, w / 2); return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`; }
+
+  // ================= pages =================
+  const head = (crumb, title, desc, right = "") => `<div class="head"><div><div class="crumb">${crumb}</div><h1>${title}</h1><p>${desc}</p></div>${right}</div>`;
+  const kpi = (label, value, sub = "") => `<div class="kpi"><small>${label}</small><b class="num">${value}</b><span>${sub}</span></div>`;
+  const lic = (k) => R.licenses[k][0];
+  const unitValue = (o) => o.price * R.tiers[o.tier][1] * R.industries[o.industry][1] * R.licenses[o.license][1];
+
+  const P = {
+    // ---------- partner ----------
+    "partner-overview"() {
+      const m = partner.months.length - 1, month = partner.task[m] + partner.royalty[m], prev = partner.task[m - 1] + partner.royalty[m - 1];
+      const vat = Math.round(partner.confirmed * R.vat), wh = withholding(partner.confirmed), pay = partner.confirmed + vat - wh;
+      const value = partner.assetValue;
+      return head("データ提供パートナー", "概要", "あなたのデータ資産から生まれた収益と、次回のお支払い。")
+        + `<div class="kpis">${kpi("9月のライセンス収益", yen(month), `<span class="up">前月比 +${pct(month / prev - 1)}</span>`)}${kpi("次回のお支払い（10/10）", yen(pay), "検収済み分 · 源泉徴収後")}${kpi("データ資産の査定額", yen(value), "Seri AI · 今後12ヶ月の予想収益")}${kpi("有効なライセンス", "37件", "利用企業 9社")}</div>`
+        + `<div class="grid-2"><div class="card"><div class="card-h"><div><h2>月別のライセンス収益</h2><p>受託（依頼に応えて作ったデータ）と再販（同じデータが別の企業に売れた分）</p></div></div><div class="card-b">${barChart({ labels: partner.months, series: [partner.task, partner.royalty], names: ["受託", "再販"] })}</div></div>
+           <div class="card"><div class="card-h"><h2>10/10のお支払い</h2><span class="chip good">確定</span></div><div class="card-b">
+             <dl class="kv"><dt>検収済みのライセンス料</dt><dd class="num">${yen(partner.confirmed)}</dd><dt>消費税（10%）</dt><dd class="num">${yen(vat)}</dd><dt>源泉徴収税（10.21%）</dt><dd class="num">${yen(-wh)}</dd><dt class="total">お振込額</dt><dd class="total num">${yen(pay)}</dd></dl>
+             <p class="note">検収中の ${yen(partner.inReview)} は、検収が終わり次第 11/10 のお支払いに入ります。振込手数料はSeriが負担します。</p></div></div></div>`
+        + `<div class="card"><div class="card-h"><h2>最近の取引</h2><a class="btn sec sm" href="#partner-assets">データ資産を見る</a></div><div class="tbl-wrap"><table><thead><tr><th>日付</th><th>取引</th><th>企業</th><th>ライセンス</th><th class="r">あなたの収益</th><th>状態</th></tr></thead><tbody>
+           ${[["9/29", "再販 · SA-10482 看護師の申し送り（夜勤）", "Kumo Health AI", "standard", 11664, "検収中"], ["9/28", "受託 · RFQ-2609-028 に18件納品", "北斗LLMラボ", "standard", 17496, "検収中"], ["9/24", "再販 · SA-10477 服薬指導の説明", "Sora Translate", "standard", 9720, "確定"], ["9/20", "受託 · 退院時の患者説明 30件", "Nami Speech", "term", 48600, "確定"], ["9/16", "再販 · SA-10352 病棟の電話対応", "Acme Voice", "standard", 9180, "確定"]]
+              .map(([d, t, b, l, v, s]) => `<tr><td class="num">${d}</td><td>${t}</td><td>${b}</td><td>${lic(l)}</td><td class="r num">${yen(v)}</td><td>${chip(s, s === "確定" ? "good" : "warn")}</td></tr>`).join("")}</tbody></table></div></div>`;
+    },
+    "partner-assets"() {
+      const rows = partner.assets;
+      const sel = state.asset ?? 0, a = rows[sel];
+      const state2 = { active: ["販売中", "good"], exclusive: ["独占中", "info"], sold: ["売却済み", ""] };
+      return head("データ提供パートナー", "データ資産", "合格したデータは、あなたの資産として登録されます。Seri AIが品質を判定し、今後12ヶ月に生む収益を査定します。")
+        + `<div class="kpis">${kpi("登録済みの資産", "148ロット", "3,120件のデータ")}${kpi("査定額の合計", yen(partner.assetValue), "今後12ヶ月の予想収益")}${kpi("平均品質スコア", "91 / 100", "看護師の上位6%")}${kpi("累計の再販回数", "112回", "受託後に別の企業へ")}</div>`
+        + `<div class="grid-2"><div class="card"><div class="card-h"><h2>資産の一覧</h2><p>行を選ぶと査定の根拠を表示</p></div><div class="tbl-wrap"><table><thead><tr><th>資産</th><th>品質</th><th>ライセンス</th><th class="r">利用企業</th><th class="r">累計収益</th><th class="r">査定額</th><th>状態</th></tr></thead><tbody>
+          ${rows.map((r, i) => `<tr class="click${i === sel ? " sel" : ""}" data-asset="${i}"><td>${r[1]}<span class="sub id">${r[0]} · ${r[2]}件</span></td><td>${r[3]} <span class="note num">${r[4]}</span></td><td>${lic(r[6])}</td><td class="r num">${r[7]}社</td><td class="r num">${yen(r[8])}</td><td class="r num">${r[5] ? yen(r[5]) : "—"}</td><td>${chip(...state2[r[9]])}</td></tr>`).join("")}
+          </tbody></table></div></div>
+          <div class="card"><div class="card-h"><div><h2>Seri AIの査定</h2><p class="id">${a[0]}</p></div>${chip(a[3] === "A" ? "品質 A" : "品質 B", "info")}</div><div class="card-b">
+            <b>${a[1]} · ${a[2]}件</b>
+            <dl class="kv"><dt>品質スコア</dt><dd class="num">${a[4]} / 100</dd><dt>音声認識の誤り率</dt><dd class="num">${(100 - a[4]) / 3 > 0 ? ((100 - a[4]) / 3).toFixed(1) : "0.0"}%</dd><dt>専門性</dt><dd>確認済みの看護師（免許確認）</dd>
+              <dt>需要（直近90日）</dt><dd>看護師 × 日本語の依頼 +38%</dd><dt>希少性</dt><dd>同じ条件の提供者 214人</dd><dt>類似取引の相場</dt><dd class="num">1件 ¥540〜¥720</dd>
+              <dt class="total">査定額（12ヶ月）</dt><dd class="total num">${a[5] ? yen(a[5]) : "売却済み"}</dd></dl>
+            <p class="note">査定額 ＝ 予想される販売回数 × 相場 × あなたの取り分90%。${a[6] === "standard" ? "標準ライセンスなので、別の企業にも繰り返し販売されます。" : a[6] === "buyout" ? "完全買い切りのため、今後の再販はありません。" : "独占期間が終わると標準ライセンスに戻り、再販の対象になります。"}</p>
+          </div></div></div>`;
+    },
+    "partner-rfq"() {
+      return head("データ提供パートナー", "案件", "あなたの職種と品質スコアに合う、企業からの依頼です。受託すると、提出したデータが検査のあとで納品され、資産にも登録されます。")
+        + `<div class="callout"><b>受託の上限:</b> 1つの依頼で受けられるのは全体の20%まで。依頼が多くのパートナーに行き渡るようにするためです。</div>`
+        + `<div class="card"><div class="tbl-wrap"><table><thead><tr><th>依頼</th><th>条件</th><th>ライセンス</th><th class="r">1件あたりの受取</th><th class="r">受けられる件数</th><th>締切</th><th></th></tr></thead><tbody>
+          ${partner.rfqs.map((q, i) => {
+            const each = Math.round(unitValue(q) * R.partnerShare), blocked = q.license === "buyout" && !state.acceptBuyout;
+            const action = q.accepted != null ? `<span class="chip good">受託中 ${q.accepted}/${q.cap}</span>` : blocked ? `<span class="note">買い切りを受けない設定</span>` : `<button class="btn sm" data-accept="${i}">受託する</button>`;
+            return `<tr><td>${q.title}<span class="sub">${q.buyer} · <span class="id">${q.id}</span></span></td><td>${R.tiers[q.tier][0]}${q.industry ? " · " + R.industries[q.industry][0] : ""}</td><td>${lic(q.license)}</td><td class="r num">${yen(each)}</td><td class="r num">${q.cap}件</td><td class="num">${q.due}</td><td>${action}</td></tr>`;
+          }).join("")}</tbody></table></div></div>
+          <div class="card"><div class="card-b"><label class="row"><input type="checkbox" id="accept-buyout" ${state.acceptBuyout ? "checked" : ""}> 完全買い切りの依頼も受ける</label><p class="note">買い切りは単価が3倍（仮）ですが、そのデータはあなたの資産に残らず、再販の収益もありません。</p></div></div>`;
+    },
+    "partner-pay"() {
+      const rows = [["2026/10/10", "9月分", partner.confirmed, "予定"], ...partner.history.map(([d, m, v]) => [d, m, v, "支払済"])];
+      const ytd = partner.task.reduce((s, v) => s + v, 0) + partner.royalty.reduce((s, v) => s + v, 0);
+      return head("データ提供パートナー", "お支払い・税務", "毎月末で締め、翌月10日にお振込みします。明細は確定申告にそのまま使えます。")
+        + `<div class="kpis">${kpi("次回のお支払い", "10/10", "月末締め · 翌月10日払い")}${kpi("今年の収益（税抜）", yen(ytd), "4月〜9月")}${kpi("源泉徴収税（今年の見込み）", yen(withholding(ytd)), "1月に支払調書をお送りします")}${kpi("インボイス登録", "登録済み", partner.invoiceNo)}</div>`
+        + `<div class="card"><div class="card-h"><h2>支払明細</h2><p>ライセンス料＋消費税−源泉徴収税＝お振込額</p></div><div class="tbl-wrap"><table><thead><tr><th>お支払い日</th><th>対象</th><th class="r">ライセンス料</th><th class="r">消費税</th><th class="r">源泉徴収税</th><th class="r">お振込額</th><th>状態</th></tr></thead><tbody>
+          ${rows.map(([d, m, v, s]) => { const vat = Math.round(v * R.vat), wh = withholding(v); return `<tr><td class="num">${d}</td><td>${m}</td><td class="r num">${yen(v)}</td><td class="r num">${yen(vat)}</td><td class="r num">${yen(-wh)}</td><td class="r num"><b>${yen(v + vat - wh)}</b></td><td>${chip(s, s === "予定" ? "warn" : "good")}</td></tr>`; }).join("")}
+          </tbody></table></div></div>
+          <div class="grid-2e"><div class="card"><div class="card-h"><h2>登録情報</h2></div><div class="card-b"><dl class="kv"><dt>名義</dt><dd>${partner.name}（個人事業主）</dd><dt>適格請求書発行事業者</dt><dd class="num">${partner.invoiceNo}</dd><dt>振込先</dt><dd>○○銀行 渋谷支店 普通 ****321</dd><dt>本人確認</dt><dd>${chip("確認済み", "good")}</dd><dt>職種の確認</dt><dd>${chip("看護師免許 確認済み", "good")}</dd></dl></div></div>
+          <div class="card"><div class="card-h"><h2>契約</h2></div><div class="card-b"><dl class="kv"><dt>データ提供・ライセンス基本契約</dt><dd>2026/06/12 締結</dd><dt>同意書</dt><dd>第2026-10-01版</dd><dt>なりすまし利用の禁止</dt><dd>全ライセンス共通</dd></dl><p class="note">Seriはあなたからデータの利用許諾を受け、AI企業に再許諾します。データの権利はあなたに残ります。</p></div></div></div>`;
+    },
+
+    // ---------- buyer ----------
+    "buyer-overview"() {
+      const spend = buyer.orders.reduce((s, o) => s + unitValue(o) * o.units, 0);
+      return head("AI企業", "概要", "調達の状況、検収待ちの納品、デポジットの残高。")
+        + `<div class="kpis">${kpi("デポジット残高", yen(buyer.deposit), "残高 ¥100万を切ると自動で ¥300万チャージ")}${kpi("9月の調達額（データ価格）", yen(spend), "サービス料・税別")}${kpi("検収待ち", buyer.deliveries.filter((d) => d.state === "open").reduce((s, d) => s + d.units, 0) + "件", "期限を過ぎると自動で検収")}${kpi("有効なライセンス", "4,200件", "3件の注文")}</div>`
+        + `<div class="card"><div class="card-h"><h2>注文</h2><a class="btn sm" href="#buyer-procure">新しく依頼する</a></div><div class="tbl-wrap"><table><thead><tr><th>注文</th><th>条件</th><th class="r">データ価格</th><th>進み具合</th><th>状態</th><th>締切</th></tr></thead><tbody>
+          ${buyer.orders.map((o) => `<tr><td>${o.title}<span class="sub id">${o.id}</span></td><td>${R.tiers[o.tier][0]}${o.industry ? " · " + R.industries[o.industry][0] : ""} · ${lic(o.license)}</td><td class="r num">${yen(unitValue(o) * o.units)}</td><td class="num">${o.done.toLocaleString()} / ${o.units.toLocaleString()}件</td><td>${chip(o.status, o.status === "完了" ? "good" : o.status === "検収中" ? "warn" : "info")}</td><td class="num">${o.due}</td></tr>`).join("")}</tbody></table></div></div>`;
+    },
+    "buyer-procure"() {
+      return head("AI企業", "調達", "条件を入れると、その場で見積もりが出ます。確定するとデポジットから充当し、条件に合うパートナーへ依頼が届きます。")
+        + `<div class="grid-2"><div class="card"><div class="card-h"><h2>新しい依頼</h2></div><div class="card-b"><div class="form">
+            <label class="field">データの種類<select id="q-kind">${Object.entries(R.kinds).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>
+            <label class="field">件数<input id="q-units" type="number" min="10" step="10" value="500"></label>
+            <label class="field">1件あたりの単価（円）<input id="q-price" type="number" min="100" step="10" value="400"></label>
+            <label class="field">作り手の品質順位<select id="q-tier">${Object.entries(R.tiers).map(([k, v]) => `<option value="${k}">${v[0]} ×${v[1]}</option>`).join("")}</select></label>
+            <label class="field">職種（確認済み）<select id="q-industry">${Object.entries(R.industries).map(([k, v]) => `<option value="${k}">${v[0]} ×${v[1]}</option>`).join("")}</select></label>
+            <label class="field">ライセンス<select id="q-license">${Object.entries(R.licenses).map(([k, v]) => `<option value="${k}">${v[0]} ×${v[1]}</option>`).join("")}</select></label>
+          </div><p class="note">品質・職種・ライセンスの倍率は（仮）。すべてのデータは Seri AI の検査と人の抜き取り審査を通ってから納品されます。</p></div></div>
+          <div class="card"><div class="card-h"><h2>見積もり</h2><span class="chip info">デポジットから充当</span></div><div class="card-b" id="quote"></div></div></div>`;
+    },
+    "buyer-deliveries"() {
+      return head("AI企業", "納品・検収", "納品から14日以内に検収してください。問題があれば差し戻せます。期限を過ぎると自動で検収され、パートナーへの支払いが確定します。")
+        + `<div class="card"><div class="tbl-wrap"><table><thead><tr><th>納品</th><th class="r">件数</th><th>品質（Seri AI）</th><th>検収期限</th><th>データカード</th><th></th></tr></thead><tbody>
+          ${buyer.deliveries.map((d, i) => `<tr><td><span class="id">${d.id}</span><span class="sub">${d.order}</span></td><td class="r num">${d.units}件</td><td class="num">A ${pct(d.a, 0)} · B ${pct(d.b, 0)} · C ${pct(d.c, 0)}</td><td class="num">${d.due}</td><td><span class="note">seri.datacard.v1 · SHA-256 · 同意書の版</span></td>
+            <td>${d.state === "open" ? `<div class="row"><button class="btn sm" data-accept-dlv="${i}">検収する</button><button class="btn sec sm" data-reject-dlv="${i}">差し戻す</button></div>` : d.state === "rejected" ? chip("差し戻し済み", "bad") : chip("検収済み", "good")}</td></tr>`).join("")}
+          </tbody></table></div></div>
+          <div class="callout"><b>差し戻しと返金:</b> 検収期間中に問題が認められたデータは全額を返金します（デポジットに戻ります）。その分はパートナーへ支払われません。</div>`;
+    },
+    "buyer-billing"() {
+      return head("AI企業", "請求・契約", "月末締めで適格請求書を発行し、デポジットから充当します。ライセンスの範囲とAPIキーもここで管理します。")
+        + `<div class="kpis">${kpi("お支払い方法", "デポジット", "与信審査後は請求書払いも可")}${kpi("9月分の請求予定", yen(1655280), "データ ¥1,368,000 + サービス料 + 税")}${kpi("基本契約", "2026/07/01", "データライセンス基本契約")}${kpi("APIの利用上限", yen(500000), "月あたり · エージェント用")}</div>`
+        + `<div class="grid-2"><div class="card"><div class="card-h"><h2>請求書</h2><p>Seri株式会社 登録番号 T1234567890123（仮）</p></div><div class="tbl-wrap"><table><thead><tr><th>請求書</th><th>対象</th><th>発行日</th><th class="r">金額（税込）</th><th>状態</th></tr></thead><tbody>
+          ${buyer.invoices.map(([id, m, d, v]) => `<tr><td class="id">${id}</td><td>${m}</td><td class="num">${d}</td><td class="r num">${v ? yen(v) : yen(1655280)}</td><td>${v ? chip("デポジットから充当済み", "good") : chip("発行予定", "warn")}</td></tr>`).join("")}
+          </tbody></table></div></div>
+          <div class="card"><div class="card-h"><h2>APIキー（AIエージェント用）</h2></div><div class="card-b"><dl class="kv"><dt>本番キー</dt><dd class="num">sk_live_••••4f2a</dd><dt>作成</dt><dd class="num">2026/07/12</dd><dt>最終利用</dt><dd>今日 9:41</dd><dt>権限</dt><dd>カタログ購入 · 依頼の作成</dd></dl><p class="note">自社のAIエージェントから、予算の範囲で自動的にデータを調達できます。</p></div></div></div>`;
+    },
+
+    // ---------- ops ----------
+    "ops-cash"() {
+      const total = ops.cash.reduce((s, c) => s + c[1], 0), mine = ops.cash[ops.cash.length - 1][1];
+      let bal = total;
+      return head("Seri運営", "資金", "口座のお金のうち、どれが誰のものかを分けて管理します。前受金とパートナーへの未払金はSeriのお金ではありません。")
+        + `<div class="kpis">${kpi("口座残高", yen(total), "9/30 時点")}${kpi("Seriが自由に使える資金", yen(mine), `口座残高の ${pct(mine / total)}`)}${kpi("10月の入出金の差し引き（予定）", yen(ops.calendar.reduce((s, c) => s + c[2], 0)), "9月に受け取った前受金からの支払いを含む")}${kpi("与信枠の利用", "¥264万 / ¥500万", "請求書払いの企業 1社")}</div>`
+        + `<div class="grid-2"><div class="card"><div class="card-h"><h2>口座残高の内訳</h2><p>分別管理: 前受金・未払金・預り税は別口座</p></div><div class="tbl-wrap"><table><thead><tr><th>区分</th><th class="r">金額</th><th class="hide-sm" style="width:22%">割合</th><th>支払期日</th></tr></thead><tbody>
+          ${ops.cash.map(([k, v, d, due], i) => `<tr class="${i === ops.cash.length - 1 ? "mine" : ""}"><td>${k}<span class="sub">${d}</span></td><td class="r num">${yen(v)}</td><td class="hide-sm"><div class="hbar"><i style="width:${(v / total * 100).toFixed(1)}%"></i></div></td><td class="num">${due}</td></tr>`).join("")}
+          </tbody></table></div></div>
+          <div class="card"><div class="card-h"><h2>資金カレンダー（10月）</h2></div><div class="tbl-wrap"><table><tbody>
+          ${ops.calendar.map(([d, t, v]) => { bal += v; return `<tr><td class="num">${d}</td><td>${t}<span class="sub num">残高 ${yen(bal)}</span></td><td class="r num">${v ? (v > 0 ? "+" : "") + yen(v) : "—"}</td></tr>`; }).join("")}
+          </tbody></table></div></div></div>`
+        + `<div class="card"><div class="card-h"><h2>資金の原則</h2></div><div class="card-b">
+            <div class="callout"><b>1. 先に受け取り、あとで払う。</b> 買い手はデポジット（前受金）で先に入金。パートナーへの支払いは、入金済みで検収が終わった分だけ。Seriが立て替えることはありません。</div>
+            <div class="callout"><b>2. 他人のお金を分けて持つ。</b> 前受金・パートナーへの未払金・預り税は、Seriの運転資金と別の口座で管理します。</div>
+            <div class="callout"><b>3. 請求書払いは審査した企業だけ。</b> 与信枠は1社あたり最大 ¥500万。未回収のリスクをSeriの手元資金で吸収できる範囲に抑えます。</div>
+            <div class="callout warn"><b>要確認（専門家）:</b> デポジットの残高が前払式支払手段にあたるか（資金決済法）、データのライセンス料が源泉徴収の対象か、海外企業への販売の消費税（輸出免税）。</div></div></div>`;
+    },
+    "ops-flow"() {
+      const stages = [["①", "依頼・契約", "6件", "¥486万", "見積 → 基本契約 → 個別の依頼", ""], ["②", "入金", "2件待ち", "¥300万", "デポジットの入金を確認", "money"], ["③", "募集・制作", "14案件", "1,820件", "職種・順位で合うパートナーに配信", ""], ["④", "Seri AI検査", "64件", "平均2.4秒", "自動判定 94% · 残りは人へ", "ai"], ["⑤", "抜き取り審査", "22件", "5%抽出", "人が聞いて最終確認", ""], ["⑥", "納品・検収", "3,410件", "¥216万", "14日以内 · 期限後は自動検収", ""], ["⑦", "精算", "54人", "¥1,138万", "月末締め · 翌月10日払い", "money"]];
+      return head("Seri運営", "取引フロー", "依頼から支払いまでの7段階。どこに何件、いくら止まっているかを見て、詰まりを先に解消します。")
+        + `<div class="pipe">${stages.map(([n, t, v, m, d, k]) => `<div class="stage ${k}"><span class="n">${n}</span><b>${t}</b><span class="v">${v}</span><span class="note num">${m}</span><span class="d">${d}</span></div>`).join("")}</div>`
+        + `<div class="grid-2e"><div class="card"><div class="card-h"><h2>品質とリスク（9月）</h2></div><div class="tbl-wrap"><table><tbody>
+            <tr><td>Seri AIの自動判定率</td><td class="r num">94.1%</td><td>${chip("目標 90%以上", "good")}</td></tr>
+            <tr><td>人の抜き取り審査との一致率</td><td class="r num">97.3%</td><td>${chip("目標 95%以上", "good")}</td></tr>
+            <tr><td>差し戻し率（検収時）</td><td class="r num">1.8%</td><td>${chip("目標 3%未満", "good")}</td></tr>
+            <tr><td>返金率</td><td class="r num">0.4%</td><td>${chip("目標 1%未満", "good")}</td></tr>
+            <tr><td>締切を過ぎた依頼</td><td class="r num">2件</td><td>${chip("要対応", "warn")}</td></tr></tbody></table></div></div>
+          <div class="card"><div class="card-h"><h2>今日の対応</h2></div><div class="tbl-wrap"><table><tbody>
+            <tr><td>ORD-2609-009 · 締切超過 · 残り 42件</td><td>${chip("順位を1段下げて差額を返金", "warn")}</td></tr>
+            <tr><td>パートナー 3人の職種確認（免許証）</td><td>${chip("審査待ち", "info")}</td></tr>
+            <tr><td>Sora Translate の与信審査</td><td>${chip("決算書の確認中", "info")}</td></tr>
+            <tr><td>DLV-007-03 差し戻し 6件の確認</td><td>${chip("パートナーへ理由を送付", "info")}</td></tr></tbody></table></div></div></div>`;
+    },
+    "ops-revenue"() {
+      const g = ops.gmv[5], rev = g * (R.buyerFee + (1 - R.partnerShare)), items = g / 300, u = ops.unit;
+      const cost = items * (u.qa + u.spot + u.pay + u.refund), gross = rev - cost;
+      return head("Seri運営", "収益", "Seriの収益はデータ価格の20%（パートナー側10%＋買い手側のサービス料10%）。原価はAI検査・人の審査・決済・返金。")
+        + `<div class="kpis">${kpi("9月の取引額（データ価格）", yen(g), `<span class="up">前月比 +${pct(g / ops.gmv[4] - 1)}</span>`)}${kpi("Seriの収益", yen(rev), "取引額の20%")}${kpi("粗利", yen(gross), `粗利率 ${pct(gross / rev)}`)}${kpi("データ件数", Math.round(items).toLocaleString("ja-JP") + "件", "平均単価 ¥300")}</div>`
+        + `<div class="grid-2"><div class="card"><div class="card-h"><div><h2>月別の取引額</h2><p>データ価格の合計（サービス料・税別）</p></div></div><div class="card-b">${barChart({ labels: ops.months, series: [ops.gmv], names: ["取引額"] })}</div></div>
+          <div class="card"><div class="card-h"><h2>1件あたりの収支（¥300のデータ）</h2></div><div class="card-b"><dl class="kv">
+            <dt>買い手の支払い</dt><dd class="num">${yen(u.price * 1.1)}<span class="note"> ＋税</span></dd><dt>パートナーへ（90%）</dt><dd class="num">${yen(-u.price * .9)}</dd><dt class="total">Seriの収益</dt><dd class="total num">${yen(u.price * .2)}</dd>
+            <dt>AI検査（音声認識＋ルール確認）</dt><dd class="num">−¥${u.qa}</dd><dt>人の抜き取り審査（5%）</dt><dd class="num">−¥${u.spot}</dd><dt>決済・振込</dt><dd class="num">−¥${u.pay}</dd><dt>返金の引当</dt><dd class="num">−¥${u.refund}</dd>
+            <dt class="total">1件あたりの粗利</dt><dd class="total num">¥${(u.price * .2 - u.qa - u.spot - u.pay - u.refund).toFixed(1)}</dd></dl>
+            <p class="note">AIの自動判定率が上がるほど、人の審査コストが下がり粗利が増えます。</p></div></div></div>`;
+    },
+    "ops-model"() {
+      const steps = [
+        ["企業が依頼する", "AI企業が条件（種類・件数・単価・品質順位・職種・ライセンス）を入れると、その場で見積もり。基本契約を結んだうえで依頼を確定。", "買い手 → Seri", "デポジット（前受金）で先に入金。データ価格＋サービス料10%＋消費税"],
+        ["パートナーが作る", "条件に合う個人事業主・専門職に依頼が届く。1人が受けられるのは20%まで。", "—", "まだお金は動かない"],
+        ["Seri AIが検査・査定", "長さ・音質・重複・音声認識での聞き直し・個人情報のチェックを数秒で。品質A/B/Cと査定額を付ける。5%は人が抜き取りで確認。", "Seriの原価", "1件あたり約¥11（AI ¥6＋人 ¥5）"],
+        ["納品・検収（14日）", "データカード付きで納品。企業は14日以内に検収か差し戻し。期限後は自動で検収。", "前受金 → 未払金", "検収した分だけ、パートナーへの未払金として確定"],
+        ["精算（月末締め・翌月10日）", "パートナーへライセンス料を支払い、個人の源泉徴収税を納付。企業には適格請求書を発行し、デポジットから充当。", "Seri → パートナー", "ライセンス料（データ価格の90%）＋消費税−源泉徴収税"],
+        ["資産として再販", "標準ライセンスのデータはパートナーの資産としてカタログに残り、別の企業に何度でも販売される。", "買い手 → Seri → パートナー", "再販のたびに同じ計算で収益が発生（追加の制作コストなし）"],
+      ];
+      return head("Seri運営", "事業モデル", "誰が、何に、いつ、いくら払うか。運営の流れとお金の流れを1枚にまとめたものです。")
+        + `<div class="kpis">${kpi("Seriの取り分", "データ価格の20%", "パートナー側10%＋買い手側10%")}${kpi("パートナーの取り分", "90%", "＋消費税 − 源泉徴収税")}${kpi("お金の順番", "先に受け取る", "デポジット → 検収 → 支払い")}${kpi("支払いサイト", "翌月10日", "月末締め")}</div>`
+        + `<div class="card"><div class="card-h"><h2>取引の流れとお金の動き</h2></div><div class="card-b"><div class="flow">${steps.map(([t, d, who, m], i) => `<div class="fstep"><span class="no">${i + 1}</span><div><b>${t}</b><p>${d}</p></div><div class="money"><b>${who}</b><br>${m}</div></div>`).join("")}</div></div></div>`
+        + `<div class="grid-2e"><div class="card"><div class="card-h"><h2>収益の柱</h2></div><div class="tbl-wrap"><table><thead><tr><th>いつから</th><th>収益</th><th>内容</th></tr></thead><tbody>
+            <tr><td>今</td><td>取引手数料 20%</td><td>受託と再販のすべての取引</td></tr>
+            <tr><td>今</td><td>優先募集</td><td>依頼を条件の合うパートナーに優先表示（価格と審査には影響しない）</td></tr>
+            <tr><td>企業10社〜</td><td>エンタープライズ契約</td><td>API・エージェント接続、専任の品質管理、SLA（年額）</td></tr>
+            <tr><td>取引が集まった後</td><td>相場データ</td><td>データの種類ごとの取引価格の情報</td></tr></tbody></table></div></div>
+          <div class="card"><div class="card-h"><h2>なぜ成り立つか</h2></div><div class="card-b">
+            <div class="callout"><b>パートナー:</b> 一度作ったデータが資産として残り、再販のたびに収益になる。請求・税務の手間はSeriが引き受ける。</div>
+            <div class="callout"><b>AI企業:</b> 権利処理・本人の同意・品質の証明が済んだデータを、見積もりから数日で調達できる。</div>
+            <div class="callout"><b>Seri:</b> 再販は制作コストがかからないため、資産が増えるほど粗利率が上がる。お金は先に受け取るので、成長しても資金が詰まらない。</div></div></div></div>`;
+    },
+  };
+
+  // ================= navigation =================
+  const NAV = {
+    partner: { who: ["佐藤 美咲 · 看護師（個人事業主）", "佐"], label: "データ提供パートナー", items: [["overview", "概要"], ["assets", "データ資産", "148"], ["rfq", "案件", "4"], ["pay", "お支払い・税務"]], foot: ["佐藤 美咲", "インボイス登録済み · 本人確認済み"] },
+    buyer: { who: ["北斗LLMラボ株式会社 · 調達部", "北"], label: "AI企業", items: [["overview", "概要"], ["procure", "調達"], ["deliveries", "納品・検収", "2"], ["billing", "請求・契約"]], foot: ["北斗LLMラボ株式会社", "デポジット方式 · 基本契約済み"] },
+    ops: { who: ["Seri株式会社 · 運営", "S"], label: "Seri運営", items: [["cash", "資金"], ["flow", "取引フロー"], ["revenue", "収益"], ["model", "事業モデル"]], foot: ["Seri株式会社（設立準備中）", "数字はデモ用のサンプル"] },
+  };
+  const state = { portal: "partner", page: "overview", asset: 0, acceptBuyout: false };
+
+  function render() {
+    const nav = NAV[state.portal];
+    document.querySelectorAll(".portals button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.portal === state.portal)));
+    $("#portal-select").value = state.portal;
+    $("#who-name").textContent = nav.who[0]; $("#who-avatar").textContent = nav.who[1];
+    $("#rail").innerHTML = `<div class="rail-label">${nav.label}</div>` + nav.items.map(([k, t, c]) => `<a href="#${state.portal}-${k}" ${k === state.page ? 'aria-current="page"' : ""}><span>${t}</span>${c ? `<span class="count">${c}</span>` : ""}</a>`).join("")
+      + `<div class="rail-foot"><b>${nav.foot[0]}</b>${nav.foot[1]}</div>`;
+    $("#page").innerHTML = P[`${state.portal}-${state.page}`]();
+    wire();
+  }
+  function go(hash) {
+    const [portal, page] = (hash || "").replace("#", "").split("-");
+    if (NAV[portal] && NAV[portal].items.some(([k]) => k === page)) { state.portal = portal; state.page = page; }
+    else if (NAV[portal]) { state.portal = portal; state.page = NAV[portal].items[0][0]; }
+    render(); scrollTo(0, 0);
+  }
+  addEventListener("hashchange", () => go(location.hash));
+  document.querySelectorAll(".portals button").forEach((b) => b.addEventListener("click", () => { location.hash = `${b.dataset.portal}-${NAV[b.dataset.portal].items[0][0]}`; }));
+  $("#portal-select").addEventListener("change", (e) => { location.hash = `${e.target.value}-${NAV[e.target.value].items[0][0]}`; });
+
+  // ================= page interactions =================
+  function wire() {
+    document.querySelectorAll("[data-asset]").forEach((tr) => tr.addEventListener("click", () => { state.asset = +tr.dataset.asset; render(); }));
+    document.querySelectorAll("[data-accept]").forEach((b) => b.addEventListener("click", () => {
+      const q = partner.rfqs[+b.dataset.accept]; q.accepted = 0; render();
+      toast(`${q.buyer}の依頼を受託しました。最大${q.cap}件まで提出できます。`);
+    }));
+    const ab = $("#accept-buyout");
+    if (ab) ab.addEventListener("change", () => { state.acceptBuyout = ab.checked; render(); });
+    document.querySelectorAll("[data-accept-dlv]").forEach((b) => b.addEventListener("click", () => {
+      const d = buyer.deliveries[+b.dataset.acceptDlv]; d.state = "done"; render();
+      toast(`${d.id}（${d.units}件）を検収しました。パートナーへの支払いが確定し、10/10に支払われます。`);
+    }));
+    document.querySelectorAll("[data-reject-dlv]").forEach((b) => b.addEventListener("click", () => {
+      const d = buyer.deliveries[+b.dataset.rejectDlv]; d.state = "rejected"; render();
+      toast(`${d.id}を差し戻しました。該当データの代金はデポジットに戻ります。`);
+    }));
+    if ($("#quote")) {
+      const calc = () => {
+        const o = { units: +$("#q-units").value || 0, price: +$("#q-price").value || 0, tier: $("#q-tier").value, industry: $("#q-industry").value, license: $("#q-license").value };
+        const unit = unitValue(o), data = Math.round(unit * o.units), fee = Math.round(data * R.buyerFee), tax = Math.round((data + fee) * R.vat), total = data + fee + tax;
+        const ok = total <= buyer.deposit;
+        $("#quote").innerHTML = `<dl class="kv"><dt>1件あたり</dt><dd class="num">${yen(unit)}</dd><dt>データ価格（${o.units.toLocaleString()}件）</dt><dd class="num">${yen(data)}</dd><dt>サービス料（10%）</dt><dd class="num">${yen(fee)}</dd><dt>消費税（10%）</dt><dd class="num">${yen(tax)}</dd><dt class="total">お支払い合計</dt><dd class="total num">${yen(total)}</dd></dl>
+          <p class="note">うちパートナーへ ${yen(data * R.partnerShare)}（データ価格の90%）· 納期の目安 ${o.tier === "top10" ? 42 : o.tier === "top25" ? 28 : o.tier === "top50" ? 21 : 14}日</p>
+          <div class="callout ${ok ? "" : "warn"}">${ok ? `デポジット残高 ${yen(buyer.deposit)} から充当します。` : `デポジット残高が ${yen(total - buyer.deposit)} 足りません。確定すると不足分の請求書を発行します。`}</div>
+          <button class="btn" id="q-submit" ${o.units < 10 || o.price < 100 ? "disabled" : ""}>依頼を確定する</button>`;
+        $("#q-submit").onclick = () => {
+          const id = `ORD-2609-0${15 + buyer.orders.length}`;
+          buyer.orders.unshift({ id, title: R.kinds[$("#q-kind").value], kind: $("#q-kind").value, ...o, done: 0, status: "募集中", due: "11/" + (o.tier === "any" ? "13" : "27") });
+          if (ok) buyer.deposit -= total;
+          toast(`${id} を確定しました。条件に合うパートナーへ依頼が届きます。`);
+          location.hash = "buyer-overview";
+        };
+      };
+      ["#q-kind", "#q-units", "#q-price", "#q-tier", "#q-industry", "#q-license"].forEach((s) => $(s).addEventListener("input", calc));
+      calc();
+    }
+  }
+
+  go(location.hash || "#partner-overview");
+})();
+</script>
