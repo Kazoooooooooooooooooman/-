@@ -48,6 +48,14 @@ Browsers only allow the microphone on `localhost` or HTTPS.
 
 The database schema is created on start. There are no migrations yet, so delete `backend/data/` after model changes. Add Alembic before real data exists.
 
+## Click-through demo (no server)
+
+```bash
+cd seri/demo && python build_demo.py dist
+```
+
+Builds a static copy of every screen with the sample data (answers come from a snapshot of real API responses in `snapshot.js`). Nothing is saved; recording and downloads are off. Open `dist/hub.html` from any static host.
+
 ## Tests
 
 ```bash
@@ -87,5 +95,4 @@ The tests cover:
 - A third-party security assessment, then the ISO 27001 ISMS, then a SOC 2 audit.
 - Email notifications (review results, payouts, complaints) and a daily scheduler for deadlines and hold release (both are admin buttons today).
 - Database migrations (Alembic).
-- The QA agent: automatic speech recognition plus AI rule checks before human review.
 - Lawyer review of the terms, privacy policy, consent text and 特商法 page.
