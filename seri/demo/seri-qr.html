@@ -1,0 +1,359 @@
+<title>Seri Water QR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=BIZ+UDPGothic:wght@400;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* One narrow phone column: label strip on top, one step at a time, trust footer always visible. */
+:root {
+  --bg: #f3f6f7;
+  --surface: #ffffff;
+  --ink: #12232e;
+  --muted: #5b6b75;
+  --line: #d9e2e6;
+  --accent: #0f7c8c;
+  --accent-ink: #ffffff;
+  --accent-soft: #e2f1f3;
+  --warn-soft: #fff5e0;
+  --warn-ink: #7a5300;
+  --display: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --body: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d171d; --surface: #15232b; --ink: #e6eef1; --muted: #9fb0b8; --line: #27393f;
+    --accent: #3fb4c4; --accent-ink: #06171c; --accent-soft: #163840; --warn-soft: #3a2e12; --warn-ink: #f2cf86;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d171d; --surface: #15232b; --ink: #e6eef1; --muted: #9fb0b8; --line: #27393f;
+  --accent: #3fb4c4; --accent-ink: #06171c; --accent-soft: #163840; --warn-soft: #3a2e12; --warn-ink: #f2cf86;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.7; }
+.wrap { max-width: 440px; margin: 0 auto; padding-inline: 16px; padding-block: 12px 32px; display: flex; flex-direction: column; gap: 16px; }
+.demo { background: var(--warn-soft); color: var(--warn-ink); font-size: 12.5px; padding: 8px 12px; border-radius: 8px; }
+.label { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.label b { font-family: var(--display); font-weight: 900; color: var(--ink); font-size: 15px; letter-spacing: .04em; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+h1 { font-family: var(--display); font-weight: 900; font-size: 28px; line-height: 1.3; margin: 4px 0 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 700; font-size: 20px; line-height: 1.4; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.lead { color: var(--muted); }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.task { all: unset; box-sizing: border-box; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.task:hover { border-color: var(--accent); }
+.task:focus-visible, button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.task .t { font-weight: 700; font-size: 16px; }
+.task .when { grid-column: 1; color: var(--muted); font-size: 13px; }
+.task .val { grid-row: 1 / span 2; grid-column: 2; align-self: center; text-align: right; font-size: 12px; color: var(--muted); }
+.task .val .mono { display: block; color: var(--accent); font-size: 15px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px 16px; display: flex; flex-direction: column; gap: 14px; }
+.q { font-weight: 700; }
+.scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.chip { all: unset; box-sizing: border-box; cursor: pointer; text-align: center; border: 1px solid var(--line); border-radius: 10px; padding: 10px 4px; font-size: 14px; background: var(--bg); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips .chip { padding: 8px 12px; }
+.ans { all: unset; box-sizing: border-box; cursor: pointer; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: var(--bg); display: flex; flex-direction: column; gap: 4px; }
+.ans[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
+.ans small { color: var(--muted); font-family: var(--mono); }
+.btn { all: unset; box-sizing: border-box; cursor: pointer; text-align: center; border-radius: 12px; padding: 13px 16px; font-weight: 700; background: var(--accent); color: var(--accent-ink); }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 400; }
+.btn.plain { background: transparent; color: var(--muted); font-weight: 400; padding: 6px; }
+.rec { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-block: 8px; }
+.mic { all: unset; cursor: pointer; width: 88px; height: 88px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font-weight: 700; }
+.mic.on { background: #c8453a; color: #fff; }
+.wave { display: flex; gap: 3px; height: 36px; align-items: center; }
+.wave i { width: 4px; border-radius: 2px; background: var(--accent); height: 6px; transition: height .12s; }
+.timer { font-family: var(--mono); font-size: 22px; font-variant-numeric: tabular-nums; }
+.value { display: flex; flex-direction: column; gap: 2px; }
+.value .big { font-family: var(--mono); font-size: 40px; line-height: 1.2; color: var(--accent); }
+.rows { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.rows div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.rows div span:last-child { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.note { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+.code { font-family: var(--mono); font-size: 14px; word-break: break-all; }
+.sso { display: flex; flex-direction: column; gap: 8px; }
+.sso .btn.ghost { display: flex; justify-content: center; gap: 8px; }
+.cardno { display: flex; gap: 8px; }
+.cardno input { flex: 1; min-width: 0; font: inherit; font-family: var(--mono); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+.trust { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.trust strong { color: var(--ink); }
+.trust .links { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.trust .links span { text-decoration: underline; text-underline-offset: 3px; }
+.steps { display: flex; gap: 6px; }
+.steps i { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
+.steps i.done { background: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .wave i { transition: none; } }
+</style>
+
+<div class="wrap">
+  <p class="demo">見本です。回答や録音は保存されず、評価額も見本の数字です。</p>
+
+  <div class="label">
+    <b>Seri Water</b>
+    <span>ボトル番号 <span class="mono" id="bottle">SRI-JP-WTR-0004512</span></span>
+  </div>
+
+  <div class="steps" aria-hidden="true"><i id="s1" class="done"></i><i id="s2"></i><i id="s3"></i><i id="s4"></i></div>
+
+  <!-- 1. choose -->
+  <section id="v-start" class="stack">
+    <h1>あなたの経験を、資産に。</h1>
+    <p class="lead">10秒から始められます。登録はあとで。</p>
+    <div class="stack" role="list">
+      <button class="task" data-task="taste" role="listitem">
+        <span class="t">味を評価する</span><span class="when">10秒・電車の中でも</span>
+        <span class="val">評価額の目安<span class="mono">¥3</span></span>
+      </button>
+      <button class="task" data-task="pick" role="listitem">
+        <span class="t">AIの答えを選ぶ</span><span class="when">10秒・声は出しません</span>
+        <span class="val">評価額の目安<span class="mono">¥8</span></span>
+      </button>
+      <button class="task" data-task="voice" role="listitem">
+        <span class="t">声で話す</span><span class="when">30秒・静かな場所で</span>
+        <span class="val">評価額の目安<span class="mono">¥30〜</span></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- 2a. taste -->
+  <section id="v-taste" class="card" hidden>
+    <h2>この水の感想を教えてください</h2>
+    <div class="stack">
+      <p class="q">飲みやすさ</p>
+      <div class="scale" data-group="ease"></div>
+    </div>
+    <div class="stack">
+      <p class="q">また買いたいですか？</p>
+      <div class="chips" data-group="again">
+        <button class="chip" aria-pressed="false">買いたい</button>
+        <button class="chip" aria-pressed="false">たぶん</button>
+        <button class="chip" aria-pressed="false">買わない</button>
+      </div>
+    </div>
+    <button class="btn" id="taste-done" disabled>回答する</button>
+  </section>
+
+  <!-- 2b. pick -->
+  <section id="v-pick" class="card" hidden>
+    <h2>どちらの返事が自然ですか？</h2>
+    <p class="lead">質問：「雨なんだけど、駅から歩いて10分ってきつい？」</p>
+    <button class="ans" data-ans="A" aria-pressed="false"><small>A</small>傘があれば大丈夫だと思うよ。足元だけ気をつけてね。</button>
+    <button class="ans" data-ans="B" aria-pressed="false"><small>B</small>雨天時の徒歩10分は、適切な雨具を使用すれば問題ありません。</button>
+    <div class="stack">
+      <p class="q">理由（任意）</p>
+      <div class="chips" data-group="why" data-multi>
+        <button class="chip" aria-pressed="false">話し言葉として自然</button>
+        <button class="chip" aria-pressed="false">丁寧すぎる</button>
+        <button class="chip" aria-pressed="false">気づかいがある</button>
+        <button class="chip" aria-pressed="false">機械っぽい</button>
+      </div>
+    </div>
+    <button class="btn" id="pick-done" disabled>回答する</button>
+  </section>
+
+  <!-- 2c. voice -->
+  <section id="v-voice" class="card" hidden>
+    <h2>あなたの地元の自慢を、30秒で話してください</h2>
+    <p class="lead">他の人の声や名前が入らない、静かな場所でお願いします。</p>
+    <div class="rec">
+      <button class="mic" id="mic" aria-label="録音を始める">録音</button>
+      <div class="wave" id="wave" aria-hidden="true"></div>
+      <div class="timer" id="timer">0:00 / 0:30</div>
+    </div>
+    <p class="note">見本のため、マイクは使いません。ボタンを押すと録音の流れだけを再現します。</p>
+    <button class="btn" id="voice-done" disabled>この録音で送る</button>
+  </section>
+
+  <!-- 3. value + save -->
+  <section id="v-value" class="stack" hidden>
+    <div class="card">
+      <div class="value">
+        <span class="lead">この回答の評価額（見込み）</span>
+        <span class="big" id="val">¥0</span>
+      </div>
+      <div class="rows" id="rows"></div>
+      <p class="note">評価額は見込みで、お金ではありません。データが売れたら、売れるたびにあなたへ分配されます。</p>
+      <div class="stack">
+        <span class="lead">資産番号</span>
+        <span class="code" id="code"></span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>この資産を保存する</h2>
+      <p class="lead">パスワードは要りません。お金を受け取るときだけ、本人確認をお願いします。</p>
+      <div class="sso">
+        <button class="btn ghost" data-save="Apple">Appleで続ける</button>
+        <button class="btn ghost" data-save="Google">Googleで続ける</button>
+      </div>
+      <div class="stack">
+        <label for="cardno" class="lead">経験カードを持っている方は、カード番号で後から受け取れます</label>
+        <div class="cardno">
+          <input id="cardno" placeholder="SRI-JP-CRD-0000000" inputmode="text" autocomplete="off">
+          <button class="btn ghost" data-save="カード番号">保存</button>
+        </div>
+      </div>
+      <button class="btn plain" id="skip">保存しないで終わる</button>
+    </div>
+  </section>
+
+  <!-- 4. saved -->
+  <section id="v-saved" class="stack" hidden>
+    <div class="card">
+      <h2 id="saved-title">保存しました</h2>
+      <div class="rows">
+        <div><span>評価額の合計（見込み）</span><span id="sum">¥0</span></div>
+        <div><span>受け取ったお金（確定）</span><span>¥0</span></div>
+        <div><span>資産の数</span><span id="count">0</span></div>
+      </div>
+      <p class="lead">売れたときは、ログインに使ったメールアドレスにお知らせします。</p>
+    </div>
+    <div class="card">
+      <h2 id="next-title">次は、声で話してみませんか</h2>
+      <p class="lead" id="next-body">声のデータは、評価額が一番高くなりやすい種類です。1分の録音は、売れたときの分配も大きくなります。</p>
+      <button class="btn" id="again">もう1つ答える</button>
+    </div>
+  </section>
+
+  <footer class="trust">
+    <p><strong>Seri があなたにお金を求めることは、一切ありません。</strong></p>
+    <p>運営：Seri（法人設立準備中）。データの権利はあなたのものです。いつでも削除や利用停止ができます。</p>
+    <div class="links"><span>利用規約</span><span>プライバシー</span><span>運営者情報</span><span>お問い合わせ</span></div>
+  </footer>
+</div>
+
+<script>
+(function () {
+  const $ = (s) => document.querySelector(s);
+  const views = ["start", "taste", "pick", "voice", "value", "saved"];
+  const stepOf = { start: 1, taste: 2, pick: 2, voice: 2, value: 3, saved: 4 };
+  const assets = [];
+  let current = null;
+
+  function show(name) {
+    views.forEach((v) => { $("#v-" + v).hidden = v !== name; });
+    for (let i = 1; i <= 4; i++) $("#s" + i).classList.toggle("done", i <= stepOf[name]);
+    window.scrollTo({ top: 0 });
+  }
+
+  function luhn(digits) {
+    let sum = 0;
+    digits.split("").reverse().forEach((d, i) => {
+      let n = +d;
+      if (i % 2 === 0) { n *= 2; if (n > 9) n -= 9; }
+      sum += n;
+    });
+    return String((10 - (sum % 10)) % 10);
+  }
+  function assetCode(cat) {
+    const seven = String(Math.floor(Math.random() * 1e7)).padStart(7, "0");
+    return "SRI-JP-" + cat + "-" + seven + luhn(seven);
+  }
+  const yen = (n) => "¥" + n.toLocaleString("ja-JP");
+
+  // toggle groups
+  const scale = document.querySelector('[data-group="ease"]');
+  ["1 飲みにくい", "2", "3", "4", "5 飲みやすい"].forEach((t) => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.setAttribute("aria-pressed", "false"); b.textContent = t.split(" ")[0];
+    b.setAttribute("aria-label", t);
+    scale.appendChild(b);
+  });
+  document.querySelectorAll("[data-group]").forEach((g) => {
+    g.addEventListener("click", (e) => {
+      const b = e.target.closest(".chip"); if (!b) return;
+      if (!g.hasAttribute("data-multi")) g.querySelectorAll(".chip").forEach((c) => c.setAttribute("aria-pressed", "false"));
+      b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" && g.hasAttribute("data-multi") ? "false" : "true");
+      checkTaste();
+    });
+  });
+  const picked = (g) => document.querySelector('[data-group="' + g + '"] [aria-pressed="true"]');
+  function checkTaste() { $("#taste-done").disabled = !(picked("ease") && picked("again")); }
+
+  document.querySelectorAll(".ans").forEach((a) => a.addEventListener("click", () => {
+    document.querySelectorAll(".ans").forEach((x) => x.setAttribute("aria-pressed", "false"));
+    a.setAttribute("aria-pressed", "true");
+    $("#pick-done").disabled = false;
+  }));
+
+  document.querySelectorAll(".task").forEach((t) => t.addEventListener("click", () => show(t.dataset.task)));
+
+  // simulated recording
+  const wave = $("#wave");
+  for (let i = 0; i < 28; i++) wave.appendChild(document.createElement("i"));
+  let timer = null, secs = 0;
+  function stopRec() {
+    clearInterval(timer); timer = null;
+    $("#mic").classList.remove("on"); $("#mic").textContent = "録り直す";
+    $("#mic").setAttribute("aria-label", "録り直す");
+    wave.querySelectorAll("i").forEach((b) => { b.style.height = "6px"; });
+    $("#voice-done").disabled = secs < 5;
+  }
+  $("#mic").addEventListener("click", () => {
+    if (timer) { stopRec(); return; }
+    secs = 0; $("#voice-done").disabled = true;
+    $("#mic").classList.add("on"); $("#mic").textContent = "停止"; $("#mic").setAttribute("aria-label", "録音を止める");
+    let tick = 0;
+    timer = setInterval(() => {
+      tick++;
+      wave.querySelectorAll("i").forEach((b) => { b.style.height = (6 + Math.random() * 28) + "px"; });
+      if (tick % 5 === 0) {
+        secs++;
+        $("#timer").textContent = "0:" + String(secs).padStart(2, "0") + " / 0:30";
+        if (secs >= 30) stopRec();
+      }
+    }, 200);
+  });
+
+  // value screen
+  function valueFor(kind) {
+    if (kind === "taste") return { cat: "TST", rows: [["味の評価（1件）", 3]], note: "味の評価は飲料メーカーの商品開発に使われます。" };
+    if (kind === "pick") return { cat: "PRF", rows: [["AIの答えの選択（1件）", 6], ["理由を添えた分", picked("why") ? 2 : 0]] };
+    const base = Math.max(10, Math.round(secs * 1));
+    return { cat: "VOC", rows: [["声 " + secs + "秒（基本）", base], ["希少さ（日英を話せる・関西出身など）", Math.round(base * 0.3)], ["品質の確認", "確認後に決定"]] };
+  }
+  function finish(kind) {
+    const v = valueFor(kind);
+    const total = v.rows.reduce((s, r) => s + (typeof r[1] === "number" ? r[1] : 0), 0);
+    current = { kind, total, code: assetCode(v.cat) };
+    $("#val").textContent = yen(total);
+    $("#rows").innerHTML = "";
+    v.rows.forEach(([k, n]) => {
+      const d = document.createElement("div");
+      const a = document.createElement("span"); a.textContent = k;
+      const b = document.createElement("span"); b.textContent = typeof n === "number" ? yen(n) : n;
+      d.append(a, b); $("#rows").appendChild(d);
+    });
+    $("#code").textContent = current.code;
+    show("value");
+  }
+  $("#taste-done").addEventListener("click", () => finish("taste"));
+  $("#pick-done").addEventListener("click", () => finish("pick"));
+  $("#voice-done").addEventListener("click", () => finish("voice"));
+
+  document.querySelectorAll("[data-save]").forEach((b) => b.addEventListener("click", () => {
+    if (b.dataset.save === "カード番号" && !$("#cardno").value.trim()) { $("#cardno").focus(); $("#cardno").placeholder = "カード番号を入力してください"; return; }
+    assets.push(current);
+    $("#saved-title").textContent = b.dataset.save + "で保存しました（見本）";
+    $("#sum").textContent = yen(assets.reduce((s, a) => s + a.total, 0));
+    $("#count").textContent = assets.length + "件";
+    const hasVoice = assets.some((a) => a.kind === "voice");
+    $("#next-title").textContent = hasVoice ? "次は1分の録音に挑戦しませんか" : "次は、声で話してみませんか";
+    $("#next-body").textContent = hasVoice
+      ? "あなたの声には珍しい特徴があるかもしれません。1分以上で品質Aの録音は、売れたときの分配が大きくなります。"
+      : "声のデータは、評価額が一番高くなりやすい種類です。1分の録音は、売れたときの分配も大きくなります。";
+    show("saved");
+  }));
+  $("#skip").addEventListener("click", () => { current = null; show("start"); });
+  $("#again").addEventListener("click", () => {
+    document.querySelectorAll('[aria-pressed="true"]').forEach((x) => x.setAttribute("aria-pressed", "false"));
+    $("#taste-done").disabled = true; $("#pick-done").disabled = true; $("#voice-done").disabled = true;
+    secs = 0; $("#timer").textContent = "0:00 / 0:30"; $("#mic").textContent = "録音";
+    show("start");
+  });
+})();
+</script>
