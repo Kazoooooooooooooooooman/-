@@ -480,6 +480,36 @@ tr.mine td { font-weight: 700; }
     return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="${c.name}の資産 4月${v[0]}件から9月${v[5]}件"><polyline fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round" points="${pts.join(" ")}"/><circle cx="${last[0]}" cy="${last[1]}" r="3" fill="var(--series-1)"/></svg>`;
   }
 
+  // ================= asset account (brokerage-style) =================
+  const CAT_CODE = { medical: "MED", legal: "LAW", judgment: "JDG", present: "PRS", sales: "SAL", phone: "TEL", bilingual: "BIL", dialect: "DIA", reading: "RDG" };
+  // Luhn check digit, like a securities identifier, so a mistyped code is caught
+  function luhn(num) {
+    let sum = 0;
+    String(num).split("").reverse().forEach((d, i) => { let n = +d; if (i % 2 === 0) { n *= 2; if (n > 9) n -= 9; } sum += n; });
+    return (10 - (sum % 10)) % 10;
+  }
+  function holding(r, i) {
+    const c = catOf(r[10]), digits = r[0].replace(/\D/g, "").padStart(7, "0");
+    const code = `SRI-JP-${CAT_CODE[r[10]]}-${digits}${luhn(digits)}`;
+    const monthly = r[6] === "buyout" || r[6] === "eval" ? 0 : r[2] * c.lam * c.cat * 0.9 * (r[3] === "A" ? 1.2 : 0.9);
+    const startAfter = r[6] === "term" ? 4 : 0;   // 期間独占はあと4ヶ月で終わり、その後に再販が始まる
+    let value = 0;
+    for (let m = 1; m <= 24; m++) if (m > startAfter) value += monthly * Math.pow(0.97, m) / Math.pow(1.005, m);
+    const wave = [0.55, 0.7, 0.85, 1.0, 1.1, 1.25];
+    const income = r[6] === "standard" ? wave.map((w, k) => Math.round(monthly * w * (1 + ((i * 7 + k * 3) % 5 - 2) / 20))) : [0, 0, 0, 0, 0, 0];
+    const quality = r[4], proof = r[10] === "medical" ? 100 : 90, hist = 100;
+    const score = Math.round(quality * 0.7 + proof * 0.2 + hist * 0.1);
+    const rating = score >= 95 ? "AAA" : score >= 92 ? "AA" : score >= 88 ? "A" : score >= 82 ? "BBB" : "BB";
+    const st = { active: ["販売中", "good"], exclusive: ["独占中", "info"], sold: ["一括売却済み", ""] }[r[9]];
+    const events = r[6] === "term" ? "2027/1/31 に期間独占が終了 → 標準ライセンスに戻り、再販が始まります。"
+      : r[6] === "eval" ? "評価用ライセンスのため、他社への再販はありません（一括で受け取り済み）。"
+      : r[6] === "buyout" ? "完全買い切りで一括受け取り済み。この資産は口座の記録としてのみ残ります。"
+      : "標準ライセンスで販売中。次の品質の再評価は 2026/12/1。";
+    return { code, name: r[1], units: r[2], grade: r[3], score: r[4], license: r[6], cat: r[10], lam: c.lam, price: c.cat, value: Math.round(value), income, rating, parts: [quality, proof, hist], state: st, events,
+             exclusiveNote: r[6] === "term" ? "2027/1/31まで独占" : "", created: ["2026/04/18", "2026/05/09", "2026/05/22", "2026/06/03", "2026/06/15", "2026/07/02", "2026/07/20", "2026/08/11"][i] || "2026/08/30",
+             consentHash: ["9f2c41ab", "1d8e07c3", "c4a9f210", "7be3d905", "0a5f6e2d", "e81c3b77", "52d0a9f4", "b6f13c08"][i] || "4c2e9a10" };
+  }
+
   // ================= pages =================
   const head = (crumb, title, desc, right = "") => `<div class="head"><div><div class="crumb">${crumb}</div><h1>${title}</h1><p>${desc}</p></div>${right}</div>`;
   const kpi = (label, value, sub = "") => `<div class="kpi"><small>${label}</small><b class="num">${value}</b><span>${sub}</span></div>`;
@@ -505,20 +535,30 @@ tr.mine td { font-weight: 700; }
               .map(([d, t, b, l, v, s]) => `<tr><td class="num">${d}</td><td>${t}</td><td>${b}</td><td>${lic(l)}</td><td class="r num">${yen(v)}</td><td>${chip(s, s === "確定" ? "good" : "warn")}</td></tr>`).join("")}</tbody></table></div></div>`;
     },
     "partner-assets"() {
-      const rows = partner.assets;
-      const sel = state.asset ?? 0, a = rows[sel];
-      const state2 = { active: ["販売中", "good"], exclusive: ["独占中", "info"], sold: ["売却済み", ""] };
-      return head("データ提供パートナー", "資産の明細", "登録済みの資産1件ずつの品質、ライセンス、利用企業、査定額。査定額は売れた実績から毎週更新します（ベイズ推定: 分類の平均から始め、実際の販売回数で補正）。")
-        + `<div class="kpis">${kpi("登録済みの資産", "148ロット", "3,120件のデータ")}${kpi("査定額の合計", yen(vaultValue()), "今後12ヶ月の予想再販収益")}${kpi("平均品質スコア", "91 / 100", "看護師の上位6%")}${kpi("累計の再販回数", "112回", "受託後に別の企業へ")}</div>`
-        + `<div class="grid-2"><div class="card"><div class="card-h"><h2>資産の一覧</h2><p>行を選ぶと査定の根拠を表示</p></div><div class="tbl-wrap"><table><thead><tr><th>資産</th><th>品質</th><th>ライセンス</th><th class="r">利用企業</th><th class="r">累計収益</th><th class="r">査定額</th><th>状態</th></tr></thead><tbody>
-          ${rows.map((r, i) => `<tr class="click${i === sel ? " sel" : ""}" data-asset="${i}"><td>${r[1]}<span class="sub id">${r[0]} · ${r[2]}件</span></td><td>${r[3]} <span class="note num">${r[4]}</span></td><td>${lic(r[6])}</td><td class="r num">${r[7]}社</td><td class="r num">${yen(r[8])}</td><td class="r num">${assetValue(r) ? yen(assetValue(r)) : "—"}</td><td>${chip(...state2[r[9]])}</td></tr>`).join("")}
+      const rows = partner.assets.map(holding);
+      const sel = rows[state.asset ?? 0];
+      const totalV = rows.reduce((s, h) => s + h.value, 0), ttm = rows.reduce((s, h) => s + h.income.reduce((a, b) => a + b, 0), 0);
+      const rateChip = (r) => chip(r, r.startsWith("AA") ? "good" : r === "A" ? "info" : "");
+      return head("データ提供パートナー", "資産口座", "あなたのデータ資産を、証券口座と同じ形で管理します。資産ごとに資産コード・格付け・評価額・分配金（売れた時の収益）の履歴・開示書があります。")
+        + `<div class="kpis">${kpi("評価額の合計", yen(totalV), "今後24ヶ月の見込み収益を現在の価値に換算")}${kpi("直近6ヶ月の分配金", yen(ttm), "再販で入った収益")}${kpi("保有資産", "148銘柄", "3,120件 · うち表示8銘柄")}${kpi("口座の区分", "分別管理", "Seriの資金とは別に記録")}</div>`
+        + `<div class="grid-2"><div class="card"><div class="card-h"><div><h2>保有資産</h2><p>行を選ぶと開示書を表示</p></div><a class="btn sec sm" href="#partner-pay">報告書を見る</a></div><div class="tbl-wrap"><table><thead><tr><th>資産コード / 名称</th><th>格付け</th><th class="r">件数</th><th class="r">評価額</th><th class="r">直近6ヶ月の分配金</th><th>状態</th></tr></thead><tbody>
+          ${rows.map((h, i) => `<tr class="click${h === sel ? " sel" : ""}" data-asset="${i}"><td><span class="id">${h.code}</span><span class="sub">${h.name}</span></td><td>${rateChip(h.rating)}</td><td class="r num">${h.units}</td><td class="r num">${h.value ? yen(h.value) : "—"}</td><td class="r num">${yen(h.income.reduce((a, b) => a + b, 0))}</td><td>${chip(...h.state)}</td></tr>`).join("")}
           </tbody></table></div></div>
-          <div class="card"><div class="card-h"><div><h2>Seri AIの査定</h2><p class="id">${a[0]}</p></div>${chip(a[3] === "A" ? "品質 A" : "品質 B", "info")}</div><div class="card-b">
-            <b>${a[1]} · ${a[2]}件</b>
-            <dl class="kv"><dt>品質スコア</dt><dd class="num">${a[4]} / 100</dd><dt>音声認識の誤り率</dt><dd class="num">${(100 - a[4]) / 3 > 0 ? ((100 - a[4]) / 3).toFixed(1) : "0.0"}%</dd><dt>専門性</dt><dd>確認済みの看護師（免許確認）</dd>
-              <dt>需要（直近90日）</dt><dd>看護師 × 日本語の依頼 +38%</dd><dt>希少性</dt><dd>同じ条件の提供者 214人</dd><dt>月の再販見込み（1件）</dt><dd class="num">${catOf(a[10]).lam.toFixed(2)}回 · カタログ ${yen(catOf(a[10]).cat)}</dd>
-              <dt class="total">査定額（12ヶ月）</dt><dd class="total num">${assetValue(a) ? yen(assetValue(a)) : "売却済み"}</dd></dl>
-            <p class="note">査定額 ＝ 件数 × 12ヶ月 × 月の再販見込み × カタログ価格 × 90%（品質で補正）。${a[6] === "standard" ? "標準ライセンスなので、別の企業にも繰り返し販売されます。" : a[6] === "buyout" ? "完全買い切りのため、今後の再販はありません。" : "独占期間が終わると標準ライセンスに戻り、再販の対象になります。"}</p>
+          <div class="card"><div class="card-h"><div><h2>開示書</h2><p class="id">${sel.code}</p></div>${rateChip("格付け " + sel.rating)}</div><div class="card-b">
+            <b>${sel.name} · ${sel.units}件</b>
+            ${barChart({ labels: ["4月", "5月", "6月", "7月", "8月", "9月"], series: [sel.income], names: ["分配金"], h: 150 })}
+            <dl class="kv">
+              <dt>権利者</dt><dd>${partner.name}（データの権利はあなたに残ります）</dd>
+              <dt>ライセンスの状態</dt><dd>${lic(sel.license)}${sel.exclusiveNote ? ` · ${sel.exclusiveNote}` : ""}</dd>
+              <dt>作成日 · 検査</dt><dd class="num">${sel.created} · Seri AI＋抜き取り審査 合格</dd>
+              <dt>同意の記録</dt><dd class="num">第2026-10-01版 · ${sel.consentHash}…</dd>
+              <dt>資格の確認</dt><dd>${sel.cat === "medical" ? "看護師免許 確認済み" : "—"}</dd>
+              <dt>品質スコア</dt><dd class="num">${sel.score} / 100（品質${sel.grade}）</dd>
+              <dt>格付けの内訳</dt><dd class="num">品質 ${sel.parts[0]} · 証明 ${sel.parts[1]} · 履歴 ${sel.parts[2]}</dd>
+              <dt>月の再販見込み</dt><dd class="num">${sel.lam.toFixed(2)}回/件 · カタログ ${yen(sel.price)}</dd>
+              <dt class="total">評価額</dt><dd class="total num">${sel.value ? yen(sel.value) : "一括売却済み（再販なし）"}</dd></dl>
+            <p class="note">評価額 ＝ 今後24ヶ月の見込み分配金を、月0.5%で割り引いた合計（需要は月3%ずつ減ると仮定）。見込みは実際の販売回数で毎週更新します。</p>
+            <div class="callout"><b>資産のできごと:</b> ${sel.events}</div>
           </div></div></div>`;
     },
     "partner-rfq"() {
@@ -596,6 +636,32 @@ tr.mine td { font-weight: 700; }
           ${buyer.invoices.map(([id, m, d, v]) => `<tr><td class="id">${id}</td><td>${m}</td><td class="num">${d}</td><td class="r num">${v ? yen(v) : yen(1655280)}</td><td>${v ? chip("デポジットから充当済み", "good") : chip("発行予定", "warn")}</td></tr>`).join("")}
           </tbody></table></div></div>
           <div class="card"><div class="card-h"><h2>APIキー（AIエージェント用）</h2></div><div class="card-b"><dl class="kv"><dt>本番キー</dt><dd class="num">sk_live_••••4f2a</dd><dt>作成</dt><dd class="num">2026/07/12</dd><dt>最終利用</dt><dd>今日 9:41</dd><dt>権限</dt><dd>カタログ購入 · 依頼の作成</dd></dl><p class="note">自社のAIエージェントから、予算の範囲で自動的にデータを調達できます。</p></div></div></div>`;
+    },
+
+    "buyer-quality"() {
+      const layers = [
+        ["買う前に、御社の基準で確かめる", "無料のサンプル（100件）と品質レポート（データカード）をお渡しします。御社のモデルや評価基準で試してから注文を決められます。", "サンプル · データカード"],
+        ["全件をAIが検査し、人が統計的に抜き取る", "長さ・音質・重複・聞き直し・個人情報を全件チェック。さらにロットごとに181件を人が聞き、不良4件以下のロットだけを納品します。不良が5%あるロットは95%の確率で止まります。", "二項分布で設計"],
+        ["御社も好きなロットを抜き取れる", "納品されたどのロットでも、御社が自分で抜き取って確認できます。基準を超える不良があれば、ロットごと返品・全額返金します。", "検査権"],
+        ["届いた品質で払う", "品質A・Bで値段が違います。上位の作り手に頼んでも、届いたのがBならBの値段です。差額はデポジットに戻ります。", "品質連動の精算"],
+        ["30日の保証", "受け取ってから30日以内に見つかった問題は、全額返金します。", "保証"],
+        ["作り手も責任を負う", "作り手への支払いは検収のあと。本人以外の声などの不正は、作り手に12ヶ月さかのぼって返還を求めます。", "後払い · 返還条項"],
+        ["権利を1件ずつ証明する", "全データに、本人確認・資格確認・同意書の版と日時・指紋（SHA-256）が付きます。権利に問題があればSeriが保証します。", "権利保証"],
+      ];
+      return head("AI企業", "品質保証", "Seriのデータが「なぜ信頼できるか」を、約束ではなく仕組みで説明します。")
+        + `<div class="kpis">${kpi("差し戻し率", "1.8%", "9月 · 公開")}${kpi("30日保証での返金率", "0.4%", "9月 · 公開")}${kpi("AIと人の判定の一致率", "97.3%", "抜き取り審査で測定")}${kpi("試験発注", "基準未達なら¥0", "最初の10時間")}</div>`
+        + `<div class="card"><div class="card-h"><h2>品質を守る7つの仕組み</h2><p>どれか1つが漏れても、次の仕組みで止まるように重ねています</p></div><div class="card-b"><div class="flow">
+            ${layers.map(([t, d, tag], i) => `<div class="fstep"><span class="no">${i + 1}</span><div><b>${t}</b><p>${d}</p></div><div class="money"><b>${tag}</b></div></div>`).join("")}</div></div></div>`
+        + `<div class="grid-2e"><div class="card"><div class="card-h"><h2>Seriを使うメリット</h2></div><div class="tbl-wrap"><table><thead><tr><th></th><th>自社で集める・他社に頼む</th><th>Seri</th></tr></thead><tbody>
+            <tr><td>契約</td><td>データ会社ごとに契約・審査</td><td>Seriと1回だけ</td></tr>
+            <tr><td>価格</td><td>オーダーメイドは1時間 $150〜400以上</td><td>同じ仕様で共同調達すれば2〜8割安い</td></tr>
+            <tr><td>専門職のデータ</td><td>集めにくい</td><td>資格確認済みの看護師・士業など</td></tr>
+            <tr><td>権利の確認</td><td>自社で調べる</td><td>1件ずつ証明＋Seriが保証</td></tr>
+            <tr><td>品質が悪かった時</td><td>交渉</td><td>品質で精算・30日保証・返品</td></tr>
+            <tr><td>支払い</td><td>先払い・前金</td><td>デポジット。使わなかった分は戻る</td></tr></tbody></table></div></div>
+          <div class="card"><div class="card-h"><h2>最初の取引は試験発注で</h2></div><div class="card-b">
+            <div class="callout"><b>試験発注（10時間分）:</b> 御社が決めた基準（音声認識の誤り率など）を満たさなければ、代金はいただきません。満たした場合だけ、本発注に進みます。</div>
+            <p class="note">実績の数字（差し戻し率・返金率・一致率）は、毎月この画面と公開ページで更新します。</p></div></div></div>`;
     },
 
     // ---------- ops ----------
@@ -711,8 +777,8 @@ tr.mine td { font-weight: 700; }
 
   // ================= navigation =================
   const NAV = {
-    partner: { who: ["佐藤 美咲 · 看護師（個人事業主）", "佐"], label: "データ提供パートナー", items: [["overview", "概要"], ["vault", "資産の棚"], ["assets", "資産の明細", "148"], ["rfq", "案件", "4"], ["pay", "お支払い・税務"]], foot: ["佐藤 美咲", "インボイス登録済み · 本人確認済み"] },
-    buyer: { who: ["北斗LLMラボ株式会社 · 調達部", "北"], label: "AI企業", items: [["overview", "概要"], ["procure", "調達"], ["deliveries", "納品・検収", "2"], ["billing", "請求・契約"]], foot: ["北斗LLMラボ株式会社", "デポジット方式 · 基本契約済み"] },
+    partner: { who: ["佐藤 美咲 · 看護師（個人事業主）", "佐"], label: "データ提供パートナー", items: [["overview", "概要"], ["vault", "資産の棚"], ["assets", "資産口座", "148"], ["rfq", "案件", "4"], ["pay", "お支払い・税務"]], foot: ["佐藤 美咲", "インボイス登録済み · 本人確認済み"] },
+    buyer: { who: ["北斗LLMラボ株式会社 · 調達部", "北"], label: "AI企業", items: [["overview", "概要"], ["procure", "調達"], ["quality", "品質保証"], ["deliveries", "納品・検収", "2"], ["billing", "請求・契約"]], foot: ["北斗LLMラボ株式会社", "デポジット方式 · 基本契約済み"] },
     ops: { who: ["Seri株式会社 · 運営", "S"], label: "Seri運営", items: [["cash", "資金"], ["finance", "財務"], ["flow", "取引フロー"], ["revenue", "収益"], ["model", "事業モデル"]], foot: ["Seri株式会社（設立準備中）", "数字はデモ用のサンプル"] },
   };
   const state = { portal: "partner", page: "overview", asset: 0, acceptBuyout: false };
