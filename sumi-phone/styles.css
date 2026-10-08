@@ -167,7 +167,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 .story-text { font-family: var(--hand); font-weight: 400; font-size: clamp(19px, 2.3vw, 30px); line-height: 2.1; letter-spacing: .06em; display: flex; flex-direction: column; gap: 1.1em; min-width: 0; }
 .punch { font-size: clamp(22px, 2.8vw, 38px); line-height: 1.75; font-weight: 600; }
 .punch + .punch { margin-top: 1.2em; }
-.punch-name { display: inline-block; margin-top: .25em; font-family: var(--serif); font-weight: 600; font-size: 1.25em; letter-spacing: .06em; }
+.punch-name { display: inline-block; text-wrap: balance; margin-top: .25em; font-family: var(--serif); font-weight: 600; font-size: 1.25em; letter-spacing: .06em; }
 .page-no { font-family: var(--sans); font-size: 12px; letter-spacing: .4em; color: var(--paper-dim); }
 .big-line { font-size: clamp(30px, 4.4vw, 52px); line-height: 1.6; font-weight: 600; text-wrap: balance; }
 .drawn-box {
@@ -415,6 +415,7 @@ footer.footer .footer-logo { color: var(--paper-ink); }
   h2.fit { font-size: 7.2vw; letter-spacing: .04em; }
   .big-line { font-size: 7vw; }
   .punch { font-size: 5.3vw; }
+  .punch-name { font-size: 1.08em; }
   .panel { padding-top: 100px; padding-bottom: 100px; }
 }
 
