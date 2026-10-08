@@ -121,15 +121,9 @@ br.pc { display: inline; }
 }
 @keyframes drip { 0% { top: -64px; } 60%, 100% { top: 64px; } }
 
-/* ---------- 1枚目：終わりのないフィードをスワイプし続ける ---------- */
-.hero-swipe {
-  color: var(--paper-ink); text-shadow: none;
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center;
-  gap: clamp(24px, 5vw, 80px); position: relative;
-}
-.hero-swipe .eyebrow, .hero-swipe .lead { color: var(--paper-dim); }
-.swipe-copy { min-width: 0; }
-.hero-swipe h1 { font-size: clamp(26px, 3.2vw, 54px); }
+/* ---------- 終わりのないフィードをスワイプし続ける絵（物語の2ページ目） ---------- */
+.hero-copy { color: var(--paper-ink); text-shadow: none; position: relative; }
+.hero-copy .eyebrow, .hero-copy .lead { color: var(--paper-dim); }
 .swipe-art { position: relative; width: 100%; max-width: 640px; justify-self: center; }
 .swipe-art > img { width: 100%; height: auto; display: block; }
 /* スマホの画面（絵の中の位置に合わせた割合） */
@@ -357,14 +351,13 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   .split-device { align-self: center; }
   .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cols, .lists, .rules, .reserve-form { grid-template-columns: 1fr; }
-  .hero-swipe { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 96px; }
   .swipe-art { max-width: 420px; }
   .story, .sumi-says { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .story.alt .story-art { order: 0; }
   .sumi-art { max-width: 200px; }
   .item-card { flex-basis: auto; width: 100%; }
   br.pc { display: none; }
-  h1, .hero-swipe h1 { font-size: 7.2vw; letter-spacing: .04em; }
+  h1 { font-size: 7.2vw; letter-spacing: .04em; }
   .panel { padding-top: 100px; padding-bottom: 100px; }
 }
 

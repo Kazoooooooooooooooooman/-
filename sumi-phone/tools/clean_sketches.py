@@ -8,7 +8,6 @@ OUT = sys.argv[1]
 S = 4284 / 1050  # crop boxes below are in 1050px-wide preview coordinates
 JOBS = [  # name, file, crop box, erase boxes (handwritten captions)
     ('01-indoors', '7f5171eb-IMG_9573', (150, 830, 900, 1240), []),
-    ('02-feed', '1cff70ff-IMG_9574', (160, 55, 1015, 625), [(195, 75, 660, 170)]),
     ('03-room', '574f29d2-IMG_9575', (195, 300, 805, 690), [(150, 230, 640, 352)]),
     ('04-noise', '9ae98d82-IMG_9576', (180, 240, 1010, 1060), []),
     ('05-burst', '4e96d850-IMG_9577', (35, 405, 965, 1255), []),
