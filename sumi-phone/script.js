@@ -43,12 +43,11 @@
   const screens = {
     phone: `<div class="mid">母</div><div class="small">発信中…</div><ul style="margin-top:18px;font-size:15px"><li>ハル</li><li>ソラ</li><li>事務所</li></ul>`,
     message: `<div class="small">ハル</div><div class="mid" style="margin:6px 0 14px">今夜、月が<br>きれいだよ。</div><div class="small">返信：見てる。</div>`,
-    alarm: `<div class="big">6:30</div><div class="small">鳥のさえずり ・ 毎日</div>`,
     map: `<div class="small">次の角を</div><div class="mid">左へ 120m</div><div class="small" style="margin-top:14px">竹林の小径</div>`,
-    music: `<div class="small">再生中</div><div class="mid">波の記憶</div><div class="small">03:12 / 05:40</div>`,
-    notes: `<div class="small">メモ</div><div class="mid" style="font-size:18px;line-height:1.7">・味噌を買う<br>・手紙を書く<br>・散歩</div>`,
-    camera: `<div style="flex:1;border:1px solid rgba(0,0,0,.35);border-radius:8px;display:grid;place-items:center;margin:8px 0"><span class="small">◯</span></div><div class="small">シャッターを押す</div>`,
-    home: `<ul><li>電話</li><li>メッセージ</li><li>アラーム</li><li>道しるべ</li><li>音</li><li>メモ</li></ul>`,
+    alarm: `<div class="big">6:30</div><div class="small">鳥のさえずり ・ 毎日</div>`,
+    steps: `<div class="small">今日の歩数</div><div class="big">8,012</div><div class="small" style="margin-top:12px">特典が届きました<br>喫茶 こもれび ・ コーヒー1杯</div>`,
+    camera: `<div class="photo" role="img" aria-label="カメラで撮ったカラー写真"></div><div class="small">写真だけは、カラーで。</div>`,
+    home: `<ul><li>電話</li><li>メッセージ</li><li>地図</li><li>アラーム</li><li>歩数</li><li>カメラ</li></ul>`,
   };
   const body = document.getElementById("screen-body");
   const tabs = document.querySelectorAll(".tool-list button");

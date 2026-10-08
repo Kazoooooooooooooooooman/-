@@ -133,11 +133,9 @@ br.pc { display: inline; }
 }
 .device-screen {
   flex: 1; border-radius: 18px; padding: 16px 18px;
-  background:
-    radial-gradient(120% 80% at 30% 0%, #dcd8ce, #c8c3b7 70%),
-    #cfcabe;
-  color: #1b1b1b; text-shadow: none;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.25), inset 0 6px 14px rgba(0,0,0,.12);
+  background: radial-gradient(120% 80% at 30% 0%, #1c1c1d, #0b0b0c 70%);
+  color: #ecebe7; text-shadow: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), inset 0 6px 14px rgba(0,0,0,.5);
   display: flex; flex-direction: column; overflow: hidden;
 }
 .screen-status { display: flex; justify-content: space-between; font-size: 11px; letter-spacing: .1em; opacity: .7; }
@@ -148,6 +146,10 @@ br.pc { display: inline; }
 .screen-body .mid { font-size: 22px; }
 .screen-body .small { font-family: var(--sans); font-size: 12px; opacity: .65; margin-top: 6px; }
 .screen-body ul { list-style: none; font-size: 19px; line-height: 2; }
+.screen-body .photo {
+  flex: 1; margin: 6px -6px 10px; border-radius: 10px;
+  background: url(images/photo-color.jpg) center / cover;
+}
 .device-chin { height: 54px; display: grid; place-items: center; }
 .device-chin::after { content: ""; width: 36px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.18); }
 
@@ -165,6 +167,8 @@ br.pc { display: inline; }
 .timeline li { display: flex; gap: 28px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
 .timeline time { font-family: var(--serif); font-size: 22px; width: 64px; flex: none; }
 
+.note { font-size: 13px; color: var(--white-dim); margin-top: 24px; max-width: 38em; }
+.panel .body + .reserve { margin-top: 12px; }
 .price { font-family: var(--serif); font-size: 22px; margin-bottom: 28px; }
 .price span { font-size: 16px; color: var(--white-dim); margin-left: 12px; }
 .reserve { display: flex; gap: 12px; flex-wrap: wrap; max-width: 560px; }
@@ -182,6 +186,8 @@ br.pc { display: inline; }
   font-size: 14px; color: var(--white-dim);
 }
 .footer-logo { display: flex; align-items: center; gap: 12px; font-family: var(--serif); color: var(--white); font-size: 18px; margin-bottom: 14px; }
+.footer-link { color: var(--white); border-bottom: 1px solid var(--line); }
+.footer-link:hover { border-color: var(--white); }
 .footer .small { font-size: 12px; margin-top: 28px; opacity: .7; }
 
 /* ---------- 表示アニメーション ---------- */
