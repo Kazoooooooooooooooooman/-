@@ -4,6 +4,11 @@
   --white-dim: rgba(246, 244, 239, 0.72);
   --line: rgba(246, 244, 239, 0.28);
   --ink: #141414;
+  --paper-ink: #1f1e1c;
+  --paper-dim: rgba(31, 30, 28, 0.62);
+  --paper-line: rgba(31, 30, 28, 0.35);
+  --chrome: var(--white);
+  --hand: "Klee One", "Hiragino Maru Gothic ProN", "Yu Gothic", cursive;
   --serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
   --sans: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
   --fade: 1.4s;
@@ -39,35 +44,36 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .bg-layer.flip { transform: scale(-1.08, 1.08); }
 .bg-layer.flip.is-active { transform: scale(-1, 1); }
 .bg-shade {
-  position: absolute; inset: 0;
+  position: absolute; inset: 0; transition: opacity var(--fade) ease;
   background:
     linear-gradient(180deg, rgba(0,0,0,.38) 0%, rgba(0,0,0,.12) 35%, rgba(0,0,0,.18) 65%, rgba(0,0,0,.5) 100%);
 }
 
 /* ---------- ナビ ---------- */
 .nav {
+  color: var(--chrome);
   position: fixed; top: 0; left: 0; right: 0; z-index: 10;
   display: flex; align-items: center; justify-content: space-between;
   padding: 22px clamp(16px, 4vw, 48px);
-  transition: background .4s, padding .4s;
+  transition: background .4s, padding .4s, color .6s;
 }
 .nav.is-scrolled { background: rgba(10,10,12,.35); backdrop-filter: blur(10px); padding-top: 14px; padding-bottom: 14px; }
 .logo { display: flex; align-items: center; gap: 10px; }
 .logo-mark {
   display: inline-grid; place-items: center;
-  width: 34px; height: 34px; border: 1px solid var(--white); border-radius: 50%;
+  width: 34px; height: 34px; border: 1px solid currentColor; border-radius: 50%;
   font-family: var(--serif); font-size: 17px;
 }
 .logo-word { font-family: var(--serif); letter-spacing: .35em; font-size: 15px; }
 .nav-links { display: flex; gap: clamp(14px, 2.4vw, 32px); font-size: 14px; align-items: center; }
 .nav-links a { opacity: .85; transition: opacity .2s; }
 .nav-links a:hover { opacity: 1; }
-.nav-cta { border: 1px solid var(--white); padding: 6px 16px; border-radius: 999px; opacity: 1 !important; }
+.nav-cta { border: 1px solid currentColor; padding: 6px 16px; border-radius: 999px; opacity: 1 !important; }
 
 /* ---------- シーンインジケータ ---------- */
 .scenes {
   position: fixed; right: clamp(12px, 2.5vw, 32px); top: 50%; transform: translateY(-50%);
-  z-index: 9; list-style: none; display: flex; flex-direction: column; gap: 14px;
+  z-index: 9; list-style: none; color: var(--chrome); transition: color .6s; display: flex; flex-direction: column; gap: 14px;
 }
 .scenes a {
   display: block; font-family: var(--serif); font-size: 12px; width: 26px; text-align: center;
@@ -112,6 +118,37 @@ br.pc { display: inline; }
   animation: drip 2.4s ease-in-out infinite;
 }
 @keyframes drip { 0% { top: -64px; } 60%, 100% { top: 64px; } }
+
+/* ---------- 絵本（紙のページ） ---------- */
+body.paper { --chrome: var(--paper-ink); }
+body.paper .bg-shade { opacity: 0; }
+body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
+.story {
+  color: var(--paper-ink); text-shadow: none;
+  display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  align-items: center; gap: clamp(28px, 6vw, 96px);
+}
+.story.alt .story-art { order: 2; }
+.story.center { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+.story.center .story-art { max-width: 560px; }
+.story-art img { width: 100%; height: auto; display: block; }
+.story-text { font-family: var(--hand); font-weight: 400; font-size: clamp(19px, 2.3vw, 30px); line-height: 2.1; letter-spacing: .06em; display: flex; flex-direction: column; gap: 1.1em; min-width: 0; }
+.page-no { font-family: var(--sans); font-size: 12px; letter-spacing: .4em; color: var(--paper-dim); }
+.big-line { font-size: clamp(30px, 4.4vw, 52px); line-height: 1.6; font-weight: 600; text-wrap: balance; }
+.drawn-box {
+  align-self: center; margin-top: .6em; padding: .5em 1.4em;
+  border: 2px solid var(--paper-ink);
+  border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px;
+}
+.sumi-says { grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); }
+.sumi-art { max-width: 320px; justify-self: center; }
+.bubble {
+  position: relative; padding: 1.1em 1.4em; max-width: 30em;
+  border: 2px solid var(--paper-ink); font-size: clamp(17px, 1.8vw, 22px); line-height: 2;
+  border-radius: 30px 255px 40px 225px / 225px 40px 255px 30px;
+}
+.signature { font-size: 15px; color: var(--paper-dim); }
+.footer-sumi { width: 64px; height: auto; filter: invert(1) brightness(.92); opacity: .85; margin-bottom: 18px; }
 
 /* ---------- 道具 ---------- */
 .split { flex-direction: row; align-items: center; gap: clamp(32px, 6vw, 100px); }
@@ -228,6 +265,9 @@ br.pc { display: inline; }
   .split-device { align-self: center; }
   .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cols, .lists, .rules { grid-template-columns: 1fr; }
+  .story, .sumi-says { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .story.alt .story-art { order: 0; }
+  .sumi-art { max-width: 200px; }
   .item-card { flex-basis: auto; width: 100%; }
   br.pc { display: none; }
   .panel { padding-top: 100px; padding-bottom: 100px; }

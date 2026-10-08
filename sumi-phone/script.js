@@ -15,11 +15,13 @@
 
   function onScroll() {
     const mid = window.innerHeight / 2;
-    let idx = 0;
+    let active = panels[0];
     panels.forEach((p) => {
-      if (p.getBoundingClientRect().top <= mid) idx = Number(p.dataset.bg);
+      if (p.getBoundingClientRect().top <= mid) active = p;
     });
-    setScene(idx);
+    setScene(Number(active.dataset.bg));
+    // 絵本のページ（紙）では、ナビの文字を墨色にする
+    document.body.classList.toggle("paper", active.dataset.tone === "paper");
     nav.classList.toggle("is-scrolled", window.scrollY > 40);
   }
   window.addEventListener("scroll", onScroll, { passive: true });

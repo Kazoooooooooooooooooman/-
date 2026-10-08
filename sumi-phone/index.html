@@ -7,7 +7,7 @@
 <meta name="description" content="用事はこの一台で済ませて、あとはポケットへ。スマホから離れた時間が、温泉や本や山歩きに変わる、日本のためのデジタルデトックス・スマートフォン Sumi（仮称）。" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -15,6 +15,7 @@
 <!-- 背景：スクロールに合わせて切り替わる -->
 <div class="bg" aria-hidden="true">
   <div class="bg-layer is-active" style="background-image:url(images/01-mountains.jpg)"></div>
+  <div class="bg-layer" style="background-image:url(images/10-paper.jpg)"></div>
   <div class="bg-layer" style="background-image:url(images/02-bamboo.jpg)"></div>
   <div class="bg-layer" style="background-image:url(images/03-lake.jpg)"></div>
   <div class="bg-layer" style="background-image:url(images/04-sea.jpg)"></div>
@@ -31,6 +32,7 @@
     <span class="logo-mark">墨</span><span class="logo-word">SUMI</span>
   </a>
   <nav class="nav-links">
+    <a href="#story">物語</a>
     <a href="#philosophy">思想</a>
     <a href="#home">ホーム</a>
     <a href="#points">ポイント</a>
@@ -43,6 +45,7 @@
 <!-- 右側のシーンインジケータ -->
 <ol class="scenes" aria-label="セクション">
   <li><a href="#top">山</a></li>
+  <li><a href="#story">話</a></li>
   <li><a href="#philosophy">竹</a></li>
   <li><a href="#home">湖</a></li>
   <li><a href="#one">海</a></li>
@@ -62,13 +65,70 @@
     <p class="lead reveal">用事はこの一台で済ませて、あとはポケットへ。<br />スマホから離れた時間が、温泉や本や山歩きに変わる。</p>
     <div class="reveal actions">
       <a class="btn" href="#signup">最新情報を受け取る</a>
-      <a class="btn ghost" href="#philosophy">もっと知る</a>
+      <a class="btn ghost" href="#story">はじまりの話</a>
     </div>
-    <a class="scroll-hint" href="#philosophy" aria-label="下へスクロール"><span></span></a>
+    <a class="scroll-hint" href="#story" aria-label="下へスクロール"><span></span></a>
   </section>
 
-  <!-- 1 竹 -->
-  <section id="philosophy" class="panel" data-bg="1">
+  <!-- 絵本：Sumi が生まれるまで（紙の背景・墨の文字） -->
+  <section id="story" class="panel story" data-bg="1" data-tone="paper">
+    <figure class="story-art reveal"><img src="images/story/01-indoors.png" alt="家の中で画面に向かう人。外の友達、木、魚にはばつ印がついている" width="1100" height="601" /></figure>
+    <div class="story-text reveal">
+      <p class="page-no">はじまりの話</p>
+      <p>いつしか消えた、<br />自分から外へ行く理由。</p>
+    </div>
+  </section>
+
+  <section class="panel story alt" data-bg="1" data-tone="paper">
+    <figure class="story-art reveal"><img src="images/story/02-feed.png" alt="ソファで寝そべる人から、画面が階段のように家の外まで果てしなく続いている" width="1100" height="733" /></figure>
+    <div class="story-text reveal">
+      <p>楽しくて、笑える SNS。</p>
+      <p>何も困らないじゃん。<br />毎日満たされるから、いいじゃん。<br />友達とオンラインで話せるし、最高じゃん。</p>
+      <p>……だよね？</p>
+    </div>
+  </section>
+
+  <section class="panel story" data-bg="1" data-tone="paper">
+    <figure class="story-art reveal"><img src="images/story/03-room.png" alt="ベッドで画面を見続ける人がいる、がらんとした部屋" width="1100" height="703" /></figure>
+    <div class="story-text reveal">
+      <p>家から出る必要なんてないし。<br />誰からも何も言われないし、<br />ずっと好きなことできるし。</p>
+      <p>嫌なことないし、楽だし。<br />俺なんかどうせ変われないし、<br />AI がなんでもできるから、<br />何も学ばなくていいし。</p>
+    </div>
+  </section>
+
+  <section class="panel story center" data-bg="1" data-tone="paper">
+    <div class="story-text reveal">
+      <p class="big-line">けど、本当は<br />何者かになりたい。</p>
+    </div>
+    <figure class="story-art reveal"><img src="images/story/04-noise.png" alt="ぐちゃぐちゃの線の真ん中に、小さな人がひとり立っている" width="1100" height="1086" /></figure>
+  </section>
+
+  <section class="panel story alt" data-bg="1" data-tone="paper">
+    <figure class="story-art reveal"><img src="images/story/05-burst.png" alt="真ん中の小さな画面から、矢印が四方八方へ伸びていく" width="1100" height="1005" /></figure>
+    <div class="story-text reveal">
+      <p>この現状を、<br />少しずつでいいから変えたい。</p>
+      <p>もっと時間を使って、<br />いろんなことを学んだり、<br />新しい体験がしたい。</p>
+    </div>
+  </section>
+
+  <section class="panel story center" data-bg="1" data-tone="paper">
+    <div class="story-text reveal">
+      <p>けど、どうせ俺には無理だな。<br />今までずっと逃げてきたし、<br />時間だって一生かかる。<br />保証なんてない。</p>
+      <p class="drawn-box">今まで通りで、いっか。</p>
+    </div>
+  </section>
+
+  <section class="panel story sumi-says" data-bg="1" data-tone="paper">
+    <figure class="story-art sumi-art reveal"><img src="images/story/06-sumi.png" alt="にっこり笑う、まるい頭のキャラクター、Sumi" width="520" height="593" /></figure>
+    <div class="story-text reveal">
+      <p class="big-line">「ちょっと待ってよ。」</p>
+      <p class="bubble">使わなければ使わないほど、ポイントが貯まって、好きなことに使えるスマホがあるんだよね。<br />SNS もゲームもないから、自分のために時間を使えるよ。</p>
+      <p class="signature">— Sumi</p>
+    </div>
+  </section>
+
+  <!-- 竹 -->
+  <section id="philosophy" class="panel" data-bg="2">
     <p class="eyebrow reveal">思想</p>
     <h2 class="reveal">我慢ではなく、<br />その先の楽しみを。</h2>
     <p class="body reveal">
@@ -83,7 +143,7 @@
   </section>
 
   <!-- 2 湖 -->
-  <section id="home" class="panel split" data-bg="2">
+  <section id="home" class="panel split" data-bg="3">
     <div class="split-text">
       <p class="eyebrow reveal">ホーム</p>
       <h2 class="reveal">アプリではなく、<br />用事が並ぶ。</h2>
@@ -110,7 +170,7 @@
   </section>
 
   <!-- 3 海 -->
-  <section id="one" class="panel" data-bg="3">
+  <section id="one" class="panel" data-bg="4">
     <p class="eyebrow reveal">一台で</p>
     <h2 class="reveal">外での暮らしは、<br />この一台で終わる。</h2>
     <p class="body reveal">
@@ -142,7 +202,7 @@
   </section>
 
   <!-- 4 庭 -->
-  <section id="points" class="panel" data-bg="4">
+  <section id="points" class="panel" data-bg="5">
     <p class="eyebrow reveal">ポイント</p>
     <h2 class="reveal">決めた時間に離れると、<br />ポイントが貯まる。</h2>
     <p class="body reveal">
@@ -158,7 +218,7 @@
   </section>
 
   <!-- 5 湯 -->
-  <section id="rewards" class="panel" data-bg="5">
+  <section id="rewards" class="panel" data-bg="6">
     <p class="eyebrow reveal">還元</p>
     <h2 class="reveal">貯めたポイントは、<br />湯けむりの向こうへ。</h2>
     <p class="body reveal">
@@ -172,7 +232,7 @@
   </section>
 
   <!-- 6 川 -->
-  <section id="shop" class="panel split" data-bg="6">
+  <section id="shop" class="panel split" data-bg="7">
     <div class="split-text">
       <p class="eyebrow reveal">ショップ</p>
       <h2 class="reveal">専門家が選んだ、<br />健やかなものだけ。</h2>
@@ -198,7 +258,7 @@
   </section>
 
   <!-- 7 松 -->
-  <section id="form" class="panel" data-bg="7">
+  <section id="form" class="panel" data-bg="8">
     <p class="eyebrow reveal">かたち</p>
     <h2 class="reveal">手のひらに、<br />静かに収まる。</h2>
     <div class="cols reveal">
@@ -219,7 +279,7 @@
   </section>
 
   <!-- 8 星 -->
-  <section id="signup" class="panel" data-bg="8">
+  <section id="signup" class="panel" data-bg="9">
     <p class="eyebrow reveal">開発中</p>
     <h2 class="reveal">夜空を、<br />もう一度見上げよう。</h2>
     <p class="body reveal">Sumi は現在開発中です。<br />試作の進み具合や、先行体験の案内をお届けします。</p>
@@ -234,6 +294,7 @@
 </main>
 
 <footer class="footer">
+  <img class="footer-sumi" src="images/story/06-sumi.png" alt="" width="520" height="593" />
   <div class="footer-logo"><span class="logo-mark">墨</span> Sumi（仮称）</div>
   <p>スマホから離れた時間で、日本の暮らしを豊かに。</p>
   <p class="small">© 2026 Sumi. 背景画像は本サイトのために描いた墨絵風の作品です。</p>

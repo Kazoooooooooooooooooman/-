@@ -71,7 +71,15 @@ def vignette(img, k=0.45):
     d = ((XX / W - 0.5) ** 2 + (YY / H - 0.5) ** 2) ** 0.5
     return img * (1 - k * np.clip(d * 1.4, 0, 1) ** 2)[..., None]
 
-def save(img, name):
+def matte_mono(img):
+    """白黒・マット仕上げ：色を抜き、黒を少し持ち上げてハイライトを抑える。"""
+    y = img[..., 0] * 0.299 + img[..., 1] * 0.587 + img[..., 2] * 0.114
+    y = 16 + np.clip(y, 0, 255) * (222 - 16) / 255
+    return np.repeat(y[..., None], 3, 2) * np.array([1.0, 0.995, 0.985])
+
+def save(img, name, mono=True):
+    if mono:
+        img = matte_mono(img)
     Image.fromarray(np.clip(img, 0, 255).astype(np.uint8)).save(
         f"{OUT}/{name}.jpg", quality=80, optimize=True, progressive=True)
     print("saved", name)
@@ -345,6 +353,18 @@ def river():
     img = paint(img, mist(109, 0.55, (top + 20, 70)), (150, 158, 156))
     img = img * 0.7
     return vignette(paper(img, 9, 6), 0.55)
+
+# 10. 紙 — matte picture-book paper for the story pages
+def paper_page():
+    img = np.full((H, W, 3), 234, np.float32) * np.array([1.0, 0.996, 0.985])
+    img = paper(img, 10, 12)
+    fib = noise2d(111, scales=(300, 700), aspect=(0.3, 1), gain=0.6)
+    img += (fib - 0.5)[..., None] * 6
+    return vignette(img, 0.12)
+
+for name, fn in [("10-paper", paper_page)]:
+    if len(sys.argv) > 2 and name not in sys.argv[2:]: continue
+    save(fn(), name, mono=False)
 
 for name, fn in [("08-onsen", onsen), ("09-river", river)]:
     if len(sys.argv) > 2 and name not in sys.argv[2:]: continue
