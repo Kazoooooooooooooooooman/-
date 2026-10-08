@@ -14,7 +14,7 @@
 
 <!-- 背景：スクロールに合わせて切り替わる -->
 <div class="bg" aria-hidden="true">
-  <div class="bg-layer is-active" style="background-image:url(images/01-mountains.jpg)"></div>
+  <div class="bg-layer is-active" style="background-image:url(images/10-paper.jpg)"></div>
   <div class="bg-layer" style="background-image:url(images/10-paper.jpg)"></div>
   <div class="bg-layer" style="background-image:url(images/02-bamboo.jpg)"></div>
   <div class="bg-layer" style="background-image:url(images/03-lake.jpg)"></div>
@@ -44,7 +44,7 @@
 
 <!-- 右側のシーンインジケータ -->
 <ol class="scenes" aria-label="セクション">
-  <li><a href="#top">山</a></li>
+  <li><a href="#top">始</a></li>
   <li><a href="#story">話</a></li>
   <li><a href="#philosophy">竹</a></li>
   <li><a href="#home">湖</a></li>
@@ -59,29 +59,19 @@
 <main>
 
   <!-- 0 山 -->
-  <!-- 1枚目：通知が光り続けるスマホを、裏返しに置く（スクロールで進むシーン） -->
-  <section id="top" class="put-scene" data-bg="0">
-    <div class="put-stage">
-      <div class="put-dark" aria-hidden="true"><div class="put-glow"></div></div>
-      <div class="put-phone" aria-hidden="true">
-        <div class="pp-inner">
-          <div class="pp-front">
-            <div class="pp-screen">
-              <div class="pp-status"><span>23:47</span><span class="pp-badge">99+</span></div>
-              <ul class="pp-notes"></ul>
-            </div>
-          </div>
-          <div class="pp-back"><span class="pp-cam"></span></div>
-        </div>
-      </div>
-      <p class="put-hint" aria-hidden="true">スクロールして、スマホを置く</p>
-      <div class="put-copy">
-        <p class="eyebrow">Sumi（仮称）・デジタルデトックス・スマートフォン</p>
-        <h1><span class="nw">スマホを置いた時間が、</span><br /><span class="nw">新しいあなたを作る。</span></h1>
-        <p class="lead">用事はこの一台で済ませて、あとはポケットへ。<br />離れた時間はポイントになって、温泉や本や山歩きに変わる。</p>
-      </div>
-      <a class="scroll-hint" href="#story" aria-label="はじまりの話へ"><span></span></a>
+  <!-- 1枚目：机の前で、終わりのないフィードをスワイプし続ける -->
+  <section id="top" class="panel hero-swipe" data-bg="0" data-tone="paper">
+    <div class="swipe-copy">
+      <p class="eyebrow reveal">Sumi（仮称）・デジタルデトックス・スマートフォン</p>
+      <h1 class="reveal"><span class="nw">スマホを置いた時間が、</span><br /><span class="nw">新しいあなたを作る。</span></h1>
+      <p class="lead reveal">用事はこの一台で済ませて、あとはポケットへ。<br />離れた時間はポイントになって、温泉や本や山歩きに変わる。</p>
     </div>
+    <figure class="swipe-art">
+      <img src="images/story/07-swipe.png" alt="机の前で、スマホのフィードを延々とスワイプし続ける人" width="1100" height="1077" />
+      <div class="swipe-screen"><svg class="swipe-feed" viewBox="0 0 100 1120" preserveAspectRatio="xMidYMin meet" aria-hidden="true"><g transform="translate(0 0)"><circle cx="10" cy="9" r="5"/><path d="M19 8 q4 -2 8 0 t8 0 t8 0" /><path d="M5 18 L95 17.5 L95.5 97 L4.5 97.5 Z" /><path d="M8 90 L32 52 L46 70 L60 44 L92 90" /><circle cx="76" cy="32" r="7" /><path d="M10 108 c-3 -4 -8 0 -4 4 l4 4 l4 -4 c4 -4 -1 -8 -4 -4 z" /><path d="M22 105 h9 q2 0 2 2 v5 q0 2 -2 2 h-5 l-3 3 v-3 q-2 0 -2 -2 v-5 q0 -2 1 -2 z" /><text x="5" y="127">いいね 2,408</text><path d="M5 133 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0" /></g><g transform="translate(0 140)"><circle cx="10" cy="9" r="5"/><path d="M19 8 q4 -2 8 0 t8 0 t8 0" /><path d="M5 18 L95 17.5 L95.5 97 L4.5 97.5 Z" /><path d="M30 50 h34 v24 q0 14 -17 14 q-17 0 -17 -14 z" /><path d="M64 56 q12 0 12 9 q0 9 -12 9" /><path d="M38 44 q-3 -6 0 -12 M47 44 q-3 -6 0 -12 M56 44 q-3 -6 0 -12" /><path d="M10 108 c-3 -4 -8 0 -4 4 l4 4 l4 -4 c4 -4 -1 -8 -4 -4 z" /><path d="M22 105 h9 q2 0 2 2 v5 q0 2 -2 2 h-5 l-3 3 v-3 q-2 0 -2 -2 v-5 q0 -2 1 -2 z" /><text x="5" y="127">いいね 931</text><path d="M5 133 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0" /></g><g transform="translate(0 280)"><circle cx="10" cy="9" r="5"/><path d="M19 8 q4 -2 8 0 t8 0 t8 0" /><path d="M5 18 L95 17.5 L95.5 97 L4.5 97.5 Z" /><path d="M20 82 L50 40 L80 82 Z" /><path d="M20 82 h60" /><path d="M35 61 h30" /><circle cx="50" cy="34" r="4" /><path d="M10 108 c-3 -4 -8 0 -4 4 l4 4 l4 -4 c4 -4 -1 -8 -4 -4 z" /><path d="M22 105 h9 q2 0 2 2 v5 q0 2 -2 2 h-5 l-3 3 v-3 q-2 0 -2 -2 v-5 q0 -2 1 -2 z" /><text x="5" y="127">いいね 12,560</text><path d="M5 133 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0" /></g><g transform="translate(0 420)"><circle cx="10" cy="9" r="5"/><path d="M19 8 q4 -2 8 0 t8 0 t8 0" /><path d="M5 18 L95 17.5 L95.5 97 L4.5 97.5 Z" /><path d="M10 90 V62 h12 V48 h14 V70 h10 V40 h16 V66 h12 V54 h16 V90" /><path d="M18 30 q6 -4 12 0" /><path d="M10 108 c-3 -4 -8 0 -4 4 l4 4 l4 -4 c4 -4 -1 -8 -4 -4 z" /><path d="M22 105 h9 q2 0 2 2 v5 q0 2 -2 2 h-5 l-3 3 v-3 q-2 0 -2 -2 v-5 q0 -2 1 -2 z" /><text x="5" y="127">いいね 87</text><path d="M5 133 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0" /></g><g transform="translate(0 560)"><circle cx="10" cy="9" r="5"/><path d="M19 8 q4 -2 8 0 t8 0 t8 0" /><path d="M5 18 L95 17.5 L95.5 97 L4.5 97.5 Z" /><path d="M8 90 L32 52 L46 70 L60 44 L92 90" /><circle cx="76" cy="32" r="7" /><path d="M10 108 c-3 -4 -8 0 -4 4 l4 4 l4 -4 c4 -4 -1 -8 -4 -4 z" /><path d="M22 105 h9 q2 0 2 2 v5 q0 2 -2 2 h-5 l-3 3 v-3 q-2 0 -2 -2 v-5 q0 -2 1 -2 z" /><text x="5" y="127">いいね 2,408</text><path d="M5 133 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0" /></g><g transform="translate(0 700)"><circle cx="10" cy="9" r="5"/><path d="M19 8 q4 -2 8 0 t8 0 t8 0" /><path d="M5 18 L95 17.5 L95.5 97 L4.5 97.5 Z" /><path d="M30 50 h34 v24 q0 14 -17 14 q-17 0 -17 -14 z" /><path d="M64 56 q12 0 12 9 q0 9 -12 9" /><path d="M38 44 q-3 -6 0 -12 M47 44 q-3 -6 0 -12 M56 44 q-3 -6 0 -12" /><path d="M10 108 c-3 -4 -8 0 -4 4 l4 4 l4 -4 c4 -4 -1 -8 -4 -4 z" /><path d="M22 105 h9 q2 0 2 2 v5 q0 2 -2 2 h-5 l-3 3 v-3 q-2 0 -2 -2 v-5 q0 -2 1 -2 z" /><text x="5" y="127">いいね 931</text><path d="M5 133 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0" /></g><g transform="translate(0 840)"><circle cx="10" cy="9" r="5"/><path d="M19 8 q4 -2 8 0 t8 0 t8 0" /><path d="M5 18 L95 17.5 L95.5 97 L4.5 97.5 Z" /><path d="M20 82 L50 40 L80 82 Z" /><path d="M20 82 h60" /><path d="M35 61 h30" /><circle cx="50" cy="34" r="4" /><path d="M10 108 c-3 -4 -8 0 -4 4 l4 4 l4 -4 c4 -4 -1 -8 -4 -4 z" /><path d="M22 105 h9 q2 0 2 2 v5 q0 2 -2 2 h-5 l-3 3 v-3 q-2 0 -2 -2 v-5 q0 -2 1 -2 z" /><text x="5" y="127">いいね 12,560</text><path d="M5 133 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0" /></g><g transform="translate(0 980)"><circle cx="10" cy="9" r="5"/><path d="M19 8 q4 -2 8 0 t8 0 t8 0" /><path d="M5 18 L95 17.5 L95.5 97 L4.5 97.5 Z" /><path d="M10 90 V62 h12 V48 h14 V70 h10 V40 h16 V66 h12 V54 h16 V90" /><path d="M18 30 q6 -4 12 0" /><path d="M10 108 c-3 -4 -8 0 -4 4 l4 4 l4 -4 c4 -4 -1 -8 -4 -4 z" /><path d="M22 105 h9 q2 0 2 2 v5 q0 2 -2 2 h-5 l-3 3 v-3 q-2 0 -2 -2 v-5 q0 -2 1 -2 z" /><text x="5" y="127">いいね 87</text><path d="M5 133 q6 -2 12 0 t12 0 t12 0 t12 0 t12 0" /></g></svg></div>
+      <svg class="swipe-thumb" viewBox="0 0 40 90" aria-hidden="true"><path d="M8 90 C6 60 8 30 14 12 C17 4 28 4 30 12 C34 30 34 60 32 90" /><path d="M15 22 q7 -5 13 0" /></svg>
+    </figure>
+    <a class="scroll-hint" href="#story" aria-label="はじまりの話へ"><span></span></a>
   </section>
 
   <!-- 絵本：Sumi が生まれるまで（紙の背景・墨の文字） -->

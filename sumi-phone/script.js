@@ -28,66 +28,6 @@
   window.addEventListener("resize", onScroll);
   onScroll();
 
-  // 1枚目：通知が光り続けるスマホを裏返しに置くと、暗闇が明けて言葉が現れる
-  const put = document.getElementById("top");
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (put && !reduceMotion) {
-    put.classList.add("put-anim");
-    const q = (sel) => put.querySelector(sel);
-    const dark = q(".put-dark"), glow = q(".put-glow"), phone = q(".put-phone"), inner = q(".pp-inner");
-    const hint = q(".put-hint"), copy = q(".put-copy"), down = q(".scroll-hint"), notes = q(".pp-notes");
-    const NOTES = [
-      ["#3b82f6", "新着メッセージが 12 件あります"],
-      ["#ef4444", "おすすめの動画が届いています"],
-      ["#f59e0b", "セール終了まで、あと 2 時間"],
-      ["#10b981", "友達が新しい写真を投稿しました"],
-      ["#8b5cf6", "あなたの投稿に「いいね」が 38 件"],
-      ["#ec4899", "今だけ限定のクーポンがあります"],
-      ["#0ea5e9", "まだ見ていないストーリーが 9 件"],
-    ];
-    let n = 0;
-    const addNote = () => {
-      const [c, t] = NOTES[n++ % NOTES.length];
-      const li = document.createElement("li");
-      li.innerHTML = `<i style="background:${c}"></i><span></span>`;
-      li.querySelector("span").textContent = t;
-      notes.prepend(li);
-      while (notes.children.length > 6) notes.lastElementChild.remove();
-    };
-    for (let i = 0; i < 4; i++) addNote();
-    const timer = setInterval(() => { if (pp < 0.3) addNote(); }, 1400);
-    const clamp = (v) => Math.min(1, Math.max(0, v));
-    const seg = (p, a, b) => clamp((p - a) / (b - a));
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
-    const easeIO = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-    let pp = 0;
-    function render() {
-      const r = put.getBoundingClientRect();
-      const p = clamp(-r.top / (r.height - window.innerHeight));
-      pp = p;
-      // スマホを裏返す
-      const flip = easeIO(seg(p, 0.08, 0.40));
-      inner.style.transform = `rotateX(${(flip * 180).toFixed(1)}deg)`;
-      phone.style.transform = `translate(-50%, calc(-50% + ${(flip * 8).toFixed(2)}vh)) rotate(${(-flip * 7).toFixed(2)}deg) scale(${(1 - flip * 0.12).toFixed(3)})`;
-      glow.style.opacity = (1 - flip).toFixed(3);
-      // 暗闇が明ける
-      const lift = ease(seg(p, 0.42, 0.66));
-      dark.style.opacity = (1 - lift).toFixed(3);
-      phone.style.opacity = (1 - ease(seg(p, 0.48, 0.66))).toFixed(3);
-      hint.style.opacity = (1 - seg(p, 0.02, 0.1)).toFixed(3);
-      // 言葉が現れる
-      const say = ease(seg(p, 0.62, 0.84));
-      copy.style.opacity = say.toFixed(3);
-      copy.style.transform = `translateY(${((1 - say) * 18).toFixed(1)}px)`;
-      down.style.opacity = seg(p, 0.84, 0.94).toFixed(3);
-    }
-    let raf2 = 0;
-    window.addEventListener("scroll", () => { if (!raf2) raf2 = requestAnimationFrame(() => { raf2 = 0; render(); }); }, { passive: true });
-    window.addEventListener("resize", render);
-    render();
-    window.addEventListener("pagehide", () => clearInterval(timer));
-  }
-
   // 墨のシーン：墨が一滴落ち、にじんで広がり、集まって Sumi になる
   const ink = document.getElementById("ink");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

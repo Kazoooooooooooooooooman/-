@@ -121,49 +121,39 @@ br.pc { display: inline; }
 }
 @keyframes drip { 0% { top: -64px; } 60%, 100% { top: 64px; } }
 
-/* ---------- 1枚目：スマホを置く ---------- */
-.put-scene { position: relative; }
-.put-stage {
-  position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden;
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 120px clamp(16px, 9vw, 140px); text-shadow: 0 1px 24px rgba(0,0,0,.35);
+/* ---------- 1枚目：終わりのないフィードをスワイプし続ける ---------- */
+.hero-swipe {
+  color: var(--paper-ink); text-shadow: none;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center;
+  gap: clamp(24px, 5vw, 80px); position: relative;
 }
-.put-dark, .put-phone, .put-hint { display: none; }
-.put-anim { height: 300vh; }
-.put-anim .put-stage { position: sticky; top: 0; height: 100vh; height: 100svh; }
-.put-anim .put-dark { display: block; position: absolute; inset: 0; background: #060606; }
-.put-glow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(235, 240, 255, .22), transparent 38%); }
-.put-anim .put-phone {
-  display: block; position: absolute; left: 50%; top: 50%;
-  width: min(220px, 50vw); aspect-ratio: 9 / 19; perspective: 1400px;
-  transform: translate(-50%, -50%);
+.hero-swipe .eyebrow, .hero-swipe .lead { color: var(--paper-dim); }
+.swipe-copy { min-width: 0; }
+.hero-swipe h1 { font-size: clamp(26px, 3.2vw, 54px); }
+.swipe-art { position: relative; width: 100%; max-width: 640px; justify-self: center; }
+.swipe-art > img { width: 100%; height: auto; display: block; }
+/* スマホの画面（絵の中の位置に合わせた割合） */
+.swipe-screen { position: absolute; left: 40.2%; top: 35.9%; width: 16.3%; height: 27.1%; overflow: hidden; }
+.swipe-feed { display: block; width: 100%; height: auto; animation: feed 6.4s infinite; }
+.swipe-feed path, .swipe-feed circle { fill: none; stroke: var(--paper-ink); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.swipe-feed text { font-family: var(--hand); font-size: 8px; fill: var(--paper-ink); }
+@keyframes feed {
+  0%, 10% { transform: translateY(0); animation-timing-function: cubic-bezier(.2, .7, .2, 1); }
+  15.5%, 35% { transform: translateY(-12.5%); animation-timing-function: cubic-bezier(.2, .7, .2, 1); }
+  40.5%, 60% { transform: translateY(-25%); animation-timing-function: cubic-bezier(.2, .7, .2, 1); }
+  65.5%, 85% { transform: translateY(-37.5%); animation-timing-function: cubic-bezier(.2, .7, .2, 1); }
+  90.5%, 100% { transform: translateY(-50%); }
 }
-.pp-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
-.pp-front, .pp-back { position: absolute; inset: 0; border-radius: 34px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-.pp-front { background: #0e0e0f; padding: 9px; box-shadow: 0 0 0 1px rgba(255,255,255,.1); }
-.pp-screen {
-  height: 100%; border-radius: 26px; overflow: hidden; padding: 12px 10px;
-  background: linear-gradient(180deg, #fbfbfd, #e8e9ee); color: #16161a; text-shadow: none;
-  box-shadow: 0 0 80px 18px rgba(230, 236, 255, .25);
-  font-family: var(--sans); font-weight: 500;
+/* 指：フィードが動くたびに下から上へ */
+.swipe-thumb { position: absolute; left: 50.5%; top: 52%; width: 5.5%; overflow: visible; animation: thumb 1.6s infinite; opacity: 0; }
+.swipe-thumb path { fill: #ecebe6; stroke: var(--paper-ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+@keyframes thumb {
+  0%, 28% { opacity: 0; transform: translateY(30%); }
+  36% { opacity: 1; transform: translateY(30%); }
+  40% { transform: translateY(30%); animation-timing-function: cubic-bezier(.3, .6, .3, 1); }
+  62% { opacity: 1; transform: translateY(-55%); }
+  74%, 100% { opacity: 0; transform: translateY(-60%); }
 }
-.pp-status { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 10px; }
-.pp-badge { background: #e5352b; color: #fff; border-radius: 999px; padding: 1px 7px; font-size: 10px; }
-.pp-notes { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-.pp-notes li {
-  display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,.95);
-  border-radius: 12px; padding: 7px 8px; font-size: 10px; line-height: 1.4; letter-spacing: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,.08); animation: note-in .45s ease;
-}
-.pp-notes i { flex: none; width: 18px; height: 18px; border-radius: 5px; }
-@keyframes note-in { from { opacity: 0; transform: translateY(-10px) scale(.96); } to { opacity: 1; transform: none; } }
-.pp-back { transform: rotateX(180deg); background: linear-gradient(160deg, #2b2b2d, #111112); box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
-.pp-cam { position: absolute; left: 16px; top: 16px; width: 22px; height: 22px; border-radius: 50%; background: #050505; box-shadow: 0 0 0 4px #1d1d1f; }
-.put-anim .put-hint {
-  display: block; position: absolute; left: 0; right: 0; bottom: 11vh; text-align: center;
-  font-size: 12px; letter-spacing: .35em; color: rgba(246, 244, 239, .6);
-}
-.put-copy { position: relative; }
 
 /* ---------- 絵本（紙のページ） ---------- */
 body.paper { --chrome: var(--paper-ink); }
@@ -222,7 +212,8 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   font-family: var(--hand); font-weight: 400; font-size: clamp(18px, 2vw, 24px); letter-spacing: .2em; color: var(--paper-dim); opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {
-  .put-anim { height: auto; }
+  .swipe-feed, .swipe-thumb { animation: none; }
+  .swipe-thumb { opacity: 1; }
   .ink-scene { height: auto; }
   .silence { height: 60vh; }
   .ink-stage { position: relative; height: auto; display: flex; flex-direction: column; gap: 32px; padding-block: 120px; }
@@ -366,12 +357,14 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   .split-device { align-self: center; }
   .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cols, .lists, .rules, .reserve-form { grid-template-columns: 1fr; }
+  .hero-swipe { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 96px; }
+  .swipe-art { max-width: 420px; }
   .story, .sumi-says { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .story.alt .story-art { order: 0; }
   .sumi-art { max-width: 200px; }
   .item-card { flex-basis: auto; width: 100%; }
   br.pc { display: none; }
-  h1 { font-size: 7.2vw; letter-spacing: .04em; }
+  h1, .hero-swipe h1 { font-size: 7.2vw; letter-spacing: .04em; }
   .panel { padding-top: 100px; padding-bottom: 100px; }
 }
 

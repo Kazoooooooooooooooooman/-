@@ -12,9 +12,12 @@ JOBS = [  # name, file, crop box, erase boxes (handwritten captions)
     ('03-room', '574f29d2-IMG_9575', (195, 300, 805, 690), [(150, 230, 640, 352)]),
     ('04-noise', '9ae98d82-IMG_9576', (180, 240, 1010, 1060), []),
     ('05-burst', '4e96d850-IMG_9577', (35, 405, 965, 1255), []),
+    ('07-swipe', '9c9f5ac6-IMG_9580', (165, 410, 870, 1100), [(447, 664, 560, 845)]),
     ('06-sumi', '5cf5ad44-IMG_9578', (712, 880, 898, 1112), []),
 ]
+ONLY = sys.argv[2:]
 for name, f, box, erase in JOBS:
+    if ONLY and name not in ONLY: continue
     im = ImageOps.exif_transpose(Image.open(UP + f + '.HEIC')).convert('L')
     d = ImageDraw.Draw(im)
     for e in erase:
