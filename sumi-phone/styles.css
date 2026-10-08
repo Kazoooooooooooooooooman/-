@@ -92,7 +92,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .eyebrow { font-size: 13px; letter-spacing: .4em; color: var(--white-dim); margin-bottom: 22px; }
 h1, h2 { font-family: var(--serif); font-weight: 400; line-height: 1.35; letter-spacing: .08em; text-wrap: balance; word-break: auto-phrase; }
 h1 { font-size: clamp(26px, 5.6vw, 80px); }
-h1 .nw { white-space: nowrap; }
+h1 .nw, h2 .nw { white-space: nowrap; }
 h2 { font-size: clamp(32px, 5.2vw, 64px); margin-bottom: 32px; }
 h3 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin-bottom: 10px; }
 .lead { font-size: clamp(16px, 1.8vw, 20px); margin-top: 28px; color: var(--white-dim); }
@@ -385,6 +385,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   .item-card { flex-basis: auto; width: 100%; }
   br.pc { display: none; }
   h1 { font-size: 7.2vw; letter-spacing: .04em; }
+  h2.fit { font-size: 7.2vw; letter-spacing: .04em; }
   .panel { padding-top: 100px; padding-bottom: 100px; }
 }
 
