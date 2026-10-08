@@ -5,6 +5,7 @@
   --line: rgba(246, 244, 239, 0.28);
   --ink: #141414;
   --paper-ink: #1f1e1c;
+  --paint: #e0795a;
   --paper-dim: rgba(31, 30, 28, 0.62);
   --paper-line: rgba(31, 30, 28, 0.35);
   --chrome: var(--white);
@@ -206,19 +207,19 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 }
 .ink-text { text-align: center; align-items: center; will-change: opacity, filter; }
 .ink-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.ink-svg circle, .ink-svg path { fill: var(--paper-ink); }
+.ink-svg circle, .ink-svg path { fill: var(--paint); }
 .ink-core circle { fill: url(#ink-grad); }
 .ink-halo { opacity: .28; }
 .ink-drop { opacity: 0; }
-.ink-line2 { color: var(--paper-ink); }
+.ink-line2 { font-weight: 600; }
 .ink-sumi {
   position: absolute; left: 50%; top: 50%; width: min(250px, 46vw);
   transform: translate(-50%, -56%); opacity: 0; pointer-events: none;
 }
 .ink-sumi img { width: 100%; height: auto; display: block; }
 .ink-line {
-  position: absolute; left: 0; right: 0; bottom: 8vh; text-align: center; display: flex; flex-direction: column; gap: 10px;
-  font-family: var(--hand); font-weight: 400; font-size: clamp(18px, 2vw, 24px); letter-spacing: .2em; color: var(--paper-dim); opacity: 0;
+  position: absolute; left: 0; right: 0; top: 50%; text-align: center; display: flex; flex-direction: column; gap: 12px;
+  font-family: var(--hand); font-weight: 600; font-size: clamp(22px, 2.6vw, 32px); letter-spacing: .12em; color: var(--paper-ink); opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {
   .swipe-feed, .swipe-thumb { animation: none; }
@@ -231,6 +232,26 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 }
 
 .footer-sumi { width: 64px; height: auto; filter: invert(1) brightness(.92); opacity: .85; margin-bottom: 18px; }
+
+/* ---------- 後半：水彩の背景に、墨色の文字 ---------- */
+.panel[data-tone="paper"]:not(.story):not(.hero-copy) {
+  --white: var(--paper-ink); --white-dim: rgba(31, 30, 28, .72); --line: var(--paper-line);
+  color: var(--paper-ink); text-shadow: none; position: relative;
+}
+/* 文字の下だけ、紙をうっすら敷いて読みやすく */
+.panel[data-tone="paper"]:not(.story):not(.hero-copy)::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(244, 241, 233, .82) 0%, rgba(244, 241, 233, .55) 48%, rgba(244, 241, 233, 0) 78%);
+}
+.panel[data-tone="paper"] .btn { background: var(--paper-ink); color: #f4f1e9; }
+.panel[data-tone="paper"] .tool-list button[aria-selected="true"] { background: var(--paper-ink); color: #f4f1e9; border-color: var(--paper-ink); }
+.panel[data-tone="paper"] .item-card { background: rgba(250, 248, 242, .78); }
+.panel[data-tone="paper"] .reserve-form select, .panel[data-tone="paper"] .reserve-form input[type=email] { background: rgba(255, 255, 255, .62); }
+.panel[data-tone="paper"] .reserve-form select option { background: #f4f1e9; color: var(--paper-ink); }
+.panel[data-tone="paper"] .check-field input { accent-color: var(--paper-ink); }
+.panel[data-tone="paper"] .btn:focus-visible, .panel[data-tone="paper"] .tool-list button:focus-visible { outline-color: var(--paper-ink); }
+.footer { background: rgba(244, 241, 233, .94); color: var(--paper-dim); }
+.footer-logo { color: var(--paper-ink); }
 
 /* ---------- 道具 ---------- */
 .split { flex-direction: row; align-items: center; gap: clamp(32px, 6vw, 100px); }
@@ -379,6 +400,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   .split-device { align-self: center; }
   .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cols, .lists, .rules, .reserve-form, .pillars, .steps { grid-template-columns: 1fr; }
+  .panel[data-tone="paper"]:not(.story):not(.hero-copy)::before { background: rgba(244, 241, 233, .7); }
   .swipe-art { max-width: 420px; }
   .story, .sumi-says { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .story.alt .story-art { order: 0; }

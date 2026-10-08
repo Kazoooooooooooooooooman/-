@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Sumi Phone</title>
-<meta name="description" content="スマホを置いた時間が、新しい自分を作る。SNS もゲームもない、必要な道具だけを持ち歩くデジタルデトックス・スマートフォン、墨Phone（仮称）。" />
+<title>Soto Phone</title>
+<meta name="description" content="楽しみは、画面の外に。SNS もゲームもない、必要な道具だけを持ち歩くデジタルデトックス・スマートフォン、Soto Phone（仮称）。" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -16,22 +16,22 @@
 <div class="bg" aria-hidden="true">
   <div class="bg-layer is-active" style="background-image:url(images/10-paper.jpg)"></div>
   <div class="bg-layer" style="background-image:url(images/10-paper.jpg)"></div>
-  <div class="bg-layer" style="background-image:url(images/02-bamboo.jpg)"></div>
-  <div class="bg-layer" style="background-image:url(images/03-lake.jpg)"></div>
-  <div class="bg-layer" style="background-image:url(images/08-onsen.jpg)"></div>
-  <div class="bg-layer" style="background-image:url(images/09-river.jpg)"></div>
-  <div class="bg-layer flip" style="background-image:url(images/05-pine.jpg)"></div>
-  <div class="bg-layer" style="background-image:url(images/07-night.jpg)"></div>
+  <div class="bg-layer" style="background-image:url(images/w1-hills.jpg)"></div>
+  <div class="bg-layer" style="background-image:url(images/w2-lake.jpg)"></div>
+  <div class="bg-layer" style="background-image:url(images/w3-onsen.jpg)"></div>
+  <div class="bg-layer" style="background-image:url(images/w4-river.jpg)"></div>
+  <div class="bg-layer" style="background-image:url(images/w5-mountain.jpg)"></div>
+  <div class="bg-layer" style="background-image:url(images/w6-sunset.jpg)"></div>
   <div class="bg-shade"></div>
 </div>
 
 <header class="nav">
-  <a class="logo" href="#top" aria-label="Sumi トップへ">
-    <span class="logo-mark">墨</span><span class="logo-word">SUMI</span>
+  <a class="logo" href="#top" aria-label="Soto Phone トップへ">
+    <span class="logo-mark">外</span><span class="logo-word">SOTO</span>
   </a>
   <nav class="nav-links">
     <a href="#story">物語</a>
-    <a href="#about">墨Phone</a>
+    <a href="#about">Soto Phone</a>
     <a href="#tools">道具</a>
     <a href="#points">ポイント</a>
     <a href="#shop">ショップ</a>
@@ -43,12 +43,12 @@
 <ol class="scenes" aria-label="セクション">
   <li><a href="#top">始</a></li>
   <li><a href="#story">話</a></li>
-  <li><a href="#about">竹</a></li>
+  <li><a href="#about">丘</a></li>
   <li><a href="#tools">湖</a></li>
   <li><a href="#points">湯</a></li>
   <li><a href="#shop">川</a></li>
-  <li><a href="#form">松</a></li>
-  <li><a href="#signup">星</a></li>
+  <li><a href="#form">山</a></li>
+  <li><a href="#signup">夕</a></li>
 </ol>
 
 <main>
@@ -57,15 +57,15 @@
   <!-- 1枚目 -->
   <section id="top" class="panel hero-copy" data-bg="0" data-tone="paper">
     <div class="swipe-copy">
-      <p class="eyebrow reveal">墨Phone（仮称）・デジタルデトックス・スマートフォン</p>
-      <h1 class="reveal"><span class="nw">スマホを置いた時間が、</span><br /><span class="nw">新しい自分を作る。</span></h1>
+      <p class="eyebrow reveal">Soto Phone（仮称）・デジタルデトックス・スマートフォン</p>
+      <h1 class="reveal"><span class="nw">楽しみは、</span><br /><span class="nw">画面の外に。</span></h1>
       <p class="lead reveal">SNS もゲームもない、必要な道具だけの電話。<br />離れた時間はポイントになって、温泉や本や山歩きに変わる。</p>
     </div>
 
     <a class="scroll-hint" href="#story" aria-label="はじまりの話へ"><span></span></a>
   </section>
 
-  <!-- 絵本：Sumi が生まれるまで（紙の背景・墨の文字） -->
+  <!-- 絵本：白黒の毎日（紙の背景・墨色の文字） -->
   <section id="story" class="panel story" data-bg="1" data-tone="paper">
     <figure class="story-art reveal"><img src="images/story/01-indoors.png" alt="家の中で画面に向かう人。外の友達、木、魚にはばつ印がついている" width="1100" height="601" /></figure>
     <div class="story-text reveal">
@@ -135,7 +135,7 @@
     </div>
   </section>
 
-  <!-- 墨がにじんで、Sumi が現れる（スクロールで進むシーン） -->
+  <!-- 絵の具が一滴落ちて、白黒の紙に最初の色がにじむ（スクロールで進むシーン） -->
   <section class="ink-scene" id="ink" data-bg="1" data-tone="paper">
     <div class="ink-stage">
       <div class="story-text ink-text">
@@ -149,9 +149,9 @@
             <feDisplacementMap in="SourceGraphic" scale="58" xChannelSelector="R" yChannelSelector="G" />
           </filter>
           <radialGradient id="ink-grad">
-            <stop offset="0" stop-color="#1f1e1c" stop-opacity="1" />
-            <stop offset=".7" stop-color="#1f1e1c" stop-opacity=".94" />
-            <stop offset="1" stop-color="#1f1e1c" stop-opacity=".55" />
+            <stop offset="0" stop-color="#e0795a" stop-opacity="1" />
+            <stop offset=".7" stop-color="#e48a62" stop-opacity=".9" />
+            <stop offset="1" stop-color="#eba07a" stop-opacity=".5" />
           </radialGradient>
           <filter id="halo" x="-50%" y="-50%" width="200%" height="200%">
             <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="2" seed="3" />
@@ -164,22 +164,20 @@
         <g class="ink-splash"></g>
         <path class="ink-drop" d="M0,-26 C7,-12 12,-2 12,6 A12,12 0 0 1 -12,6 C-12,-2 -7,-12 0,-26 Z" />
       </svg>
-      <figure class="ink-sumi"><img src="images/story/06-sumi.png" alt="墨の中から現れた、にっこり笑うキャラクター、Sumi" width="520" height="593" /></figure>
-      <div class="ink-line"><p>ちょっと待ってよ。</p><p class="ink-line2">墨Phone があるじゃん。</p></div>
+      <div class="ink-line"><p>ちょっと待ってよ。</p><p class="ink-line2">Soto Phone があるじゃん。</p></div>
     </div>
   </section>
 
-  <section class="panel story sumi-says" data-bg="1" data-tone="paper">
-    <figure class="story-art sumi-art reveal"><img src="images/story/06-sumi.png" alt="にっこり笑うキャラクター、Sumi" width="520" height="593" /><figcaption>Sumi</figcaption></figure>
+  <section class="panel story center" data-bg="1" data-tone="paper">
     <div class="story-text reveal">
-      <p class="bubble">使わなかった時間は、ちゃんと貯まっていく。<br />それを好きなことに使える、墨Phone があるんだ。</p>
-      <p class="bubble bubble-2">SNS もゲームもない。<br />だから、時間はきみのものになる。</p>
+      <p><span class="nw">使わなかった時間は、</span><br /><span class="nw">ちゃんと貯まっていく。</span><br /><span class="nw">それを、好きなことに使える。</span></p>
+      <p><span class="nw">SNS もゲームもない。</span><br /><span class="nw">だから、時間は自分のものになる。</span></p>
     </div>
   </section>
 
-  <!-- 竹：墨Phone とは -->
-  <section id="about" class="panel" data-bg="2">
-    <p class="eyebrow reveal">墨Phone</p>
+  <!-- 丘：Soto Phone とは -->
+  <section id="about" class="panel" data-bg="2" data-tone="paper">
+    <p class="eyebrow reveal">Soto Phone</p>
     <h2 class="reveal">必要な道具だけを、<br />持ち歩く。</h2>
     <ul class="pillars reveal">
       <li><strong>SNS もゲームもない</strong><span>終わりのないスクロールも、広告も入っていません。</span></li>
@@ -189,7 +187,7 @@
   </section>
 
   <!-- 湖：入っている道具 -->
-  <section id="tools" class="panel split" data-bg="3">
+  <section id="tools" class="panel split" data-bg="3" data-tone="paper">
     <div class="split-text">
       <p class="eyebrow reveal">道具</p>
       <h2 class="reveal">入っているのは、<br />毎日の道具だけ。</h2>
@@ -200,7 +198,7 @@
         <div><dt>写真</dt><dd>カメラ・アルバム</dd></div>
         <div><dt>道具</dt><dd>時計・アラーム・タイマー・電卓・メモ・カレンダー</dd></div>
         <div><dt>音楽</dt><dd>音楽プレーヤー</dd></div>
-        <div><dt>墨Phone</dt><dd>離れた時間のポイント・地図の上の厳選ショップと提携店</dd></div>
+        <div><dt>Soto Phone</dt><dd>離れた時間のポイント・地図の上の厳選ショップと提携店</dd></div>
       </dl>
       <p class="body reveal small-body">銀行、仕事のメール、QR コード決済は入れません。<br />支払いはお手持ちのカードで、ほかの用事はパソコンで。交通系 IC は搭載を検討しています。</p>
     </div>
@@ -223,7 +221,7 @@
   </section>
 
   <!-- 湯：ポイント -->
-  <section id="points" class="panel" data-bg="4">
+  <section id="points" class="panel" data-bg="4" data-tone="paper">
     <p class="eyebrow reveal">ポイント</p>
     <h2 class="reveal">離れた時間が、<br />ポイントになる。</h2>
     <ol class="steps reveal">
@@ -238,7 +236,7 @@
   </section>
 
   <!-- 川：ショップ -->
-  <section id="shop" class="panel split" data-bg="5">
+  <section id="shop" class="panel split" data-bg="5" data-tone="paper">
     <div class="split-text">
       <p class="eyebrow reveal">ショップ</p>
       <h2 class="reveal">選ぶのは、<br />専門家。</h2>
@@ -257,8 +255,8 @@
     </article>
   </section>
 
-  <!-- 松：画面とかたち -->
-  <section id="form" class="panel" data-bg="6">
+  <!-- 山：画面とかたち -->
+  <section id="form" class="panel" data-bg="6" data-tone="paper">
     <p class="eyebrow reveal">かたち</p>
     <h2 class="reveal">白と黒の、<br />小さな画面。</h2>
     <p class="body reveal">小型・薄型で、物理キーボードのないタッチ操作。マット仕上げの OLED は、ふだんは白黒で、写真を開いたときだけ色が戻ります。</p>
@@ -266,7 +264,7 @@
   </section>
 
   <!-- 8 星 -->
-  <section id="signup" class="panel" data-bg="7">
+  <section id="signup" class="panel" data-bg="7" data-tone="paper">
     <p class="eyebrow reveal">先行予約</p>
     <h2 class="reveal fit"><span class="nw">スマホを置いた時間で、</span><br /><span class="nw">新しい自分を作ろう。</span></h2>
     <p class="body reveal">発売が決まったら、いちばん先にお知らせします。<br />試作機の先行体験も、まずここからご案内します。</p>
@@ -294,10 +292,9 @@
 </main>
 
 <footer class="footer">
-  <img class="footer-sumi" src="images/story/06-sumi.png" alt="" width="520" height="593" />
-  <div class="footer-logo"><span class="logo-mark">墨</span> Sumi（仮称）</div>
+    <div class="footer-logo"><span class="logo-mark">外</span> Soto Phone（仮称）</div>
   <p>スマホから離れた時間で、毎日の暮らしを豊かに。</p>
-  <p class="small">© 2026 Sumi. 背景画像は本サイトのために描いた墨絵風の作品です。</p>
+  <p class="small">© 2026 Soto Phone. 絵と背景は、本サイトのために描いた手描きと水彩風の作品です。</p>
 </footer>
 
 <script src="script.js"></script>

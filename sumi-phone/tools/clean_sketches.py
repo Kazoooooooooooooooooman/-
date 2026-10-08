@@ -12,7 +12,6 @@ JOBS = [  # name, file, crop box, erase boxes (handwritten captions)
     ('04-noise', '9ae98d82-IMG_9576', (180, 240, 1010, 1060), []),
     ('05-burst', '4e96d850-IMG_9577', (35, 405, 965, 1255), []),
     ('07-swipe', '9c9f5ac6-IMG_9580', (165, 410, 870, 1100), [(447, 664, 560, 845)]),
-    ('06-sumi', '5cf5ad44-IMG_9578', (712, 880, 898, 1112), []),
 ]
 ONLY = sys.argv[2:]
 for name, f, box, erase in JOBS:
@@ -28,7 +27,6 @@ for name, f, box, erase in JOBS:
     ink = np.clip((0.80 - rel) / 0.32, 0, 1) ** 0.9   # faint show-through drops out
     a = Image.fromarray((ink * 255).astype(np.uint8))
     a = a.filter(ImageFilter.MedianFilter(3))
-    w = 1100 if name != '06-sumi' else 520
     a = a.resize((w, int(a.height * w / a.width)), Image.LANCZOS)
     rgba = Image.new('RGBA', a.size, (30, 29, 27, 0)); rgba.putalpha(a)
     rgba.save(f'{OUT}/{name}.png', optimize=True)

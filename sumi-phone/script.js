@@ -67,7 +67,7 @@
     render(0.1);
   }
 
-  // 墨のシーン：墨が一滴落ち、にじんで広がり、集まって Sumi になる
+  // 絵の具のシーン：白黒の紙に絵の具が一滴落ち、にじんで広がり、最初の色として淡く残る
   const ink = document.getElementById("ink");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (ink && !reduce) {
@@ -81,7 +81,6 @@
     const splash = ink.querySelector(".ink-splash");
     const text = ink.querySelector(".ink-text");
     const target = document.getElementById("ink-target");
-    const sumi = ink.querySelector(".ink-sumi");
     const line = ink.querySelector(".ink-line");
     const line2 = ink.querySelector(".ink-line2");
     const clamp = (v) => Math.min(1, Math.max(0, v));
@@ -110,21 +109,22 @@
       drop.setAttribute("transform", `translate(${cx} ${-40 + (cy + 40) * fall}) scale(1 ${1 + fall * 0.35})`);
       // 2. 落ちた所からにじんで広がる
       const spread = ease(seg(p, 0.26, 0.48));
-      // 4. 墨が集まって消え、Sumi の線になる
-      const gather = ease(seg(p, 0.58, 0.80));
-      const k = spread * (1 - gather);
+      // 3. 広がった色は淡く落ち着いて、紙に残る
+      const settle = ease(seg(p, 0.55, 0.75));
+      const k = spread * (1 + settle * 0.12);
       lobes.forEach((c, i) => {
         const [dx, dy, rr] = LOBES[i];
         // 外側の膨らみは少し遅れて広がる
-        const ki = i === 0 ? k : ease(seg(p, 0.30 + i * 0.02, 0.50)) * (1 - gather);
+        const ki = i === 0 ? k : ease(seg(p, 0.30 + i * 0.02, 0.50)) * (1 + settle * 0.12);
         c.setAttribute("cx", (cx + dx * R * ki).toFixed(1));
         c.setAttribute("cy", (cy + dy * R * ki).toFixed(1));
         c.setAttribute("r", (R * rr * ki).toFixed(1));
       });
       halo.setAttribute("cx", cx); halo.setAttribute("cy", cy);
       halo.setAttribute("r", (R * 1.3 * k).toFixed(1));
-      halo.style.opacity = (0.28 * (1 - gather)).toFixed(3);
-      const splat = seg(p, 0.26, 0.34) * (1 - gather);
+      halo.style.opacity = (0.28 - settle * 0.12).toFixed(3);
+      ink.querySelector(".ink-core").style.opacity = (1 - settle * 0.62).toFixed(3);
+      const splat = seg(p, 0.26, 0.34) * (1 - settle * 0.5);
       dotEls.forEach((d, i) => {
         const [dx, dy, size] = dots[i];
         d.setAttribute("cx", cx + dx * R * 0.55 * (0.6 + spread * 0.5));
@@ -135,15 +135,12 @@
       const sink = seg(p, 0.30, 0.50);
       text.style.opacity = (1 - sink).toFixed(3);
       text.style.filter = sink > 0 ? `blur(${(sink * 3).toFixed(1)}px)` : "";
-      sumi.style.left = cx + "px"; sumi.style.top = cy + "px";
-      sumi.style.opacity = gather.toFixed(3);
-      sumi.style.transform = `translate(-50%, -56%) scale(${(0.86 + gather * 0.14).toFixed(3)})`;
-      sumi.style.filter = gather < 1 ? `blur(${((1 - gather) * 4).toFixed(1)}px)` : "";
-      const say = ease(seg(p, 0.80, 0.92));
+      const say = ease(seg(p, 0.72, 0.84));
       line.style.opacity = say.toFixed(3);
-      line.style.transform = `translateY(${((1 - say) * 12).toFixed(1)}px)`;
-      // 少し遅れて「墨Phone があるじゃん。」
-      const say2 = ease(seg(p, 0.88, 0.97));
+      line.style.top = cy + "px";
+      line.style.transform = `translateY(calc(-50% + ${((1 - say) * 12).toFixed(1)}px))`;
+      // 少し遅れて「Soto Phone があるじゃん。」
+      const say2 = ease(seg(p, 0.84, 0.94));
       line2.style.opacity = say2.toFixed(3);
       line2.style.transform = `translateY(${((1 - say2) * 10).toFixed(1)}px)`;
     }
