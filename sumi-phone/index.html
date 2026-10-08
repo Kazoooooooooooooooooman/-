@@ -92,7 +92,18 @@
     <figure class="story-art reveal"><img src="images/story/03-room.png" alt="ベッドで画面を見続ける人がいる、がらんとした部屋" width="1100" height="703" /></figure>
     <div class="story-text reveal">
       <p>家から出る必要なんてないし。<br />誰からも何も言われないし、<br />ずっと好きなことできるし。</p>
-      <p>嫌なことないし、楽だし。<br />俺なんかどうせ変われないし、<br />AI がなんでもできるから、<br />何も学ばなくていいし。</p>
+    </div>
+  </section>
+
+  <section class="panel story center beat" data-bg="1" data-tone="paper">
+    <div class="story-text reveal">
+      <p>嫌なことないし、楽だし。</p>
+    </div>
+  </section>
+
+  <section class="panel story center beat" data-bg="1" data-tone="paper">
+    <div class="story-text reveal">
+      <p>俺なんかどうせ変われないし、<br />AI がなんでもできるから、<br />何も学ばなくていいし。</p>
     </div>
   </section>
 
@@ -111,19 +122,46 @@
     </div>
   </section>
 
-  <section class="panel story center" data-bg="1" data-tone="paper">
-    <div class="story-text reveal">
-      <p>けど、どうせ俺には無理だな。<br />今までずっと逃げてきたし、<br />時間だって一生かかる。<br />保証なんてない。</p>
-      <p class="drawn-box">今まで通りで、いっか。</p>
+  <!-- 墨がにじんで、Sumi が現れる（スクロールで進むシーン） -->
+  <section class="ink-scene" id="ink" data-bg="1" data-tone="paper">
+    <div class="ink-stage">
+      <div class="story-text ink-text">
+        <p>けど、どうせ俺には無理だな。<br />今までずっと逃げてきたし、<br />時間だって一生かかる。<br />保証なんてない。</p>
+        <p class="drawn-box" id="ink-target">今まで通りで、いっか。</p>
+      </div>
+      <svg class="ink-svg" aria-hidden="true">
+        <defs>
+          <filter id="bleed" x="-50%" y="-50%" width="200%" height="200%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="4" seed="7" />
+            <feDisplacementMap in="SourceGraphic" scale="58" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <radialGradient id="ink-grad">
+            <stop offset="0" stop-color="#1f1e1c" stop-opacity="1" />
+            <stop offset=".7" stop-color="#1f1e1c" stop-opacity=".94" />
+            <stop offset="1" stop-color="#1f1e1c" stop-opacity=".55" />
+          </radialGradient>
+          <filter id="halo" x="-50%" y="-50%" width="200%" height="200%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="2" seed="3" />
+            <feDisplacementMap in="SourceGraphic" scale="70" xChannelSelector="R" yChannelSelector="G" />
+            <feGaussianBlur stdDeviation="14" />
+          </filter>
+        </defs>
+        <circle class="ink-halo" r="0" filter="url(#halo)" />
+        <g class="ink-core" filter="url(#bleed)"><circle r="0" /><circle r="0" /><circle r="0" /><circle r="0" /><circle r="0" /></g>
+        <g class="ink-splash"></g>
+        <path class="ink-drop" d="M0,-26 C7,-12 12,-2 12,6 A12,12 0 0 1 -12,6 C-12,-2 -7,-12 0,-26 Z" />
+      </svg>
+      <figure class="ink-sumi"><img src="images/story/06-sumi.png" alt="墨の中から現れた、にっこり笑うキャラクター、Sumi" width="520" height="593" /></figure>
+      <p class="ink-line">「ちょっと待ってよ。」</p>
     </div>
   </section>
 
   <section class="panel story sumi-says" data-bg="1" data-tone="paper">
-    <figure class="story-art sumi-art reveal"><img src="images/story/06-sumi.png" alt="にっこり笑う、まるい頭のキャラクター、Sumi" width="520" height="593" /></figure>
+    <figure class="story-art sumi-art reveal"><img src="images/story/06-sumi.png" alt="にっこり笑うキャラクター、Sumi" width="520" height="593" /></figure>
     <div class="story-text reveal">
-      <p class="big-line">「ちょっと待ってよ。」</p>
-      <p class="bubble">使わなければ使わないほど、ポイントが貯まって、好きなことに使えるスマホがあるんだよね。<br />SNS もゲームもないから、自分のために時間を使えるよ。</p>
-      <p class="signature">— Sumi</p>
+      <p class="big-line">はじめまして、<br />Sumi だよ。</p>
+      <p class="bubble">使わなければ使わないほど、ポイントが貯まって、好きなことに使えるスマホがあるんだよね。</p>
+      <p class="bubble bubble-2">SNS もゲームもないから、自分のために時間を使えるよ。</p>
     </div>
   </section>
 

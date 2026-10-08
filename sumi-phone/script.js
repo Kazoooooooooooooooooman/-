@@ -1,6 +1,6 @@
 (() => {
   const layers = document.querySelectorAll(".bg-layer");
-  const panels = document.querySelectorAll(".panel[data-bg]");
+  const panels = document.querySelectorAll("main [data-bg]");
   const sceneLinks = document.querySelectorAll(".scenes a");
   const nav = document.querySelector(".nav");
 
@@ -27,6 +27,89 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", onScroll);
   onScroll();
+
+  // 墨のシーン：墨が一滴落ち、にじんで広がり、集まって Sumi になる
+  const ink = document.getElementById("ink");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (ink && !reduce) {
+    const stage = ink.querySelector(".ink-stage");
+    const svg = ink.querySelector(".ink-svg");
+    const lobes = ink.querySelectorAll(".ink-core circle");
+    // にじみの形：中心の円にずらした円を重ねて、いびつな墨溜まりにする [dx, dy, 半径]（R 比）
+    const LOBES = [[0, 0, 1], [0.42, -0.18, 0.62], [-0.38, 0.26, 0.58], [0.12, 0.46, 0.5], [-0.3, -0.4, 0.44]];
+    const halo = ink.querySelector(".ink-halo");
+    const drop = ink.querySelector(".ink-drop");
+    const splash = ink.querySelector(".ink-splash");
+    const text = ink.querySelector(".ink-text");
+    const target = document.getElementById("ink-target");
+    const sumi = ink.querySelector(".ink-sumi");
+    const line = ink.querySelector(".ink-line");
+    const clamp = (v) => Math.min(1, Math.max(0, v));
+    const seg = (p, a, b) => clamp((p - a) / (b - a));
+    const ease = (t) => 1 - Math.pow(1 - t, 3);
+    // 飛び散る小さな墨の粒（毎回同じ形になるよう固定値）
+    const dots = [[-1.6, .9, 5], [1.3, 1.2, 4], [-.7, -1.5, 3], [1.8, -.6, 6], [.2, 1.9, 3], [-1.9, -.4, 4], [.9, -1.7, 2.5]];
+    splash.innerHTML = dots.map(() => '<circle r="0"></circle>').join("");
+    const dotEls = splash.querySelectorAll("circle");
+    let W = 0, Hh = 0, cx = 0, cy = 0;
+    function measure() {
+      const sr = stage.getBoundingClientRect();
+      W = sr.width; Hh = sr.height;
+      svg.setAttribute("viewBox", `0 0 ${W} ${Hh}`);
+      const tr = target.getBoundingClientRect();
+      cx = tr.left - sr.left + tr.width / 2;
+      cy = tr.top - sr.top + tr.height / 2;
+    }
+    function render() {
+      const r = ink.getBoundingClientRect();
+      const p = clamp(-r.top / (r.height - window.innerHeight));
+      const R = Math.min(W, Hh) * 0.3;
+      // 1. 一滴が落ちる
+      const fall = ease(seg(p, 0.10, 0.26));
+      drop.style.opacity = p > 0.08 && p < 0.27 ? 1 : 0;
+      drop.setAttribute("transform", `translate(${cx} ${-40 + (cy + 40) * fall}) scale(1 ${1 + fall * 0.35})`);
+      // 2. 落ちた所からにじんで広がる
+      const spread = ease(seg(p, 0.26, 0.48));
+      // 4. 墨が集まって消え、Sumi の線になる
+      const gather = ease(seg(p, 0.58, 0.80));
+      const k = spread * (1 - gather);
+      lobes.forEach((c, i) => {
+        const [dx, dy, rr] = LOBES[i];
+        // 外側の膨らみは少し遅れて広がる
+        const ki = i === 0 ? k : ease(seg(p, 0.30 + i * 0.02, 0.50)) * (1 - gather);
+        c.setAttribute("cx", (cx + dx * R * ki).toFixed(1));
+        c.setAttribute("cy", (cy + dy * R * ki).toFixed(1));
+        c.setAttribute("r", (R * rr * ki).toFixed(1));
+      });
+      halo.setAttribute("cx", cx); halo.setAttribute("cy", cy);
+      halo.setAttribute("r", (R * 1.3 * k).toFixed(1));
+      halo.style.opacity = (0.28 * (1 - gather)).toFixed(3);
+      const splat = seg(p, 0.26, 0.34) * (1 - gather);
+      dotEls.forEach((d, i) => {
+        const [dx, dy, size] = dots[i];
+        d.setAttribute("cx", cx + dx * R * 0.55 * (0.6 + spread * 0.5));
+        d.setAttribute("cy", cy + dy * R * 0.4 * (0.6 + spread * 0.5));
+        d.setAttribute("r", (size * splat * (1 + spread)).toFixed(1));
+      });
+      // 文字は墨の下に沈んでいく
+      const sink = seg(p, 0.30, 0.50);
+      text.style.opacity = (1 - sink).toFixed(3);
+      text.style.filter = sink > 0 ? `blur(${(sink * 3).toFixed(1)}px)` : "";
+      sumi.style.left = cx + "px"; sumi.style.top = cy + "px";
+      sumi.style.opacity = gather.toFixed(3);
+      sumi.style.transform = `translate(-50%, -56%) scale(${(0.86 + gather * 0.14).toFixed(3)})`;
+      sumi.style.filter = gather < 1 ? `blur(${((1 - gather) * 4).toFixed(1)}px)` : "";
+      const say = ease(seg(p, 0.80, 0.92));
+      line.style.opacity = say.toFixed(3);
+      line.style.transform = `translateY(${((1 - say) * 12).toFixed(1)}px)`;
+    }
+    let raf = 0;
+    const queue = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); };
+    window.addEventListener("scroll", queue, { passive: true });
+    window.addEventListener("resize", () => { measure(); queue(); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(); });
+    measure(); render();
+  }
 
   // 文字のフェードイン
   const io = new IntersectionObserver(

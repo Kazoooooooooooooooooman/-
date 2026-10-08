@@ -25,6 +25,7 @@ body {
   letter-spacing: 0.04em;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
@@ -148,6 +149,38 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   border-radius: 30px 255px 40px 225px / 225px 40px 255px 30px;
 }
 .signature { font-size: 15px; color: var(--paper-dim); }
+.beat { min-height: 75vh; min-height: 75svh; }
+.beat .story-text { max-width: 30em; }
+.bubble-2 { align-self: flex-end; border-radius: 255px 30px 225px 40px / 40px 225px 30px 255px; }
+
+/* 墨のシーン：スクロールに合わせて墨が落ち、にじみ、Sumi になる */
+.ink-scene { position: relative; height: 340vh; color: var(--paper-ink); }
+.ink-stage {
+  position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
+  display: grid; place-items: center; padding: 0 clamp(16px, 9vw, 140px);
+}
+.ink-text { text-align: center; align-items: center; will-change: opacity, filter; }
+.ink-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.ink-svg circle, .ink-svg path { fill: var(--paper-ink); }
+.ink-core circle { fill: url(#ink-grad); }
+.ink-halo { opacity: .28; }
+.ink-drop { opacity: 0; }
+.ink-sumi {
+  position: absolute; left: 50%; top: 50%; width: min(250px, 46vw);
+  transform: translate(-50%, -56%); opacity: 0; pointer-events: none;
+}
+.ink-sumi img { width: 100%; height: auto; display: block; }
+.ink-line {
+  position: absolute; left: 0; right: 0; bottom: 12vh; text-align: center;
+  font-family: var(--hand); font-weight: 600; font-size: clamp(28px, 4vw, 48px); opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ink-scene { height: auto; }
+  .ink-stage { position: relative; height: auto; display: flex; flex-direction: column; gap: 32px; padding-block: 120px; }
+  .ink-svg { display: none; }
+  .ink-sumi, .ink-line { position: static; transform: none; opacity: 1; }
+}
+
 .footer-sumi { width: 64px; height: auto; filter: invert(1) brightness(.92); opacity: .85; margin-bottom: 18px; }
 
 /* ---------- 道具 ---------- */
