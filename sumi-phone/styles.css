@@ -184,6 +184,20 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 .beat .story-text { max-width: 30em; }
 .bubble-2 { align-self: flex-end; border-radius: 255px 30px 225px 40px / 40px 225px 30px 255px; }
 
+/* 朝から夜までの部屋（絵の中だけがゆっくり動き続ける） */
+.room-art { position: relative; }
+/* 暗くなるのは家の中だけ（壁の線に沿った形で切り抜く） */
+.room-dark {
+  position: absolute; inset: 0; pointer-events: none;
+  clip-path: polygon(16.6% 17%, 77.3% 15%, 84.4% 95%, 21% 94%, 17% 90%);
+}
+.room-window { position: absolute; left: 47%; top: 27%; width: 19%; overflow: visible; pointer-events: none; }
+.rw-sky { fill: #f3f2ed; }
+.rw-frame { fill: none; stroke: var(--paper-ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.rw-sun circle, .rw-sun path { fill: none; stroke: var(--paper-ink); stroke-width: 2.2; stroke-linecap: round; }
+.rw-night { opacity: 0; }
+.rw-night circle, .rw-moon { fill: #ecebe6; }
+
 /* 墨のシーン：スクロールに合わせて墨が落ち、にじみ、Sumi になる */
 .ink-scene { position: relative; height: 340vh; color: var(--paper-ink); }
 .ink-stage {

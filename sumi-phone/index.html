@@ -92,8 +92,18 @@
     </div>
   </section>
 
+  <!-- 朝から夜まで：絵の中で、窓の外が太陽から月へ変わり続け、夜はスマホの光だけが顔を照らす -->
   <section class="panel story" data-bg="1" data-tone="paper">
-    <figure class="story-art reveal"><img src="images/story/03-room.png" alt="ベッドで画面を見続ける人がいる、がらんとした部屋" width="1100" height="703" /></figure>
+    <figure class="story-art room-art reveal" id="room">
+      <img src="images/story/03-room.png" alt="朝から夜まで、ベッドでスマホを見続ける人がいる部屋。窓の外では太陽が沈み、月が昇る" width="1100" height="703" />
+      <div class="room-dark" aria-hidden="true"></div>
+      <svg class="room-window" viewBox="0 0 200 150" aria-hidden="true">
+        <rect class="rw-sky" x="4" y="4" width="192" height="142" />
+        <g class="rw-sun"><circle r="13" /><path d="M0 -22 V-18 M0 18 V22 M-22 0 H-18 M18 0 H22 M-15 -15 L-12 -12 M12 12 L15 15 M-15 15 L-12 12 M12 -12 L15 -15" /></g>
+        <g class="rw-night"><circle cx="30" cy="30" r="1.6" /><circle cx="62" cy="18" r="1.1" /><circle cx="150" cy="26" r="1.4" /><circle cx="176" cy="58" r="1.0" /><circle cx="118" cy="14" r="0.9" /><circle cx="92" cy="44" r="1.2" /><circle cx="40" cy="74" r="0.9" /><path class="rw-moon" d="M150 34 a16 16 0 1 0 14 24 a13 13 0 1 1 -14 -24 z" /></g>
+        <path class="rw-frame" d="M5 4 L195 3.5 L196 146 L4 146.5 Z M100 4 L100.5 146 M4.5 75 L195.5 74.5" />
+      </svg>
+    </figure>
     <div class="story-text reveal">
       <p>家から出る必要なんてないし。<br />誰からも何も言われないし、<br />ずっと好きなことできるし。</p>
     </div>

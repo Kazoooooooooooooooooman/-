@@ -28,6 +28,44 @@
   window.addEventListener("resize", onScroll);
   onScroll();
 
+  // 朝から夜までの部屋：絵の中で一日がくり返す。窓の外は太陽から月へ、部屋は暗くなり、夜はスマホの光だけが顔を照らす
+  const room = document.getElementById("room");
+  if (room && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const dark = room.querySelector(".room-dark");
+    const sky = room.querySelector(".rw-sky"), sun = room.querySelector(".rw-sun"), night = room.querySelector(".rw-night");
+    const clamp = (v) => Math.min(1, Math.max(0, v));
+    const seg = (p, a, b) => clamp((p - a) / (b - a));
+    const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+    const DAY = [243, 242, 237], DUSK = [184, 181, 173], NIGHT = [38, 37, 35];
+    const FACE = "26.5% 68%"; // ベッドの顔とスマホのあいだ
+    const CYCLE = 14000; // 一日の長さ（ミリ秒）
+    function render(p) {
+      // 朝〜夕方：太陽が昇って沈む
+      const sunT = seg(p, 0.0, 0.48);
+      const sx = 30 + sunT * 140, sy = 125 - Math.sin(sunT * Math.PI) * 95;
+      sun.setAttribute("transform", `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`);
+      sun.style.opacity = (seg(p, 0.0, 0.04) * (1 - seg(p, 0.44, 0.5))).toFixed(3);
+      // 空の色：昼 → 夕方 → 夜 → 夜明け
+      const dusk = seg(p, 0.22, 0.46), toNight = seg(p, 0.46, 0.56), dawn = seg(p, 0.9, 1);
+      let c = toNight > 0 ? mix(DUSK, NIGHT, toNight) : mix(DAY, DUSK, dusk);
+      if (dawn > 0) c = mix(NIGHT, DAY, dawn);
+      sky.style.fill = `rgb(${c.join(",")})`;
+      night.style.opacity = (seg(p, 0.52, 0.6) * (1 - dawn)).toFixed(3);
+      // 部屋の暗さと、顔を照らすスマホの光（少しだけ揺らぐ）
+      const a = (0.3 * dusk + 0.55 * toNight) * (1 - dawn);
+      const glow = seg(p, 0.56, 0.66) * (1 - dawn) * (0.92 + 0.08 * Math.sin(p * 160));
+      const inner = (a * (1 - glow * 0.97)).toFixed(3), mid = (a * (1 - glow * 0.55)).toFixed(3);
+      dark.style.background = `radial-gradient(circle at ${FACE}, rgba(14,13,12,${inner}) 0, rgba(14,13,12,${mid}) 9%, rgba(14,13,12,${a.toFixed(3)}) 22%)`;
+    }
+    let visible = false, start = performance.now(), raf3 = 0;
+    const loop = (now) => { render(((now - start) % CYCLE) / CYCLE); raf3 = visible ? requestAnimationFrame(loop) : 0; };
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible && !raf3) raf3 = requestAnimationFrame(loop);
+    }).observe(room);
+    render(0.1);
+  }
+
   // 墨のシーン：墨が一滴落ち、にじんで広がり、集まって Sumi になる
   const ink = document.getElementById("ink");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
