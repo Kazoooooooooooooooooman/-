@@ -149,6 +149,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   border-radius: 30px 255px 40px 225px / 225px 40px 255px 30px;
 }
 .signature { font-size: 15px; color: var(--paper-dim); }
+.silence { height: 130vh; height: 130svh; }
 .beat { min-height: 75vh; min-height: 75svh; }
 .beat .story-text { max-width: 30em; }
 .bubble-2 { align-self: flex-end; border-radius: 255px 30px 225px 40px / 40px 225px 30px 255px; }
@@ -176,6 +177,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 }
 @media (prefers-reduced-motion: reduce) {
   .ink-scene { height: auto; }
+  .silence { height: 60vh; }
   .ink-stage { position: relative; height: auto; display: flex; flex-direction: column; gap: 32px; padding-block: 120px; }
   .ink-svg { display: none; }
   .ink-sumi, .ink-line { position: static; transform: none; opacity: 1; }
