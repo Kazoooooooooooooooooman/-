@@ -165,13 +165,11 @@
 
   // 端末の画面：道具を選ぶと表示が変わる
   const screens = {
-    home: `<ul class="home-list"><li>連絡する</li><li>出かける</li><li>お金を管理する</li><li>記録する</li><li>休日を楽しむ</li></ul><div class="small" style="margin-top:14px">次の離れる時間 19:00</div>`,
-    contact: `<div class="small">連絡する</div><ul style="font-size:17px;margin-top:6px"><li>電話</li><li>メッセージ</li><li>メール</li></ul><div class="small" style="margin-top:12px">未読の数は表示しません</div>`,
-    go: `<div class="small">出かける</div><div class="mid" style="margin:6px 0">次の角を<br>左へ 120m</div><div class="small">乗換 ・ 支払い ・ 天気</div>`,
-    money: `<div class="small">お金を管理する</div><div class="mid" style="margin:6px 0 4px">今月のカード請求</div><div class="big" style="font-size:34px">¥48,210</div><div class="small" style="margin-top:10px">確認できたら、閉じるだけ</div>`,
+    home: `<ul class="home-list"><li>連絡</li><li>移動</li><li>写真</li><li>道具</li><li>音楽</li><li>ポイント</li></ul><div class="small" style="margin-top:12px">次の離れる時間 19:00</div>`,
+    contact: `<div class="small">連絡</div><ul style="font-size:17px;margin-top:6px"><li>電話</li><li>電話帳</li><li>SMS</li></ul><div class="small" style="margin-top:12px">未読の数は表示しません</div>`,
+    go: `<div class="small">移動</div><div class="mid" style="margin:6px 0">次の角を<br>左へ 120m</div><div class="small">乗換案内 ・ 天気</div>`,
     record: `<div class="photo" role="img" aria-label="カメラで撮ったカラー写真"></div><div class="small">写真だけは、カラーで。</div>`,
-    holiday: `<div class="small">今度の休日にしたいこと</div><div class="mid" style="margin:6px 0 12px">日帰り温泉</div><div class="bar"><span style="width:62%"></span></div><div class="small" style="margin-top:8px">あと 4 回の離れる時間で割引</div>`,
-    away: `<div class="small">離れる時間</div><div class="mid" style="margin:6px 0">夕食 19:00–20:00</div><div class="small">届くのは家族と緊急の連絡だけ<br>地図と支払いは使えます</div><div class="pill">あと 5 分だけ使う</div>`,
+    away: `<div class="small">離れる時間</div><div class="mid" style="margin:6px 0">夕食 19:00–20:00</div><div class="small">届くのは家族と緊急の連絡だけ<br>電話と地図は使えます</div><div class="pill">あと 5 分だけ使う</div>`,
   };
   const body = document.getElementById("screen-body");
   const tabs = document.querySelectorAll(".tool-list button");
