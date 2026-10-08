@@ -1,4 +1,5 @@
 (() => {
+  const EN = document.documentElement.lang === "en";
   const layers = document.querySelectorAll(".bg-layer");
   const panels = document.querySelectorAll("main [data-bg]");
   const sceneLinks = document.querySelectorAll(".scenes a");
@@ -166,7 +167,13 @@
   });
 
   // 端末の画面：道具を選ぶと表示が変わる
-  const screens = {
+  const screens = EN ? {
+    home: `<ul class="home-list"><li>Contact</li><li>Maps</li><li>Photos</li><li>Tools</li><li>Music</li><li>Points</li></ul><div class="small" style="margin-top:12px">Next time away 19:00</div>`,
+    contact: `<div class="small">Contact</div><ul style="font-size:17px;margin-top:6px"><li>Phone</li><li>Contacts</li><li>SMS</li></ul><div class="small" style="margin-top:12px">No unread counts</div>`,
+    go: `<div class="small">Getting around</div><div class="mid" style="margin:6px 0">Turn left<br>in 120 m</div><div class="small">Transit · Weather</div>`,
+    record: `<div class="photo" role="img" aria-label="A color photo taken with the camera"></div><div class="small">Only photos are in color.</div>`,
+    away: `<div class="small">Time away</div><div class="mid" style="margin:6px 0">Dinner 19:00–20:00</div><div class="small">Only family and emergency calls<br>Phone and maps still work</div><div class="pill">5 more minutes</div>`,
+  } : {
     home: `<ul class="home-list"><li>連絡</li><li>移動</li><li>写真</li><li>道具</li><li>音楽</li><li>ポイント</li></ul><div class="small" style="margin-top:12px">次の離れる時間 19:00</div>`,
     contact: `<div class="small">連絡</div><ul style="font-size:17px;margin-top:6px"><li>電話</li><li>電話帳</li><li>SMS</li></ul><div class="small" style="margin-top:12px">未読の数は表示しません</div>`,
     go: `<div class="small">移動</div><div class="mid" style="margin:6px 0">次の角を<br>左へ 120m</div><div class="small">乗換案内 ・ 天気</div>`,
@@ -202,7 +209,7 @@
   const msg = document.getElementById("form-msg");
   const btn = document.getElementById("reserve-btn");
   const pref = document.getElementById("pref");
-  PREFS.forEach((p) => pref.add(new Option(p, p)));
+  if (pref.tagName === "SELECT") PREFS.forEach((p) => pref.add(new Option(p, p)));
 
   let store = null; // { db, path } once the page database is available
   const ready = (async () => {
@@ -223,33 +230,36 @@
 
   function showDone(data) {
     form.hidden = true;
-    msg.textContent = `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`;
+    msg.textContent = EN
+      ? `You’re registered for pre-order (${data.email}). We’ll email this address when it launches.`
+      : `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`;
   }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = form.querySelector("#email");
     if (!email.checkValidity()) {
-      msg.textContent = "メールアドレスの形を確認してください（例：you@example.com）。";
+      msg.textContent = (EN ? "Please check your email address (for example, you@example.com)." : "メールアドレスの形を確認してください（例：you@example.com）。");
       email.focus();
       return;
     }
     const data = {
       email: email.value.trim(),
-      prefecture: pref.value,
+      prefecture: pref.value.trim(),
+      lang: EN ? "en" : "ja",
       trial: form.querySelector("#trial").checked,
       createdAt: new Date().toISOString(),
     };
     btn.disabled = true;
-    msg.textContent = "登録しています…";
+    msg.textContent = (EN ? "Registering…" : "登録しています…");
     const s = await ready;
     if (!s) {
-      msg.textContent = "この画面からは登録を保存できません。公開ページから登録してください。";
+      msg.textContent = (EN ? "Registrations can’t be saved from this view. Please register from the published page." : "この画面からは登録を保存できません。公開ページから登録してください。");
       btn.disabled = false;
       return;
     }
     if (s.viewOnly) {
-      msg.textContent = "閲覧のみの共有では登録できません。ページの共有者に、登録できる権限を依頼してください。";
+      msg.textContent = (EN ? "View-only access can’t register. Ask the person who shared this page for access that allows registering." : "閲覧のみの共有では登録できません。ページの共有者に、登録できる権限を依頼してください。");
       btn.disabled = false;
       return;
     }
@@ -260,10 +270,10 @@
       const code = err && err.code;
       msg.textContent =
         code === "not_granted" || code === "capability_disabled" || code === "capability_removed" || code === "revoked"
-          ? "この閲覧方法では登録できません。サインインした状態で開き直してください。"
+          ? (EN ? "You can’t register from this view. Please sign in and open the page again." : "この閲覧方法では登録できません。サインインした状態で開き直してください。")
           : code === "quota_exceeded"
-          ? "受付の上限に達したため、いまは登録できません。"
-          : "登録できませんでした。通信状態を確かめて、もう一度お試しください。";
+          ? (EN ? "Registration is full for now, so it can’t be accepted." : "受付の上限に達したため、いまは登録できません。")
+          : (EN ? "Registration didn’t go through. Check your connection and try again." : "登録できませんでした。通信状態を確かめて、もう一度お試しください。");
       btn.disabled = false;
     }
   });

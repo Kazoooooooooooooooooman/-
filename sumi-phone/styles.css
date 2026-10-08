@@ -70,6 +70,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .nav-links { display: flex; gap: clamp(14px, 2.4vw, 32px); font-size: 14px; align-items: center; }
 .nav-links a { opacity: .85; transition: opacity .2s; }
 .nav-links a:hover { opacity: 1; }
+.nav-links .lang { font-size: 13px; letter-spacing: .08em; opacity: .75; }
 .nav-cta { border: 1px solid currentColor; padding: 6px 16px; border-radius: 999px; opacity: 1 !important; }
 
 /* ---------- シーンインジケータ ---------- */
@@ -246,12 +247,12 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 .panel[data-tone="paper"] .btn { background: var(--paper-ink); color: #f4f1e9; }
 .panel[data-tone="paper"] .tool-list button[aria-selected="true"] { background: var(--paper-ink); color: #f4f1e9; border-color: var(--paper-ink); }
 .panel[data-tone="paper"] .item-card { background: rgba(250, 248, 242, .78); }
-.panel[data-tone="paper"] .reserve-form select, .panel[data-tone="paper"] .reserve-form input[type=email] { background: rgba(255, 255, 255, .62); }
+.panel[data-tone="paper"] .reserve-form select, .panel[data-tone="paper"] .reserve-form input[type=email], .panel[data-tone="paper"] .reserve-form input[type=text] { background: rgba(255, 255, 255, .62); }
 .panel[data-tone="paper"] .reserve-form select option { background: #f4f1e9; color: var(--paper-ink); }
 .panel[data-tone="paper"] .check-field input { accent-color: var(--paper-ink); }
 .panel[data-tone="paper"] .btn:focus-visible, .panel[data-tone="paper"] .tool-list button:focus-visible { outline-color: var(--paper-ink); }
-.footer { background: rgba(244, 241, 233, .94); color: var(--paper-dim); }
-.footer-logo { color: var(--paper-ink); }
+footer.footer { background: rgba(244, 241, 233, .94); color: var(--paper-dim); }
+footer.footer .footer-logo { color: var(--paper-ink); }
 
 /* ---------- 道具 ---------- */
 .split { flex-direction: row; align-items: center; gap: clamp(32px, 6vw, 100px); }
@@ -350,7 +351,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 .reserve-form .wide { grid-column: 1 / -1; }
 .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .field label { font-size: 12px; letter-spacing: .2em; color: var(--white-dim); }
-.reserve-form select, .reserve-form input[type=email] {
+.reserve-form select, .reserve-form input[type=email], .reserve-form input[type=text] {
   width: 100%; padding: 13px 22px; border-radius: 999px; border: 1px solid var(--line);
   background: rgba(0,0,0,.3); color: var(--white); font: inherit; font-size: 15px; backdrop-filter: blur(6px);
 }
@@ -394,7 +395,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 
 /* ---------- スマホ ---------- */
 @media (max-width: 820px) {
-  .nav-links a:not(.nav-cta) { display: none; }
+  .nav-links a:not(.nav-cta):not(.lang) { display: none; }
   .scenes { display: none; }
   .split { flex-direction: column; align-items: flex-start; }
   .split-device { align-self: center; }
