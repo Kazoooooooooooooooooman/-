@@ -121,6 +121,50 @@ br.pc { display: inline; }
 }
 @keyframes drip { 0% { top: -64px; } 60%, 100% { top: 64px; } }
 
+/* ---------- 1枚目：スマホを置く ---------- */
+.put-scene { position: relative; }
+.put-stage {
+  position: relative; min-height: 100vh; min-height: 100svh; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 120px clamp(16px, 9vw, 140px); text-shadow: 0 1px 24px rgba(0,0,0,.35);
+}
+.put-dark, .put-phone, .put-hint { display: none; }
+.put-anim { height: 300vh; }
+.put-anim .put-stage { position: sticky; top: 0; height: 100vh; height: 100svh; }
+.put-anim .put-dark { display: block; position: absolute; inset: 0; background: #060606; }
+.put-glow { position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, rgba(235, 240, 255, .22), transparent 38%); }
+.put-anim .put-phone {
+  display: block; position: absolute; left: 50%; top: 50%;
+  width: min(220px, 50vw); aspect-ratio: 9 / 19; perspective: 1400px;
+  transform: translate(-50%, -50%);
+}
+.pp-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
+.pp-front, .pp-back { position: absolute; inset: 0; border-radius: 34px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.pp-front { background: #0e0e0f; padding: 9px; box-shadow: 0 0 0 1px rgba(255,255,255,.1); }
+.pp-screen {
+  height: 100%; border-radius: 26px; overflow: hidden; padding: 12px 10px;
+  background: linear-gradient(180deg, #fbfbfd, #e8e9ee); color: #16161a; text-shadow: none;
+  box-shadow: 0 0 80px 18px rgba(230, 236, 255, .25);
+  font-family: var(--sans); font-weight: 500;
+}
+.pp-status { display: flex; justify-content: space-between; align-items: center; font-size: 11px; margin-bottom: 10px; }
+.pp-badge { background: #e5352b; color: #fff; border-radius: 999px; padding: 1px 7px; font-size: 10px; }
+.pp-notes { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.pp-notes li {
+  display: flex; gap: 8px; align-items: center; background: rgba(255,255,255,.95);
+  border-radius: 12px; padding: 7px 8px; font-size: 10px; line-height: 1.4; letter-spacing: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08); animation: note-in .45s ease;
+}
+.pp-notes i { flex: none; width: 18px; height: 18px; border-radius: 5px; }
+@keyframes note-in { from { opacity: 0; transform: translateY(-10px) scale(.96); } to { opacity: 1; transform: none; } }
+.pp-back { transform: rotateX(180deg); background: linear-gradient(160deg, #2b2b2d, #111112); box-shadow: 0 0 0 1px rgba(255,255,255,.08); }
+.pp-cam { position: absolute; left: 16px; top: 16px; width: 22px; height: 22px; border-radius: 50%; background: #050505; box-shadow: 0 0 0 4px #1d1d1f; }
+.put-anim .put-hint {
+  display: block; position: absolute; left: 0; right: 0; bottom: 11vh; text-align: center;
+  font-size: 12px; letter-spacing: .35em; color: rgba(246, 244, 239, .6);
+}
+.put-copy { position: relative; }
+
 /* ---------- 絵本（紙のページ） ---------- */
 body.paper { --chrome: var(--paper-ink); }
 body.paper .bg-shade { opacity: 0; }
@@ -178,6 +222,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   font-family: var(--hand); font-weight: 400; font-size: clamp(18px, 2vw, 24px); letter-spacing: .2em; color: var(--paper-dim); opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {
+  .put-anim { height: auto; }
   .ink-scene { height: auto; }
   .silence { height: 60vh; }
   .ink-stage { position: relative; height: auto; display: flex; flex-direction: column; gap: 32px; padding-block: 120px; }
