@@ -72,17 +72,77 @@
   tick();
   setInterval(tick, 30000);
 
-  // 予約フォーム（送信先はまだないので画面上で受付メッセージを表示）
+  // 先行予約フォーム
+  // claude.ai で公開したページでは、登録をページのデータベース（preorders/<登録者ID>）に保存する。
+  // それ以外（ファイルを直接開いた場合など）では保存先がないため、その旨を表示する。
+  const PREFS = "北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県 海外".split(" ");
   const form = document.getElementById("reserve-form");
   const msg = document.getElementById("form-msg");
-  form.addEventListener("submit", (e) => {
+  const btn = document.getElementById("reserve-btn");
+  const pref = document.getElementById("pref");
+  PREFS.forEach((p) => pref.add(new Option(p, p)));
+
+  let store = null; // { db, path } once the page database is available
+  const ready = (async () => {
+    if (!window.claude) return null;
+    const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
+    if (!db || !user) return null;
+    const id = await user.id();
+    if (!id) return null;
+    // 閲覧のみの共有（view）の人は書き込めない。分かっている場合は先に伝える
+    const canWrite = user.can ? await user.can("data.write") : null;
+    store = { ref: db.doc("preorders/" + id), viewOnly: canWrite === false };
+    try {
+      const snap = await store.ref.get();
+      if (snap && snap.exists) showDone(snap.data());
+    } catch (_) { /* 読めなくても登録はできる */ }
+    return store;
+  })().catch(() => null);
+
+  function showDone(data) {
+    form.hidden = true;
+    msg.textContent = `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`;
+  }
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = form.querySelector("input");
+    const email = form.querySelector("#email");
     if (!email.checkValidity()) {
-      msg.textContent = "メールアドレスを確認してください。";
+      msg.textContent = "メールアドレスの形を確認してください（例：you@example.com）。";
+      email.focus();
       return;
     }
-    msg.textContent = "ありがとうございます。準備が整いしだい、静かにお知らせします。";
-    form.reset();
+    const data = {
+      email: email.value.trim(),
+      prefecture: pref.value,
+      trial: form.querySelector("#trial").checked,
+      createdAt: new Date().toISOString(),
+    };
+    btn.disabled = true;
+    msg.textContent = "登録しています…";
+    const s = await ready;
+    if (!s) {
+      msg.textContent = "この画面からは登録を保存できません。公開ページから登録してください。";
+      btn.disabled = false;
+      return;
+    }
+    if (s.viewOnly) {
+      msg.textContent = "閲覧のみの共有では登録できません。ページの共有者に、登録できる権限を依頼してください。";
+      btn.disabled = false;
+      return;
+    }
+    try {
+      await s.ref.set(data);
+      showDone(data);
+    } catch (err) {
+      const code = err && err.code;
+      msg.textContent =
+        code === "not_granted" || code === "capability_disabled" || code === "capability_removed" || code === "revoked"
+          ? "この閲覧方法では登録できません。サインインした状態で開き直してください。"
+          : code === "quota_exceeded"
+          ? "受付の上限に達したため、いまは登録できません。"
+          : "登録できませんでした。通信状態を確かめて、もう一度お試しください。";
+      btn.disabled = false;
+    }
   });
 })();

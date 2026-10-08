@@ -38,7 +38,7 @@
     <a href="#points">ポイント</a>
     <a href="#rewards">還元</a>
     <a href="#shop">ショップ</a>
-    <a class="nav-cta" href="#signup">最新情報を受け取る</a>
+    <a class="nav-cta" href="#signup">先行予約</a>
   </nav>
 </header>
 
@@ -64,7 +64,7 @@
     <h1 class="reveal">墨のように、<br />静かに。</h1>
     <p class="lead reveal">用事はこの一台で済ませて、あとはポケットへ。<br />スマホから離れた時間が、温泉や本や山歩きに変わる。</p>
     <div class="reveal actions">
-      <a class="btn" href="#signup">最新情報を受け取る</a>
+      <a class="btn" href="#signup">先行予約に登録する</a>
       <a class="btn ghost" href="#story">はじまりの話</a>
     </div>
     <a class="scroll-hint" href="#story" aria-label="下へスクロール"><span></span></a>
@@ -280,13 +280,26 @@
 
   <!-- 8 星 -->
   <section id="signup" class="panel" data-bg="9">
-    <p class="eyebrow reveal">開発中</p>
+    <p class="eyebrow reveal">先行予約</p>
     <h2 class="reveal">夜空を、<br />もう一度見上げよう。</h2>
-    <p class="body reveal">Sumi は現在開発中です。<br />試作の進み具合や、先行体験の案内をお届けします。</p>
-    <form class="reserve reveal" id="reserve-form" novalidate>
-      <label for="email" class="sr-only">メールアドレス</label>
-      <input id="email" type="email" placeholder="メールアドレス" autocomplete="email" required />
-      <button class="btn" type="submit">最新情報を受け取る</button>
+    <p class="body reveal">Sumi の先行予約の登録を受け付けています。<br />発売が決まったら、登録した方へ先にお知らせします。試作機の先行体験を募集するときも、まずこちらからご案内します。</p>
+    <form class="reserve-form reveal" id="reserve-form" novalidate>
+      <div class="field wide">
+        <label for="email">メールアドレス</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" autocomplete="email" required />
+      </div>
+      <div class="field">
+        <label for="pref">お住まいの地域（任意）</label>
+        <select id="pref" name="pref">
+          <option value="">選ばない</option>
+        </select>
+      </div>
+      <label class="check-field" for="trial">
+        <input id="trial" name="trial" type="checkbox" />
+        <span>試作機の先行体験にも参加したい</span>
+      </label>
+      <button class="btn" type="submit" id="reserve-btn">先行予約に登録する</button>
+      <p class="form-fine">登録は無料です。購入の確定やお支払いは発生しません。</p>
     </form>
     <p class="form-msg" id="form-msg" role="status"></p>
   </section>
