@@ -83,6 +83,7 @@
     const target = document.getElementById("ink-target");
     const sumi = ink.querySelector(".ink-sumi");
     const line = ink.querySelector(".ink-line");
+    const line2 = ink.querySelector(".ink-line2");
     const clamp = (v) => Math.min(1, Math.max(0, v));
     const seg = (p, a, b) => clamp((p - a) / (b - a));
     const ease = (t) => 1 - Math.pow(1 - t, 3);
@@ -141,6 +142,10 @@
       const say = ease(seg(p, 0.80, 0.92));
       line.style.opacity = say.toFixed(3);
       line.style.transform = `translateY(${((1 - say) * 12).toFixed(1)}px)`;
+      // 少し遅れて「墨Phone があるじゃん。」
+      const say2 = ease(seg(p, 0.88, 0.97));
+      line2.style.opacity = say2.toFixed(3);
+      line2.style.transform = `translateY(${((1 - say2) * 10).toFixed(1)}px)`;
     }
     let raf = 0;
     const queue = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); };
