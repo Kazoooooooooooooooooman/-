@@ -91,7 +91,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .eyebrow { font-size: 13px; letter-spacing: .4em; color: var(--white-dim); margin-bottom: 22px; }
 h1, h2 { font-family: var(--serif); font-weight: 400; line-height: 1.35; letter-spacing: .08em; text-wrap: balance; word-break: auto-phrase; }
-h1 { font-size: clamp(44px, 8vw, 104px); }
+h1 { font-size: clamp(26px, 5.6vw, 80px); }
+h1 .nw { white-space: nowrap; }
 h2 { font-size: clamp(32px, 5.2vw, 64px); margin-bottom: 32px; }
 h3 { font-family: var(--serif); font-weight: 400; font-size: 20px; margin-bottom: 10px; }
 .lead { font-size: clamp(16px, 1.8vw, 20px); margin-top: 28px; color: var(--white-dim); }
@@ -148,6 +149,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   border: 2px solid var(--paper-ink); font-size: clamp(17px, 1.8vw, 22px); line-height: 2;
   border-radius: 30px 255px 40px 225px / 225px 40px 255px 30px;
 }
+.sumi-art figcaption { font-family: var(--hand); font-size: 14px; letter-spacing: .3em; color: var(--paper-dim); text-align: center; margin-top: 10px; }
 .signature { font-size: 15px; color: var(--paper-dim); }
 .silence { height: 130vh; height: 130svh; }
 .beat { min-height: 75vh; min-height: 75svh; }
@@ -173,7 +175,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 .ink-sumi img { width: 100%; height: auto; display: block; }
 .ink-line {
   position: absolute; left: 0; right: 0; bottom: 12vh; text-align: center;
-  font-family: var(--hand); font-weight: 600; font-size: clamp(28px, 4vw, 48px); opacity: 0;
+  font-family: var(--hand); font-weight: 400; font-size: clamp(18px, 2vw, 24px); letter-spacing: .2em; color: var(--paper-dim); opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {
   .ink-scene { height: auto; }
@@ -324,6 +326,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   .sumi-art { max-width: 200px; }
   .item-card { flex-basis: auto; width: 100%; }
   br.pc { display: none; }
+  h1 { font-size: 7.2vw; letter-spacing: .04em; }
   .panel { padding-top: 100px; padding-bottom: 100px; }
 }
 
