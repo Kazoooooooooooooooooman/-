@@ -407,7 +407,7 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
   .sumi-art { max-width: 200px; }
   .item-card { flex-basis: auto; width: 100%; }
   br.pc { display: none; }
-  h1 { font-size: 7.2vw; letter-spacing: .04em; }
+  h1 { font-size: 6.8vw; letter-spacing: .04em; }
   h2.fit { font-size: 7.2vw; letter-spacing: .04em; }
   .big-line { font-size: 7vw; }
   .panel { padding-top: 100px; padding-bottom: 100px; }
