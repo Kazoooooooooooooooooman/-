@@ -273,3 +273,79 @@ for name, fn in [("01-mountains", mountains), ("02-bamboo", bamboo), ("03-lake",
                  ("04-sea", sea), ("05-pine", pine), ("06-garden", garden), ("07-night", night)]:
     if len(sys.argv) > 2 and name not in sys.argv[2:]: continue
     save(fn(), name)
+
+# 8. 温泉 — rocky hot spring with rising steam at dusk
+def rock_poly(dr, r, cx, cy, rx, ry, fill=255):
+    pts = []
+    for k in range(14):
+        a = k / 14 * 2 * math.pi
+        rr = r.uniform(0.78, 1.0)
+        pts.append((cx + math.cos(a) * rx * rr, cy + math.sin(a) * ry * rr * (0.75 if math.sin(a) > 0 else 1)))
+    dr.polygon(pts, fill=fill)
+
+def onsen():
+    img = grad((34, 36, 42), (66, 62, 58), 1.1)
+    img = paint(img, ridge_layer(91, H * 0.44, 200, 320, soft=4, tex_seed=92), (28, 32, 32))
+    hz = H * 0.6
+    lamp = np.exp(-(((XX - W * 0.74) / 240) ** 2 + ((YY - H * 0.5) / 180) ** 2))
+    img += lamp[..., None] * np.array([80, 48, 18])
+    img = paint(img, disc(W * 0.74, H * 0.5, 9, 3), (255, 214, 150))
+    water = grad((58, 62, 64), (22, 26, 28), 1.0)
+    rip = noise2d(93, scales=(6, 40, 200), aspect=(0.08, 3))
+    water = water * (0.8 + 0.4 * rip[..., None])
+    water += (np.exp(-((XX - W * 0.74) / 110) ** 2) * np.clip(rip - 0.5, 0, 1) * 220)[..., None] * np.array([1, .7, .35])
+    img = np.where((YY >= hz)[..., None], water, img)
+    r = rng(94); m = Image.new("L", (W, H), 0); dr = ImageDraw.Draw(m)
+    x = -60
+    while x < W + 60:  # rim of rocks along the far edge
+        rx = r.uniform(50, 120); rock_poly(dr, r, x, hz + r.uniform(-4, 10), rx, r.uniform(22, 40)); x += rx * 1.3
+    for cx in list(np.linspace(-80, W * 0.3, 4)) + list(np.linspace(W * 0.82, W + 80, 3)):  # side boulders
+        rock_poly(dr, r, cx + r.uniform(-40, 40), r.uniform(H * 0.72, H * 0.98), r.uniform(160, 260), r.uniform(80, 140))
+    x = -80
+    while x < W + 80:  # foreground rocks
+        rx = r.uniform(140, 260); rock_poly(dr, r, x, H + r.uniform(0, 40), rx, r.uniform(60, 110)); x += rx * 1.2
+    a = np.asarray(m, np.float32) / 255
+    tex = noise2d(95, scales=(20, 80, 300))
+    a = blur(np.clip(a, 0, 1), 1.5)
+    shade = 0.55 + 0.9 * np.clip(tex - 0.3, 0, 1)
+    rock = np.array([36, 35, 34])[None, None] * shade[..., None]
+    img = img * (1 - a[..., None]) + rock * a[..., None]
+    sx = np.clip(XX + np.sin(YY / 70) * 40 + np.sin(YY / 23) * 12, 0, W - 1).astype(int)
+    st = noise2d(96, scales=(3, 7, 15, 32), aspect=(1, 0.8), gain=0.6)[YY.astype(int), sx]
+    steam = np.clip((st - 0.45) * 2.6, 0, 1)
+    steam *= np.exp(-((XX - W * 0.48) / (520 + (hz - YY).clip(0) * 0.8)) ** 2)
+    steam *= np.clip((YY - (hz - 520)) / 420, 0, 1) * np.clip((hz + 140 - YY) / 140, 0, 1)
+    img = paint(img, blur(steam, 10) * 0.55, (196, 192, 186))
+    return vignette(paper(img, 8, 6), 0.55)
+
+# 9. 渓流 — mountain stream through a valley
+def river():
+    img = grad((118, 130, 134), (168, 174, 170), 1.2)
+    for s, b, h, f, c, sf in [(101, H * 0.36, 200, 260, (108, 120, 122), 5),
+                              (102, H * 0.48, 220, 320, (76, 88, 88), 3),
+                              (103, H * 0.6, 200, 380, (50, 60, 58), 2)]:
+        img = paint(img, ridge_layer(s, b, h, f, soft=sf, tex_seed=s + 20), c)
+        img = paint(img, mist(s + 40, 0.5, (b - h * 0.1, 110)), (160, 168, 166))
+    ground = ridge_layer(106, H * 0.74, 170, 4000, soft=3, tex_seed=107)
+    img = paint(img, np.clip(ground * 1.1, 0, 1), (36, 44, 40))
+    img = paint(img, mist(110, 0.6, (H * 0.64, 60)), (120, 130, 128))
+    top = H * 0.58
+    t = np.clip((YY - top) / (H - top), 0, 1)
+    center = W * 0.5 + np.sin(t * 5.0 + 0.4) * 340 * t ** 0.8
+    half = 6 + t ** 1.8 * 380
+    edge = noise2d(108, scales=(20, 80, 300))
+    river_m = np.clip((half * (0.85 + 0.3 * edge) - np.abs(XX - center)) / 5, 0, 1) * np.clip((YY - top) / 30, 0, 1)
+    river_m = blur(river_m, 1.5)
+    flow = noise2d(104, scales=(6, 30, 120, 400), aspect=(0.2, 2.5))
+    sky_ref = 110 + 60 * (1 - t)
+    wcol = np.stack([sky_ref + flow * 50, sky_ref + 8 + flow * 50, sky_ref + 10 + flow * 50], -1)
+    img = img * (1 - river_m[..., None]) + wcol * river_m[..., None]
+    foam = np.clip(flow - 0.6, 0, 1) * 4 * river_m * t
+    img = paint(img, blur(foam, 1), (228, 232, 230))
+    img = paint(img, mist(109, 0.55, (top + 20, 70)), (150, 158, 156))
+    img = img * 0.7
+    return vignette(paper(img, 9, 6), 0.55)
+
+for name, fn in [("08-onsen", onsen), ("09-river", river)]:
+    if len(sys.argv) > 2 and name not in sys.argv[2:]: continue
+    save(fn(), name)

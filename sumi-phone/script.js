@@ -35,19 +35,19 @@
 
   // 画像の先読み
   layers.forEach((l) => {
-    const url = l.style.backgroundImage.slice(5, -2);
+    const url = l.style.backgroundImage.slice(5, -2).replace(/^"|"$/g, "");
     new Image().src = url;
   });
 
   // 端末の画面：道具を選ぶと表示が変わる
   const screens = {
-    phone: `<div class="mid">母</div><div class="small">発信中…</div><ul style="margin-top:18px;font-size:15px"><li>ハル</li><li>ソラ</li><li>事務所</li></ul>`,
-    message: `<div class="small">ハル</div><div class="mid" style="margin:6px 0 14px">今夜、月が<br>きれいだよ。</div><div class="small">返信：見てる。</div>`,
-    map: `<div class="small">次の角を</div><div class="mid">左へ 120m</div><div class="small" style="margin-top:14px">竹林の小径</div>`,
-    alarm: `<div class="big">6:30</div><div class="small">鳥のさえずり ・ 毎日</div>`,
-    steps: `<div class="small">今日の歩数</div><div class="big">8,012</div><div class="small" style="margin-top:12px">特典が届きました<br>喫茶 こもれび ・ コーヒー1杯</div>`,
-    camera: `<div class="photo" role="img" aria-label="カメラで撮ったカラー写真"></div><div class="small">写真だけは、カラーで。</div>`,
-    home: `<ul><li>電話</li><li>メッセージ</li><li>地図</li><li>アラーム</li><li>歩数</li><li>カメラ</li></ul>`,
+    home: `<ul class="home-list"><li>連絡する</li><li>出かける</li><li>お金を管理する</li><li>記録する</li><li>休日を楽しむ</li></ul><div class="small" style="margin-top:14px">次の離れる時間 19:00</div>`,
+    contact: `<div class="small">連絡する</div><ul style="font-size:17px;margin-top:6px"><li>電話</li><li>メッセージ</li><li>メール</li></ul><div class="small" style="margin-top:12px">未読の数は表示しません</div>`,
+    go: `<div class="small">出かける</div><div class="mid" style="margin:6px 0">次の角を<br>左へ 120m</div><div class="small">乗換 ・ 支払い ・ 天気</div>`,
+    money: `<div class="small">お金を管理する</div><div class="mid" style="margin:6px 0 4px">今月のカード請求</div><div class="big" style="font-size:34px">¥48,210</div><div class="small" style="margin-top:10px">確認できたら、閉じるだけ</div>`,
+    record: `<div class="photo" role="img" aria-label="カメラで撮ったカラー写真"></div><div class="small">写真だけは、カラーで。</div>`,
+    holiday: `<div class="small">今度の休日にしたいこと</div><div class="mid" style="margin:6px 0 12px">日帰り温泉</div><div class="bar"><span style="width:62%"></span></div><div class="small" style="margin-top:8px">あと 4 回の離れる時間で割引</div>`,
+    away: `<div class="small">離れる時間</div><div class="mid" style="margin:6px 0">夕食 19:00–20:00</div><div class="small">届くのは家族と緊急の連絡だけ<br>地図と支払いは使えます</div><div class="pill">あと 5 分だけ使う</div>`,
   };
   const body = document.getElementById("screen-body");
   const tabs = document.querySelectorAll(".tool-list button");
