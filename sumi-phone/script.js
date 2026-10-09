@@ -202,8 +202,12 @@
   setInterval(tick, 30000);
 
   // 先行予約フォーム
+  // 一般公開のサイトでは、登録を Google スプレッドシート（tools/preorder-apps-script.gs）に送る。
+  // FORM_ENDPOINT にそのウェブアプリの URL（https://script.google.com/macros/s/…/exec）を入れる。
   // claude.ai で公開したページでは、登録をページのデータベース（preorders/<登録者ID>）に保存する。
-  // それ以外（ファイルを直接開いた場合など）では保存先がないため、その旨を表示する。
+  // どちらもない場合（ファイルを直接開いた場合など）は保存先がないため、その旨を表示する。
+  const FORM_ENDPOINT = "";
+  const SENT_KEY = "soto-preorder";
   const PREFS = "北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県 海外".split(" ");
   const form = document.getElementById("reserve-form");
   const msg = document.getElementById("form-msg");
@@ -213,7 +217,14 @@
 
   let store = null; // { db, path } once the page database is available
   const ready = (async () => {
-    if (!window.claude) return null;
+    if (!window.claude) {
+      if (!FORM_ENDPOINT) return null;
+      try {
+        const saved = localStorage.getItem(SENT_KEY);
+        if (saved) showDone(JSON.parse(saved));
+      } catch (_) { /* 前回の登録を覚えていなくても登録はできる */ }
+      return { endpoint: FORM_ENDPOINT };
+    }
     const [db, user] = await Promise.all([claude.use("db"), claude.use("user")]);
     if (!db || !user) return null;
     const id = await user.id();
@@ -261,6 +272,18 @@
     if (s.viewOnly) {
       msg.textContent = (EN ? "View-only access can’t register. Ask the person who shared this page for access that allows registering." : "閲覧のみの共有では登録できません。ページの共有者に、登録できる権限を依頼してください。");
       btn.disabled = false;
+      return;
+    }
+    if (s.endpoint) {
+      try {
+        // Apps Script は別のドメインなので、事前確認のいらない text/plain で送る（返事は読めない）
+        await fetch(s.endpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
+        try { localStorage.setItem(SENT_KEY, JSON.stringify({ email: data.email })); } catch (_) { /* 覚えられなくても登録は済んでいる */ }
+        showDone(data);
+      } catch (_) {
+        msg.textContent = (EN ? "Registration didn’t go through. Check your connection and try again." : "登録できませんでした。通信状態を確かめて、もう一度お試しください。");
+        btn.disabled = false;
+      }
       return;
     }
     try {

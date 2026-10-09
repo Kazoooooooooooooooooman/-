@@ -22,3 +22,18 @@
 - 後半の水彩の背景：`python3 tools/gen_watercolor.py images`（numpy と Pillow が必要）
 - 絵本ページの紙：`python3 tools/gen_backgrounds.py images 10-paper`
 - スケッチの切り出し：`python3 tools/clean_sketches.py images/story`（pillow-heif が必要。元の HEIC の場所はスクリプト内で指定）
+
+## 一般公開して登録を集める
+
+claude.ai のページは共有された人しか開けないため、だれでも登録できるように、サイトを一般公開し、登録を Google スプレッドシートに集める。
+
+1. **登録の受け皿を作る（Google スプレッドシート）**
+   1. Google ドライブで新しいスプレッドシートを作る（名前は「Soto Phone 先行予約」など）
+   2. メニューの「拡張機能 → Apps Script」を開き、最初からあるコードを消して `tools/preorder-apps-script.gs` の中身を貼り付けて保存する
+   3. 「デプロイ → 新しいデプロイ」で種類に「ウェブアプリ」を選び、「次のユーザーとして実行：自分」「アクセスできるユーザー：全員」にしてデプロイする（初回は Google アカウントの許可を求められる）
+   4. 表示された ウェブアプリの URL（`https://script.google.com/macros/s/…/exec`）をコピーする。ブラウザで開くと `{"count":0}` と登録数が出る
+2. **サイトに受け皿をつなぐ**：`script.js` の `const FORM_ENDPOINT = "";` の `""` の中に、その URL を入れる
+3. **サイトを公開する**：`sumi-phone` フォルダの中身（`index.html` `en.html` `styles.css` `script.js` `images/`）を静的サイトの置き場（Netlify、Cloudflare Pages など）にアップロードする。`tools/` は公開しなくてよい
+4. 公開した URL からテスト登録し、スプレッドシートに1行増えることを確かめる（テストの行は消してよい）
+
+登録は同じメールアドレスなら1行にまとまる。集めたメールアドレスは、フォームに書いた目的（発売と先行体験のお知らせ）以外には使わない。
