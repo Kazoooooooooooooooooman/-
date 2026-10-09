@@ -206,7 +206,7 @@
   // FORM_ENDPOINT にそのウェブアプリの URL（https://script.google.com/macros/s/…/exec）を入れる。
   // claude.ai で公開したページでは、登録をページのデータベース（preorders/<登録者ID>）に保存する。
   // どちらもない場合（ファイルを直接開いた場合など）は保存先がないため、その旨を表示する。
-  const FORM_ENDPOINT = "";
+  const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycby-asz6BfG1G5TD8yRy1CKEKPwxvqyX13yXmjg2-zLrdzU3Jb9WItvQGVm9kuGMmoW1/exec";
   const SENT_KEY = "soto-preorder";
   const PREFS = "北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県 海外".split(" ");
   const form = document.getElementById("reserve-form");

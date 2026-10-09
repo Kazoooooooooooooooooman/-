@@ -32,7 +32,7 @@ claude.ai のページは共有された人しか開けないため、だれで�
    2. メニューの「拡張機能 → Apps Script」を開き、最初からあるコードを消して `tools/preorder-apps-script.gs` の中身を貼り付けて保存する
    3. 「デプロイ → 新しいデプロイ」で種類に「ウェブアプリ」を選び、「次のユーザーとして実行：自分」「アクセスできるユーザー：全員」にしてデプロイする（初回は Google アカウントの許可を求められる）
    4. 表示された ウェブアプリの URL（`https://script.google.com/macros/s/…/exec`）をコピーする。ブラウザで開くと `{"count":0}` と登録数が出る
-2. **サイトに受け皿をつなぐ**：`script.js` の `const FORM_ENDPOINT = "";` の `""` の中に、その URL を入れる
+2. **サイトに受け皿をつなぐ**：`script.js` の `const FORM_ENDPOINT` に、その URL を入れる（設定済み）
 3. **サイトを公開する**：`sumi-phone` フォルダの中身（`index.html` `en.html` `styles.css` `script.js` `images/`）を静的サイトの置き場（Netlify、Cloudflare Pages など）にアップロードする。`tools/` は公開しなくてよい
 4. 公開した URL からテスト登録し、スプレッドシートに1行増えることを確かめる（テストの行は消してよい）
 
