@@ -438,8 +438,8 @@ footer.footer .footer-logo { color: var(--paper-ink); }
   color: var(--paper-dim); margin-bottom: clamp(18px, 3vh, 30px);
 }
 .hd-motto {
-  font-family: "Instrument Serif", "Times New Roman", serif; font-style: italic; font-weight: 400;
-  font-size: clamp(26px, 3.1vw, 44px); line-height: 1.1; letter-spacing: .01em; color: #a94c2f;
+  font-family: "Instrument Serif", "Times New Roman", serif; font-style: normal; font-weight: 400;
+  font-size: clamp(26px, 3.1vw, 44px); line-height: 1.1; letter-spacing: .02em; color: #a94c2f;
 }
 .hero-door .hd-copy {
   font-family: var(--serif); font-weight: 400; font-size: clamp(20px, 2.7vw, 38px);
@@ -464,8 +464,8 @@ footer.footer .footer-logo { color: var(--paper-ink); }
   background: var(--paper-line); font-size: inherit;
 }
 .hd-door {
-  position: absolute; z-index: 1; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
-  border-radius: .15em .15em 0 0; overflow: hidden; perspective: 2.2em;
+  position: absolute; z-index: 2; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
+  border-radius: .15em .15em 0 0; overflow: hidden;
 }
 .hd-view {
   position: absolute; inset: 0;
@@ -473,43 +473,66 @@ footer.footer .footer-logo { color: var(--paper-ink); }
   filter: grayscale(1) contrast(.92) brightness(1.04);
   animation: hd-color 2.6s ease-out 1.5s forwards;
 }
-.hd-panel {
-  position: absolute; inset: 0; transform-origin: 0 50%;
-  background: linear-gradient(98deg, #4a5143 0%, #3b4136 55%, #2f342b 100%);
-  box-shadow: inset -1px 0 0 rgba(255, 255, 255, .08);
-  animation: hd-open 2s cubic-bezier(.62, .02, .22, 1) .9s forwards;
+/* 開口部の奥行き：上と左右に落ちる影 */
+.hd-door::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  box-shadow: inset .012em .014em .02em rgba(20, 20, 18, .45), inset -.006em 0 .012em rgba(20, 20, 18, .25);
 }
-.hd-panel i {
-  position: absolute; right: 13%; top: 56%; width: .022em; height: .022em; border-radius: 50%;
-  background: #c9b48a; box-shadow: 0 0 .01em rgba(0, 0, 0, .4);
+/* 扉の枠（O の黒を細く縁取る、紙色の額縁） */
+.hd-frame {
+  position: absolute; z-index: 1; left: .2155em; bottom: -.012em; width: .328em; height: .599em;
+  border-radius: .164em .164em 0 0; background: #e8e3d7;
+  box-shadow: inset 0 0 0 .004em rgba(31, 30, 28, .35);
+}
+/* 敷居（床の線の上に置いた石の段） */
+.hd-step {
+  position: absolute; z-index: 1; left: .2em; top: .012em; width: .36em; height: .02em;
+  background: linear-gradient(180deg, #ece8de, #d6d0c3); border-radius: 0 0 .004em .004em;
+  box-shadow: 0 .004em .008em rgba(31, 30, 28, .25);
+}
+/* 扉の板：左の蝶番を軸に、こちら側へ開く */
+.hd-leaf {
+  position: absolute; z-index: 3; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
+  border-radius: .15em .15em 0 0; transform-origin: 0 50%;
+  transform: perspective(1.7em) rotateY(0deg);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, .18), rgba(0, 0, 0, 0) 18%, rgba(255, 255, 255, .06) 100%),
+    linear-gradient(180deg, #59604a, #474d3b);
+  box-shadow: inset 0 0 0 .005em rgba(15, 16, 12, .55), inset -.01em 0 .008em rgba(255, 255, 255, .08);
+  animation: hd-open 2.2s cubic-bezier(.6, .02, .2, 1) .9s forwards;
+}
+/* 板の飾り：上のアーチ形と下の四角の、2枚の鏡板 */
+.hd-leaf::before, .hd-leaf::after {
+  content: ""; position: absolute; left: 15%; right: 15%;
+  border: .005em solid rgba(20, 22, 16, .45);
+  box-shadow: inset .004em .004em 0 rgba(255, 255, 255, .07), .003em .003em 0 rgba(255, 255, 255, .06);
+}
+.hd-leaf::before { top: 9%; height: 46%; border-radius: .11em .11em .01em .01em; }
+.hd-leaf::after { top: 62%; height: 28%; border-radius: .01em; }
+.hd-knob {
+  position: absolute; right: 9%; top: 57%; width: .03em; height: .03em; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #f0dca6, #b48d4a 60%, #6d5428);
+  box-shadow: 0 .004em .006em rgba(0, 0, 0, .45);
 }
 /* 開いた扉から床にこぼれる光 */
 .hd-spill {
-  position: absolute; z-index: -1; left: .05em; top: .012em; width: .66em; height: .42em;
-  background: linear-gradient(180deg, rgba(255, 238, 205, .75), rgba(255, 238, 205, 0) 92%);
-  clip-path: polygon(27% 0, 73% 0, 100% 100%, 0 100%);
-  opacity: 0; animation: hd-spill 2.4s ease-out 1.4s forwards;
+  position: absolute; z-index: -1; left: .05em; top: .032em; width: .66em; height: .42em;
+  background: linear-gradient(180deg, rgba(255, 236, 198, .8), rgba(255, 236, 198, 0) 92%);
+  clip-path: polygon(30% 0, 73% 0, 100% 100%, 12% 100%);
+  opacity: 0; animation: hd-spill 2.4s ease-out 1.5s forwards;
 }
 .hd-phone {
   font-family: "Instrument Serif", "Times New Roman", serif; font-style: italic;
   font-size: clamp(22px, 2.6vw, 40px); line-height: 1; margin-left: .45em; color: var(--paper-ink);
 }
-@keyframes hd-open { to { transform: rotateY(-76deg); } }
+@keyframes hd-open { to { transform: perspective(1.7em) rotateY(-70deg); } }
 @keyframes hd-color { to { filter: grayscale(0) contrast(1) brightness(1.02); } }
 @keyframes hd-spill { to { opacity: 1; } }
 
-.hd-vert {
-  position: absolute; left: clamp(14px, 2.6vw, 40px); top: 50%; transform: translateY(-50%);
-  writing-mode: vertical-rl; font-family: var(--sans); font-size: 10.5px; font-weight: 500;
-  letter-spacing: .5em; text-transform: uppercase; color: var(--paper-dim);
-}
 .hd-foot {
-  width: 100%; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; text-align: left;
+  width: 100%; display: flex; justify-content: center; align-items: center;
 }
-.hd-lead {
-  font-family: var(--serif); font-size: clamp(15px, 1.35vw, 19px); line-height: 2; letter-spacing: .18em; color: var(--paper-ink);
-}
-.hd-cta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: flex-end; }
+.hd-cta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center; }
 .hd-status { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: .14em; color: var(--paper-dim); }
 .hd-status i {
   width: 7px; height: 7px; border-radius: 50%; background: #a94c2f;
@@ -518,16 +541,13 @@ footer.footer .footer-logo { color: var(--paper-ink); }
 @keyframes hd-pulse { 50% { opacity: .35; } }
 
 @media (max-width: 760px) {
-  .hd-vert { display: none; }
   .hd-mark { padding-bottom: 72px; }
   .hd-word { font-size: 25vw; }
   .hd-phone { margin-left: .25em; font-size: 18px; }
-  .hd-foot { flex-direction: column; align-items: flex-start; gap: 18px; }
-  .hd-cta { justify-content: flex-start; }
   .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hd-panel { animation: none; transform: rotateY(-76deg); }
+  .hd-leaf { animation: none; transform: perspective(1.7em) rotateY(-70deg); }
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
   .hd-status i { animation: none; }
