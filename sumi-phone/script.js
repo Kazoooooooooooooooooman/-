@@ -209,11 +209,13 @@
   const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycby-asz6BfG1G5TD8yRy1CKEKPwxvqyX13yXmjg2-zLrdzU3Jb9WItvQGVm9kuGMmoW1/exec";
   const SENT_KEY = "soto-preorder";
   const PREFS = "北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県 海外".split(" ");
-  const form = document.getElementById("reserve-form");
-  const msg = document.getElementById("form-msg");
-  const btn = document.getElementById("reserve-btn");
   const pref = document.getElementById("pref");
-  if (pref.tagName === "SELECT") PREFS.forEach((p) => pref.add(new Option(p, p)));
+  if (pref && pref.tagName === "SELECT") PREFS.forEach((p) => pref.add(new Option(p, p)));
+  // 登録フォームは2つ：1枚目（メールアドレスだけ）と、最後（地域と先行体験も選べる）。どちらも同じ保存先に送る
+  const forms = [
+    { form: document.getElementById("hero-form"), msg: document.getElementById("hero-msg") },
+    { form: document.getElementById("reserve-form"), msg: document.getElementById("form-msg") },
+  ].filter((f) => f.form);
 
   let store = null; // { db, path } once the page database is available
   const ready = (async () => {
@@ -239,26 +241,33 @@
     return store;
   })().catch(() => null);
 
+  // どちらかで登録できたら、両方のフォームを「登録済み」にする
   function showDone(data) {
-    form.hidden = true;
-    msg.textContent = EN
-      ? `You’re registered for pre-order (${data.email}). We’ll email this address when it launches.`
-      : `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`;
+    forms.forEach(({ form, msg }) => {
+      form.hidden = true;
+      msg.textContent = EN
+        ? `You’re registered for pre-order (${data.email}). We’ll email this address when it launches.`
+        : `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`;
+    });
+    document.querySelectorAll(".hd-fine").forEach((el) => { el.hidden = true; });
   }
 
-  form.addEventListener("submit", async (e) => {
+  forms.forEach(({ form, msg }) => form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = form.querySelector("#email");
+    const email = form.querySelector("input[type=email]");
+    const btn = form.querySelector("button[type=submit]");
     if (!email.checkValidity()) {
       msg.textContent = (EN ? "Please check your email address (for example, you@example.com)." : "メールアドレスの形を確認してください（例：you@example.com）。");
       email.focus();
       return;
     }
+    const prefEl = form.querySelector("#pref"), trialEl = form.querySelector("#trial");
     const data = {
       email: email.value.trim(),
-      prefecture: pref.value.trim(),
+      prefecture: prefEl ? prefEl.value.trim() : "",
       lang: EN ? "en" : "ja",
-      trial: form.querySelector("#trial").checked,
+      trial: trialEl ? trialEl.checked : false,
+      source: form.id === "hero-form" ? "hero" : "bottom",
       createdAt: new Date().toISOString(),
     };
     btn.disabled = true;
@@ -299,5 +308,5 @@
           : (EN ? "Registration didn’t go through. Check your connection and try again." : "登録できませんでした。通信状態を確かめて、もう一度お試しください。");
       btn.disabled = false;
     }
-  });
+  }));
 })();

@@ -79,8 +79,14 @@
 
     <div class="hd-foot">
       <div class="hd-cta">
-        <span class="hd-status"><i aria-hidden="true"></i>先行予約 受付中</span>
-        <a class="btn" href="#signup">先行予約する</a>
+        <p class="hd-status"><i aria-hidden="true"></i>先行予約 受付中</p>
+        <form class="hd-form" id="hero-form" novalidate>
+          <label class="sr-only" for="hero-email">メールアドレス</label>
+          <input id="hero-email" name="email" type="email" placeholder="メールアドレスを入力" autocomplete="email" required />
+          <button class="btn" type="submit">先行予約に登録</button>
+        </form>
+        <p class="hd-fine">無料です。購入やお支払いは発生しません。発売のお知らせだけが届きます。</p>
+        <p class="hd-msg" id="hero-msg" role="status"></p>
       </div>
     </div>
   </section>

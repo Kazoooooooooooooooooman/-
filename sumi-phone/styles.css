@@ -30,6 +30,7 @@ body {
 }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+[hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
 /* ---------- 背景 ---------- */
@@ -467,59 +468,33 @@ footer.footer .footer-logo { color: var(--paper-ink); }
   position: absolute; z-index: 2; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
   border-radius: .15em .15em 0 0; overflow: hidden;
 }
+/* 扉の向こう：サイトの他の絵と同じ水彩の景色。最初は淡く、開くと色が戻る */
 .hd-view {
   position: absolute; inset: 0;
-  background: #b9c4c9 url(images/w5-mountain.jpg) 50% 40% / auto 210% no-repeat;
-  filter: grayscale(1) contrast(.92) brightness(1.04);
+  background: #c9d2d3 url(images/w5-mountain.jpg) 50% 40% / auto 210% no-repeat;
+  filter: grayscale(1) contrast(.85) brightness(1.08);
   animation: hd-color 2.6s ease-out 1.5s forwards;
 }
-/* 開口部の奥行き：上と左右に落ちる影 */
-.hd-door::after {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  box-shadow: inset .012em .014em .02em rgba(20, 20, 18, .45), inset -.006em 0 .012em rgba(20, 20, 18, .25);
-}
-/* 扉の枠（O の黒を細く縁取る、紙色の額縁） */
-.hd-frame {
-  position: absolute; z-index: 1; left: .2155em; bottom: -.012em; width: .328em; height: .599em;
-  border-radius: .164em .164em 0 0; background: #e8e3d7;
-  box-shadow: inset 0 0 0 .004em rgba(31, 30, 28, .35);
-}
-/* 敷居（床の線の上に置いた石の段） */
-.hd-step {
-  position: absolute; z-index: 1; left: .2em; top: .012em; width: .36em; height: .02em;
-  background: linear-gradient(180deg, #ece8de, #d6d0c3); border-radius: 0 0 .004em .004em;
-  box-shadow: 0 .004em .008em rgba(31, 30, 28, .25);
-}
-/* 扉の板：左の蝶番を軸に、こちら側へ開く */
+/* 枠と敷居は描かない（文字と同じ、平らな面だけで見せる） */
+.hd-frame, .hd-step { display: none; }
+/* 扉の板：飾りのない一枚の面。色はコピーと同じ朱。左の蝶番を軸に、こちら側へ開く */
 .hd-leaf {
   position: absolute; z-index: 3; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
   border-radius: .15em .15em 0 0; transform-origin: 0 50%;
   transform: perspective(1.7em) rotateY(0deg);
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, .18), rgba(0, 0, 0, 0) 18%, rgba(255, 255, 255, .06) 100%),
-    linear-gradient(180deg, #59604a, #474d3b);
-  box-shadow: inset 0 0 0 .005em rgba(15, 16, 12, .55), inset -.01em 0 .008em rgba(255, 255, 255, .08);
+  background: #a94c2f;
   animation: hd-open 2.2s cubic-bezier(.6, .02, .2, 1) .9s forwards;
 }
-/* 板の飾り：上のアーチ形と下の四角の、2枚の鏡板 */
-.hd-leaf::before, .hd-leaf::after {
-  content: ""; position: absolute; left: 15%; right: 15%;
-  border: .005em solid rgba(20, 22, 16, .45);
-  box-shadow: inset .004em .004em 0 rgba(255, 255, 255, .07), .003em .003em 0 rgba(255, 255, 255, .06);
-}
-.hd-leaf::before { top: 9%; height: 46%; border-radius: .11em .11em .01em .01em; }
-.hd-leaf::after { top: 62%; height: 28%; border-radius: .01em; }
 .hd-knob {
-  position: absolute; right: 9%; top: 57%; width: .03em; height: .03em; border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #f0dca6, #b48d4a 60%, #6d5428);
-  box-shadow: 0 .004em .006em rgba(0, 0, 0, .45);
+  position: absolute; right: 12%; top: 58%; width: .024em; height: .024em; border-radius: 50%;
+  background: #f6f4ef;
 }
-/* 開いた扉から床にこぼれる光 */
+/* 開いた扉から床にこぼれる光：ぼかさず、紙を切り抜いたような一枚の形 */
 .hd-spill {
-  position: absolute; z-index: -1; left: .05em; top: .032em; width: .66em; height: .42em;
-  background: linear-gradient(180deg, rgba(255, 236, 198, .8), rgba(255, 236, 198, 0) 92%);
-  clip-path: polygon(30% 0, 73% 0, 100% 100%, 12% 100%);
-  opacity: 0; animation: hd-spill 2.4s ease-out 1.5s forwards;
+  position: absolute; z-index: -1; left: .2295em; top: .012em; width: .42em; height: .17em;
+  background: rgba(255, 252, 244, .5);
+  clip-path: polygon(24% 0, 71.4% 0, 100% 100%, 36% 100%);
+  opacity: 0; animation: hd-spill 1.6s ease-out 1.8s forwards;
 }
 .hd-phone {
   font-family: "Instrument Serif", "Times New Roman", serif; font-style: italic;
@@ -532,7 +507,23 @@ footer.footer .footer-logo { color: var(--paper-ink); }
 .hd-foot {
   width: 100%; display: flex; justify-content: center; align-items: center;
 }
-.hd-cta { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center; }
+.hd-cta { display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(100%, 520px); }
+.hd-form {
+  display: flex; width: 100%; padding: 5px; border-radius: 999px;
+  background: rgba(255, 255, 255, .6); border: 1px solid var(--paper-line);
+  transition: border-color .2s, box-shadow .2s;
+}
+.hd-form:focus-within { border-color: var(--paper-ink); box-shadow: 0 0 0 4px rgba(31, 30, 28, .08); }
+.hd-form input {
+  flex: 1; min-width: 0; border: 0; background: transparent; padding: 0 18px;
+  font: inherit; font-size: 15px; letter-spacing: .04em; color: var(--paper-ink); outline: none;
+}
+.hd-form input::placeholder { color: rgba(31, 30, 28, .45); }
+.hero-door .hd-form .btn { border: 0; cursor: pointer; white-space: nowrap; padding: 12px 24px; }
+.hero-door .hd-form .btn:disabled { opacity: .6; cursor: wait; transform: none; }
+.hd-fine { font-size: 12px; letter-spacing: .06em; color: var(--paper-dim); }
+.hd-msg { font-size: 14px; letter-spacing: .06em; color: var(--paper-ink); min-height: 0; }
+.hd-msg:empty { display: none; }
 .hd-status { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: .14em; color: var(--paper-dim); }
 .hd-status i {
   width: 7px; height: 7px; border-radius: 50%; background: #a94c2f;
@@ -545,6 +536,8 @@ footer.footer .footer-logo { color: var(--paper-ink); }
   .hd-word { font-size: 25vw; }
   .hd-phone { margin-left: .25em; font-size: 18px; }
   .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; }
+  .hd-form input { padding: 0 12px; font-size: 14px; }
+  .hero-door .hd-form .btn { padding: 11px 16px; font-size: 13px; letter-spacing: .06em; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hd-leaf { animation: none; transform: perspective(1.7em) rotateY(-70deg); }
