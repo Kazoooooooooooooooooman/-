@@ -303,7 +303,7 @@ h2 .nw { white-space: nowrap; }
 
 .hd-mark {
   display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap;
-  margin-top: clamp(26px, 6vh, 72px); padding-bottom: clamp(36px, 8vh, 96px);
+  margin-top: clamp(14px, 3vh, 36px); padding-bottom: clamp(36px, 8vh, 96px);
 }
 .hd-word {
   position: relative; z-index: 0; display: inline-block;
@@ -350,15 +350,13 @@ h2 .nw { white-space: nowrap; }
   clip-path: polygon(24% 0, 71.4% 0, 100% 100%, 36% 100%);
   opacity: 0; animation: hd-spill 1.6s ease-out 1.8s forwards;
 }
-/* 林：SOTO の後ろに、背景の水彩と同じ描き方の木が並び、風でゆれる。モットーより下、床の線の上だけに置く */
-.hd-woods { position: absolute; z-index: -1; left: 0; bottom: -.012em; width: 100vw; height: .8em; pointer-events: none; }
-.hd-tree { position: absolute; bottom: 0; width: auto; aspect-ratio: 100 / 170; transform: translateX(-50%); transform-origin: 50% 100%; animation: hd-sway 7s ease-in-out infinite alternate; overflow: visible; }
-/* 松はどっしり、植え込みはほとんど動かない */
-.hd-pine { animation-name: hd-sway-s; }
-.hd-shrub { animation-name: hd-sway-xs; }
-@keyframes hd-sway-s { from { transform: translateX(-50%) rotate(-1.2deg); } to { transform: translateX(-50%) rotate(1.2deg); } }
-@keyframes hd-sway-xs { from { transform: translateX(-50%) rotate(-.6deg); } to { transform: translateX(-50%) rotate(.6deg); } }
-@keyframes hd-sway { from { transform: translateX(-50%) rotate(-2.2deg); } to { transform: translateX(-50%) rotate(2.2deg); } }
+/* 松の丘：キャッチコピーと SOTO のあいだに、遠くの丘に並ぶ松。どちらの文字にもかからない */
+.hd-grove { width: 100vw; margin: clamp(10px, 2.5vh, 26px) calc(50% - 50vw) 0; height: clamp(70px, 13vh, 150px); pointer-events: none; }
+.hd-grove svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.pn-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: pn-sway 8s ease-in-out infinite alternate; }
+.pn.far .pn-sway { animation-name: pn-sway-far; }
+@keyframes pn-sway { from { transform: rotate(-1.4deg); } to { transform: rotate(1.4deg); } }
+@keyframes pn-sway-far { from { transform: rotate(-.7deg); } to { transform: rotate(.7deg); } }
 .hd-phone {
   font-family: var(--latin); font-weight: 500;
   font-size: clamp(20px, 2.3vw, 36px); line-height: 1; margin-left: .45em; color: var(--paper-ink);
@@ -397,7 +395,6 @@ h2 .nw { white-space: nowrap; }
 @media (max-width: 760px) {
   .hd-mark { padding-bottom: 72px; }
   .hd-word { font-size: 25vw; }
-  .hd-tree:nth-child(11) { display: none; } /* スマホでは Phone の文字にかかる松を外す */
   .hd-phone { margin-left: .25em; font-size: 18px; }
   .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; }
   .hd-form input { padding: 0 12px; font-size: 14px; }
@@ -408,5 +405,5 @@ h2 .nw { white-space: nowrap; }
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
   .hd-status i { animation: none; }
-  .hd-tree { animation: none; }
+  .pn-sway { animation: none; }
 }
