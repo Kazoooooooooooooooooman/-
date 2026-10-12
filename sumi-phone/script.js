@@ -75,6 +75,8 @@
     if (!window.claude) {
       if (!FORM_ENDPOINT) return null;
       try {
+        // URL の最後に ?reset を付けて開くと、このブラウザの「登録済み」の記録を消して、もう一度試せる
+        if (/[?&]reset\b/.test(location.search)) localStorage.removeItem(SENT_KEY);
         const saved = localStorage.getItem(SENT_KEY);
         if (saved) showDone(JSON.parse(saved));
       } catch (_) { /* 前回の登録を覚えていなくても登録はできる */ }
@@ -138,11 +140,25 @@
     }
     if (s.endpoint) {
       try {
-        // Apps Script は別のドメインなので、事前確認のいらない text/plain で送る（返事は読めない）
-        await fetch(s.endpoint, { method: "POST", mode: "no-cors", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
+        // Apps Script は別のドメインなので、事前確認のいらない text/plain で送る。
+        // 返事（{"ok":true}）まで読んで、スプレッドシートに保存できたことを確かめてから「登録済み」にする
+        const res = await fetch(s.endpoint, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
+        const text = await res.text();
+        let out = null;
+        try { out = JSON.parse(text); } catch (_) { /* JSON でない返事は、Apps Script のエラー画面かログイン画面 */ }
+        if (!out || !out.ok) {
+          console.error("Pre-order not saved:", res.status, out || text.slice(0, 300));
+          msg.textContent = out && out.error === "bad_email"
+            ? (EN ? "Please check your email address (for example, you@example.com)." : "メールアドレスの形を確認してください（例：you@example.com）。")
+            : (EN ? "Registration didn’t go through. Please try again in a little while." : "登録できませんでした。時間をおいて、もう一度お試しください。");
+          btn.disabled = false;
+          return;
+        }
         try { localStorage.setItem(SENT_KEY, JSON.stringify({ email: data.email })); } catch (_) { /* 覚えられなくても登録は済んでいる */ }
         showDone(data);
-      } catch (_) {
+      } catch (err) {
+        // 公開の設定が「全員」でないと、Google のログイン画面に飛ばされてここに来る
+        console.error("Pre-order request failed:", err);
         msg.textContent = (EN ? "Registration didn’t go through. Check your connection and try again." : "登録できませんでした。通信状態を確かめて、もう一度お試しください。");
         btn.disabled = false;
       }
