@@ -314,14 +314,14 @@ h2 .nw { white-space: nowrap; }
 }
 .hd-motto {
   font-family: var(--latin); font-weight: 500;
-  font-size: clamp(13px, 1.1vw, 16px); line-height: 1.2; letter-spacing: .12em; color: #3f6b45;
+  font-size: clamp(12px, .95vw, 14px); line-height: 1.2; letter-spacing: .2em; color: #3f6b45;
 }
 .hero-door .hd-copy {
-  font-family: var(--serif); font-weight: 400; font-size: clamp(18px, 1.7vw, 24px);
+  font-family: var(--serif); font-weight: 400; font-size: clamp(17px, 1.5vw, 21px);
   letter-spacing: .22em; line-height: 1.6; margin: .35em 0 0 .22em; color: var(--paper-ink);
 }
 /* SOTO の下、登録欄の上に置くメッセージ */
-.hd-message { text-align: center; margin-bottom: clamp(18px, 3vh, 30px); }
+.hd-message { text-align: center; margin-bottom: clamp(20px, 3.4vh, 32px); }
 
 .hd-mark {
   display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap;
@@ -394,7 +394,7 @@ h2 .nw { white-space: nowrap; }
 .hd-foot {
   width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
-.hd-cta { display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(100%, 520px); }
+.hd-cta { display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(100%, 420px); }
 .hd-form {
   display: flex; width: 100%; padding: 5px; border-radius: 999px;
   background: rgba(255, 255, 255, .6); border: 1px solid var(--paper-line);
@@ -403,20 +403,14 @@ h2 .nw { white-space: nowrap; }
 .hd-form:focus-within { border-color: var(--paper-ink); box-shadow: 0 0 0 4px rgba(31, 30, 28, .08); }
 .hd-form input {
   flex: 1; min-width: 0; border: 0; background: transparent; padding: 0 18px;
-  font: inherit; font-size: 15px; letter-spacing: .04em; color: var(--paper-ink); outline: none;
+  font: inherit; font-size: 14px; letter-spacing: .04em; color: var(--paper-ink); outline: none;
 }
 .hd-form input::placeholder { color: rgba(31, 30, 28, .45); }
-.hero-door .hd-form .btn { border: 0; cursor: pointer; white-space: nowrap; padding: 12px 24px; }
+.hero-door .hd-form .btn { border: 0; cursor: pointer; white-space: nowrap; padding: 10px 20px; font-size: 13px; }
 .hero-door .hd-form .btn:disabled { opacity: .6; cursor: wait; transform: none; }
-.hd-fine { font-size: 12px; letter-spacing: .06em; color: var(--paper-dim); }
+.hd-fine { font-size: 11px; letter-spacing: .06em; color: var(--paper-dim); opacity: .8; }
 .hd-msg { font-size: 14px; letter-spacing: .06em; color: var(--paper-ink); min-height: 0; }
 .hd-msg:empty { display: none; }
-.hd-status { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: .14em; color: var(--paper-dim); }
-.hd-status i {
-  width: 7px; height: 7px; border-radius: 50%; background: var(--accent);
-  animation: hd-pulse 2.4s ease-in-out infinite;
-}
-@keyframes hd-pulse { 50% { opacity: .35; } }
 
 @media (max-width: 760px) {
   .hd-mark { padding-bottom: 72px; }
@@ -430,6 +424,5 @@ h2 .nw { white-space: nowrap; }
   .hd-leaf { animation: none; transform: perspective(1.7em) rotateY(-70deg); }
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
-  .hd-status i { animation: none; }
   .pn-sway, .kasumi { animation: none; }
 }
