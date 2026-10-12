@@ -7,6 +7,15 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
+  // 1枚目の林：画面の左端から右端まで並ぶよう、O の位置に合わせて置き直す
+  const woods = document.querySelector(".hd-woods");
+  if (woods) {
+    const place = () => { woods.style.left = -woods.parentElement.getBoundingClientRect().left + "px"; };
+    window.addEventListener("resize", place);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+    place();
+  }
+
   // 文字と絵のフェードイン
   const io = new IntersectionObserver(
     (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("is-in")),

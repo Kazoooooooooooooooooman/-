@@ -294,7 +294,7 @@ h2 .nw { white-space: nowrap; }
 }
 .hd-motto {
   font-family: var(--latin); font-weight: 500;
-  font-size: clamp(22px, 2.6vw, 38px); line-height: 1.1; letter-spacing: .01em; color: var(--accent);
+  font-size: clamp(22px, 2.6vw, 38px); line-height: 1.1; letter-spacing: .01em; color: #3f6b45;
 }
 .hero-door .hd-copy {
   font-family: var(--serif); font-weight: 400; font-size: clamp(20px, 2.7vw, 38px);
@@ -336,7 +336,7 @@ h2 .nw { white-space: nowrap; }
   position: absolute; z-index: 3; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
   border-radius: .15em .15em 0 0; transform-origin: 0 50%;
   transform: perspective(1.7em) rotateY(0deg);
-  background: var(--accent);
+  background: #2f5f8c;
   animation: hd-open 2.2s cubic-bezier(.6, .02, .2, 1) .9s forwards;
 }
 .hd-knob {
@@ -350,6 +350,10 @@ h2 .nw { white-space: nowrap; }
   clip-path: polygon(24% 0, 71.4% 0, 100% 100%, 36% 100%);
   opacity: 0; animation: hd-spill 1.6s ease-out 1.8s forwards;
 }
+/* 林：SOTO の後ろに、背景の水彩と同じ描き方の木が並び、風でゆれる。モットーより下、床の線の上だけに置く */
+.hd-woods { position: absolute; z-index: -1; left: 0; bottom: -.012em; width: 100vw; height: .8em; pointer-events: none; }
+.hd-tree { position: absolute; bottom: 0; width: auto; aspect-ratio: 100 / 170; transform: translateX(-50%); transform-origin: 50% 100%; animation: hd-sway 7s ease-in-out infinite alternate; overflow: visible; }
+@keyframes hd-sway { from { transform: translateX(-50%) rotate(-2.2deg); } to { transform: translateX(-50%) rotate(2.2deg); } }
 .hd-phone {
   font-family: var(--latin); font-weight: 500;
   font-size: clamp(20px, 2.3vw, 36px); line-height: 1; margin-left: .45em; color: var(--paper-ink);
@@ -398,4 +402,5 @@ h2 .nw { white-space: nowrap; }
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
   .hd-status i { animation: none; }
+  .hd-tree { animation: none; }
 }
