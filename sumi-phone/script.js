@@ -3,7 +3,8 @@
   const nav = document.querySelector(".nav");
 
   // 最初の訪問：スマホのロック画面に通知が次々と積み重なり、扉が開いて、静かな SOTO の画面へ出る
-  // 2回目からは出さない（URL に ?intro を付けると、もう一度見られる）。タップ、キー、スクロールで飛ばせる
+  // 2回目からは出さない（URL に ?intro を付けると、もう一度見られる）。タップ、キー、ホイールで飛ばせる。
+  // 「動きを減らす」設定の人には、動きのない（ふわっと切り替わるだけの）版を見せる
   (() => {
     const root = document.documentElement;
     if (!root.classList.contains("intro-pending")) return;
@@ -71,7 +72,7 @@
       if (done) return;
       done = true;
       timers.forEach(clearTimeout);
-      try { localStorage.setItem("soto-intro", "1"); } catch (_) { /* 覚えられなくても見られる */ }
+      try { localStorage.setItem("soto-intro-2", "1"); } catch (_) { /* 覚えられなくても見られる */ }
       const reveal = () => {
         root.classList.remove("intro-pending");
         el.classList.add("is-out");
@@ -84,12 +85,11 @@
       setTimeout(reveal, 1700);
     }
     at(t + 250, () => finish(false));
-    // 飛ばす：タップ、キー、ホイール、スワイプ
+    // 飛ばす：タップ、キー、ホイール（指が少し触れただけで飛ばないよう、スワイプでは飛ばさない）
     const skip = () => finish(true);
     el.addEventListener("click", skip);
     window.addEventListener("keydown", skip, { once: true });
     window.addEventListener("wheel", skip, { once: true, passive: true });
-    window.addEventListener("touchmove", skip, { once: true, passive: true });
   })();
 
   // スクロールしたら、ナビに紙色の帯を敷く

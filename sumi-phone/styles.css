@@ -507,4 +507,7 @@ html.intro-pending .hero-door *, html.intro-pending .hero-door { animation-play-
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
   .pn-sway, .kasumi { animation: none; }
+  .intro-n, .intro-clock { animation: none; opacity: 1; }
+  .intro-door, .intro-door::before, .intro.is-through .intro-door { transform: none !important; transition: opacity .4s ease; }
+  .intro.is-through .intro-n { transform: none; }
 }

@@ -1,0 +1,7 @@
+# Cloudflare Pages の配信設定
+# ページと CSS・JS は、毎回新しいものがないか確かめる（古いものが残って、更新が見えない問題を防ぐ）
+/*
+  Cache-Control: no-cache
+# フォントは中身が変わらないので、長く保存してよい
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
