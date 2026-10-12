@@ -308,7 +308,7 @@ h2 .nw { white-space: nowrap; }
 .hd-word {
   position: relative; z-index: 0; display: inline-block;
   font-family: var(--latin); font-weight: 800;
-  font-size: clamp(84px, 22vw, 340px); line-height: 1; letter-spacing: -.035em; color: var(--paper-ink);
+  font-size: clamp(72px, 16vw, 236px); line-height: 1; letter-spacing: -.035em; color: var(--paper-ink);
 }
 .hd-o { position: relative; }
 /* 高さゼロの目印を「O」の左端・ベースラインに置き、扉と床をそこから配置する */
@@ -350,13 +350,11 @@ h2 .nw { white-space: nowrap; }
   clip-path: polygon(24% 0, 71.4% 0, 100% 100%, 36% 100%);
   opacity: 0; animation: hd-spill 1.6s ease-out 1.8s forwards;
 }
-/* 松の丘：キャッチコピーと SOTO のあいだに、遠くの丘に並ぶ松。どちらの文字にもかからない */
-.hd-grove { width: 100vw; margin: clamp(10px, 2.5vh, 26px) calc(50% - 50vw) 0; height: clamp(70px, 13vh, 150px); pointer-events: none; }
-.hd-grove svg { display: block; width: 100%; height: 100%; overflow: visible; }
-.pn-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: pn-sway 8s ease-in-out infinite alternate; }
-.pn.far .pn-sway { animation-name: pn-sway-far; }
-@keyframes pn-sway { from { transform: rotate(-1.4deg); } to { transform: rotate(1.4deg); } }
-@keyframes pn-sway-far { from { transform: rotate(-.7deg); } to { transform: rotate(.7deg); } }
+/* 道：SOTO を半楕円の道がまたぎ、山・珈琲屋・本屋・サウナ・温泉が並ぶ。文字は word の em 単位で合わせてあるので、画面の幅が変わってもずれない */
+.hd-word { margin-top: .62em; }
+.hd-road { position: absolute; z-index: -1; left: -.7em; bottom: .078em; width: 4.03em; height: 1.56em; overflow: visible; pointer-events: none; }
+.rd-steam { animation: rd-steam 5s ease-in-out infinite; }
+@keyframes rd-steam { 0% { opacity: 0; transform: translateY(12px); } 35% { opacity: .9; } 100% { opacity: 0; transform: translateY(-26px); } }
 .hd-phone {
   font-family: var(--latin); font-weight: 500;
   font-size: clamp(20px, 2.3vw, 36px); line-height: 1; margin-left: .45em; color: var(--paper-ink);
@@ -405,5 +403,6 @@ h2 .nw { white-space: nowrap; }
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
   .hd-status i { animation: none; }
-  .pn-sway { animation: none; }
+  .rd-steam { animation: none; opacity: .8; }
+  .rd-walker { display: none; }
 }
