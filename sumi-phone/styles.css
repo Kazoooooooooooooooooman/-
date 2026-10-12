@@ -350,23 +350,17 @@ h2 .nw { white-space: nowrap; }
   clip-path: polygon(24% 0, 71.4% 0, 100% 100%, 36% 100%);
   opacity: 0; animation: hd-spill 1.6s ease-out 1.8s forwards;
 }
-/* 道：SOTO を一本の細い線がまたぐ。路線図のように、外の行き先が駅として並び、点がゆっくり進む */
-.hd-word { margin-top: .62em; }
-.hd-road, .hd-stations { position: absolute; left: -.7em; bottom: .078em; width: 4.03em; height: 1.56em; pointer-events: none; }
-.hd-road { z-index: -1; overflow: visible; }
-.hd-stations { z-index: 1; }
-.stn { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, calc(-100% + 5px)); gap: 6px;
-  font-size: 13px; font-family: var(--sans); letter-spacing: 0; line-height: 1.2; color: var(--paper-ink); white-space: nowrap; }
-.stn-ic { width: 30px; height: 30px; flex: none; fill: none; stroke: var(--paper-ink); stroke-opacity: .82; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 2px; }
-.stn i { order: 3; width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 1px solid rgba(31, 30, 28, .6); }
-.stn b { font-weight: 400; font-size: 13px; letter-spacing: .14em; }
-.stn em { font-style: normal; font-family: var(--latin); font-weight: 500; font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: var(--paper-dim); margin-top: -2px; }
-html[lang="en"] .stn b { font-family: var(--latin); font-weight: 500; font-size: 11px; letter-spacing: .22em; text-transform: uppercase; }
-/* 坂の途中の駅は、名前を線の外側に置く */
-.stn-l { flex-direction: row-reverse; align-items: center; transform: translate(calc(-100% + 5px), -50%); gap: 10px; }
-.stn-r { flex-direction: row; align-items: center; transform: translate(-5px, -50%); gap: 10px; }
-.stn-l i, .stn-r i { order: 0; }
-.stn-l b + em, .stn-r b + em { display: none; }
+/* 松の丘：キャッチコピーと SOTO のあいだ。日本画の黒松が並び、すやり霞がゆっくり流れる。どちらの文字にもかからない */
+.hd-grove { width: 100vw; margin: clamp(12px, 3vh, 30px) calc(50% - 50vw) 0; height: clamp(80px, 15vh, 170px); pointer-events: none; }
+.hd-grove svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.pn-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: pn-sway 9s ease-in-out infinite alternate; }
+.pn.far .pn-sway { animation-name: pn-sway-far; }
+@keyframes pn-sway { from { transform: rotate(-1.1deg); } to { transform: rotate(1.1deg); } }
+@keyframes pn-sway-far { from { transform: rotate(-.5deg); } to { transform: rotate(.5deg); } }
+.kasumi { animation: kasumi 26s ease-in-out infinite alternate; }
+.k2, .k4 { animation-duration: 32s; animation-direction: alternate-reverse; }
+.k5 { animation-duration: 22s; }
+@keyframes kasumi { from { transform: translateX(-28px); } to { transform: translateX(28px); } }
 .hd-phone {
   font-family: var(--latin); font-weight: 500;
   font-size: clamp(20px, 2.3vw, 36px); line-height: 1; margin-left: .45em; color: var(--paper-ink);
@@ -405,12 +399,6 @@ html[lang="en"] .stn b { font-family: var(--latin); font-weight: 500; font-size:
 @media (max-width: 760px) {
   .hd-mark { padding-bottom: 72px; }
   .hd-word { font-size: 25vw; }
-  .stn b { font-size: 10px; letter-spacing: .08em; }
-  .stn em { display: none; }
-  .stn i { width: 7px; height: 7px; }
-  .stn-ic { width: 20px; height: 20px; margin-bottom: 0; }
-  .stn-l, .stn-r { flex-direction: column; transform: translate(-50%, calc(-100% + 4px)); gap: 4px; }
-  .stn-l i, .stn-r i { order: 3; }
   .hd-phone { margin-left: .25em; font-size: 18px; }
   .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; }
   .hd-form input { padding: 0 12px; font-size: 14px; }
@@ -421,5 +409,5 @@ html[lang="en"] .stn b { font-family: var(--latin); font-weight: 500; font-size:
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
   .hd-status i { animation: none; }
-  .rd-dot { display: none; }
+  .pn-sway, .kasumi { animation: none; }
 }
