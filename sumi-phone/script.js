@@ -68,7 +68,7 @@
     render(0.1);
   }
 
-  // 絵の具のシーン：白黒の紙に絵の具が一滴落ち、にじんで広がり、最初の色として淡く残る
+  // 色のシーン：白黒の紙に、外の光のような淡い緑がにじんで広がり、最初の色として淡く残る
   const ink = document.getElementById("ink");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (ink && !reduce) {

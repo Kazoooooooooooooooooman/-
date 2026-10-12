@@ -96,7 +96,7 @@
     <figure class="story-art reveal"><img src="images/story/01-indoors.png" alt="家の中で画面に向かう人。外の友達、木、魚にはばつ印がついている" width="1100" height="601" /></figure>
     <div class="story-text reveal">
       <p class="page-no">はじまりの話</p>
-      <p>いつしか消えた、<br />自分から外へ行く理由。</p>
+      <p>気づけば、一日のほとんどを<br />画面の中で過ごしていた。</p>
     </div>
   </section>
 
@@ -107,9 +107,8 @@
     <svg class="swipe-thumb" viewBox="0 0 40 90" aria-hidden="true"><path d="M8 90 C6 60 8 30 14 12 C17 4 28 4 30 12 C34 30 34 60 32 90" /><path d="M15 22 q7 -5 13 0" /></svg>
     </figure>
     <div class="story-text reveal">
-      <p>楽しくて、笑える SNS。</p>
-      <p>何も困らないじゃん。<br />毎日満たされるから、いいじゃん。<br />友達とオンラインで話せるし、最高じゃん。</p>
-      <p>……だよね？</p>
+      <p>SNS も、ゲームも、楽しい。</p>
+      <p>だから、やめられない。</p>
     </div>
   </section>
 
@@ -126,46 +125,23 @@
       </svg>
     </figure>
     <div class="story-text reveal">
-      <p>家から出る必要なんてないし。<br />誰からも何も言われないし、<br />ずっと好きなことできるし。</p>
+      <p>朝だったはずが、もう夜。<br />今日も、何も残らなかった。</p>
     </div>
-  </section>
-
-  <section class="panel story center beat" data-bg="1" data-tone="paper">
-    <div class="story-text reveal">
-      <p>嫌なことないし、楽だし。</p>
-    </div>
-  </section>
-
-  <section class="panel story center beat" data-bg="1" data-tone="paper">
-    <div class="story-text reveal">
-      <p>俺なんかどうせ変われないし、<br />AI がなんでもできるから、<br />何も学ばなくていいし。</p>
-    </div>
-  </section>
-
-  <!-- 沈黙：何も描かれていない紙だけが続く間 -->
-  <div class="silence" data-bg="1" data-tone="paper" aria-hidden="true"></div>
-
-  <section class="panel story center" data-bg="1" data-tone="paper">
-    <div class="story-text reveal">
-      <p class="big-line"><span class="nw">けど、心の中で、</span><br /><span class="nw">本当は何者かになりたい</span><br /><span class="nw">自分がいる。</span></p>
-      <p><span class="nw">今 SNS やゲームに</span><br /><span class="nw">使っている時間を、</span><br /><span class="nw">有意義なことに使いたいと</span><br /><span class="nw">思っている自分がいる。</span></p>
-    </div>
-    <figure class="story-art reveal"><img src="images/story/04-noise.png" alt="ぐちゃぐちゃの線の真ん中に、小さな人がひとり立っている" width="1100" height="1086" /></figure>
   </section>
 
   <section class="panel story alt" data-bg="1" data-tone="paper">
     <figure class="story-art reveal"><img src="images/story/05-burst.png" alt="真ん中の小さな画面から、矢印が四方八方へ伸びていく" width="1100" height="1005" /></figure>
     <div class="story-text reveal">
-      <p>この現状を、<br />少しずつでいいから変えたい。</p>
-      <p>もっと時間を使って、<br />いろんなことを学んだり、<br />新しい体験がしたい。</p>
+      <p class="big-line">本当は、外に出たかった。</p>
+      <p>人に会って、何かを学んで、<br />新しいことを体験したかった。</p>
     </div>
   </section>
 
-  <!-- 絵の具が一滴落ちて、白黒の紙に最初の色がにじむ（スクロールで進むシーン） -->
+  <!-- 白黒の紙に、外の光のような淡い緑がふわっと広がる（スクロールで進むシーン） -->
   <section class="ink-scene" id="ink" data-bg="1" data-tone="paper">
     <div class="ink-stage">
       <div class="story-text ink-text">
-        <p>けど、どうせ俺には無理だな。<br />今までずっと逃げてきたし、<br />時間だって一生かかる。<br />保証なんてない。</p>
+        <p>制限をかけても、<br />結局、自分で外してしまう。</p>
         <p class="drawn-box" id="ink-target">今まで通りで、いっか。</p>
       </div>
       <svg class="ink-svg" aria-hidden="true">
@@ -175,9 +151,9 @@
             <feDisplacementMap in="SourceGraphic" scale="58" xChannelSelector="R" yChannelSelector="G" />
           </filter>
           <radialGradient id="ink-grad">
-            <stop offset="0" stop-color="#e0795a" stop-opacity="1" />
-            <stop offset=".7" stop-color="#e48a62" stop-opacity=".9" />
-            <stop offset="1" stop-color="#eba07a" stop-opacity=".5" />
+            <stop offset="0" stop-color="#9dbf7c" stop-opacity="1" />
+            <stop offset=".7" stop-color="#b4d08f" stop-opacity=".9" />
+            <stop offset="1" stop-color="#d2e3ad" stop-opacity=".5" />
           </radialGradient>
           <filter id="halo" x="-50%" y="-50%" width="200%" height="200%">
             <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="2" seed="3" />
@@ -194,21 +170,23 @@
     </div>
   </section>
 
+  <!-- 名前の由来：Soto は日本語の「外」 -->
   <section class="panel story center" data-bg="1" data-tone="paper">
     <div class="story-text reveal">
-      <p class="punch"><span class="nw">画面に張り付く理由になっていた</span><br /><span class="nw">SNS、ゲームのアプリが</span><br /><span class="nw">ひとつもない</span><br /><strong class="punch-name nw">Soto&nbsp;Phone があるじゃん。</strong></p>
-      <p class="punch"><span class="nw">使わなければ使わないほど、</span><br /><span class="nw">色々なお店で使えるポイントが</span><br /><span class="nw">貯まっていく</span><br /><strong class="punch-name nw">Soto&nbsp;Phone があるじゃん。</strong></p>
+      <p class="big-line">Soto（ソト）は、<br />日本語の「外」。</p>
+      <p><span class="nw">画面に張り付く理由になる</span><br /><span class="nw">SNS とゲームは、最初から入れない。</span><br /><span class="nw">スマホを置いた時間は、</span><br /><span class="nw">外で使えるポイントになる。</span></p>
+      <p class="punch"><span class="nw">画面の外へ、出かけるための携帯。</span><br /><strong class="punch-name nw">だから、Soto&nbsp;Phone。</strong></p>
     </div>
   </section>
 
   <!-- 丘：Soto Phone とは -->
   <section id="about" class="panel" data-bg="2" data-tone="paper">
     <p class="eyebrow reveal">Soto Phone</p>
-    <h2 class="reveal">必要な道具だけを、<br />持ち歩く。</h2>
+    <h2 class="reveal">SNS とゲームのない、<br />スマートフォン。</h2>
     <ul class="pillars reveal">
       <li><strong>SNS もゲームもない</strong><span>終わりのないスクロールも、広告も入っていません。</span></li>
       <li><strong>毎日の道具はそろっている</strong><span>電話、地図、乗換、カメラ、音楽。出かけた先で使うものは手元に。</span></li>
-      <li><strong>離れた時間がポイントになる</strong><span>貯めたポイントは、提携店や温泉、本や体験に使えます。</span></li>
+      <li><strong>スマホを置いた時間がポイントになる</strong><span>貯めたポイントは、提携店や温泉、本や体験に使えます。</span></li>
     </ul>
   </section>
 
@@ -216,7 +194,7 @@
   <section id="tools" class="panel split" data-bg="3" data-tone="paper">
     <div class="split-text">
       <p class="eyebrow reveal">道具</p>
-      <h2 class="reveal">入っているのは、<br />毎日の道具だけ。</h2>
+      <h2 class="reveal">電話も地図もカメラも、<br />ちゃんと入っている。</h2>
       <dl class="tool-table reveal">
         <div><dt>連絡</dt><dd>電話・電話帳・SMS</dd></div>
         <div><dt>移動</dt><dd>地図・乗換案内・天気</dd></div>
@@ -249,7 +227,7 @@
   <!-- 湯：ポイント -->
   <section id="points" class="panel" data-bg="4" data-tone="paper">
     <p class="eyebrow reveal">ポイント</p>
-    <h2 class="reveal">離れた時間が、<br />ポイントになる。</h2>
+    <h2 class="reveal">スマホを置いた時間が、<br />ポイントになる。</h2>
     <ol class="steps reveal">
       <li><span class="step-n">1</span><strong>離れる時間を決める</strong><span>夕食の一時間、寝る前、休日の午前など。</span></li>
       <li><span class="step-n">2</span><strong>守れたら貯まる</strong><span>家族からの電話や地図を使っても途切れません。一日の上限があります。</span></li>
@@ -265,8 +243,8 @@
   <section id="shop" class="panel split" data-bg="5" data-tone="paper">
     <div class="split-text">
       <p class="eyebrow reveal">ショップ</p>
-      <h2 class="reveal">選ぶのは、<br />専門家。</h2>
-      <p class="body reveal">地図の上に並ぶのは、各分野の専門家が選んだお店と体験だけ。選んだ人と理由を、すべてに書きます。買えたらそこで画面は終わり。セールの残り時間も、購入をあおる通知もありません。</p>
+      <h2 class="reveal">ポイントは、<br />プロが選んだお店で。</h2>
+      <p class="body reveal">貯めたポイントは、地図の上のお店や体験で使えます。並ぶのは、釣りガイドや登山ガイドなど、その道のプロが選んだものだけ。誰が、なぜ選んだのかも書いてあります。セールの残り時間や、購入をあおる通知はありません。</p>
     </div>
     <article class="item-card reveal" aria-label="商品ページの例">
       <p class="item-tag">商品ページの例</p>

@@ -212,7 +212,9 @@ body.paper .nav.is-scrolled { background: rgba(236, 235, 230, .7); }
 }
 .ink-text { text-align: center; align-items: center; will-change: opacity, filter; }
 .ink-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
-.ink-svg circle, .ink-svg path { fill: var(--paint); }
+.ink-svg circle, .ink-svg path { fill: #b4d08f; }
+/* 落ちる一滴と飛び散る粒は描かない（赤い滴が血に見えるという声があったため）。色は外の光のような淡い緑で、紙からふわっと広がる */
+.ink-drop, .ink-splash { display: none; }
 .ink-core circle { fill: url(#ink-grad); }
 .ink-halo { opacity: .28; }
 .ink-drop { opacity: 0; }
