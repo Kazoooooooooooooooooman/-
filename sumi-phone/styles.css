@@ -332,11 +332,12 @@ h2 .nw { white-space: nowrap; }
 /* ---------- 1枚目：SOTO の最後の O が、外へ出る扉になっている ---------- */
 /* 扉の位置は Inter Tight 800 の「O」の内側の穴に合わせた値（1em あたり：穴の左 0.212、右 0.547、上 0.583） */
 .hero-door {
-  justify-content: space-between; align-items: center; text-align: center;
+  /* 絵・SOTO・言葉・登録を、ばらばらに散らさず、ひとかたまりで画面の真ん中に置く */
+  justify-content: center; align-items: center; text-align: center;
   padding-top: clamp(96px, 14vh, 140px); padding-bottom: clamp(28px, 5vh, 56px);
   overflow: hidden;
 }
-.hd-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+.hd-center { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
 .hd-eyebrow {
   font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: .46em; text-transform: uppercase;
   color: var(--paper-dim); margin-bottom: clamp(18px, 3vh, 30px);
@@ -354,7 +355,7 @@ h2 .nw { white-space: nowrap; }
 
 .hd-mark {
   display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap;
-  margin-top: clamp(14px, 3vh, 36px); padding-bottom: clamp(36px, 8vh, 96px);
+  margin-top: clamp(0px, 1vh, 12px); padding-bottom: clamp(44px, 7vh, 80px);
 }
 .hd-word {
   position: relative; z-index: 0; display: inline-block;
@@ -367,7 +368,8 @@ h2 .nw { white-space: nowrap; }
 /* 床（文字が立つ一本の線） */
 .hd-anchor::before {
   content: ""; position: absolute; z-index: -1; top: .012em; left: -100vw; width: 200vw; height: 1px;
-  background: var(--paper-line); font-size: inherit;
+  /* 床の線も、両端は霞に溶かす */
+  background: linear-gradient(90deg, transparent 12%, var(--paper-line) 32%, var(--paper-line) 68%, transparent 88%); font-size: inherit;
 }
 .hd-door {
   position: absolute; z-index: 2; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
@@ -402,7 +404,17 @@ h2 .nw { white-space: nowrap; }
   opacity: 0; animation: hd-spill 1.6s ease-out 1.8s forwards;
 }
 /* 松の丘：キャッチコピーと SOTO のあいだ。日本画の黒松が並び、すやり霞がゆっくり流れる。どちらの文字にもかからない */
-.hd-grove { width: 100vw; margin: clamp(4px, 1.5vh, 16px) calc(50% - 50vw) 0; height: clamp(80px, 15vh, 170px); pointer-events: none; }
+.hd-grove {
+  width: 100vw; margin: clamp(4px, 1.5vh, 16px) calc(50% - 50vw) 0; height: clamp(80px, 15vh, 170px); pointer-events: none;
+  /* 松並木の両端を霞に溶かして、帯ではなく SOTO の上の景色に見せる */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+}
+.hd-grove path[fill="#d6dccb"] { fill-opacity: .22; }
+/* 広い画面では、松並木を SOTO と同じくらいの幅にまとめて、ひとつのロゴのように見せる */
+@media (min-width: 761px) {
+  .hd-grove { width: min(92vw, 1080px); aspect-ratio: 1600 / 170; height: auto; margin-left: auto; margin-right: auto; }
+}
 .hd-grove svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .pn-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: pn-sway 9s ease-in-out infinite alternate; }
 .pn.far .pn-sway { animation-name: pn-sway-far; }
@@ -439,11 +451,13 @@ h2 .nw { white-space: nowrap; }
 .hero-door .hd-form .btn:disabled { opacity: .6; cursor: wait; transform: none; }
 .hd-fine { font-size: 11px; letter-spacing: .06em; color: var(--paper-dim); }
 .hd-fine a, .form-fine a, .check-field a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-.hd-msg { font-size: 14px; letter-spacing: .06em; color: var(--paper-ink); min-height: 0; }
+.hd-msg { width: max-content; max-width: 92vw; font-size: 14px; letter-spacing: .06em; color: var(--paper-ink); min-height: 0; }
 .hd-msg:empty { display: none; }
 
 @media (max-width: 760px) {
-  .hd-mark { padding-bottom: 72px; }
+  .hd-mark { padding-bottom: 60px; }
+  .hd-grove { height: 92px; margin-top: 0; }
+  .hd-eyebrow { margin-bottom: 4px; }
   .hd-word { font-size: 25vw; }
   .hd-phone { margin-left: .25em; font-size: 18px; }
   .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; font-size: 17px; }
