@@ -264,6 +264,10 @@ footer.footer .footer-logo { color: var(--paper-ink); }
 .split { flex-direction: row; align-items: center; gap: clamp(32px, 6vw, 100px); }
 .split-text { flex: 1 1 0; min-width: 0; }
 .split-device { flex: 0 0 auto; }
+/* 製品のイメージ写真 */
+.photo-card { flex: 0 1 52%; min-width: 0; margin: 0; }
+.photo-card img { display: block; width: 100%; height: auto; border-radius: 14px; box-shadow: 0 18px 50px rgba(31, 30, 28, .18); }
+.photo-card figcaption { margin-top: 10px; font-size: 12px; letter-spacing: .06em; color: var(--paper-dim); text-shadow: none; }
 .tool-list { list-style: none; display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; max-width: 32em; }
 .tool-list button {
   padding: 8px 18px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px;
@@ -404,6 +408,7 @@ footer.footer .footer-logo { color: var(--paper-ink); }
   .nav-links a:not(.nav-cta):not(.lang) { display: none; }
   .scenes { display: none; }
   .split { flex-direction: column; align-items: flex-start; }
+  .photo-card { width: 100%; }
   .split-device { align-self: center; }
   .specs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .cols, .lists, .rules, .reserve-form, .pillars, .steps { grid-template-columns: 1fr; }
