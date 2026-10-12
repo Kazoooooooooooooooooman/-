@@ -10,7 +10,8 @@
   // 文字と絵のフェードイン
   const io = new IntersectionObserver(
     (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add("is-in")),
-    { threshold: 0.15 }
+    // 画面の下の方に少し入ってから始めて、一枚ずつに目が向くようにする
+    { threshold: 0.2, rootMargin: "0px 0px -12% 0px" }
   );
   document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
