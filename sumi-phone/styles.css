@@ -353,6 +353,11 @@ h2 .nw { white-space: nowrap; }
 /* 林：SOTO の後ろに、背景の水彩と同じ描き方の木が並び、風でゆれる。モットーより下、床の線の上だけに置く */
 .hd-woods { position: absolute; z-index: -1; left: 0; bottom: -.012em; width: 100vw; height: .8em; pointer-events: none; }
 .hd-tree { position: absolute; bottom: 0; width: auto; aspect-ratio: 100 / 170; transform: translateX(-50%); transform-origin: 50% 100%; animation: hd-sway 7s ease-in-out infinite alternate; overflow: visible; }
+/* 松はどっしり、植え込みはほとんど動かない */
+.hd-pine { animation-name: hd-sway-s; }
+.hd-shrub { animation-name: hd-sway-xs; }
+@keyframes hd-sway-s { from { transform: translateX(-50%) rotate(-1.2deg); } to { transform: translateX(-50%) rotate(1.2deg); } }
+@keyframes hd-sway-xs { from { transform: translateX(-50%) rotate(-.6deg); } to { transform: translateX(-50%) rotate(.6deg); } }
 @keyframes hd-sway { from { transform: translateX(-50%) rotate(-2.2deg); } to { transform: translateX(-50%) rotate(2.2deg); } }
 .hd-phone {
   font-family: var(--latin); font-weight: 500;
@@ -392,6 +397,7 @@ h2 .nw { white-space: nowrap; }
 @media (max-width: 760px) {
   .hd-mark { padding-bottom: 72px; }
   .hd-word { font-size: 25vw; }
+  .hd-tree:nth-child(11) { display: none; } /* スマホでは Phone の文字にかかる松を外す */
   .hd-phone { margin-left: .25em; font-size: 18px; }
   .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; }
   .hd-form input { padding: 0 12px; font-size: 14px; }
