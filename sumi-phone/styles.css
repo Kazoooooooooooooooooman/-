@@ -287,20 +287,6 @@ h2 .nw { white-space: nowrap; }
   br.pc { display: none; }
   br.sp { display: inline; }
 }
-/* 物語のしおり：はじめて物語を通るあいだだけ、一場面ずつ止まる（script.js が html に story-snap を付ける） */
-html.story-snap { scroll-snap-type: y mandatory; scroll-padding-top: 60px; }
-html.story-snap #top { scroll-snap-align: start; }
-html.story-snap #problem > .wrap:first-child,
-html.story-snap .year,
-html.story-snap .drawn,
-html.story-snap .turn,
-html.story-snap .ink-snap,
-html.story-snap #about .card { scroll-snap-align: center; scroll-snap-stop: always; }
-.ink-snap { position: absolute; left: 0; width: 1px; height: 100vh; top: calc(var(--p) * (100% - 100vh)); pointer-events: none; }
-@media (prefers-reduced-motion: reduce) {
-  html.story-snap .ink-stage { scroll-snap-align: center; scroll-snap-stop: always; }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .year-dots i.on { background: var(--paper-ink); transition: none; }
