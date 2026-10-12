@@ -23,6 +23,9 @@ const SITE_URL = "https://sotophone.jp/";
 const SENDER_ORG = "Soto Phone（代表 佐々木 一真）";
 const SENDER_ADDRESS = "〒107-0062 東京都港区南青山3丁目1番36号 青山丸竹ビル6F";
 const CONTACT = "hello@sotophone.jp";
+// このウェブアプリの URL（デプロイの画面に出る …/exec）。メールの「配信停止・削除」のリンクに使う。
+// Google から自動で取ると空になることがあるので、ここに書いておく。デプロイし直して URL が変わったら、ここも直す
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwa7cTRb-GxlCZKVGaWIP2FuVBQFpsDR7FpMjVoYrGJ9G6EyfLiTS_iIfux6H1iVB0Y/exec";
 // 1分あたりに送るメールの上限。いたずらで大量に登録されても、あなたの Gmail から大量に送られないようにする。
 // 上限を超えた分は行だけ保存され、sendPendingConfirmations() を動かすと後から送られる。
 const MAX_MAILS_PER_MINUTE = 10;
@@ -101,7 +104,7 @@ function doGet(e) {
   const email = String(p.e).trim().toLowerCase();
   const en = p.l === "en";
   if (p.t !== tokenFor(email)) return page(en ? "This link is not valid." : "このリンクは使えません。", en ? "Please contact " + CONTACT + "." : CONTACT + " までご連絡ください。", en);
-  const base = ScriptApp.getService().getUrl() + "?e=" + encodeURIComponent(email) + "&t=" + p.t + (en ? "&l=en" : "");
+  const base = WEB_APP_URL + "?e=" + encodeURIComponent(email) + "&t=" + p.t + (en ? "&l=en" : "");
   // メールのリンクを自動で開くセキュリティ機能があるので、リンクを開いただけでは何もせず、ボタンを押したときだけ実行する
   if (p.do === "stop" || p.do === "delete") {
     const lock = LockService.getScriptLock();
@@ -138,7 +141,7 @@ function tokenFor(email) {
 }
 
 function manageUrl(email, lang) {
-  return ScriptApp.getService().getUrl() + "?e=" + encodeURIComponent(email) + "&t=" + tokenFor(email) + (lang === "en" ? "&l=en" : "");
+  return WEB_APP_URL + "?e=" + encodeURIComponent(email) + "&t=" + tokenFor(email) + (lang === "en" ? "&l=en" : "");
 }
 
 // 確認や完了を伝える、文字だけの小さな画面
