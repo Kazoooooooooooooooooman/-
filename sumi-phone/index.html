@@ -17,15 +17,7 @@
 <link rel="alternate" hreflang="en" href="en.html" />
 <!-- フォントはこのサイトから配信する（Google に閲覧者の情報を送らないため）。どれも SIL Open Font License -->
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261012c" />
-<script>
-  // 最初の訪問だけ、通知の嵐から扉が開く導入を見せる。準備ができるまでページを隠して、一瞬見えてしまうのを防ぐ
-  try {
-    var q = location.search;
-    if (/[?&]intro\b/.test(q)) localStorage.removeItem("soto-intro-2");
-    if (!localStorage.getItem("soto-intro-2")) document.documentElement.classList.add("intro-pending");
-  } catch (e) {}
-</script>
+<link rel="stylesheet" href="styles.css?v=20261012d" />
 </head>
 <body>
 <a class="skip" href="#main">本文へ移動</a>
@@ -290,6 +282,6 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261012c"></script>
+<script src="script.js?v=20261012d"></script>
 </body>
 </html>
