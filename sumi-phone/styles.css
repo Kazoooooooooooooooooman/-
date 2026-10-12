@@ -25,6 +25,7 @@ img { max-width: 100%; }
 [hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 br.pc { display: inline; }
+br.sp { display: none; }
 
 /* ---------- ナビ ---------- */
 .nav {
@@ -284,6 +285,7 @@ h2 .nw { white-space: nowrap; }
   .icons li { font-size: 12px; }
   .day-cap { font-size: 21px; }
   br.pc { display: none; }
+  br.sp { display: inline; }
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
