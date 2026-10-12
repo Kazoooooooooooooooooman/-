@@ -12,6 +12,9 @@ const MAIL_COL = 6; // 「確認メール」の列（送った日時が入る）
 // ---- メールの設定（ここだけ書き換えればよい） ----
 const SENDER_NAME = "Soto Phone";
 const REPLY_TO = ""; // 返信を別のアドレスで受けたいときだけ入れる（空ならこのアカウントに届く）
+// 送り主のアドレス。Gmail の「別のアドレスから送信」に登録したエイリアス（例：hello@sotophone.jp）を入れると、そのアドレスから届く。
+// 空のままなら、このスクリプトを動かしているアカウントのアドレスから届く。
+const FROM_ADDRESS = "hello@sotophone.jp";
 const SITE_URL = "https://sotophone.jp/";
 // 1分あたりに送るメールの上限。いたずらで大量に登録されても、あなたの Gmail から大量に送られないようにする。
 // 上限を超えた分は行だけ保存され、sendPendingConfirmations() を動かすと後から送られる。
@@ -103,6 +106,13 @@ function testSendToMe() {
 
 function sendConfirmation(email, lang, trial) {
   const m = lang === "en" ? mailEn(trial) : mailJa(trial);
+  if (FROM_ADDRESS) {
+    // エイリアスから送れるのは GmailApp だけ（MailApp は自分のアドレスからしか送れない）
+    const opts = { htmlBody: m.html, name: SENDER_NAME, from: FROM_ADDRESS };
+    if (REPLY_TO) opts.replyTo = REPLY_TO;
+    GmailApp.sendEmail(email, m.subject, m.text, opts);
+    return;
+  }
   const options = { to: email, subject: m.subject, body: m.text, htmlBody: m.html, name: SENDER_NAME };
   if (REPLY_TO) options.replyTo = REPLY_TO;
   MailApp.sendEmail(options);
