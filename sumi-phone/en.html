@@ -22,6 +22,18 @@
 </head>
 <body>
 
+<!-- 背景：スクロールに合わせて切り替わる。上半分は紙（白黒）、Soto Phone が出てきてから水彩（色）になる -->
+<div class="bg" aria-hidden="true">
+  <div class="bg-layer is-active" data-i="0"></div>
+  <div class="bg-layer" data-i="1"><div class="bg-move"><img src="images/w1-hills.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g class="ov-clouds"><ellipse class="cl c1" cx="420" cy="150" rx="230" ry="38"/><ellipse class="cl c2" cx="1380" cy="220" rx="300" ry="44"/></g></svg></div></div>
+  <div class="bg-layer" data-i="2"><div class="bg-move"><img src="images/w4-river.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g class="ov-clouds"><ellipse class="cl c1" cx="420" cy="150" rx="230" ry="38"/><ellipse class="cl c2" cx="1380" cy="220" rx="300" ry="44"/></g><g class="ov-river"><path class="fl f1" d="M962 690C1000 760 1060 830 1110 900S1100 1030 1000 1080 760 1170 620 1200"/><path class="fl f2" d="M962 690C1000 760 1060 830 1110 900S1100 1030 1000 1080 760 1170 620 1200"/><path class="fl f3" d="M975 700C1015 770 1075 840 1122 905S1112 1040 1012 1092 772 1182 640 1210"/></g></svg></div></div>
+  <div class="bg-layer" data-i="3"><div class="bg-move"><img src="images/w2-lake.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g class="ov-clouds"><ellipse class="cl c1" cx="420" cy="150" rx="230" ry="38"/><ellipse class="cl c2" cx="1380" cy="220" rx="300" ry="44"/></g></svg></div></div>
+  <div class="bg-layer" data-i="4"><div class="bg-move"><img src="images/w3-onsen.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g class="ov-steam"><path class="st s1" d="M800 600c-14-40 18-70 0-110s16-60 4-90"/><path class="st s2" d="M960 600c14-40-18-70 0-110s-16-60-4-90"/><path class="st s3" d="M1120 600c-14-40 18-70 0-110s16-60 4-90"/></g></svg></div></div>
+  <div class="bg-layer" data-i="5"><div class="bg-move"><img src="images/w5-mountain.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g class="ov-clouds"><ellipse class="cl c1" cx="420" cy="150" rx="230" ry="38"/><ellipse class="cl c2" cx="1380" cy="220" rx="300" ry="44"/></g></svg></div></div>
+  <div class="bg-layer" data-i="6"><div class="bg-move"><img src="images/w6-sunset.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><circle class="glow" cx="962" cy="672" r="190"/><g class="ov-glint"><path class="gl g1" d="M690 812h70"/><path class="gl g2" d="M1180 848h60"/><path class="gl g3" d="M900 878h90"/><path class="gl g4" d="M1060 905h70"/></g><g class="ov-birds"><path class="bd b1" d="M0 0q8-9 16 0q8-9 16 0"/><path class="bd b2" d="M0 0q7-8 14 0q7-8 14 0"/></g></svg></div></div>
+</div>
+
+
 <header class="nav">
   <a class="logo" href="#top" aria-label="Soto Phone, back to top">
     <span class="logo-mark">外</span><span class="logo-word">SOTO</span>
@@ -40,7 +52,7 @@
 <main>
 
   <!-- 1. The door: the O in SOTO opens as a door to the outside -->
-  <section id="top" class="panel hero-copy hero-door">
+  <section id="top" class="panel hero-copy hero-door" data-bg="0">
     <div class="hd-center">
       <p class="hd-eyebrow" lang="en">Digital Detox Phone</p>
       <p class="hd-motto" lang="en">Step Out, Turn Off.</p>
@@ -67,7 +79,7 @@
   </section>
 
   <!-- 2. Why: a day that passes inside the screen -->
-  <section id="problem" class="sec">
+  <section id="problem" class="sec" data-bg="0">
     <div class="wrap">
       <p class="eyebrow reveal">The problem</p>
       <p class="stat reveal"><span class="stat-n">165</span><span class="stat-u">min</span></p>
@@ -99,7 +111,7 @@
         <path class="rw-frame" d="M5 4 L195 3.5 L196 146 L4 146.5 Z M100 4 L100.5 146 M4.5 75 L195.5 74.5" />
       </svg>
     </figure>
-        <p class="drawn-line">It was morning, and then it was night.<br />I set limits, and turned them off every time.</p>
+        <p class="drawn-line">It was morning, and then it was night.<br />Another day with nothing to show for it.</p>
       </div>
     </div>
 
@@ -108,85 +120,79 @@
     </div>
   </section>
 
-  <!-- 3. Soto Phone: the name and what it does -->
-  <section id="about" class="sec">
-    <div class="wrap split">
-      <div class="split-text">
-        <p class="eyebrow reveal">Soto Phone</p>
-        <h2 class="reveal">Soto means<br />“outside” in Japanese.</h2>
-        <p class="body reveal">No social media or games, the apps that keep you glued to the screen. And the time you put your phone down becomes points to spend outside.</p>
-        <p class="body reveal">A phone for heading outside the screen.</p>
+  <!-- A soft yellow, like light from outside, spreads over the black-and-white paper; colour starts here (scroll-driven) -->
+  <section class="ink-scene" id="ink" data-bg="0">
+    <div class="ink-stage">
+      <div class="ink-text">
+        <p>But I set limits,<br />and turned them off every time.</p>
+        <p class="drawn-box" id="ink-target">I’ll just stay as I am.</p>
       </div>
-      <figure class="photo reveal">
-        <img src="images/product-desk.jpg" alt="Two small white phones on a wooden desk by a window. One lies flat to show how thin it is; the other stands up, showing its black-and-white screen." width="1494" height="1004" loading="lazy" />
-        <figcaption>Concept image (in development)</figcaption>
-      </figure>
+      <svg class="ink-svg" aria-hidden="true">
+        <defs>
+          <filter id="bleed" x="-50%" y="-50%" width="200%" height="200%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="4" seed="7" />
+            <feDisplacementMap in="SourceGraphic" scale="58" xChannelSelector="R" yChannelSelector="G" />
+          </filter>
+          <radialGradient id="ink-grad">
+            <stop offset="0" stop-color="#efc94c" stop-opacity="1" />
+            <stop offset=".7" stop-color="#f3d77a" stop-opacity=".9" />
+            <stop offset="1" stop-color="#f8e9b0" stop-opacity=".5" />
+          </radialGradient>
+          <filter id="halo" x="-50%" y="-50%" width="200%" height="200%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01" numOctaves="2" seed="3" />
+            <feDisplacementMap in="SourceGraphic" scale="70" xChannelSelector="R" yChannelSelector="G" />
+            <feGaussianBlur stdDeviation="14" />
+          </filter>
+        </defs>
+        <circle class="ink-halo" r="0" filter="url(#halo)" />
+        <g class="ink-core" filter="url(#bleed)"><circle r="0" /><circle r="0" /><circle r="0" /><circle r="0" /><circle r="0" /></g>
+        <g class="ink-splash"></g>
+        <path class="ink-drop" d="M0,-26 C7,-12 12,-2 12,6 A12,12 0 0 1 -12,6 C-12,-2 -7,-12 0,-26 Z" />
+      </svg>
+      <div class="ink-line"><p>Wait a second.</p><p class="ink-line2">There’s Soto Phone.</p></div>
     </div>
   </section>
 
-  <!-- 4. A day outside: real photos and video go here (watercolors are placeholders for now) -->
-  <section id="day" class="sec">
-    <div class="wrap">
-      <p class="eyebrow reveal">A day outside</p>
-      <h2 class="reveal">A day outside the screen.</h2>
-    </div>
-    <div class="day-list">
-      <figure class="day reveal">
-        <div class="day-media"><img src="images/w4-river.jpg" alt="A river winding through green hills and trees" width="1920" height="1200" loading="lazy" /></div>
-        <figcaption><span class="day-time">Morning</span>Just the map, and off to the river.</figcaption>
-      </figure>
-      <figure class="day reveal">
-        <div class="day-media"><img src="images/w3-onsen.jpg" alt="A steaming outdoor hot spring ringed by autumn trees" width="1920" height="1200" loading="lazy" /></div>
-        <figcaption><span class="day-time">Afternoon</span>Points saved up, spent at a hot spring.</figcaption>
-      </figure>
-      <figure class="day reveal">
-        <div class="day-media"><img src="images/w6-sunset.jpg" alt="The sun setting over the sea" width="1920" height="1200" loading="lazy" /></div>
-        <figcaption><span class="day-time">Evening</span>A sunset, with no notifications.</figcaption>
-      </figure>
+  <!-- 3. Soto Phone：ここから紙に色がつく。背景は水彩の丘 -->
+  <section id="about" class="sec on-color" data-bg="1">
+    <div class="wrap card center">
+      <p class="eyebrow reveal" lang="en">Soto Phone</p>
+      <h2 class="reveal">Soto means<br />“outside” in Japanese.</h2>
+      <p class="body reveal">No social media or games, the apps that keep you glued to the screen. And the time you put your phone down becomes points to spend outside.</p>
+      <p class="body reveal">A phone for heading outside the screen.</p>
     </div>
   </section>
-
-  <!-- 5. Inside: what's in, what's out -->
-  <section id="tools" class="sec">
-    <div class="wrap">
-      <p class="eyebrow reveal">What's inside</p>
+  <section class="day-panel" data-bg="2">
+    <p class="day-cap reveal"><span class="day-time">Morning</span>Just the map, and off to the river.</p>
+  </section>
+  <!-- 5. 機能：入っているものと、入っていないもの（絵で見せる） -->
+  <section id="tools" class="sec on-color" data-bg="3">
+    <div class="wrap card">
+      <p class="eyebrow reveal" lang="en">What's inside</p>
       <h2 class="reveal">Only what you need<br />to head outside.</h2>
-      <div class="inout reveal">
-        <div>
-          <p class="inout-h">Inside</p>
-          <ul class="words">
-            <li>Calls</li><li>SMS</li><li>Maps</li><li>Transit</li><li>Weather</li><li>Camera</li><li>Music</li><li>Emergency alerts</li><li>Clock and alarms</li><li>Notes and calendar</li><li>Soto Points</li>
-          </ul>
-        </div>
-        <div class="out">
-          <p class="inout-h">Not inside</p>
-          <ul class="words">
-            <li>Social media</li><li>Games</li><li>Video apps</li><li>App store</li><li>Browser</li>
-          </ul>
-        </div>
-      </div>
+      <p class="inout-h reveal">Inside</p>
+      <ul class="icons reveal"><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 8c-3 0-7 4-7 7 0 13 12 25 25 25 3 0 7-4 7-7l-7-6-5 3c-4-2-8-6-10-10l3-5z"/></svg><span>Calls</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 11h32v21H21l-8 7v-7H8z"/><path d="M15 19h18M15 25h11"/></svg><span>SMS</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 13l11-4 14 4 11-4v27l-11 4-14-4-11 4z"/><path d="M17 9v27M31 13v27"/></svg><span>Maps</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="11" y="7" width="26" height="27" rx="5"/><path d="M11 21h26M18 34l-5 7M30 34l5 7"/><circle cx="18" cy="28" r="1.5"/><circle cx="30" cy="28" r="1.5"/></svg><span>Transit</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="17" r="6"/><path d="M18 5v3M18 26v3M6 17h3M27 17h3M10 9l2 2M24 23l2 2M10 25l2-2M24 11l2-2"/><path d="M19 40h17a6 6 0 0 0 0-12 9 9 0 0 0-16 3 5 5 0 0 0-1 9z"/></svg><span>Weather</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 16h8l3-5h12l3 5h8v22H7z"/><circle cx="24" cy="26" r="7"/></svg><span>Camera</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M20 34V12l18-4v22"/><circle cx="16" cy="34" r="4"/><circle cx="34" cy="30" r="4"/></svg><span>Music</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 7l18 32H6z"/><path d="M24 19v10M24 34v.5"/></svg><span>Alerts</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M24 14v10l7 5"/></svg><span>Clock</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="10" width="32" height="30" rx="2"/><path d="M8 18h32M16 6v8M32 6v8M15 26h8M15 32h14"/></svg><span>Notes</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M20 33V15h6a5 5 0 0 1 0 10h-6"/></svg><span>Points</span></li></ul>
+      <p class="inout-h reveal">Not inside</p>
+      <ul class="icons out reveal"><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 39S8 29 8 18a8 8 0 0 1 16-3 8 8 0 0 1 16 3c0 11-16 21-16 21z"/></svg><span>Social</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M15 16h18a8 8 0 0 1 8 8l2 9a4 4 0 0 1-7 3l-5-6H17l-5 6a4 4 0 0 1-7-3l2-9a8 8 0 0 1 8-8z"/><path d="M16 21v6M13 24h6"/><circle cx="31" cy="22" r="1.5"/><circle cx="34" cy="26" r="1.5"/></svg><span>Games</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="7" y="11" width="34" height="26" rx="3"/><path d="M21 18l10 6-10 6z"/></svg><span>Video</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><rect x="27" y="9" width="12" height="12" rx="2"/><rect x="9" y="27" width="12" height="12" rx="2"/><rect x="27" y="27" width="12" height="12" rx="2"/></svg><span>App store</span></li><li><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="16"/><path d="M8 24h32M24 8c-7 6-7 26 0 32M24 8c7 6 7 26 0 32"/></svg><span>Browser</span></li></ul>
       <p class="note reveal">The screen stays black and white, and color returns only when you open your photos. Pay with your own cards. Support for transit IC cards (such as Suica) is under consideration.</p>
     </div>
   </section>
-
-  <!-- 6. Points -->
-  <section id="points" class="sec">
-    <div class="wrap">
-      <p class="eyebrow reveal">Points</p>
+  <section class="day-panel" data-bg="4">
+    <p class="day-cap reveal"><span class="day-time">Afternoon</span>Points saved up, spent at a hot spring.</p>
+  </section>
+  <!-- 6. ポイント：どう貯まって、どこで使えるかの流れ -->
+  <section id="points" class="sec on-color" data-bg="4">
+    <div class="wrap card">
+      <p class="eyebrow reveal" lang="en">Points</p>
       <h2 class="reveal">Time with your phone down<br />becomes time outside.</h2>
-      <ol class="steps reveal">
-        <li><span class="step-n">01</span><strong>Choose your time away</strong><span>Dinner, before bed, a weekend morning.</span></li>
-        <li><span class="step-n">02</span><strong>Keep it, and earn</strong><span>Calls from family and maps don't break it. There's a daily cap.</span></li>
-        <li><span class="step-n">03</span><strong>Spend it outside</strong><span>Use your points at partner shops and experiences on the map.</span></li>
-      </ol>
-      <p class="body reveal">Every place is picked by a pro in that field, like a fishing or mountain guide.<br class="pc" />Hot springs, saunas, hiking, fishing, books, food.</p>
-      <p class="note reveal">Partners and rewards are still being prepared.</p>
+      <ol class="flow reveal"><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M30 78h100"/><path d="M48 74l6-14h52l6 14z"/><path d="M60 64h40"/><circle cx="118" cy="34" r="16"/><path d="M118 24v10l7 4"/><path d="M34 40c0-9 7-16 16-16-5 4-7 9-7 15 0 7 5 13 12 15-3 1-5 2-8 2-7 0-13-7-13-16z"/></svg></figure><span class="step-n" lang="en">01</span><strong>Choose your time away</strong><span class="step-b">Dinner, before bed, a weekend morning.</span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><ellipse cx="62" cy="80" rx="22" ry="7"/><path d="M40 80v-9M84 80v-9"/><ellipse cx="62" cy="71" rx="22" ry="7"/><path d="M40 71v-9M84 71v-9"/><ellipse cx="62" cy="62" rx="22" ry="7"/><path d="M110 58v-22M99 47h22"/><path d="M102 82c6-4 14-4 20 0"/></svg></figure><span class="step-n" lang="en">02</span><strong>Keep it, and earn</strong><span class="step-b">e.g. one hour at dinner: <b>+10 pt</b></span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M24 34l34-12 40 12 34-12v58l-34 12-40-12-34 12z"/><path d="M58 22v58M98 34v58"/><path d="M80 66s-14-14-14-24a14 14 0 0 1 28 0c0 10-14 24-14 24z"/><circle cx="80" cy="42" r="5"/></svg></figure><span class="step-n" lang="en">03</span><strong>Pick a place on the map</strong><span class="step-b">Only shops and experiences picked by pros.</span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M26 34h108"/><path d="M34 34l6-12h80l6 12"/><path d="M38 34v54M122 34v54"/><path d="M48 34v28M68 34v28M88 34v28M108 34v28"/><path d="M48 62h60"/><path d="M72 76h16v12H72z"/><path d="M30 88h100"/></svg></figure><span class="step-n" lang="en">04</span><strong>Spend it there</strong><span class="step-b">e.g. a bathhouse ticket: <b>−100 pt</b></span></li></ol>
+      <p class="body reveal">The shops fund the points. They pay Soto only for the customers who actually come in.</p>
+      <p class="note reveal">Point numbers are examples. Partners and rewards are still being prepared.</p>
     </div>
   </section>
-
   <!-- 7. Trial: real voices will be collected here -->
-  <section id="trial" class="sec">
-    <div class="wrap center">
+  <section id="trial" class="sec on-color" data-bg="5">
+    <div class="wrap card center">
       <p class="eyebrow reveal">Trial</p>
       <h2 class="reveal">Live with Soto<br />for two weeks.</h2>
       <p class="body reveal">When the prototype is ready, a small group will use it for two weeks.<br class="pc" />With their permission, we'll share what they felt here.</p>
@@ -195,8 +201,8 @@
   </section>
 
   <!-- 8. Letter -->
-  <section id="letter" class="sec">
-    <div class="wrap letter">
+  <section id="letter" class="sec on-color" data-bg="5">
+    <div class="wrap card letter">
       <p class="eyebrow reveal">Letter</p>
       <h2 class="reveal">Why I'm building this.</h2>
       <div class="letter-body reveal">
@@ -209,9 +215,13 @@
     </div>
   </section>
 
+  <section class="day-panel" data-bg="6">
+    <p class="day-cap reveal"><span class="day-time">Evening</span>A sunset, with no notifications.</p>
+  </section>
+
   <!-- 9. Pre-order -->
-  <section id="signup" class="sec">
-    <div class="wrap">
+  <section id="signup" class="sec on-color" data-bg="6">
+    <div class="wrap card">
       <p class="eyebrow reveal">Pre-order</p>
       <h2 class="reveal">Joy lives<br />outside the screen.</h2>
       <p class="body reveal">We'll tell you first when it launches.<br />Prototype trials will be announced here first, too.</p>
