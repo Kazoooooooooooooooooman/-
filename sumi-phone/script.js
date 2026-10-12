@@ -2,6 +2,95 @@
   const EN = document.documentElement.lang === "en";
   const nav = document.querySelector(".nav");
 
+  // 1枚目の写真を風で揺らす：山と空は止めたまま、手前の木と草だけを WebGL でゆらゆらと動かす。
+  // WebGL が使えないとき、「動きを減らす」設定のとき、画面に見えていないときは動かさない（写真はそのまま見える）
+  (() => {
+    const box = document.querySelector(".hd-photo");
+    const canvas = box && box.querySelector(".hd-wind");
+    const img = box && box.querySelector("img");
+    if (!canvas || !img || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const gl = canvas.getContext("webgl", { alpha: false, antialias: false, premultipliedAlpha: false });
+    if (!gl) return;
+    const vs = "attribute vec2 p; varying vec2 v; void main(){ v = vec2(p.x * .5 + .5, .5 - p.y * .5); gl_Position = vec4(p, 0., 1.); }";
+    const fs = `precision mediump float;
+      uniform sampler2D tex; uniform vec2 res; uniform vec2 size; uniform float time; varying vec2 v;
+      void main(){
+        // 写真を画面いっぱいに（object-fit: cover と同じ）。ほんの少しだけ大きくして、端が揺れても切れないようにする
+        float s = max(res.x / size.x, res.y / size.y) * 1.02;
+        vec2 uv = (v * res - (res - size * s) * .5) / (size * s);
+        float x = uv.x, y = uv.y;
+        // 揺れる場所：下の草と、左右の木。山の稜線より上は動かさない
+        float ground = smoothstep(.6, .92, y);
+        float left = (1. - smoothstep(.2, .34, x)) * smoothstep(.24, .55, y);
+        float right = smoothstep(.64, .74, x) * smoothstep(.48, .7, y);
+        float mid = smoothstep(.42, .62, y) * (1. - smoothstep(.0, .14, abs(x - .5))) * .6;
+        float m = clamp(ground + left + right + mid, 0., 1.);
+        // 風は一定ではなく、ときどき強く吹く
+        float gust = .55 + .45 * sin(time * .37) * sin(time * .11 + 1.3);
+        float wave = sin(time * 1.7 + y * 19. + x * 7.) * .6 + sin(time * 2.9 + y * 33. - x * 11.) * .4;
+        uv.x += wave * .0032 * m * gust * (1. + ground * .7);
+        uv.y += sin(time * 1.2 + x * 23.) * .0009 * ground * gust;
+        uv = clamp(uv, .001, .999);
+        vec3 c = texture2D(tex, uv).rgb;
+        // 左の太陽の光が、ゆっくり強くなったり弱くなったりする
+        float d = distance(vec2(x * size.x / size.y, y), vec2(0., .36));
+        c += vec3(1., .9, .7) * (.05 + .04 * sin(time * .6)) * exp(-d * 5.);
+        gl_FragColor = vec4(c, 1.);
+      }`;
+    const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null; };
+    const a = sh(gl.VERTEX_SHADER, vs), b = sh(gl.FRAGMENT_SHADER, fs);
+    if (!a || !b) return;
+    const prog = gl.createProgram();
+    gl.attachShader(prog, a); gl.attachShader(prog, b); gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, "p");
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const U = (n) => gl.getUniformLocation(prog, n);
+    const uRes = U("res"), uSize = U("size"), uTime = U("time");
+    let ready = false, visible = true, raf = 0;
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const w = Math.round(box.clientWidth * dpr), h = Math.round(box.clientHeight * dpr);
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); }
+      gl.uniform2f(uRes, w, h);
+    }
+    function frame(t) {
+      raf = 0;
+      if (!ready || !visible || document.hidden) return;
+      gl.uniform1f(uTime, t / 1000);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      raf = requestAnimationFrame(frame);
+    }
+    const start = () => { if (!raf) raf = requestAnimationFrame(frame); };
+    function load() {
+      // 画面の大きさに合った方の写真（srcset で選ばれたもの）を使う
+      const src = new Image();
+      src.onload = () => {
+        const tex = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, tex);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, src); } catch (_) { return; /* 読めないときは写真のまま */ }
+        gl.uniform2f(uSize, src.naturalWidth, src.naturalHeight);
+        resize();
+        ready = true;
+        box.classList.add("is-live");
+        start();
+      };
+      src.src = img.currentSrc || img.src;
+    }
+    if (img.complete && img.naturalWidth) load(); else img.addEventListener("load", load, { once: true });
+    window.addEventListener("resize", () => { if (ready) { resize(); start(); } });
+    document.addEventListener("visibilitychange", start);
+    new IntersectionObserver((es) => { visible = es[0].isIntersecting; start(); }).observe(box);
+  })();
+
   // スクロールしたら、ナビに紙色の帯を敷く
   const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 40);
   window.addEventListener("scroll", onScroll, { passive: true });
