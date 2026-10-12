@@ -222,6 +222,11 @@ h2 .nw { white-space: nowrap; }
 .flow strong { font-family: var(--serif); font-weight: 400; font-size: clamp(18px, 1.6vw, 21px); }
 .flow .step-b { font-size: 14px; color: var(--paper-dim); }
 .flow .step-b b { color: var(--accent); font-weight: 500; }
+.calc { font-family: var(--serif); font-size: clamp(16px, 1.5vw, 19px); letter-spacing: .06em; text-align: center; padding: 16px 20px; border-top: 1px solid var(--paper-line); border-bottom: 1px solid var(--paper-line); margin: 0 0 32px; }
+.calc b { color: var(--accent); font-weight: 600; }
+.calc .nw { white-space: nowrap; }
+.why { background: rgba(255, 255, 255, .55); border-radius: 8px; padding: 20px 24px; margin-bottom: 20px; font-size: 15px; line-height: 1.9; }
+.why-q { font-family: var(--serif); font-size: 17px; margin-bottom: 6px; }
 
 /* ---------- 7. 先行体験 ---------- */
 #trial .body { margin-bottom: 36px; }
@@ -280,6 +285,9 @@ h2 .nw { white-space: nowrap; }
   .year-dots { gap: 2px; }
   .year-dots i { width: 4px; height: 4px; border-radius: 1px; }
   .flow { grid-template-columns: 1fr 1fr; }
+  .flow strong { font-size: 16px; letter-spacing: .02em; }
+  .why { padding: 18px 18px; }
+  .why-q { font-size: 16px; }
   .flow li + li::before { display: none; }
   .icons { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 6px; }
   .icons li { font-size: 12px; }
