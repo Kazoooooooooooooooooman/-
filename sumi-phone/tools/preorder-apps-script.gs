@@ -17,6 +17,25 @@ const SITE_URL = "https://sotophone.jp/";
 // 上限を超えた分は行だけ保存され、sendPendingConfirmations() を動かすと後から送られる。
 const MAX_MAILS_PER_MINUTE = 10;
 
+// 返事を返す関数とシートを取る関数は、貼り付けが途中で切れても無くならないよう、いちばん上に置く
+function reply(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function getSheet() {
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = book.getSheetByName(SHEET_NAME);
+  if (!sheet) {
+    sheet = book.insertSheet(SHEET_NAME);
+    sheet.appendRow(HEADERS);
+    sheet.setFrozenRows(1);
+  } else if (sheet.getRange(1, MAIL_COL).getValue() === "") {
+    // 前のバージョンで作ったシートには「確認メール」の列がないので、見出しを足す
+    sheet.getRange(1, MAIL_COL).setValue(HEADERS[MAIL_COL - 1]);
+  }
+  return sheet;
+}
+
 function doPost(e) {
   const lock = LockService.getScriptLock();
   lock.waitLock(10000);
@@ -50,6 +69,7 @@ function doPost(e) {
     }
     return reply({ ok: true });
   } catch (err) {
+    console.error(err); // Apps Script の「実行数」に原因が残る
     return reply({ ok: false, error: "server" });
   } finally {
     lock.releaseLock();
@@ -144,22 +164,4 @@ function toHtml(lines) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   const body = lines.map((l) => (l === "" ? "<br>" : esc(l) + "<br>")).join("");
   return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;color:#1f1e1c;max-width:560px">' + body + "</div>";
-}
-
-function getSheet() {
-  const book = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = book.getSheetByName(SHEET_NAME);
-  if (!sheet) {
-    sheet = book.insertSheet(SHEET_NAME);
-    sheet.appendRow(HEADERS);
-    sheet.setFrozenRows(1);
-  } else if (sheet.getRange(1, MAIL_COL).getValue() === "") {
-    // 前のバージョンで作ったシートには「確認メール」の列がないので、見出しを足す
-    sheet.getRange(1, MAIL_COL).setValue(HEADERS[MAIL_COL - 1]);
-  }
-  return sheet;
-}
-
-function reply(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
