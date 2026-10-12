@@ -4,10 +4,13 @@
 // メールは、このスクリプトを動かしている Google アカウント（あなたの Gmail）から送られる。
 // 使い方は README.md の「一般公開して登録を集める」と「登録した人に確認メールを送る」を参照。
 // 同じメールアドレスで2回登録された場合は、行を増やさずに最新の内容で上書きし、メールも送り直さない。
+// メールの最後には、配信停止とデータ削除のリンクが入る（このウェブアプリの URL に、本人だけが使える印を付けたもの）。
 
 const SHEET_NAME = "先行予約";
-const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール"];
+const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止"];
 const MAIL_COL = 6; // 「確認メール」の列（送った日時が入る）
+const CONSENT_COL = 7; // 「同意」の列（どの方法で、どの版のプライバシーポリシーに同意したか）
+const STOP_COL = 8; // 「配信停止」の列（停止した日時が入る。入っている人には、お知らせを送らない）
 
 // ---- メールの設定（ここだけ書き換えればよい） ----
 const SENDER_NAME = "Soto Phone";
@@ -16,6 +19,10 @@ const REPLY_TO = ""; // 返信を別のアドレスで受けたいときだけ�
 // 空のままなら、このスクリプトを動かしているアカウントのアドレスから届く。
 const FROM_ADDRESS = "hello@sotophone.jp";
 const SITE_URL = "https://sotophone.jp/";
+// 送り主の情報（特定電子メール法で、お知らせのメールに書く必要がある）。住所は、決まったら入れる（バーチャルオフィスでもよい）
+const SENDER_ORG = "Soto Phone（代表 佐々木 一真）";
+const SENDER_ADDRESS = "";
+const CONTACT = "hello@sotophone.jp";
 // 1分あたりに送るメールの上限。いたずらで大量に登録されても、あなたの Gmail から大量に送られないようにする。
 // 上限を超えた分は行だけ保存され、sendPendingConfirmations() を動かすと後から送られる。
 const MAX_MAILS_PER_MINUTE = 10;
@@ -32,9 +39,10 @@ function getSheet() {
     sheet = book.insertSheet(SHEET_NAME);
     sheet.appendRow(HEADERS);
     sheet.setFrozenRows(1);
-  } else if (sheet.getRange(1, MAIL_COL).getValue() === "") {
-    // 前のバージョンで作ったシートには「確認メール」の列がないので、見出しを足す
-    sheet.getRange(1, MAIL_COL).setValue(HEADERS[MAIL_COL - 1]);
+  } else {
+    // 前のバージョンで作ったシートには、あとから足した列の見出しがないので、足す
+    const head = sheet.getRange(1, 1, 1, HEADERS.length).getValues()[0];
+    head.forEach((v, i) => { if (v === "") sheet.getRange(1, i + 1).setValue(HEADERS[i]); });
   }
   return sheet;
 }
@@ -51,6 +59,8 @@ function doPost(e) {
     const lang = data.lang === "en" ? "en" : "ja";
     const trial = data.trial === true;
     const row = [new Date(), email, String(data.prefecture || "").slice(0, 20), lang, trial ? "参加したい" : ""];
+    // 同意の記録：下のフォームはチェックボックス、1枚目はフォームの下の案内文。どちらも、どの版のポリシーかを残す
+    const consent = (data.consent === "checkbox" ? "チェック" : "案内文") + " / " + String(data.policy || "").slice(0, 20);
 
     const last = sheet.getLastRow();
     const emails = last > 1 ? sheet.getRange(2, 2, last - 1, 1).getValues().flat() : [];
@@ -63,6 +73,9 @@ function doPost(e) {
       sheet.appendRow(row);
       rowIndex = sheet.getLastRow();
     }
+    sheet.getRange(rowIndex, CONSENT_COL).setValue(consent);
+    // 配信を停止していた人が登録し直したら、もう一度お知らせを受け取れるようにする
+    sheet.getRange(rowIndex, STOP_COL).setValue("");
 
     // 確認メールは、まだ送っていない人にだけ送る
     const sentAt = sheet.getRange(rowIndex, MAIL_COL).getValue();
@@ -79,9 +92,61 @@ function doPost(e) {
   }
 }
 
-// 登録数をブラウザで確かめるとき用（ウェブアプリの URL を開くと人数が出る）
-function doGet() {
-  return reply({ count: Math.max(getSheet().getLastRow() - 1, 0) });
+// ウェブアプリの URL を開いたとき
+// ・何も付けずに開く：登録数を返す（確かめる用）
+// ・メールの「配信停止・データ削除」のリンクから開く：確認の画面を出し、ボタンを押したら停止または削除する
+function doGet(e) {
+  const p = (e && e.parameter) || {};
+  if (!p.e) return reply({ count: Math.max(getSheet().getLastRow() - 1, 0) });
+  const email = String(p.e).trim().toLowerCase();
+  const en = p.l === "en";
+  if (p.t !== tokenFor(email)) return page(en ? "This link is not valid." : "このリンクは使えません。", en ? "Please contact " + CONTACT + "." : CONTACT + " までご連絡ください。", en);
+  const base = ScriptApp.getService().getUrl() + "?e=" + encodeURIComponent(email) + "&t=" + p.t + (en ? "&l=en" : "");
+  // メールのリンクを自動で開くセキュリティ機能があるので、リンクを開いただけでは何もせず、ボタンを押したときだけ実行する
+  if (p.do === "stop" || p.do === "delete") {
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      const sheet = getSheet();
+      const last = sheet.getLastRow();
+      const emails = last > 1 ? sheet.getRange(2, 2, last - 1, 1).getValues().flat() : [];
+      const found = emails.indexOf(email);
+      if (found >= 0 && p.do === "delete") sheet.deleteRow(found + 2);
+      if (found >= 0 && p.do === "stop") sheet.getRange(found + 2, STOP_COL).setValue(new Date());
+    } finally {
+      lock.releaseLock();
+    }
+    return p.do === "delete"
+      ? page(en ? "Your data has been deleted." : "登録情報を削除しました。", en ? "We've deleted your email address and everything you registered. You won't hear from us again." : "メールアドレスと登録された内容を、すべて削除しました。今後、メールが届くことはありません。", en)
+      : page(en ? "You've been unsubscribed." : "配信を停止しました。", en ? "You won't receive any more emails from Soto Phone." : "Soto Phone からのお知らせは、今後届きません。", en);
+  }
+  return page(
+    en ? "Unsubscribe or delete your data" : "配信の停止・登録情報の削除",
+    (en ? "Email: " : "メールアドレス：") + email,
+    en,
+    [[base + "&do=stop", en ? "Stop emails" : "配信を停止する"], [base + "&do=delete", en ? "Delete all my data" : "登録情報をすべて削除する"]]
+  );
+}
+
+// 本人のメールに入れるための印。秘密の鍵はスクリプトのプロパティに自動で作って保存する
+function tokenFor(email) {
+  const props = PropertiesService.getScriptProperties();
+  let key = props.getProperty("LINK_KEY");
+  if (!key) { key = Utilities.getUuid() + Utilities.getUuid(); props.setProperty("LINK_KEY", key); }
+  const sig = Utilities.computeHmacSha256Signature(email, key);
+  return Utilities.base64EncodeWebSafe(sig).replace(/=+$/, "").slice(0, 32);
+}
+
+function manageUrl(email, lang) {
+  return ScriptApp.getService().getUrl() + "?e=" + encodeURIComponent(email) + "&t=" + tokenFor(email) + (lang === "en" ? "&l=en" : "");
+}
+
+// 確認や完了を伝える、文字だけの小さな画面
+function page(title, text, en, buttons) {
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const btns = (buttons || []).map(([href, label]) => '<p><a target="_top" href="' + esc(href) + '" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#1f1e1c;color:#fff;text-decoration:none">' + esc(label) + "</a></p>").join("");
+  const html = '<div style="font-family:sans-serif;max-width:520px;margin:48px auto;padding:0 20px;line-height:1.9;color:#1f1e1c"><h1 style="font-size:20px;font-weight:600">' + esc(title) + "</h1><p>" + esc(text) + "</p>" + btns + '<p style="margin-top:32px;font-size:13px;color:#666">Soto Phone · ' + esc(CONTACT) + "</p></div>";
+  return HtmlService.createHtmlOutput(html).setTitle("Soto Phone").addMetaTag("viewport", "width=device-width, initial-scale=1");
 }
 
 // 確認メールを送れなかった人（上限に達したときなど）に、まとめて送る。
@@ -93,7 +158,8 @@ function sendPendingConfirmations() {
   const rows = sheet.getRange(2, 1, last - 1, MAIL_COL).getValues();
   rows.forEach((r, i) => {
     const email = r[1], lang = r[3] === "en" ? "en" : "ja", trial = r[4] === "参加したい", sentAt = r[5];
-    if (!email || sentAt || !canSendNow()) return;
+    const stopped = sheet.getRange(i + 2, STOP_COL).getValue();
+    if (!email || sentAt || stopped || !canSendNow()) return;
     sendConfirmation(email, lang, trial);
     sheet.getRange(i + 2, MAIL_COL).setValue(new Date());
   });
@@ -105,7 +171,8 @@ function testSendToMe() {
 }
 
 function sendConfirmation(email, lang, trial) {
-  const m = lang === "en" ? mailEn(trial) : mailJa(trial);
+  const link = manageUrl(email, lang);
+  const m = lang === "en" ? mailEn(trial, link) : mailJa(trial, link);
   if (FROM_ADDRESS) {
     // エイリアスから送れるのは GmailApp だけ（MailApp は自分のアドレスからしか送れない）
     const opts = { htmlBody: m.html, name: SENDER_NAME, from: FROM_ADDRESS };
@@ -129,7 +196,7 @@ function canSendNow() {
   return true;
 }
 
-function mailJa(trial) {
+function mailJa(trial, link) {
   const lines = [
     "Soto Phone の先行予約にご登録いただき、ありがとうございます。",
     "",
@@ -144,12 +211,18 @@ function mailJa(trial) {
     "",
     "――",
     "このメールは、" + SITE_URL + " で先行予約に登録された方にお送りしています。",
-    "お心当たりがない場合や、今後のお知らせが不要な場合は、このメールに「配信停止」とご返信ください。",
-  ].filter((l, i, a) => !(l === "" && a[i - 1] === ""));
+    "配信の停止・登録情報の削除：" + link,
+    "（お心当たりがない場合も、こちらから削除できます）",
+    "",
+    "送信者：" + SENDER_ORG,
+    SENDER_ADDRESS ? "所在地：" + SENDER_ADDRESS : null,
+    "お問い合わせ：" + CONTACT,
+    "プライバシーポリシー：" + SITE_URL + "privacy.html",
+  ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
   return { subject: "【Soto Phone】先行予約の登録を受け付けました", text: lines.join("\n"), html: toHtml(lines) };
 }
 
-function mailEn(trial) {
+function mailEn(trial, link) {
   const lines = [
     "Thank you for joining the Soto Phone pre-order list.",
     "",
@@ -164,14 +237,22 @@ function mailEn(trial) {
     "",
     "--",
     "You're receiving this because this address was registered for pre-order at " + SITE_URL + ".",
-    "If this wasn't you, or you'd rather not hear from us, just reply with \"unsubscribe\".",
-  ].filter((l, i, a) => !(l === "" && a[i - 1] === ""));
+    "Unsubscribe or delete your data: " + link,
+    "(If this wasn't you, you can delete it there too.)",
+    "",
+    "Sender: Soto Phone (Kazuma Sasaki)",
+    SENDER_ADDRESS ? "Address: " + SENDER_ADDRESS : null,
+    "Contact: " + CONTACT,
+    "Privacy policy: " + SITE_URL + "privacy-en.html",
+  ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
   return { subject: "Soto Phone: you're on the pre-order list", text: lines.join("\n"), html: toHtml(lines) };
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする
 function toHtml(lines) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const body = lines.map((l) => (l === "" ? "<br>" : esc(l) + "<br>")).join("");
+  // 長い URL は、押せるリンクにする
+  const link = (s) => esc(s).replace(/https?:\/\/[^\s<]+/g, (u) => '<a href="' + u + '" style="color:#1f1e1c">' + u + "</a>");
+  const body = lines.map((l) => (l === "" ? "<br>" : link(l) + "<br>")).join("");
   return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;color:#1f1e1c;max-width:560px">' + body + "</div>";
 }

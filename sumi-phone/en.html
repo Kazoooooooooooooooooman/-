@@ -15,12 +15,12 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="alternate" hreflang="ja" href="index.html" />
 <link rel="alternate" hreflang="en" href="en.html" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;800&family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet" />
+<!-- フォントはこのサイトから配信する（Google に閲覧者の情報を送らないため）。どれも SIL Open Font License -->
+<link rel="stylesheet" href="fonts/fonts.css" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 
 <!-- 背景：スクロールに合わせて切り替わる。上半分は紙（白黒）、Soto Phone が出てきてから水彩（色）になる -->
 <div class="bg" aria-hidden="true">
@@ -49,7 +49,7 @@
   </nav>
 </header>
 
-<main>
+<main id="main">
 
   <!-- 1. The door: the O in SOTO opens as a door to the outside -->
   <section id="top" class="panel hero-copy hero-door" data-bg="0">
@@ -81,7 +81,7 @@
           <input id="hero-email" name="email" type="email" placeholder="Your email address" autocomplete="email" required />
           <button class="btn" type="submit">Join the pre-order list</button>
         </form>
-        <p class="hd-fine">Free. No payment required.</p>
+        <p class="hd-fine">Free. By signing up, you agree to our <a href="privacy-en.html">Privacy Policy</a>.</p>
         <p class="hd-msg" id="hero-msg" role="status"></p>
       </div>
     </div>
@@ -92,8 +92,8 @@
     <div class="wrap">
       <p class="eyebrow reveal">The problem</p>
       <p class="stat reveal"><span class="stat-n">165</span><span class="stat-u">min</span></p>
-      <p class="lead reveal">The time people in Japan spend on their phones each day.<br />A record high.</p>
-      <p class="source reveal">Source: Hakuhodo, Media Teiten Survey 2025 (as reported)</p>
+      <p class="lead reveal">Time spent on smartphones each day in Tokyo.<br />A record high.</p>
+      <p class="source reveal">Source: Hakuhodo Institute of Media Environment, Media Teiten Survey 2025 (Tokyo, ages 15–69, daily average over a week)</p>
     </div>
 
     <!-- データから物語へのつなぎ：1年を365の点で見せ、そのうち42日ぶんが黒くなる -->
@@ -257,8 +257,12 @@
         <input id="trial" name="trial" type="checkbox" />
         <span>I’d also like to try a prototype</span>
       </label>
+      <label class="check-field" for="agree">
+        <input id="agree" name="agree" type="checkbox" required />
+        <span>I agree to the <a href="privacy-en.html" target="_blank" rel="noopener">Privacy Policy</a> (required)</span>
+      </label>
       <button class="btn" type="submit" id="reserve-btn">Register for pre-order</button>
-      <p class="form-fine">Registration is free. Nothing is purchased and no payment is taken. We use your email only to tell you about the launch and early trials.</p>
+      <p class="form-fine">Registration is free. Nothing is purchased and no payment is taken. We use your email only to tell you about the launch and early trials, and you can unsubscribe or delete it at any time.<br />If you’re under 16, please ask a parent first. Children under 13 can’t sign up themselves; a parent can sign up with their own email.</p>
     </form>
     <p class="form-msg" id="form-msg" role="status"></p>
     </div>
@@ -270,7 +274,9 @@
   <div class="wrap">
     <div class="footer-logo"><span class="logo-mark">外</span> Soto Phone</div>
     <p>Joy lives outside the screen.</p>
-    <p class="small">© 2026 Soto Phone. Drawings were made for this site. Product images are concept images; specs may change during development.</p>
+    <p class="footer-links"><a href="privacy-en.html">Privacy</a><a href="terms-en.html">Terms &amp; refunds</a><a href="privacy-en.html#cookies">Cookies</a><a href="privacy-en.html#delete">Unsubscribe &amp; delete data</a></p>
+    <p class="small">Operated by Soto Phone (Kazuma Sasaki) / Contact: <a href="mailto:hello@sotophone.jp">hello@sotophone.jp</a></p>
+    <p class="small">© 2026 Soto Phone. Drawings were made for this site. Specs may change during development.</p>
   </div>
 </footer>
 

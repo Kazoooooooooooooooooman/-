@@ -4,7 +4,7 @@
   color-scheme: light;
   --bg: #f4f2ec;
   --paper-ink: #1f1e1c;
-  --paper-dim: rgba(31, 30, 28, .62);
+  --paper-dim: rgba(31, 30, 28, .72);
   --paper-line: rgba(31, 30, 28, .16);
   --accent: #a94c2f;
   --serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
@@ -25,6 +25,10 @@ img { max-width: 100%; }
 [hidden] { display: none !important; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 br.pc { display: inline; }
+/* キーボードで操作したときに、今どこにいるかが見えるようにする */
+:focus-visible { outline: 2px solid var(--paper-ink); outline-offset: 3px; border-radius: 2px; }
+.skip { position: fixed; left: 12px; top: -60px; z-index: 100; padding: 10px 16px; border-radius: 6px; background: var(--paper-ink); color: #fff; font-size: 14px; }
+.skip:focus { top: 12px; }
 br.sp { display: none; }
 
 /* ---------- ナビ ---------- */
@@ -259,7 +263,24 @@ h2 .nw { white-space: nowrap; }
 /* ---------- フッター ---------- */
 .footer { border-top: 1px solid var(--paper-line); padding: 72px 0 48px; font-size: 14px; color: var(--paper-dim); }
 .footer-logo { display: flex; align-items: center; gap: 12px; font-family: var(--serif); color: var(--paper-ink); font-size: 18px; margin-bottom: 12px; }
-.footer .small { font-size: 12px; margin-top: 24px; }
+.footer .small { font-size: 12px; margin-top: 12px; }
+.footer .small a, .footer-links a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 24px; font-size: 13px; }
+
+/* ---------- プライバシーポリシー・利用規約 ---------- */
+.legal-page { background: var(--bg); }
+.legal { padding: 140px 0 80px; }
+.legal .wrap { max-width: 760px; }
+.legal h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(28px, 3.4vw, 40px); letter-spacing: .06em; margin-bottom: 8px; }
+.legal-date { font-size: 13px; color: var(--paper-dim); margin-bottom: 32px; }
+.legal h2 { font-family: var(--serif); font-weight: 600; font-size: 19px; margin: 44px 0 12px; scroll-margin-top: 90px; }
+.legal h3 { font-size: 15px; font-weight: 500; margin: 20px 0 8px; }
+.legal p, .legal li { font-size: 15px; line-height: 1.95; }
+.legal p + p { margin-top: 10px; }
+.legal ul { padding-left: 1.3em; margin: 8px 0; }
+.legal li + li { margin-top: 4px; }
+.legal a { text-decoration: underline; text-underline-offset: 2px; }
+.legal-back { margin-top: 56px; }
 
 /* ---------- 表示アニメーション ---------- */
 .reveal { opacity: 0; transform: translateY(16px); transition: opacity 1.1s ease, transform 1.1s ease; }
@@ -416,7 +437,8 @@ h2 .nw { white-space: nowrap; }
 .hd-form input::placeholder { color: rgba(31, 30, 28, .45); }
 .hero-door .hd-form .btn { border: 0; cursor: pointer; white-space: nowrap; padding: 10px 20px; font-size: 13px; }
 .hero-door .hd-form .btn:disabled { opacity: .6; cursor: wait; transform: none; }
-.hd-fine { font-size: 11px; letter-spacing: .06em; color: var(--paper-dim); opacity: .8; }
+.hd-fine { font-size: 11px; letter-spacing: .06em; color: var(--paper-dim); }
+.hd-fine a, .form-fine a, .check-field a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .hd-msg { font-size: 14px; letter-spacing: .06em; color: var(--paper-ink); min-height: 0; }
 .hd-msg:empty { display: none; }
 

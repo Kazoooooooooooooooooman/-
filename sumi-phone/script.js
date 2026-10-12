@@ -169,6 +169,8 @@
   // claude.ai で公開したページでは、登録をページのデータベース（preorders/<登録者ID>）に保存する。
   // どちらもない場合（ファイルを直接開いた場合など）は保存先がないため、その旨を表示する。
   const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbxEna4cyM43bQWXW7Ms1ywknr3NvJLBp_61X-bucxNE_0lAEhtvRIi0wLvOqvhGo2ej/exec";
+  // プライバシーポリシーの版（privacy.html の「最終更新」の日付）。登録と一緒に送り、同意の記録に残す
+  const POLICY_VERSION = "2026-10-12";
   const SENT_KEY = "soto-preorder";
   const PREFS = "北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県 海外".split(" ");
   const pref = document.getElementById("pref");
@@ -187,7 +189,7 @@
         // URL の最後に ?reset を付けて開くと、このブラウザの「登録済み」の記録を消して、もう一度試せる
         if (/[?&]reset\b/.test(location.search)) localStorage.removeItem(SENT_KEY);
         const saved = localStorage.getItem(SENT_KEY);
-        if (saved) showDone(JSON.parse(saved));
+        if (saved) showDone({});
       } catch (_) { /* 前回の登録を覚えていなくても登録はできる */ }
       return { endpoint: FORM_ENDPOINT };
     }
@@ -209,9 +211,9 @@
   function showDone(data) {
     forms.forEach(({ form, msg }) => {
       form.hidden = true;
-      msg.textContent = EN
-        ? `You’re registered for pre-order (${data.email}). We’ll email this address when it launches.`
-        : `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`;
+      msg.textContent = data.email
+        ? (EN ? `You’re registered for pre-order (${data.email}). We’ll email this address when it launches.` : `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`)
+        : (EN ? "You’re registered for pre-order. We’ll email you when it launches." : "先行予約に登録済みです。発売が決まったら、メールでお知らせします。");
     });
     document.querySelectorAll(".hd-fine").forEach((el) => { el.hidden = true; });
   }
@@ -225,6 +227,12 @@
       email.focus();
       return;
     }
+    const agreeEl = form.querySelector("#agree");
+    if (agreeEl && !agreeEl.checked) {
+      msg.textContent = (EN ? "Please agree to the Privacy Policy to sign up." : "登録には、プライバシーポリシーへの同意が必要です。");
+      agreeEl.focus();
+      return;
+    }
     const prefEl = form.querySelector("#pref"), trialEl = form.querySelector("#trial");
     const data = {
       email: email.value.trim(),
@@ -232,6 +240,9 @@
       lang: EN ? "en" : "ja",
       trial: trialEl ? trialEl.checked : false,
       source: form.id === "hero-form" ? "hero" : "bottom",
+      // 同意の記録：下のフォームはチェックボックス、1枚目は登録欄の下の案内文。どの版のポリシーかも送る
+      consent: agreeEl ? "checkbox" : "notice",
+      policy: POLICY_VERSION,
       createdAt: new Date().toISOString(),
     };
     btn.disabled = true;
@@ -263,7 +274,8 @@
           btn.disabled = false;
           return;
         }
-        try { localStorage.setItem(SENT_KEY, JSON.stringify({ email: data.email })); } catch (_) { /* 覚えられなくても登録は済んでいる */ }
+        // ブラウザには「登録済み」の印だけを残す（メールアドレスは残さない）
+        try { localStorage.setItem(SENT_KEY, "1"); } catch (_) { /* 覚えられなくても登録は済んでいる */ }
         showDone(data);
       } catch (err) {
         // 公開の設定が「全員」でないと、Google のログイン画面に飛ばされてここに来る

@@ -15,12 +15,12 @@
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="alternate" hreflang="ja" href="index.html" />
 <link rel="alternate" hreflang="en" href="en.html" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;800&family=Shippori+Mincho:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500&display=swap" rel="stylesheet" />
+<!-- フォントはこのサイトから配信する（Google に閲覧者の情報を送らないため）。どれも SIL Open Font License -->
+<link rel="stylesheet" href="fonts/fonts.css" />
 <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+<a class="skip" href="#main">本文へ移動</a>
 
 <!-- 背景：スクロールに合わせて切り替わる。上半分は紙（白黒）、Soto Phone が出てきてから水彩（色）になる -->
 <div class="bg" aria-hidden="true">
@@ -49,7 +49,7 @@
   </nav>
 </header>
 
-<main>
+<main id="main">
 
   <!-- 1. 扉：SOTO の O が、外への扉になって開く -->
   <section id="top" class="panel hero-copy hero-door" data-bg="0">
@@ -81,7 +81,7 @@
           <input id="hero-email" name="email" type="email" placeholder="メールアドレスを入力" autocomplete="email" required />
           <button class="btn" type="submit">先行予約に登録</button>
         </form>
-        <p class="hd-fine">無料です。お支払いは発生しません。</p>
+        <p class="hd-fine">無料です。<br class="sp" /><a href="privacy.html">プライバシーポリシー</a>に同意のうえ、ご登録ください。</p>
         <p class="hd-msg" id="hero-msg" role="status"></p>
       </div>
     </div>
@@ -92,8 +92,8 @@
     <div class="wrap">
       <p class="eyebrow reveal" lang="en">The problem</p>
       <p class="stat reveal"><span class="stat-n" lang="en">165</span><span class="stat-u">分</span></p>
-      <p class="lead reveal">日本人が、1日にスマホを使う時間。<br />過去最多になった。</p>
-      <p class="source reveal">出典：博報堂「メディア定点調査2025」（報道より）</p>
+      <p class="lead reveal">1日に、スマホに触れている時間。<br />過去最長になった。</p>
+      <p class="source reveal">出典：博報堂 メディア環境研究所「メディア定点調査2025」（東京地区・15〜69歳、1日あたり・週平均）</p>
     </div>
 
     <!-- データから物語へのつなぎ：1年を365の点で見せ、そのうち42日ぶんが黒くなる -->
@@ -259,8 +259,12 @@
         <input id="trial" name="trial" type="checkbox" />
         <span>試作機の先行体験にも参加したい</span>
       </label>
+      <label class="check-field" for="agree">
+        <input id="agree" name="agree" type="checkbox" required />
+        <span><a href="privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>に同意します（必須）</span>
+      </label>
       <button class="btn" type="submit" id="reserve-btn">先行予約に登録する</button>
-      <p class="form-fine">登録は無料です。購入の確定やお支払いは発生しません。メールアドレスは、発売と先行体験のお知らせにだけ使います。</p>
+      <p class="form-fine">登録は無料です。購入の確定やお支払いは発生しません。メールアドレスは、発売と先行体験のお知らせにだけ使い、いつでも配信を止めたり削除したりできます。<br />16歳未満の方は、保護者の方の同意を得てからご登録ください。13歳未満のお子さまのための登録は、保護者の方のメールアドレスでお願いします。</p>
     </form>
     <p class="form-msg" id="form-msg" role="status"></p>
     </div>
@@ -272,7 +276,9 @@
   <div class="wrap">
     <div class="footer-logo"><span class="logo-mark">外</span> Soto Phone</div>
     <p>楽しさは、画面の外に。</p>
-    <p class="small">© 2026 Soto Phone. 絵は本サイトのために描いたものです。製品の画像はイメージで、開発中のため仕様は変わることがあります。</p>
+    <p class="footer-links"><a href="privacy.html">プライバシーポリシー</a><a href="terms.html">利用規約・返金</a><a href="privacy.html#cookies">Cookie</a><a href="privacy.html#delete">配信停止・データ削除</a></p>
+    <p class="small">運営：Soto Phone（代表 佐々木 一真）／ お問い合わせ：<a href="mailto:hello@sotophone.jp">hello@sotophone.jp</a></p>
+    <p class="small">© 2026 Soto Phone. 絵は、このサイトのために描いたものです。開発中のため、仕様は変わることがあります。</p>
   </div>
 </footer>
 
