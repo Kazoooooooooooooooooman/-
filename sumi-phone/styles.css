@@ -357,6 +357,7 @@ h2 .nw { white-space: nowrap; }
 .hd-stations { z-index: 1; }
 .stn { position: absolute; display: flex; flex-direction: column; align-items: center; transform: translate(-50%, calc(-100% + 5px)); gap: 6px;
   font-size: 13px; font-family: var(--sans); letter-spacing: 0; line-height: 1.2; color: var(--paper-ink); white-space: nowrap; }
+.stn-ic { width: 30px; height: 30px; flex: none; fill: none; stroke: var(--paper-ink); stroke-opacity: .82; stroke-width: 1.25; stroke-linecap: round; stroke-linejoin: round; margin-bottom: 2px; }
 .stn i { order: 3; width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 1px solid rgba(31, 30, 28, .6); }
 .stn b { font-weight: 400; font-size: 13px; letter-spacing: .14em; }
 .stn em { font-style: normal; font-family: var(--latin); font-weight: 500; font-size: 9px; letter-spacing: .24em; text-transform: uppercase; color: var(--paper-dim); margin-top: -2px; }
@@ -407,6 +408,9 @@ html[lang="en"] .stn b { font-family: var(--latin); font-weight: 500; font-size:
   .stn b { font-size: 10px; letter-spacing: .08em; }
   .stn em { display: none; }
   .stn i { width: 7px; height: 7px; }
+  .stn-ic { width: 20px; height: 20px; margin-bottom: 0; }
+  .stn-l, .stn-r { flex-direction: column; transform: translate(-50%, calc(-100% + 4px)); gap: 4px; }
+  .stn-l i, .stn-r i { order: 3; }
   .hd-phone { margin-left: .25em; font-size: 18px; }
   .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; }
   .hd-form input { padding: 0 12px; font-size: 14px; }
