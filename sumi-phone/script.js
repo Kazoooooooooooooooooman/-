@@ -288,111 +288,55 @@
     }
   }));
 
-  // 物語のしおり：はじめて読む人が勢いよくスクロールしても、物語の一場面ずつで一度だけ止まる。
-  // ゆっくり読んでいる人は止めない。上へ戻るとき、ナビのリンクで飛ぶとき、二度目に通るときも止めない。
+  // 物語のしおり：はじめて物語を通るあいだだけ、スクロールが一場面ずつ止まる（ブラウザのスクロールスナップ）。
+  // 勢いよくフリックしても次の場面で止まる。Soto Phone の説明まで来たら外して、あとはふつうにスクロールできる。
   (() => {
-    const problem = document.getElementById("problem");
-    if (!problem) return;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const navH = () => (nav ? nav.offsetHeight : 0);
-    const docTop = (el) => el.getBoundingClientRect().top + window.scrollY;
-    // 要素を画面の真ん中に置く位置。画面より高いものは、上をナビのすぐ下にそろえる
-    const center = (el) => () => {
-      const top = docTop(el), h = el.offsetHeight, vh = window.innerHeight;
-      return h < vh - navH() - 40 ? top + h / 2 - (vh + navH()) / 2 : top - navH() - 16;
-    };
-    const stops = [];
-    const add = (el, hold) => el && stops.push({ at: center(el), hold, seen: false, since: 0 });
-    add(problem.querySelector(".wrap"), 1000);
-    add(problem.querySelector(".year"), 1600);
-    problem.querySelectorAll(".drawn").forEach((el) => add(el, 1100));
-    add(problem.querySelector(".turn"), 1000);
-    // 色のシーンは、スクロールの進み具合で絵が変わるので、その途中の場面で止める
+    const root = document.documentElement;
+    const about = document.getElementById("about");
+    if (!about || !("scrollSnapType" in root.style)) return;
+    // 色のシーンは長いので、途中の場面に目印を置いて、そこでも止める
     const inkEl = document.getElementById("ink");
-    if (inkEl && !reduceMotion) {
-      const atInk = (p) => () => docTop(inkEl) + p * (inkEl.offsetHeight - window.innerHeight);
-      [[0.03, 900], [0.5, 800], [0.97, 1200]].forEach(([p, hold]) => stops.push({ at: atInk(p), hold, seen: false, since: 0 }));
-    } else if (inkEl) add(inkEl.querySelector(".ink-stage"), 1000);
-
-    const FAST = 1.5; // これより速い（px/ミリ秒）スクロールで通り過ぎたら止める
-    let lastY = window.scrollY, lastT = performance.now(), v = 0;
-    let busy = false, bypass = false, bypassTimer = 0, tailUntil = 0, tailDelta = Infinity;
-
-    // 開いた時点で通り過ぎている場面は、もう読んだことにする（再読み込みやページ内リンクで開いたとき）
-    const markPassed = () => stops.forEach((s) => { if (s.at() < window.scrollY - 4) s.seen = true; });
-    markPassed();
-    window.addEventListener("load", markPassed);
-
-    // ナビやボタンのリンクで飛ぶときは止めない
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest('a[href^="#"]')) return;
-      bypass = true;
-      clearTimeout(bypassTimer);
-      bypassTimer = setTimeout(() => { bypass = false; markPassed(); }, 1500);
-    });
-
-    const block = (e) => e.preventDefault();
-    // 止めたあとに届く、トラックパッドの慣性のスクロールは捨てる（指で新しく動かしたら、すぐに効く）
-    window.addEventListener("wheel", (e) => {
-      if (performance.now() > tailUntil) return;
-      const d = Math.abs(e.deltaY);
-      if (d <= tailDelta) { e.preventDefault(); tailDelta = d; } else tailUntil = 0;
-    }, { passive: false });
-
-    function brake(s) {
-      busy = true;
-      s.seen = true;
-      const root = document.documentElement;
-      // 慣性のスクロールをその場で止める
-      root.style.overflow = "hidden";
-      window.addEventListener("wheel", block, { passive: false });
-      window.addEventListener("touchmove", block, { passive: false });
-      const from = window.scrollY, to = Math.max(0, s.at()), dur = reduceMotion ? 0 : 520;
-      const t0 = performance.now();
-      const step = (now) => {
-        const k = dur ? Math.min(1, (now - t0) / dur) : 1;
-        window.scrollTo({ top: from + (to - from) * (1 - Math.pow(1 - k, 3)), behavior: "instant" });
-        if (k < 1) return requestAnimationFrame(step);
-        setTimeout(() => {
-          root.style.overflow = "";
-          window.removeEventListener("wheel", block);
-          window.removeEventListener("touchmove", block);
-          tailUntil = performance.now() + 700; tailDelta = Infinity;
-          lastY = window.scrollY; lastT = performance.now(); v = 0;
-          busy = false;
-        }, s.hold);
-      };
-      requestAnimationFrame(step);
+    if (inkEl && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      [0.03, 0.5, 0.97].forEach((p) => {
+        const m = document.createElement("div");
+        m.className = "ink-snap";
+        m.style.setProperty("--p", p);
+        inkEl.appendChild(m);
+      });
     }
-
-    let raf = 0;
-    function check() {
-      raf = 0;
-      if (busy) return;
-      const y = window.scrollY, now = performance.now();
-      const dt = Math.max(1, now - lastT);
-      v = 0.5 * v + 0.5 * ((y - lastY) / dt);
-      const down = y > lastY;
-      lastY = y; lastT = now;
-      if (bypass) return;
-      const vh = window.innerHeight;
-      for (const s of stops) {
-        if (s.seen) continue;
-        const at = s.at();
-        // 真ん中あたりにしばらくあったら、読んだことにする
-        if (Math.abs(y - at) < vh * 0.3) {
-          if (!s.since) s.since = now;
-          else if (now - s.since > 600) s.seen = true;
-        } else s.since = 0;
-        if (s.seen || y < at) continue;
-        // 通り過ぎた：速ければそこへ戻して止める、ゆっくりなら読んだことにする
-        if (down && v > FAST) return brake(s);
-        if (y - at > vh * 0.6) s.seen = true;
+    // Soto Phone の説明が画面の真ん中に来る位置。ここで物語は終わり
+    const endY = () => about.getBoundingClientRect().top + window.scrollY + about.offsetHeight / 2 - window.innerHeight / 2;
+    // 止まる場面（CSS の story-snap と同じもの）と、その場面が画面の真ん中に来る位置
+    const scenes = [...document.querySelectorAll("#problem > .wrap:first-child, .year, .drawn, .turn, .ink-snap, #ink .ink-stage")]
+      .filter((el) => getComputedStyle(el).position !== "sticky");
+    const centerY = (el) => { const r = el.getBoundingClientRect(); return r.top + window.scrollY + r.height / 2 - (window.innerHeight + 60) / 2; };
+    let done = false, timer = 0, restY = window.scrollY;
+    const finish = () => { done = true; root.classList.remove("story-snap"); };
+    // スクロールが止まったとき：大きく飛ばして通り過ぎた場面があれば、そこへ戻す
+    function settle() {
+      const y = window.scrollY;
+      if (Math.abs(y - endY()) < 12) return finish();
+      if (y > restY + 8) {
+        const skipped = scenes.find((el) => { const c = centerY(el); return c > restY + 8 && c < y - 8; });
+        if (skipped) {
+          restY = Math.max(0, centerY(skipped));
+          window.scrollTo({ top: restY, behavior: "smooth" });
+          return;
+        }
       }
+      restY = y;
     }
-    const queue = () => { if (!raf) raf = requestAnimationFrame(check); };
-    window.addEventListener("scroll", queue, { passive: true });
-    // 真ん中で止まって読んでいる間も「読んだ」を数える
-    setInterval(() => { if (!busy) queue(); }, 300);
+    function update() {
+      if (done) return;
+      if (window.scrollY > endY() + 8) return finish();
+      root.classList.add("story-snap");
+      clearTimeout(timer);
+      timer = setTimeout(settle, 140);
+    }
+    // ナビやボタンのリンクで飛ぶときは、しおりを外してそのまま飛ばす
+    document.addEventListener("click", (e) => { if (e.target.closest('a[href^="#"]')) finish(); }, true);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("load", update);
+    update();
   })();
 })();
