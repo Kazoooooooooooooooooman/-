@@ -89,6 +89,20 @@ h2 .nw { white-space: nowrap; }
 .drawn-line .nw { white-space: nowrap; }
 .turn { margin: clamp(100px, 16vh, 170px) 0 0; font-size: clamp(30px, 4.6vw, 60px); }
 
+/* データから物語へのつなぎ */
+.year { margin-top: clamp(90px, 14vh, 150px); }
+.year.reveal { opacity: 1; transform: none; }
+.year-lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 34px); letter-spacing: .1em; margin-bottom: 34px; }
+.year-lead b { font-weight: 600; }
+.year-dots { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 4px; justify-content: center; }
+.year-dots i { width: 9px; height: 9px; border-radius: 2px; background: rgba(31, 30, 28, .1); }
+.year-dots i.on { transition: background .5s ease; transition-delay: calc(var(--k) * 45ms + .3s); }
+.year.is-in .year-dots i.on { background: var(--paper-ink); }
+.year-cap { font-size: 13px; color: var(--paper-dim); margin-top: 22px; max-width: 34em; }
+.bridge { font-family: var(--serif); font-size: clamp(20px, 2.2vw, 28px); letter-spacing: .14em; margin-top: clamp(80px, 12vh, 130px); opacity: 0; transform: translateY(12px); transition: opacity 1.4s ease 2.4s, transform 1.4s ease 2.4s; }
+.year.is-in .bridge { opacity: 1; transform: none; }
+.year + .scenes-drawn { margin-top: clamp(70px, 10vh, 110px); }
+
 /* 終わりのないフィードをスワイプし続ける絵 */
 .swipe-art { position: relative; width: 100%; max-width: 640px; justify-self: center; }
 .swipe-art > img { width: 100%; height: auto; display: block; }
@@ -262,6 +276,8 @@ h2 .nw { white-space: nowrap; }
   .inout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .split { flex-direction: column; align-items: stretch; }
   .reserve-form { grid-template-columns: 1fr; }
+  .year-dots { gap: 2px; }
+  .year-dots i { width: 4px; height: 4px; border-radius: 1px; }
   .flow { grid-template-columns: 1fr 1fr; }
   .flow li + li::before { display: none; }
   .icons { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 6px; }
@@ -271,6 +287,8 @@ h2 .nw { white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
+  .year-dots i.on { background: var(--paper-ink); transition: none; }
+  .bridge { opacity: 1; transform: none; transition: none; }
   .drawn > * { opacity: 1; transform: none; filter: none; transition: none; }
   .bg-move > img, .bg-move > .ov, .ov * { animation: none !important; }
   .ink-scene { height: auto; }
@@ -294,12 +312,14 @@ h2 .nw { white-space: nowrap; }
 }
 .hd-motto {
   font-family: var(--latin); font-weight: 500;
-  font-size: clamp(22px, 2.6vw, 38px); line-height: 1.1; letter-spacing: .01em; color: #3f6b45;
+  font-size: clamp(13px, 1.1vw, 16px); line-height: 1.2; letter-spacing: .12em; color: #3f6b45;
 }
 .hero-door .hd-copy {
-  font-family: var(--serif); font-weight: 400; font-size: clamp(20px, 2.7vw, 38px);
-  letter-spacing: .26em; line-height: 1.5; margin: .5em 0 0 .26em; color: var(--paper-ink);
+  font-family: var(--serif); font-weight: 400; font-size: clamp(18px, 1.7vw, 24px);
+  letter-spacing: .22em; line-height: 1.6; margin: .35em 0 0 .22em; color: var(--paper-ink);
 }
+/* SOTO の下、登録欄の上に置くメッセージ */
+.hd-message { text-align: center; margin-bottom: clamp(18px, 3vh, 30px); }
 
 .hd-mark {
   display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap;
@@ -351,7 +371,7 @@ h2 .nw { white-space: nowrap; }
   opacity: 0; animation: hd-spill 1.6s ease-out 1.8s forwards;
 }
 /* 松の丘：キャッチコピーと SOTO のあいだ。日本画の黒松が並び、すやり霞がゆっくり流れる。どちらの文字にもかからない */
-.hd-grove { width: 100vw; margin: clamp(12px, 3vh, 30px) calc(50% - 50vw) 0; height: clamp(80px, 15vh, 170px); pointer-events: none; }
+.hd-grove { width: 100vw; margin: clamp(4px, 1.5vh, 16px) calc(50% - 50vw) 0; height: clamp(80px, 15vh, 170px); pointer-events: none; }
 .hd-grove svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .pn-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: pn-sway 9s ease-in-out infinite alternate; }
 .pn.far .pn-sway { animation-name: pn-sway-far; }
@@ -370,7 +390,7 @@ h2 .nw { white-space: nowrap; }
 @keyframes hd-spill { to { opacity: 1; } }
 
 .hd-foot {
-  width: 100%; display: flex; justify-content: center; align-items: center;
+  width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;
 }
 .hd-cta { display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(100%, 520px); }
 .hd-form {
@@ -400,7 +420,7 @@ h2 .nw { white-space: nowrap; }
   .hd-mark { padding-bottom: 72px; }
   .hd-word { font-size: 25vw; }
   .hd-phone { margin-left: .25em; font-size: 18px; }
-  .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; }
+  .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; font-size: 17px; }
   .hd-form input { padding: 0 12px; font-size: 14px; }
   .hero-door .hd-form .btn { padding: 11px 16px; font-size: 13px; letter-spacing: .06em; }
 }
