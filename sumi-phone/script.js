@@ -168,7 +168,7 @@
   // FORM_ENDPOINT にそのウェブアプリの URL（https://script.google.com/macros/s/…/exec）を入れる。
   // claude.ai で公開したページでは、登録をページのデータベース（preorders/<登録者ID>）に保存する。
   // どちらもない場合（ファイルを直接開いた場合など）は保存先がないため、その旨を表示する。
-  const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbxEna4cyM43bQWXW7Ms1ywknr3NvJLBp_61X-bucxNE_0lAEhtvRIi0wLvOqvhGo2ej/exec";
+  const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwa7cTRb-GxlCZKVGaWIP2FuVBQFpsDR7FpMjVoYrGJ9G6EyfLiTS_iIfux6H1iVB0Y/exec";
   // プライバシーポリシーの版（privacy.html の「最終更新」の日付）。登録と一緒に送り、同意の記録に残す
   const POLICY_VERSION = "2026-10-12";
   const SENT_KEY = "soto-preorder";
