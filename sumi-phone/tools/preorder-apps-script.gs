@@ -21,7 +21,7 @@ const FROM_ADDRESS = "hello@sotophone.jp";
 const SITE_URL = "https://sotophone.jp/";
 // 送り主の情報（特定電子メール法で、お知らせのメールに書く必要がある）。住所は、決まったら入れる（バーチャルオフィスでもよい）
 const SENDER_ORG = "Soto Phone（代表 佐々木 一真）";
-const SENDER_ADDRESS = "";
+const SENDER_ADDRESS = "〒107-0062 東京都港区南青山3丁目1番36号 青山丸竹ビル6F";
 const CONTACT = "hello@sotophone.jp";
 // 1分あたりに送るメールの上限。いたずらで大量に登録されても、あなたの Gmail から大量に送られないようにする。
 // 上限を超えた分は行だけ保存され、sendPendingConfirmations() を動かすと後から送られる。
@@ -241,7 +241,7 @@ function mailEn(trial, link) {
     "(If this wasn't you, you can delete it there too.)",
     "",
     "Sender: Soto Phone (Kazuma Sasaki)",
-    SENDER_ADDRESS ? "Address: " + SENDER_ADDRESS : null,
+    "Address: 6F Aoyama Marutake Bldg., 3-1-36 Minami-Aoyama, Minato-ku, Tokyo 107-0062, Japan",
     "Contact: " + CONTACT,
     "Privacy policy: " + SITE_URL + "privacy-en.html",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
