@@ -18,6 +18,14 @@
 <!-- フォントはこのサイトから配信する（Google に閲覧者の情報を送らないため）。どれも SIL Open Font License -->
 <link rel="stylesheet" href="fonts/fonts.css" />
 <link rel="stylesheet" href="styles.css" />
+<script>
+  // 最初の訪問だけ、通知の嵐から扉が開く導入を見せる。準備ができるまでページを隠して、一瞬見えてしまうのを防ぐ
+  try {
+    var q = location.search;
+    if (/[?&]intro\b/.test(q)) localStorage.removeItem("soto-intro");
+    if (!localStorage.getItem("soto-intro") && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("intro-pending");
+  } catch (e) {}
+</script>
 </head>
 <body>
 <a class="skip" href="#main">本文へ移動</a>

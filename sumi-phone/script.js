@@ -2,6 +2,96 @@
   const EN = document.documentElement.lang === "en";
   const nav = document.querySelector(".nav");
 
+  // 最初の訪問：スマホのロック画面に通知が次々と積み重なり、扉が開いて、静かな SOTO の画面へ出る
+  // 2回目からは出さない（URL に ?intro を付けると、もう一度見られる）。タップ、キー、スクロールで飛ばせる
+  (() => {
+    const root = document.documentElement;
+    if (!root.classList.contains("intro-pending")) return;
+    const N = EN ? [
+      ["#7b8f86", "Messages", "now", "Group chat: 32 new messages"],
+      ["#8a7f72", "Video", "now", "Recommended for you: 5 new videos"],
+      ["#7d7a90", "Social", "now", "12 people liked your post"],
+      ["#8f7a72", "Shopping", "now", "Sale ends in 3 hours"],
+      ["#72818f", "News", "now", "Breaking: trending now"],
+      ["#867a8a", "Game", "now", "Your energy is full. Come back!"],
+      ["#7b8f86", "Messages", "now", "You have 5 unread messages"],
+      ["#7d7a90", "Social", "now", "New stories from 8 friends"],
+      ["#8a7f72", "Video", "now", "Live now: don’t miss it"],
+      ["#8f7a72", "Shopping", "now", "Items in your cart are selling fast"],
+      ["#867a8a", "Game", "now", "Daily bonus waiting"],
+      ["#72818f", "News", "now", "3 stories you might like"],
+    ] : [
+      ["#7b8f86", "メッセージ", "今", "グループ：新着メッセージ 32件"],
+      ["#8a7f72", "動画", "今", "あなたへのおすすめ：新しい動画が5本"],
+      ["#7d7a90", "SNS", "今", "あなたの投稿に12件のいいね"],
+      ["#8f7a72", "ショッピング", "今", "セール終了まで、あと3時間"],
+      ["#72818f", "ニュース", "今", "いま話題になっています"],
+      ["#867a8a", "ゲーム", "今", "スタミナが回復しました。遊びに戻ろう"],
+      ["#7b8f86", "メッセージ", "今", "未読のメッセージが5件あります"],
+      ["#7d7a90", "SNS", "今", "友達8人がストーリーを更新"],
+      ["#8a7f72", "動画", "今", "ライブ配信が始まりました"],
+      ["#8f7a72", "ショッピング", "今", "カートの商品が残りわずかです"],
+      ["#867a8a", "ゲーム", "今", "ログインボーナスを受け取ろう"],
+      ["#72818f", "ニュース", "今", "あなたが好きそうな記事が3件"],
+    ];
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    const date = EN
+      ? now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
+      : `${now.getMonth() + 1}月${now.getDate()}日 ${"日月火水木金土"[now.getDay()]}曜日`;
+    const el = document.createElement("div");
+    el.className = "intro";
+    el.setAttribute("aria-hidden", "true");
+    el.innerHTML = `<div class="intro-clock"><p class="intro-date">${date}</p><p class="intro-time">${now.getHours()}:${pad(now.getMinutes())}</p></div>
+      <div class="intro-list"></div><div class="intro-door"></div><button class="intro-skip" type="button" tabindex="-1">${EN ? "SKIP" : "スキップ"}</button>`;
+    document.body.prepend(el);
+    const list = el.querySelector(".intro-list");
+    const timers = [];
+    const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+    // 通知は、だんだん速く届く
+    let t = 250;
+    N.forEach(([c, app, when, text], i) => {
+      at(t, () => {
+        const n = document.createElement("div");
+        n.className = "intro-n";
+        n.style.setProperty("--c", c);
+        // 扉が開いたときに吹き飛ぶ向き
+        n.style.setProperty("--fx", (i % 2 ? 1 : -1) * (60 + (i * 37) % 80) + "vw");
+        n.style.setProperty("--fy", ((i * 53) % 60 - 20) + "vh");
+        n.style.setProperty("--fr", ((i % 2 ? 1 : -1) * (8 + (i * 7) % 18)) + "deg");
+        n.innerHTML = `<i></i><b>${app}</b><em>${when}</em><span>${text}</span>`;
+        list.prepend(n);
+        // 画面からあふれた古い通知は消す
+        while (list.children.length > 7) list.lastChild.remove();
+      });
+      t += Math.max(70, 330 - i * 34);
+    });
+    let done = false;
+    function finish(fast) {
+      if (done) return;
+      done = true;
+      timers.forEach(clearTimeout);
+      try { localStorage.setItem("soto-intro", "1"); } catch (_) { /* 覚えられなくても見られる */ }
+      const reveal = () => {
+        root.classList.remove("intro-pending");
+        el.classList.add("is-out");
+        setTimeout(() => el.remove(), 500);
+      };
+      if (fast) return reveal();
+      el.classList.add("is-door");
+      setTimeout(() => el.classList.add("is-open"), 380);
+      setTimeout(() => el.classList.add("is-through"), 950);
+      setTimeout(reveal, 1700);
+    }
+    at(t + 250, () => finish(false));
+    // 飛ばす：タップ、キー、ホイール、スワイプ
+    const skip = () => finish(true);
+    el.addEventListener("click", skip);
+    window.addEventListener("keydown", skip, { once: true });
+    window.addEventListener("wheel", skip, { once: true, passive: true });
+    window.addEventListener("touchmove", skip, { once: true, passive: true });
+  })();
+
   // スクロールしたら、ナビに紙色の帯を敷く
   const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 40);
   window.addEventListener("scroll", onScroll, { passive: true });

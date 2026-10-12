@@ -316,6 +316,58 @@ h2 .nw { white-space: nowrap; }
   br.pc { display: none; }
   br.sp { display: inline; }
 }
+/* ---------- 最初の訪問：通知の嵐 → 扉が開いて、静かな画面へ ---------- */
+html.intro-pending, html.intro-pending body { background: #141413; overflow: hidden; }
+html.intro-pending body > :not(.intro) { visibility: hidden; }
+html.intro-pending .hero-door *, html.intro-pending .hero-door { animation-play-state: paused !important; }
+.intro {
+  position: fixed; inset: 0; z-index: 200; overflow: hidden; background: #141413; color: #f4f2ec;
+  display: flex; flex-direction: column; align-items: center; cursor: pointer;
+  font-family: var(--sans); -webkit-tap-highlight-color: transparent;
+}
+.intro.is-out { opacity: 0; transition: opacity .45s ease; }
+.intro-clock { margin-top: clamp(56px, 11vh, 110px); text-align: center; opacity: 0; animation: intro-in .6s ease forwards; }
+.intro-date { font-size: 14px; letter-spacing: .12em; color: rgba(244, 242, 236, .7); }
+.intro-time { font-family: var(--latin); font-weight: 500; font-size: clamp(64px, 14vw, 104px); line-height: 1.05; letter-spacing: -.01em; }
+.intro-list { width: min(92vw, 380px); margin-top: clamp(22px, 4vh, 40px); display: flex; flex-direction: column; gap: 8px; }
+.intro-n {
+  display: grid; grid-template-columns: 34px 1fr auto; gap: 2px 12px; align-items: center;
+  padding: 11px 14px; border-radius: 16px; background: rgba(244, 242, 236, .1);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  animation: intro-drop .32s cubic-bezier(.2, .8, .2, 1);
+  transition: transform .9s cubic-bezier(.5, 0, .9, .4), opacity .7s ease;
+}
+.intro-n i { grid-row: span 2; width: 34px; height: 34px; border-radius: 9px; background: var(--c, #6b6a66); }
+.intro-n b { font-weight: 500; font-size: 13px; color: rgba(244, 242, 236, .75); }
+.intro-n em { font-style: normal; font-size: 12px; color: rgba(244, 242, 236, .5); }
+.intro-n span { grid-column: 2 / 4; font-size: 14px; line-height: 1.45; }
+.intro-skip {
+  position: absolute; right: 16px; bottom: max(18px, env(safe-area-inset-bottom)); padding: 10px 14px;
+  font-size: 12px; letter-spacing: .14em; color: rgba(244, 242, 236, .6); background: none; border: 0; cursor: pointer; font-family: inherit;
+}
+/* 扉：真ん中に小さく現れ、開いて、光が画面いっぱいに広がる */
+.intro-door {
+  position: absolute; left: 50%; top: 54%; width: 84px; height: 140px; margin: -70px 0 0 -42px;
+  border-radius: 42px 42px 3px 3px; z-index: 2; background: #f4f2ec; opacity: 0; transform: scale(.6);
+  box-shadow: 0 0 90px 24px rgba(244, 242, 236, .22);
+  transition: opacity .3s ease, transform .3s ease;
+  perspective: 300px;
+}
+.intro-door::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; background: #2f5f8c;
+  transform-origin: 0 50%; transition: transform .55s cubic-bezier(.6, .02, .3, 1);
+}
+.intro.is-door .intro-door { opacity: 1; transform: scale(1); }
+.intro.is-open .intro-door::before { transform: rotateY(-78deg); }
+.intro.is-through .intro-door { transform: scale(40); transition: transform .8s cubic-bezier(.7, 0, .84, 0); }
+.intro.is-through .intro-door::before { opacity: 0; transition: opacity .2s ease; }
+.intro-list { transition: filter .5s ease, opacity .5s ease; }
+.intro.is-door .intro-list { opacity: .28; filter: blur(3px); }
+.intro.is-through .intro-n { opacity: 0; transform: translate(var(--fx, 0), var(--fy, 0)) rotate(var(--fr, 0deg)); }
+.intro.is-through .intro-clock { opacity: 0; transition: opacity .4s ease; }
+@keyframes intro-in { to { opacity: 1; } }
+@keyframes intro-drop { from { opacity: 0; transform: translateY(-14px) scale(.97); } }
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .year-dots i.on { background: var(--paper-ink); transition: none; }
