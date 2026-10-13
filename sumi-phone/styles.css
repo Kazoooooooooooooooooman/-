@@ -111,6 +111,7 @@ h2 .nw { white-space: nowrap; }
 .could-list b { font-weight: 600; }
 .could-list small { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: .04em; color: var(--paper-dim); margin-top: 4px; }
 .could + .scenes-drawn { margin-top: clamp(70px, 10vh, 110px); }
+.after { font-family: var(--serif); font-size: clamp(18px, 1.9vw, 24px); letter-spacing: .1em; line-height: 2; margin-top: clamp(56px, 9vh, 96px); }
 /* 3枚の絵は、縦に長く並べず、広い画面では横に3つ、スマホでは横にめくるようにする */
 @media (min-width: 900px) {
   .scenes-drawn { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 3vw, 48px); align-items: stretch; }
