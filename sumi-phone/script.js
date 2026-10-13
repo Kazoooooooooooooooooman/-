@@ -14,27 +14,34 @@
     const vs = "attribute vec2 p; varying vec2 v; void main(){ v = vec2(p.x * .5 + .5, .5 - p.y * .5); gl_Position = vec4(p, 0., 1.); }";
     const fs = `precision mediump float;
       uniform sampler2D tex; uniform vec2 res; uniform vec2 size; uniform float time; varying vec2 v;
+      // 緑っぽさ（緑 − 青）。木と草は正、空・山・雪・岩は 0 以下になる
+      float green(vec2 p){ vec3 c = texture2D(tex, p).rgb; return c.g - c.b; }
       void main(){
-        // 写真を画面いっぱいに（object-fit: cover と同じ）。ほんの少しだけ大きくして、端が揺れても切れないようにする
+        // 写真を画面いっぱいに（object-fit: cover と同じ）。少しだけ大きくして、端が揺れても切れないようにする
         float s = max(res.x / size.x, res.y / size.y) * 1.02;
         vec2 uv = (v * res - (res - size * s) * .5) / (size * s);
         float x = uv.x, y = uv.y;
-        // 揺れる場所：下の草と、左右の木。山の稜線より上は動かさない
-        float ground = smoothstep(.6, .92, y);
-        float left = (1. - smoothstep(.2, .34, x)) * smoothstep(.24, .55, y);
-        float right = smoothstep(.64, .74, x) * smoothstep(.48, .7, y);
-        float mid = smoothstep(.42, .62, y) * (1. - smoothstep(.0, .14, abs(x - .5))) * .6;
-        float m = clamp(ground + left + right + mid, 0., 1.);
-        // 風は一定ではなく、ときどき強く吹く
-        float gust = .55 + .45 * sin(time * .37) * sin(time * .11 + 1.3);
-        float wave = sin(time * 1.7 + y * 19. + x * 7.) * .6 + sin(time * 2.9 + y * 33. - x * 11.) * .4;
-        uv.x += wave * .0032 * m * gust * (1. + ground * .7);
-        uv.y += sin(time * 1.2 + x * 23.) * .0009 * ground * gust;
+        // 揺れるのは緑のところだけ。まわりを少しぼかして見て、木の輪郭ごとなめらかに動かす（空や山、岩は止まったまま）
+        vec2 r = vec2(14., 14.) / size;
+        float g = green(uv) * .2;
+        g += (green(uv + vec2(r.x, 0.)) + green(uv - vec2(r.x, 0.)) + green(uv + vec2(0., r.y)) + green(uv - vec2(0., r.y))) * .12;
+        g += (green(uv + r) + green(uv - r) + green(uv + vec2(r.x, -r.y)) + green(uv + vec2(-r.x, r.y))) * .08;
+        float plant = smoothstep(.0, .09, g);
+        // 風は左から吹く。大きなうねりが画面を横切っていき、ときどき強まる
+        float gust = .65 + .35 * sin(time * .23 + 1.1);
+        float wind = sin(time * .9 - x * 2.4) * .75 + sin(time * 1.7 - x * 4.3 + 1.7) * .25;
+        // 木：根もとは動かず、上ほど大きく揺れる
+        float tip = clamp((.95 - y) / .65, 0., 1.);
+        float sway = plant * tip * tip * wind * gust * .0042;
+        // 手前の草：細かく、少し速くそよぐ
+        float near = smoothstep(.74, 1., y);
+        float flutter = plant * near * sin(time * 2.4 - x * 13. + y * 4.) * gust * .0016;
+        uv.x += sway + flutter;
         uv = clamp(uv, .001, .999);
         vec3 c = texture2D(tex, uv).rgb;
-        // 左の太陽の光が、ゆっくり強くなったり弱くなったりする
+        // 左の太陽の光が、ゆっくり呼吸する
         float d = distance(vec2(x * size.x / size.y, y), vec2(0., .36));
-        c += vec3(1., .9, .7) * (.05 + .04 * sin(time * .6)) * exp(-d * 5.);
+        c += vec3(1., .9, .7) * (.035 + .025 * sin(time * .45)) * exp(-d * 5.);
         gl_FragColor = vec4(c, 1.);
       }`;
     const sh = (type, src) => { const o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); return gl.getShaderParameter(o, gl.COMPILE_STATUS) ? o : null; };
