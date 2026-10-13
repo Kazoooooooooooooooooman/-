@@ -146,8 +146,7 @@
     const splash = ink.querySelector(".ink-splash");
     const text = ink.querySelector(".ink-text");
     const target = document.getElementById("ink-target");
-    const line = ink.querySelector(".ink-line");
-    const line2 = ink.querySelector(".ink-line2");
+    const line = ink.querySelector(".ink-after");
     const clamp = (v) => Math.min(1, Math.max(0, v));
     const seg = (p, a, b) => clamp((p - a) / (b - a));
     const ease = (t) => 1 - Math.pow(1 - t, 3);
@@ -194,18 +193,10 @@
         d.setAttribute("cy", cy + dy * R * 0.4 * (0.6 + spread * 0.5));
         d.setAttribute("r", (size * splat * (1 + spread)).toFixed(1));
       });
-      // 文字は墨の下に沈んでいく
-      const sink = seg(p, 0.30, 0.50);
-      text.style.opacity = (1 - sink).toFixed(3);
-      text.style.filter = sink > 0 ? `blur(${(sink * 3).toFixed(1)}px)` : "";
-      const say = ease(seg(p, 0.72, 0.84));
+      // 文字は沈めない（ずっと読める）。色が落ち着いたところで、最後の一文が静かに現れる
+      const say = ease(seg(p, 0.66, 0.86));
       line.style.opacity = say.toFixed(3);
-      line.style.top = cy + "px";
-      line.style.transform = `translateY(calc(-50% + ${((1 - say) * 12).toFixed(1)}px))`;
-      // 少し遅れて「Soto Phone があるじゃん。」
-      const say2 = ease(seg(p, 0.84, 0.94));
-      line2.style.opacity = say2.toFixed(3);
-      line2.style.transform = `translateY(${((1 - say2) * 10).toFixed(1)}px)`;
+      line.style.transform = `translateY(${((1 - say) * 8).toFixed(1)}px)`;
     }
     // スクロールで引っぱらず、画面に入ったら一度だけ、絵の具がにじむように流れる（約4秒）
     const P0 = 0.24, P1 = 1, DUR = 4200;
@@ -222,7 +213,7 @@
       requestAnimationFrame(step);
     };
     new IntersectionObserver((es) => {
-      if (es[0].isIntersecting && !played) setTimeout(play, 900); // 最初の文を読む時間をおいてから
+      if (es[0].isIntersecting && !played) setTimeout(play, 1600); // 最初の文を読む時間をおいてから
     }, { threshold: 0.6 }).observe(stage);
     window.addEventListener("resize", () => { measure(); render(shown); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(shown); });

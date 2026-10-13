@@ -17,7 +17,7 @@
 <link rel="alternate" hreflang="en" href="en.html" />
 <!-- フォントはこのサイトから配信する（Google に閲覧者の情報を送らないため）。どれも SIL Open Font License -->
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261013v" />
+<link rel="stylesheet" href="styles.css?v=20261013w" />
 </head>
 <body>
 <a class="skip" href="#main">本文へ移動</a>
@@ -170,9 +170,10 @@
   <!-- 白黒の紙に、外の光のような黄色がふわっと広がり、ここからサイトに色がつく（スクロールで進む） -->
   <section class="ink-scene" id="ink" data-bg="0">
     <div class="ink-stage">
-      <div class="ink-text">
+      <div class="ink-text" id="ink-target">
         <p>本当は、外に出たかった。</p>
-        <p id="ink-target">でも、制限をかけても、<br />自分で外してしまう。</p>
+        <p>でも、制限をかけても、<br />自分で外してしまう。</p>
+        <p class="ink-after">だから、<br class="sp" />携帯のほうを変えることにした。</p>
       </div>
       <svg class="ink-svg" aria-hidden="true">
         <defs>
@@ -196,7 +197,6 @@
         <g class="ink-splash"></g>
         <path class="ink-drop" d="M0,-26 C7,-12 12,-2 12,6 A12,12 0 0 1 -12,6 C-12,-2 -7,-12 0,-26 Z" />
       </svg>
-      <div class="ink-line"><p>だったら、</p><p class="ink-line2">最初から入っていなければいい。</p></div>
     </div>
   </section>
 
@@ -312,6 +312,6 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261013v"></script>
+<script src="script.js?v=20261013w"></script>
 </body>
 </html>
