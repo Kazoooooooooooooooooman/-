@@ -217,43 +217,34 @@
     measure(); render();
   }
 
-  // 朝から夜までの部屋：絵の中で一日がくり返す。窓の外は太陽から月へ、部屋は暗くなり、夜はスマホの光だけが顔を照らす
+  // 夜の部屋：真っ暗な中で、スマホの光だけが顔を照らす。画面が切り替わるたびに、光がちらちら変わる
   const room = document.getElementById("room");
-  if (room && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  if (room) {
     const dark = room.querySelector(".room-dark");
     const sky = room.querySelector(".rw-sky"), sun = room.querySelector(".rw-sun"), night = room.querySelector(".rw-night");
-    const clamp = (v) => Math.min(1, Math.max(0, v));
-    const seg = (p, a, b) => clamp((p - a) / (b - a));
-    const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
-    const DAY = [243, 242, 237], DUSK = [184, 181, 173], NIGHT = [38, 37, 35];
     const FACE = "26.5% 68%"; // ベッドの顔とスマホのあいだ
-    const CYCLE = 9000; // 一日の長さ（ミリ秒）。昼はさっと過ぎ、夜が長く続く
-    const easeIO = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
-    function render(p) {
-      // 朝〜夕方：太陽がさっと昇って沈む
-      const sunT = easeIO(seg(p, 0.0, 0.3));
-      const sx = 30 + sunT * 140, sy = 125 - Math.sin(sunT * Math.PI) * 95;
-      sun.setAttribute("transform", `translate(${sx.toFixed(1)} ${sy.toFixed(1)})`);
-      sun.style.opacity = (seg(p, 0.0, 0.03) * (1 - seg(p, 0.27, 0.32))).toFixed(3);
-      // 空の色：昼 → 夕方 → 夜 → 夜明け
-      const dusk = seg(p, 0.14, 0.3), toNight = seg(p, 0.3, 0.38), dawn = seg(p, 0.93, 1);
-      let c = toNight > 0 ? mix(DUSK, NIGHT, toNight) : mix(DAY, DUSK, dusk);
-      if (dawn > 0) c = mix(NIGHT, DAY, dawn);
-      sky.style.fill = `rgb(${c.join(",")})`;
-      night.style.opacity = (seg(p, 0.34, 0.42) * (1 - dawn)).toFixed(3);
-      // 部屋の暗さと、顔を照らすスマホの光（少しだけ揺らぐ）
-      const a = (0.3 * dusk + 0.55 * toNight) * (1 - dawn);
-      const glow = seg(p, 0.38, 0.46) * (1 - dawn) * (0.92 + 0.08 * Math.sin(p * 120));
-      const inner = (a * (1 - glow * 0.97)).toFixed(3), mid = (a * (1 - glow * 0.55)).toFixed(3);
-      dark.style.background = `radial-gradient(circle at ${FACE}, rgba(14,13,12,${inner}) 0, rgba(14,13,12,${mid}) 9%, rgba(14,13,12,${a.toFixed(3)}) 22%)`;
+    const A = 0.85; // 部屋の暗さ
+    sky.style.fill = "rgb(38,37,35)";
+    sun.style.opacity = "0";
+    night.style.opacity = "1";
+    function render(t) {
+      // 光の強さ：ゆっくりした揺らぎに、スワイプで画面が変わったような、ときどきの明滅を重ねる
+      const slow = 0.06 * Math.sin(t * 1.3) + 0.04 * Math.sin(t * 3.1 + 1);
+      const swipe = Math.max(0, Math.sin(t * 2.2)) ** 18 * 0.18 - Math.max(0, Math.sin(t * 2.2 + 0.4)) ** 24 * 0.12;
+      const glow = Math.min(1, Math.max(0.55, 0.86 + slow + swipe));
+      const r = (22 + 2.5 * Math.sin(t * 0.9)).toFixed(1);
+      const inner = (A * (1 - glow * 0.97)).toFixed(3), mid = (A * (1 - glow * 0.55)).toFixed(3);
+      dark.style.background = `radial-gradient(circle at ${FACE}, rgba(14,13,12,${inner}) 0, rgba(14,13,12,${mid}) 9%, rgba(14,13,12,${A}) ${r}%)`;
     }
-    let visible = false, start = performance.now(), raf3 = 0;
-    const loop = (now) => { render(((now - start) % CYCLE) / CYCLE); raf3 = visible ? requestAnimationFrame(loop) : 0; };
-    new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
-      if (visible && !raf3) raf3 = requestAnimationFrame(loop);
-    }).observe(room);
-    render(0.1);
+    render(0);
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      let visible = false, raf3 = 0;
+      const loop = (now) => { render(now / 1000); raf3 = visible ? requestAnimationFrame(loop) : 0; };
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        if (visible && !raf3) raf3 = requestAnimationFrame(loop);
+      }).observe(room);
+    }
   }
 
   // 先行予約フォーム
