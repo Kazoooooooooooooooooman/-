@@ -328,6 +328,25 @@ h2 .nw { white-space: nowrap; }
   br.pc { display: none; }
   br.sp { display: inline; }
 }
+/* ---------- 製品：これが Soto Phone ---------- */
+.product-in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.ph { margin: 0; text-align: center; }
+.ph-svg { width: min(100%, 300px); height: auto; overflow: visible; }
+.ph-line { fill: none; stroke: var(--paper-ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ph-line .ph-screen { fill: rgba(31, 30, 28, .05); stroke-width: 1.6; }
+.ph-ui text { font-family: var(--sans); font-size: 17px; letter-spacing: .06em; fill: var(--paper-ink); }
+.ph-ui .ph-time { font-family: var(--latin); font-weight: 500; font-size: 44px; letter-spacing: 0; }
+.ph figcaption { margin-top: 14px; font-size: 12px; letter-spacing: .1em; color: var(--paper-dim); }
+.feats { list-style: none; display: flex; flex-direction: column; gap: 22px; margin-bottom: 36px; }
+.feats li { font-size: 15px; color: var(--paper-dim); line-height: 1.8; }
+.feats b { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(18px, 1.7vw, 22px); color: var(--paper-ink); letter-spacing: .04em; }
+.more { font-size: 14px; letter-spacing: .1em; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+@media (max-width: 760px) {
+  .product-in { grid-template-columns: 1fr; }
+  .ph-svg { width: 170px; }
+  .product .product-copy { text-align: left; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .year-dots i.on { background: var(--paper-ink); transition: none; }
