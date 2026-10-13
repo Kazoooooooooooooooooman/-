@@ -83,8 +83,8 @@ h2 .nw { white-space: nowrap; }
 #problem .wrap:first-child { text-align: center; display: flex; flex-direction: column; align-items: center; }
 /* 1画面に1つのことだけ：165分の画面と、1,000時間の画面を分ける */
 #problem { padding-top: 0; }
-#problem .wrap:first-child, #problem .could { min-height: 100vh; min-height: 100svh; justify-content: center; }
-#problem .could { display: flex; flex-direction: column; align-items: center; margin-top: 0; }
+#problem .wrap:first-child, #problem .year { min-height: 100vh; min-height: 100svh; justify-content: center; }
+#problem .year { display: flex; flex-direction: column; align-items: center; }
 .stat { display: flex; align-items: baseline; justify-content: center; gap: .12em; line-height: 1; margin-bottom: 28px; }
 .stat-n { font-family: var(--latin); font-weight: 800; font-size: clamp(110px, 18vw, 240px); letter-spacing: -.04em; }
 .stat-u { font-family: var(--serif); font-size: clamp(28px, 3.6vw, 48px); }
@@ -101,7 +101,16 @@ h2 .nw { white-space: nowrap; }
 /* データから物語へのつなぎ */
 .ask { font-family: var(--serif); font-size: clamp(18px, 1.9vw, 24px); letter-spacing: .1em; margin-bottom: 18px; }
 .bridge { font-family: var(--serif); font-size: clamp(20px, 2.2vw, 28px); letter-spacing: .14em; margin-top: clamp(80px, 12vh, 130px); opacity: 0; transform: translateY(12px); transition: opacity 1.4s ease 2.4s, transform 1.4s ease 2.4s; }
-.could.is-in .bridge { opacity: 1; transform: none; }
+.year { margin-top: 0; }
+.year.reveal { opacity: 1; transform: none; }
+.year-lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 34px); letter-spacing: .1em; margin-bottom: 34px; }
+.year-lead b { font-weight: 600; }
+.year-dots { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 4px; justify-content: center; }
+.year-dots i { width: 9px; height: 9px; border-radius: 2px; background: rgba(31, 30, 28, .1); }
+.year-dots i.on { transition: background .5s ease; transition-delay: calc(var(--k) * 45ms + .3s); }
+.year.is-in .year-dots i.on { background: var(--paper-ink); }
+.year-cap { font-size: 13px; color: var(--paper-dim); margin-top: 22px; max-width: 34em; }
+.year.is-in .bridge { opacity: 1; transform: none; }
 /* 1,000時間でできること：一行ずつ、ゆっくり現れる */
 .could { margin-top: clamp(80px, 12vh, 130px); }
 .could.reveal { opacity: 1; transform: none; }
@@ -114,7 +123,7 @@ h2 .nw { white-space: nowrap; }
 .could.is-in .could-list li { opacity: 1; transform: none; }
 .could-list b { font-weight: 600; }
 .could-list small { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: .04em; color: var(--paper-dim); margin-top: 4px; }
-.could + .scenes-drawn { margin-top: clamp(70px, 10vh, 110px); }
+.year + .scenes-drawn { margin-top: clamp(40px, 6vh, 80px); }
 .after { font-family: var(--serif); font-size: clamp(18px, 1.9vw, 24px); letter-spacing: .1em; line-height: 2; margin-top: clamp(56px, 9vh, 96px); }
 /* 3枚の絵は、縦に長く並べず、広い画面では横に3つ、スマホでは横にめくるようにする */
 @media (min-width: 900px) {
@@ -331,6 +340,8 @@ h2 .nw { white-space: nowrap; }
   .split { flex-direction: column; align-items: stretch; }
   .reserve-form { grid-template-columns: 1fr; }
   .flow { grid-template-columns: 1fr 1fr; }
+  .year-dots { gap: 2px; }
+  .year-dots i { width: 4px; height: 4px; border-radius: 1px; }
   .flow strong { font-size: 16px; letter-spacing: .02em; }
   .why { padding: 18px 18px; }
   .why-q { font-size: 16px; }
@@ -380,6 +391,7 @@ h2 .nw { white-space: nowrap; }
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .bridge, .could-list li { opacity: 1; transform: none; transition: none; }
+  .year-dots i.on { background: var(--paper-ink); transition: none; }
   .drawn > * { opacity: 1; transform: none; filter: none; transition: none; }
   .bg-move > img, .bg-move > .ov, .ov * { animation: none !important; }
   .ink-scene { height: auto; }
