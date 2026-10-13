@@ -340,7 +340,8 @@ h2 .nw { white-space: nowrap; }
 .feats { list-style: none; display: flex; flex-direction: column; gap: 22px; margin-bottom: 36px; }
 .feats li { font-size: 15px; color: var(--paper-dim); line-height: 1.8; }
 .feats b { display: block; font-family: var(--serif); font-weight: 600; font-size: clamp(18px, 1.7vw, 22px); color: var(--paper-ink); letter-spacing: .04em; }
-.more { font-size: 14px; letter-spacing: .1em; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+.product-btns { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn.btn-line { background: transparent; color: var(--paper-ink); box-shadow: inset 0 0 0 1.5px var(--paper-ink); }
 @media (max-width: 760px) {
   .product-in { grid-template-columns: 1fr; }
   .ph-svg { width: 170px; }
