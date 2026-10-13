@@ -2,7 +2,7 @@
   const EN = document.documentElement.lang === "en";
   const nav = document.querySelector(".nav");
 
-  // 1枚目の絵（写真をもとにした水彩）を風で揺らす：山と空は止めたまま、手前の木と草だけを WebGL でゆらゆらと動かす。
+  // 1枚目の絵（写真をもとにした水彩）を風で揺らす：山と空と草は止めたまま、木だけを WebGL でゆらゆらと動かす。
   // WebGL が使えないとき、「動きを減らす」設定のとき、画面に見えていないときは動かさない（写真はそのまま見える）
   (() => {
     const box = document.querySelector(".hd-photo");
@@ -30,13 +30,10 @@
         // 風は左から吹く。大きなうねりが画面を横切っていき、ときどき強まる
         float gust = .65 + .35 * sin(time * .23 + 1.1);
         float wind = sin(time * .9 - x * 2.4) * .75 + sin(time * 1.7 - x * 4.3 + 1.7) * .25;
-        // 木：根もとは動かず、上ほど大きく揺れる
+        // 木：根もとは動かず、上ほど大きく揺れる。手前の草のあたり（画面の下の方）は動かさない
         float tip = clamp((.95 - y) / .65, 0., 1.);
-        float sway = plant * tip * tip * wind * gust * .0042;
-        // 手前の草：細かく、少し速くそよぐ
-        float near = smoothstep(.74, 1., y);
-        float flutter = plant * near * sin(time * 2.4 - x * 13. + y * 4.) * gust * .0016;
-        uv.x += sway + flutter;
+        float still = 1. - smoothstep(.66, .78, y);
+        uv.x += plant * tip * tip * still * wind * gust * .0042;
         uv = clamp(uv, .001, .999);
         vec3 c = texture2D(tex, uv).rgb;
         // 左の太陽の光が、ゆっくり呼吸する
