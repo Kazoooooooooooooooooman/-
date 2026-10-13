@@ -413,14 +413,14 @@ h2 .nw { white-space: nowrap; }
 .hd-birds {
   position: absolute; left: 0; top: 0; width: clamp(110px, 11vw, 170px); height: auto; overflow: visible;
   fill: none; stroke: #3a4048; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round;
-  opacity: 0; animation: hd-flock 28s linear .4s infinite;
+  opacity: 0; animation: hd-flock 44s linear .4s infinite;
 }
 @keyframes hd-flock {
   0%   { opacity: 0;   transform: translate(-6vw, 27vh) scale(.42); }
-  3%   { opacity: .55; }
-  60%  { opacity: .8; }
-  75%  { opacity: .8;  transform: translate(104vw, 6vh) scale(1); }
-  76%, 100% { opacity: 0; transform: translate(104vw, 6vh) scale(1); }
+  2%   { opacity: .55; }
+  62%  { opacity: .8; }
+  78%  { opacity: .8;  transform: translate(104vw, 6vh) scale(1); }
+  79%, 100% { opacity: 0; transform: translate(104vw, 6vh) scale(1); }
 }
 /* 下の言葉と登録欄が読めるように、草のあたりを少し暗くする */
 .hd-photo::after {
