@@ -40,11 +40,7 @@ br.sp { display: none; }
 }
 .nav.is-scrolled { background: rgba(244, 242, 236, .86); backdrop-filter: blur(10px); padding-top: 14px; padding-bottom: 14px; box-shadow: 0 1px 0 var(--paper-line); }
 .logo { display: flex; align-items: center; gap: 10px; }
-.logo-mark {
-  display: inline-grid; place-items: center;
-  width: 34px; height: 34px; border: 1px solid currentColor; border-radius: 50%;
-  font-family: var(--serif); font-size: 17px;
-}
+.logo-mark { display: block; height: 34px; width: auto; flex: none; }
 .logo-word { font-family: var(--latin); font-weight: 500; letter-spacing: .32em; font-size: 14px; }
 .nav-links { display: flex; gap: clamp(14px, 2.4vw, 32px); font-size: 14px; align-items: center; }
 .nav-links a { opacity: .78; transition: opacity .2s; }
