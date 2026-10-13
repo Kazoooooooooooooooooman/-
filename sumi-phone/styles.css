@@ -92,25 +92,17 @@ h2 .nw { white-space: nowrap; }
 .drawn-art img, .room-art > img { display: block; width: 100%; height: auto; mix-blend-mode: multiply; }
 .drawn-line { word-break: auto-phrase; text-wrap: pretty; font-family: var(--serif); font-size: clamp(19px, 2vw, 26px); line-height: 2; }
 .drawn-line .nw { white-space: nowrap; }
-.turn { margin: clamp(100px, 16vh, 170px) 0 0; font-size: clamp(30px, 4.6vw, 60px); }
+.turn { margin: clamp(70px, 11vh, 120px) 0 0; font-size: clamp(30px, 4.6vw, 60px); }
 
 /* データから物語へのつなぎ */
 .ask { font-family: var(--serif); font-size: clamp(18px, 1.9vw, 24px); letter-spacing: .1em; margin-bottom: 18px; }
-.year { margin-top: clamp(90px, 14vh, 150px); }
-.year.reveal { opacity: 1; transform: none; }
-.year-lead { font-family: var(--serif); font-size: clamp(22px, 2.6vw, 34px); letter-spacing: .1em; margin-bottom: 34px; }
-.year-lead b { font-weight: 600; }
-.year-dots { display: grid; grid-auto-flow: column; grid-template-rows: repeat(7, 1fr); gap: 4px; justify-content: center; }
-.year-dots i { width: 9px; height: 9px; border-radius: 2px; background: rgba(31, 30, 28, .1); }
-.year-dots i.on { transition: background .5s ease; transition-delay: calc(var(--k) * 45ms + .3s); }
-.year.is-in .year-dots i.on { background: var(--paper-ink); }
-.year-cap { font-size: 13px; color: var(--paper-dim); margin-top: 22px; max-width: 34em; }
 .bridge { font-family: var(--serif); font-size: clamp(20px, 2.2vw, 28px); letter-spacing: .14em; margin-top: clamp(80px, 12vh, 130px); opacity: 0; transform: translateY(12px); transition: opacity 1.4s ease 2.4s, transform 1.4s ease 2.4s; }
 .could.is-in .bridge { opacity: 1; transform: none; }
 /* 1,000時間でできること：一行ずつ、ゆっくり現れる */
 .could { margin-top: clamp(80px, 12vh, 130px); }
 .could.reveal { opacity: 1; transform: none; }
-.could-lead { font-family: var(--serif); font-size: clamp(20px, 2.2vw, 28px); letter-spacing: .1em; margin-bottom: 26px; }
+.could-lead { font-family: var(--serif); font-size: clamp(20px, 2.2vw, 28px); letter-spacing: .1em; line-height: 1.9; margin-bottom: 26px; }
+.could-lead b { font-weight: 600; }
 .could-list { list-style: none; display: flex; flex-direction: column; gap: 20px; }
 .could-list li { font-family: var(--serif); font-size: clamp(17px, 1.6vw, 21px); letter-spacing: .06em; opacity: 0; transform: translateY(8px); transition: opacity .9s ease, transform .9s ease; }
 .could-list li:nth-child(2) { transition-delay: .5s; }
@@ -119,6 +111,22 @@ h2 .nw { white-space: nowrap; }
 .could-list b { font-weight: 600; }
 .could-list small { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: .04em; color: var(--paper-dim); margin-top: 4px; }
 .could + .scenes-drawn { margin-top: clamp(70px, 10vh, 110px); }
+/* 3枚の絵は、縦に長く並べず、広い画面では横に3つ、スマホでは横にめくるようにする */
+@media (min-width: 900px) {
+  .scenes-drawn { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 3vw, 48px); align-items: start; }
+  .scenes-drawn .drawn > figure { width: 100%; }
+  .scenes-drawn .drawn > .swipe-art { width: 60%; }
+  .scenes-drawn .drawn-line { font-size: clamp(15px, 1.25vw, 18px); line-height: 1.9; }
+}
+@media (max-width: 899px) {
+  .scenes-drawn {
+    flex-direction: row; align-items: flex-start; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory;
+    width: 100vw; margin-inline: calc(50% - 50vw); padding: 0 var(--gutter) 8px; scroll-padding-inline: var(--gutter); scrollbar-width: none;
+  }
+  .scenes-drawn::-webkit-scrollbar { display: none; }
+  .scenes-drawn .drawn { flex: 0 0 80%; scroll-snap-align: center; }
+  .scenes-drawn .drawn-line { font-size: 16px; line-height: 1.9; }
+}
 
 /* 終わりのないフィードをスワイプし続ける絵 */
 .swipe-art { position: relative; width: 100%; max-width: 640px; justify-self: center; }
@@ -205,7 +213,7 @@ h2 .nw { white-space: nowrap; }
 .day-cap .day-time { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: .4em; color: var(--paper-dim); }
 
 /* ---------- 白黒から色へ：黄色が紙からふわっと広がる（スクロールで進む） ---------- */
-.ink-scene { position: relative; height: 340vh; }
+.ink-scene { position: relative; height: 230vh; }
 .ink-stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; display: grid; place-items: center; padding: 0 20px; }
 .ink-text { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 1.2em; font-family: var(--serif); font-size: clamp(19px, 2.2vw, 28px); line-height: 2; will-change: opacity, filter; }
 .drawn-box { padding: .5em 1.4em; border: 1.5px solid var(--paper-ink); border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px; }
@@ -315,8 +323,6 @@ h2 .nw { white-space: nowrap; }
   .inout { grid-template-columns: minmax(0, 1fr); gap: 22px; }
   .split { flex-direction: column; align-items: stretch; }
   .reserve-form { grid-template-columns: 1fr; }
-  .year-dots { gap: 2px; }
-  .year-dots i { width: 4px; height: 4px; border-radius: 1px; }
   .flow { grid-template-columns: 1fr 1fr; }
   .flow strong { font-size: 16px; letter-spacing: .02em; }
   .why { padding: 18px 18px; }
@@ -350,7 +356,6 @@ h2 .nw { white-space: nowrap; }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
-  .year-dots i.on { background: var(--paper-ink); transition: none; }
   .bridge, .could-list li { opacity: 1; transform: none; transition: none; }
   .drawn > * { opacity: 1; transform: none; filter: none; transition: none; }
   .bg-move > img, .bg-move > .ov, .ov * { animation: none !important; }
