@@ -81,6 +81,10 @@ h2 .nw { white-space: nowrap; }
 /* ---------- 2. はじまり ---------- */
 /* 数字と言葉は中央に。絵は絵本のように、絵の下に一行ずつ */
 #problem .wrap:first-child { text-align: center; display: flex; flex-direction: column; align-items: center; }
+/* 1画面に1つのことだけ：165分の画面と、1,000時間の画面を分ける */
+#problem { padding-top: 0; }
+#problem .wrap:first-child, #problem .could { min-height: 100vh; min-height: 100svh; justify-content: center; }
+#problem .could { display: flex; flex-direction: column; align-items: center; margin-top: 0; }
 .stat { display: flex; align-items: baseline; justify-content: center; gap: .12em; line-height: 1; margin-bottom: 28px; }
 .stat-n { font-family: var(--latin); font-weight: 800; font-size: clamp(110px, 18vw, 240px); letter-spacing: -.04em; }
 .stat-u { font-family: var(--serif); font-size: clamp(28px, 3.6vw, 48px); }
