@@ -409,6 +409,19 @@ h2 .nw { white-space: nowrap; }
 .hd-photo img, .hd-wind { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .hd-wind { opacity: 0; transition: opacity .8s ease; }
 .hd-photo.is-live .hd-wind { opacity: 1; }
+/* 鳥の群れ：遠く（小さく、薄く）から近づきながら空を渡り、しばらく間をおいて、また飛んでくる */
+.hd-birds {
+  position: absolute; left: 0; top: 0; width: clamp(110px, 11vw, 170px); height: auto; overflow: visible;
+  fill: none; stroke: #3a4048; stroke-width: 2.3; stroke-linecap: round; stroke-linejoin: round;
+  opacity: 0; animation: hd-flock 34s linear 3s infinite;
+}
+@keyframes hd-flock {
+  0%   { opacity: 0;   transform: translate(-14vw, 27vh) scale(.42); }
+  6%   { opacity: .55; }
+  48%  { opacity: .8; }
+  62%  { opacity: .8;  transform: translate(104vw, 6vh) scale(1); }
+  63%, 100% { opacity: 0; transform: translate(104vw, 6vh) scale(1); }
+}
 /* 下の言葉と登録欄が読めるように、草のあたりを少し暗くする */
 .hd-photo::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
@@ -462,6 +475,7 @@ h2 .nw { white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hd-leaf { animation: none; transform: perspective(1.7em) rotateY(-70deg); }
+  .hd-birds { display: none; }
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
 }
