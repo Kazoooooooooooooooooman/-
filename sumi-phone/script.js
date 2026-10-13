@@ -132,7 +132,7 @@
     onScrollBg();
   }
 
-  // 色のシーン：白黒の紙に、淡い黄色がにじんで広がり、最初の色として淡く残る（画面に入ったら一度だけ）
+  // 色のシーン：白黒の紙に、淡い黄色のにじみが一つ。最初から落ち着いた姿で置く
   const ink = document.getElementById("ink");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (ink && !reduce) {
@@ -198,23 +198,8 @@
       line.style.opacity = say.toFixed(3);
       line.style.transform = `translateY(${((1 - say) * 8).toFixed(1)}px)`;
     }
-    // スクロールで引っぱらず、画面に入ったら一度だけ、絵の具がにじむように流れる（約4秒）
-    const P0 = 0.24, P1 = 1, DUR = 4200;
-    let played = false, shown = P0;
-    const play = () => {
-      played = true;
-      const t0 = performance.now();
-      const step = (now) => {
-        const k = Math.min(1, (now - t0) / DUR);
-        shown = P0 + (P1 - P0) * k;
-        render(shown);
-        if (k < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    };
-    new IntersectionObserver((es) => {
-      if (es[0].isIntersecting && !played) setTimeout(play, 1600); // 最初の文を読む時間をおいてから
-    }, { threshold: 0.6 }).observe(stage);
+    // 動かさず、にじみが落ち着いた姿で最初から置いておく
+    const shown = 1;
     window.addEventListener("resize", () => { measure(); render(shown); });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(shown); });
     measure(); render(shown);
