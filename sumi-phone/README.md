@@ -19,6 +19,7 @@
 
 ## 画像の作り直し
 
+- 1枚目の背景（写真をもとにしたリアル寄りの水彩）：`python3 tools/gen_hero_watercolor.py 元の写真.jpg images/hero-watercolor.jpg`
 - 後半の水彩の背景：`python3 tools/gen_watercolor.py images`（numpy と Pillow が必要）
 - 絵本ページの紙：`python3 tools/gen_backgrounds.py images 10-paper`
 - スケッチの切り出し：`python3 tools/clean_sketches.py images/story`（pillow-heif が必要。元の HEIC の場所はスクリプト内で指定）

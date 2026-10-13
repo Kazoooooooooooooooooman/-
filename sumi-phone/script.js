@@ -2,7 +2,7 @@
   const EN = document.documentElement.lang === "en";
   const nav = document.querySelector(".nav");
 
-  // 1枚目の写真を風で揺らす：山と空は止めたまま、手前の木と草だけを WebGL でゆらゆらと動かす。
+  // 1枚目の絵（写真をもとにした水彩）を風で揺らす：山と空は止めたまま、手前の木と草だけを WebGL でゆらゆらと動かす。
   // WebGL が使えないとき、「動きを減らす」設定のとき、画面に見えていないときは動かさない（写真はそのまま見える）
   (() => {
     const box = document.querySelector(".hd-photo");
