@@ -113,7 +113,9 @@ h2 .nw { white-space: nowrap; }
 .could + .scenes-drawn { margin-top: clamp(70px, 10vh, 110px); }
 /* 3枚の絵は、縦に長く並べず、広い画面では横に3つ、スマホでは横にめくるようにする */
 @media (min-width: 900px) {
-  .scenes-drawn { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 3vw, 48px); align-items: start; }
+  .scenes-drawn { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 3vw, 48px); align-items: stretch; }
+  /* 絵の高さがちがっても、言葉の行はそろえる */
+  .scenes-drawn .drawn { justify-content: flex-end; }
   .scenes-drawn .drawn > figure { width: 100%; }
   .scenes-drawn .drawn > .swipe-art { width: 60%; }
   .scenes-drawn .drawn-line { font-size: clamp(15px, 1.25vw, 18px); line-height: 1.9; }
@@ -354,6 +356,22 @@ h2 .nw { white-space: nowrap; }
   .product .product-copy { text-align: left; }
 }
 
+/* 3枚目：ばつ印はそのまま、外の友達と木だけが、ゆっくり遠ざかっては戻る。部屋の画面は、ちらちら光る */
+.outside-art { position: relative; }
+.outside-art .oa { position: absolute; height: auto; mix-blend-mode: multiply; animation: oa-away 7s ease-in-out infinite alternate; }
+.outside-art .oa-friends { left: 75.91%; top: 0; width: 21.82%; }
+.outside-art .oa-tree { left: 77.45%; top: 43.26%; width: 12.36%; animation-delay: -1.6s; }
+@keyframes oa-away {
+  0%, 15% { transform: none; opacity: 1; }
+  100% { transform: translate(14%, -4%) scale(.82); opacity: .18; }
+}
+.oa-glow {
+  position: absolute; left: 38%; top: 36%; width: 13.5%; height: 13%; border-radius: 3px;
+  /* 画面の光：青白い色が、テレビのようにちらつく */
+  background: rgba(118, 142, 176, .5); mix-blend-mode: multiply; animation: oa-glow 2.6s steps(1, end) infinite;
+}
+@keyframes oa-glow { 0% { opacity: .35; } 18% { opacity: .7; } 34% { opacity: .45; } 52% { opacity: .8; } 70% { opacity: .5; } 86% { opacity: .65; } }
+
 @media (prefers-reduced-motion: reduce) {
   .reveal { opacity: 1; transform: none; transition: none; }
   .bridge, .could-list li { opacity: 1; transform: none; transition: none; }
@@ -364,6 +382,7 @@ h2 .nw { white-space: nowrap; }
   .ink-svg { display: none; }
   .ink-line { position: static; opacity: 1; }
   .swipe-feed, .swipe-thumb { animation: none; }
+  .outside-art .oa, .oa-glow { animation: none; }
 }
 
 /* ---------- 1枚目：SOTO の最後の O が、外へ出る扉になっている ---------- */
