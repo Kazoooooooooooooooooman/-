@@ -132,7 +132,7 @@
     onScrollBg();
   }
 
-  // 色のシーン：白黒の紙に、外の光のような淡い緑がにじんで広がり、最初の色として淡く残る
+  // 色のシーン：白黒の紙に、淡い黄色がにじんで広がり、最初の色として淡く残る（画面に入ったら一度だけ）
   const ink = document.getElementById("ink");
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (ink && !reduce) {
@@ -164,9 +164,7 @@
       cx = tr.left - sr.left + tr.width / 2;
       cy = tr.top - sr.top + tr.height / 2;
     }
-    function render() {
-      const r = ink.getBoundingClientRect();
-      const p = clamp(-r.top / (r.height - window.innerHeight));
+    function render(p) {
       const R = Math.min(W, Hh) * 0.3;
       // 1. 一滴が落ちる
       const fall = ease(seg(p, 0.10, 0.26));
@@ -209,12 +207,26 @@
       line2.style.opacity = say2.toFixed(3);
       line2.style.transform = `translateY(${((1 - say2) * 10).toFixed(1)}px)`;
     }
-    let raf = 0;
-    const queue = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; render(); }); };
-    window.addEventListener("scroll", queue, { passive: true });
-    window.addEventListener("resize", () => { measure(); queue(); });
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(); });
-    measure(); render();
+    // スクロールで引っぱらず、画面に入ったら一度だけ、絵の具がにじむように流れる（約4秒）
+    const P0 = 0.24, P1 = 1, DUR = 4200;
+    let played = false, shown = P0;
+    const play = () => {
+      played = true;
+      const t0 = performance.now();
+      const step = (now) => {
+        const k = Math.min(1, (now - t0) / DUR);
+        shown = P0 + (P1 - P0) * k;
+        render(shown);
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    new IntersectionObserver((es) => {
+      if (es[0].isIntersecting && !played) setTimeout(play, 900); // 最初の文を読む時間をおいてから
+    }, { threshold: 0.6 }).observe(stage);
+    window.addEventListener("resize", () => { measure(); render(shown); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); render(shown); });
+    measure(); render(shown);
   }
 
   // 夜の部屋：真っ暗な中で、スマホの光だけが顔を照らす。画面が切り替わるたびに、光がちらちら変わる
