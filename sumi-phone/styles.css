@@ -664,14 +664,4 @@ h2 .nw { white-space: nowrap; }
   .legal-dl dd { padding-top: 4px; }
 }
 
-/* ---------- 登録のあとに出す「優先予約」 ---------- */
-.deposit { margin-top: 16px; padding: 20px 22px; border-radius: 12px; background: rgba(255, 255, 255, .82); color: var(--paper-ink); text-align: left; text-shadow: none; }
-.deposit[hidden] { display: none; }
-.deposit-h { font-family: var(--serif); font-size: 17px; letter-spacing: .06em; line-height: 1.6; margin-bottom: 8px; }
-.deposit-h small { font-family: var(--sans); font-size: 12px; color: var(--paper-dim); letter-spacing: .04em; margin-left: .4em; }
-.deposit ul { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; font-size: 14px; line-height: 1.7; }
-.deposit li::before { content: "・"; }
-.deposit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
-.deposit-fine { font-size: 12px; color: var(--paper-dim); }
-.deposit-fine a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-.hd-cta .deposit { width: 100%; }
+.reserve-status { margin: 28px 0; padding: 16px 20px; border-radius: 8px; background: rgba(255, 255, 255, .6); border: 1px solid var(--paper-line); }

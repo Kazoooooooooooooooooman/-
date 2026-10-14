@@ -28,9 +28,6 @@ const SITE_URL = "https://sotophone.jp/";
 const SENDER_ORG = "Soto Phone（代表 佐々木 一真）";
 const SENDER_ADDRESS = "〒107-0062 東京都港区南青山3丁目1番36号 青山丸竹ビル6F";
 const CONTACT = "hello@sotophone.jp";
-// 優先予約（3,000円・いつでも全額返金）の Stripe Payment Link。入れると、確認メールに案内が1つ入る。空なら入らない。
-// サイトの script.js の DEPOSIT_URL と同じ URL を入れる
-const DEPOSIT_URL = "";
 // このウェブアプリの URL（デプロイの画面に出る …/exec）。メールの「配信停止・削除」のリンクに使う。
 // Google から自動で取ると空になることがあるので、ここに書いておく。デプロイし直して URL が変わったら、ここも直す
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwa7cTRb-GxlCZKVGaWIP2FuVBQFpsDR7FpMjVoYrGJ9G6EyfLiTS_iIfux6H1iVB0Y/exec";
@@ -252,9 +249,6 @@ function mailJa(trial, link) {
     "",
     "登録は無料です。購入の確定やお支払いは発生しません。",
     "",
-    DEPOSIT_URL ? "もう一歩進めたい方へ：優先予約（3,000円・いつでも全額返金）で、超早割の価格で買える枠と、創業メンバー番号をお渡しします。" : null,
-    DEPOSIT_URL ? DEPOSIT_URL : null,
-    DEPOSIT_URL ? "" : null,
     "楽しさは、画面の外に。",
     "Soto Phone",
     SITE_URL,
@@ -281,9 +275,6 @@ function mailEn(trial, link) {
     "",
     "Registration is free. Nothing is purchased and no payment is taken.",
     "",
-    DEPOSIT_URL ? "Want to go one step further? A Priority Reservation (¥3,000, full refund any time) holds a place at the super early-bird price and gives you a founding member number." : null,
-    DEPOSIT_URL ? DEPOSIT_URL + "?locale=en" : null,
-    DEPOSIT_URL ? "" : null,
     "Joy lives outside the screen.",
     "Soto Phone",
     SITE_URL,

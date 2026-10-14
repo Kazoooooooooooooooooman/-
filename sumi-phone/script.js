@@ -249,9 +249,6 @@
   // プライバシーポリシーの版（privacy.html の「最終更新」の日付）。登録と一緒に送り、同意の記録に残す
   const POLICY_VERSION = "2026-10-14";
   const SENT_KEY = "soto-preorder";
-  // 優先予約（3,000円・いつでも全額返金）。Stripe の Payment Link の URL（https://buy.stripe.com/…）を入れると、
-  // 登録のあとと、よくある質問に出るようになる。空のあいだは、どこにも出ない。出す前の確認は README の「優先予約を始める」
-  const DEPOSIT_URL = "";
   const CODE_KEY = "soto-code"; // この人の紹介コード（友だちに送るリンクに付ける。メールアドレスとは結びつけて残さない）
   const FROM_KEY = "soto-from"; // 最初に来たときの経路（?from= と、どのサイトから来たか）
   const store_ = {
@@ -339,7 +336,6 @@
       msg.append(" ", msgButton(EN ? "Wrong address? Register again" : "アドレスを間違えたときは、登録し直す", reopen));
       if (!msg.nextElementSibling || !msg.nextElementSibling.classList.contains("share")) {
         msg.after(shareBox());
-        if (DEPOSIT_URL) msg.after(depositBox(data.email));
       }
     });
     document.dispatchEvent(new Event("soto:registered"));
@@ -350,7 +346,7 @@
   function reopen() {
     try { localStorage.removeItem(SENT_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
     forms.forEach(({ form, msg }) => {
-      while (msg.nextElementSibling && /\b(share|deposit)\b/.test(msg.nextElementSibling.className)) msg.nextElementSibling.remove();
+      if (msg.nextElementSibling && msg.nextElementSibling.classList.contains("share")) msg.nextElementSibling.remove();
       form.hidden = false;
       delete form.dataset.checked;
       form.querySelector("button[type=submit]").disabled = false;
@@ -360,23 +356,6 @@
     const first = forms[0] && forms[0].form.querySelector("input[type=email]");
     if (first) first.focus();
   }
-
-  // 登録のすぐあとに、優先予約を1つだけ案内する。メールアドレスと紹介コードを Stripe の画面に引き継ぐ
-  function depositBox(email) {
-    const box = document.createElement("div");
-    box.className = "deposit";
-    const params = new URLSearchParams();
-    if (email) params.set("prefilled_email", email);
-    params.set("client_reference_id", myCode());
-    if (EN) params.set("locale", "en");
-    const legal = EN ? "tokushoho-en.html" : "tokushoho.html";
-    box.innerHTML = EN
-      ? `<p class="deposit-h">Priority Reservation<small>¥3,000, full refund any time</small></p><ul><li>Hold a place at the super early-bird price, before anyone else</li><li>A founding member number, from No.001</li></ul><div class="deposit-row"><a class="btn btn-cta" href="#"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Reserve for ¥3,000</span></a><span class="deposit-fine">Taken off the phone’s price. <a href="${legal}">Legal notice</a></span></div>`
-      : `<p class="deposit-h">優先予約<small>3,000円・いつでも全額返金</small></p><ul><li>超早割の価格で買える枠を、先に確保</li><li>創業メンバー番号（No.001 から順に）</li></ul><div class="deposit-row"><a class="btn btn-cta" href="#"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">3,000円で優先予約する</span></a><span class="deposit-fine">本体の代金から差し引きます。<a href="${legal}">特定商取引法に基づく表記</a></span></div>`;
-    box.querySelector(".btn").href = DEPOSIT_URL + (DEPOSIT_URL.includes("?") ? "&" : "?") + params.toString();
-    return box;
-  }
-  if (DEPOSIT_URL) document.querySelectorAll("[data-deposit]").forEach((el) => { el.hidden = false; });
 
   // 登録のすぐあとに、友だちに教えてもらう。リンクには紹介コードが付き、そこから登録した人の行に「紹介」として残る
   function shareBox() {
