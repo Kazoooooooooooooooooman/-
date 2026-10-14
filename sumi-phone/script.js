@@ -272,6 +272,10 @@
     if (!first || (!first.from && !first.site && !first.r && (from || site || r))) {
       first = { from, site, r };
       store_.set(FROM_KEY, JSON.stringify(first));
+    } else if (r && !first.r) {
+      // 前に検索などで一度来ていた人が、あとから紹介のリンクで来たときも、紹介は記録する（経路は最初のまま）
+      first.r = r;
+      store_.set(FROM_KEY, JSON.stringify(first));
     }
     return first;
   })();
