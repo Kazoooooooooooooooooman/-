@@ -111,7 +111,7 @@ h2 .nw { white-space: nowrap; }
 #problem .wrap:first-child { text-align: center; display: flex; flex-direction: column; align-items: center; }
 /* 1画面に1つのことだけ：165分の画面と、1,000時間の画面を分ける */
 #problem { padding-top: 0; }
-#problem .wrap:first-child, #problem .year { min-height: 100vh; min-height: 100svh; justify-content: center; }
+#problem .wrap:first-child, #problem .year { min-height: 72vh; min-height: 72svh; justify-content: center; }
 #problem .year { display: flex; flex-direction: column; align-items: center; }
 .stat { display: flex; align-items: baseline; justify-content: center; gap: .12em; line-height: 1; margin-bottom: 28px; }
 .stat-n { font-family: var(--latin); font-weight: 800; font-size: clamp(110px, 18vw, 240px); letter-spacing: -.04em; }
@@ -252,7 +252,7 @@ h2 .nw { white-space: nowrap; }
 .sec.on-color + .sec.on-color, .day-panel + .sec, .sec + .day-panel { border-top: 0; }
 .card { background: rgba(244, 242, 236, .86); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 10px; padding: clamp(36px, 6vw, 80px); box-shadow: 0 20px 60px rgba(31, 30, 28, .08); }
 .card.center { text-align: center; }
-.day-panel { min-height: 100vh; min-height: 100svh; display: flex; align-items: flex-end; justify-content: center; padding: 0 20px clamp(80px, 16vh, 160px); }
+.day-panel { min-height: 76vh; min-height: 76svh; display: flex; align-items: flex-end; justify-content: center; padding: 0 20px clamp(80px, 16vh, 160px); }
 .day-cap { word-break: auto-phrase; text-wrap: balance; font-family: var(--serif); font-size: clamp(24px, 3.4vw, 44px); line-height: 1.6; text-align: center; letter-spacing: .08em; padding: .5em 1.2em; border-radius: 10px; background: rgba(244, 242, 236, .78); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .day-cap .day-time { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: .4em; color: var(--paper-dim); }
 
@@ -626,3 +626,30 @@ h2 .nw { white-space: nowrap; }
 @media (max-width: 760px) {
   .reserve-form select, .reserve-form input[type=email] { font-size: 16px; }
 }
+
+/* ---------- よくある質問（開け閉めできる） ---------- */
+.faq { border-top: 1px solid var(--paper-line); }
+.faq-item { border-bottom: 1px solid var(--paper-line); }
+.faq-item summary {
+  list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  min-height: 56px; padding: 14px 4px; font-family: var(--serif); font-size: clamp(16px, 1.5vw, 18px); letter-spacing: .06em; line-height: 1.6;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: ""; flex: none; width: 9px; height: 9px; margin-right: 6px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: translateY(-3px) rotate(45deg); transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+}
+.faq-item[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+.faq-item summary:focus-visible { outline: 2px solid var(--paper-ink); outline-offset: 2px; border-radius: 4px; }
+.faq-item p { padding: 0 4px 20px; font-size: 15px; line-height: 1.9; color: var(--paper-dim); }
+@media (prefers-reduced-motion: reduce) { .faq-item summary::after { transition: none; } }
+
+/* 物語の言葉は、画面の真ん中に来たものだけを見せる。区切りを短くしても、次の言葉が先に見えないように */
+.solo { transition: opacity .7s ease; }
+.js-solo .solo:not(.is-solo) { opacity: 0; }
+@media (prefers-reduced-motion: reduce) { .js-solo .solo:not(.is-solo) { opacity: 1; } }
+.reg-count { font-size: 13px; letter-spacing: .08em; color: var(--paper-dim); margin: 0 0 16px; }
+.reg-count::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: #e0502e; vertical-align: middle; }
+/* 日本語の1枚目は、英語の「Digital Detox Phone」のかわりに、何の携帯かを日本語で（行は増やさない） */
+.hd-eyebrow.hd-eyebrow-ja { font-size: 12px; letter-spacing: .32em; text-transform: none; }

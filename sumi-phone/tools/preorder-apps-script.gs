@@ -112,12 +112,36 @@ function doPost(e) {
   }
 }
 
+// サイトに出す登録人数。水増しにならないよう、次の条件をすべて満たす人だけを数える。
+// ・確認メールを送れた（「確認メール」に日時が入っている）・配信を止めていない・テストの登録ではない（経路が test でない）
+// ・同じアドレスは1人。サイトを開くたびにシートを読まないよう、10分間は覚えておく
+function verifiedCount() {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get("verifiedCount");
+  if (hit !== null) return Number(hit);
+  const sheet = getSheet();
+  const last = sheet.getLastRow();
+  let n = 0;
+  if (last > 1) {
+    const rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
+    const seen = {};
+    rows.forEach((r) => {
+      const email = String(r[1] || "").trim().toLowerCase();
+      if (!email || seen[email] || !r[MAIL_COL - 1] || r[STOP_COL - 1] || String(r[9] || "") === "test") return;
+      seen[email] = true;
+      n++;
+    });
+  }
+  cache.put("verifiedCount", String(n), 600);
+  return n;
+}
+
 // ウェブアプリの URL を開いたとき
-// ・何も付けずに開く：登録数を返す（確かめる用）
+// ・何も付けずに開く：登録数を返す（count は確認メールが届いた人の数でサイトに出す数、rows はシートの行数）
 // ・メールの「配信停止・データ削除」のリンクから開く：確認の画面を出し、ボタンを押したら停止または削除する
 function doGet(e) {
   const p = (e && e.parameter) || {};
-  if (!p.e) return reply({ count: Math.max(getSheet().getLastRow() - 1, 0) });
+  if (!p.e) return reply({ count: verifiedCount(), rows: Math.max(getSheet().getLastRow() - 1, 0) });
   const email = String(p.e).trim().toLowerCase();
   const en = p.l === "en";
   if (p.t !== tokenFor(email)) return page(en ? "This link is not valid." : "このリンクは使えません。", en ? "Please contact " + CONTACT + "." : CONTACT + " までご連絡ください。", en);

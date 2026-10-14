@@ -606,3 +606,53 @@
   const box = document.getElementById("trial-opt");
   document.querySelectorAll("a[data-trial]").forEach((a) => a.addEventListener("click", () => { if (box && box.type === "checkbox") box.checked = true; }));
 })();
+
+/* 物語の言葉と絵（165分、42日、3枚の絵、残るのは…、一日の場面）は、画面の真ん中の帯に入っているあいだだけ見せる。
+   余白を含んだ箱ではなく、中の言葉と絵そのものの位置で判定する（箱で見ると、隣の言葉と同時に見えてしまう） */
+(() => {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const els = [...document.querySelectorAll("#problem > .wrap:first-child, #problem .year, #problem .drawn, #problem > .wrap.center:last-child, .day-panel .day-cap")];
+  if (!els.length) return;
+  els.forEach((el) => el.classList.add("solo"));
+  document.documentElement.classList.add("js-solo");
+  const span = (el) => {
+    const kids = el.children.length ? [...el.children] : [el];
+    let top = Infinity, bottom = -Infinity;
+    kids.forEach((k) => { const r = k.getBoundingClientRect(); if (r.height) { top = Math.min(top, r.top); bottom = Math.max(bottom, r.bottom); } });
+    return [top, bottom];
+  };
+  let queued = false;
+  const update = () => {
+    queued = false;
+    const h = window.innerHeight, bandTop = h * 0.3, bandBottom = h * 0.7;
+    els.forEach((el) => { const [t, b] = span(el); el.classList.toggle("is-solo", b > bandTop && t < bandBottom); });
+  };
+  const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  update();
+})();
+
+/* 登録人数：確認メールが届いた人だけを数えた数（Apps Script の verifiedCount）を、最後の登録欄の上に出す。
+   少ないうちは逆効果なので、SHOW_FROM 人を超えるまでは出さない。最後の登録欄に近づいたときに一度だけ取りに行く */
+(() => {
+  const EN = document.documentElement.lang === "en";
+  const ENDPOINT = "https://script.google.com/macros/s/AKfycbwa7cTRb-GxlCZKVGaWIP2FuVBQFpsDR7FpMjVoYrGJ9G6EyfLiTS_iIfux6H1iVB0Y/exec";
+  const SHOW_FROM = 100;
+  const form = document.getElementById("reserve-form");
+  if (!form || window.claude || !("IntersectionObserver" in window)) return;
+  const io = new IntersectionObserver(async (es) => {
+    if (!es.some((e) => e.isIntersecting)) return;
+    io.disconnect();
+    try {
+      const res = await fetch(ENDPOINT);
+      const n = Number((await res.json()).count);
+      if (!(n >= SHOW_FROM)) return;
+      const p = document.createElement("p");
+      p.className = "reg-count";
+      p.textContent = EN ? `${n.toLocaleString("en")} people have signed up.` : `${n.toLocaleString("ja")}人が登録しています。`;
+      form.before(p);
+    } catch (_) { /* 数が取れなくても登録はできる */ }
+  }, { rootMargin: "600px 0px" });
+  io.observe(form);
+})();
