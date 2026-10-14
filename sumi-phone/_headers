@@ -2,6 +2,12 @@
 # ページと CSS・JS は、毎回新しいものがないか確かめる（古いものが残って、更新が見えない問題を防ぐ）
 /*
   Cache-Control: no-cache
-# フォントは中身が変わらないので、長く保存してよい
+# フォントは中身が変わらないので、長く保存してよい。
+# 上の /* の設定も重なってかかるので、「! Cache-Control」で先に外してから付け直す（外さないと「no-cache, public, …」とつながってしまう）
 /fonts/*
+  ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
+# 絵は1週間保存する（2回目からすぐ出る）。差し替えるときは、ファイル名を変えるか、1週間待つ
+/images/*
+  ! Cache-Control
+  Cache-Control: public, max-age=604800

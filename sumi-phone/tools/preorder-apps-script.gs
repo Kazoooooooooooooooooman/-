@@ -7,10 +7,15 @@
 // メールの最後には、配信停止とデータ削除のリンクが入る（このウェブアプリの URL に、本人だけが使える印を付けたもの）。
 
 const SHEET_NAME = "先行予約";
-const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止"];
+const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止", "フォーム", "経路", "参照元", "紹介コード", "紹介した人"];
 const MAIL_COL = 6; // 「確認メール」の列（送った日時が入る）
 const CONSENT_COL = 7; // 「同意」の列（どの方法で、どの版のプライバシーポリシーに同意したか）
 const STOP_COL = 8; // 「配信停止」の列（停止した日時が入る。入っている人には、お知らせを送らない）
+// 9〜13列目：どこから来たか。「フォーム」は1枚目（hero）か最後（bottom）か、「経路」はリンクの ?from=（insta、card など）、
+// 「参照元」は来る前に見ていたサイト、「紹介コード」はこの人が友だちに送るリンクの印、「紹介した人」はこの人を紹介した人の紹介コード。
+// 紹介した人数は、空いている列に =COUNTIF(M:M, L2) と入れると数えられる
+const FORM_COL = 9;
+const CODE_COL = 12;
 
 // ---- メールの設定（ここだけ書き換えればよい） ----
 const SENDER_NAME = "Soto Phone";
@@ -77,6 +82,18 @@ function doPost(e) {
       rowIndex = sheet.getLastRow();
     }
     sheet.getRange(rowIndex, CONSENT_COL).setValue(consent);
+    // 経路と紹介。登録し直した人は、前の経路と紹介コードをそのまま残す（最初に来た経路のほうが大事なため）
+    const tag = (v, n) => String(v || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, n);
+    const prev = sheet.getRange(rowIndex, FORM_COL, 1, 5).getValues()[0];
+    const code = prev[3] || tag(data.code, 12);
+    const invitedBy = tag(data.invitedBy, 12);
+    sheet.getRange(rowIndex, FORM_COL, 1, 5).setValues([[
+      data.source === "hero" ? "1枚目" : "最後",
+      prev[1] || tag(data.from, 40),
+      prev[2] || tag(data.site, 60),
+      code,
+      prev[4] || (invitedBy !== code ? invitedBy : ""),
+    ]]);
     // 配信を停止していた人が登録し直したら、もう一度お知らせを受け取れるようにする
     sheet.getRange(rowIndex, STOP_COL).setValue("");
 
@@ -86,7 +103,7 @@ function doPost(e) {
       sendConfirmation(email, lang, trial);
       sheet.getRange(rowIndex, MAIL_COL).setValue(new Date());
     }
-    return reply({ ok: true });
+    return reply({ ok: true, code: code });
   } catch (err) {
     console.error(err); // Apps Script の「実行数」に原因が残る
     return reply({ ok: false, error: "server" });

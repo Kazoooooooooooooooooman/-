@@ -586,3 +586,37 @@ h2 .nw { white-space: nowrap; }
   .hd-view { animation: none; filter: none; }
   .hd-spill { animation: none; opacity: 1; }
 }
+
+/* ---------- 登録のあとの「友だちに教える」 ---------- */
+.share { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+.share[hidden] { display: none; }
+.share-head { font-size: 13px; letter-spacing: .06em; color: var(--paper-dim); line-height: 1.7; }
+.share-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.share-btn {
+  display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 999px;
+  border: 1px solid var(--paper-line); background: rgba(255, 255, 255, .7); color: var(--paper-ink);
+  font: inherit; font-size: 13px; letter-spacing: .08em; text-decoration: none; cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.share-btn:hover { border-color: var(--paper-ink); background: #fff; }
+.share-btn:focus-visible { outline: 2px solid var(--paper-ink); outline-offset: 2px; }
+.hd-cta .share { align-items: center; text-align: center; margin-top: 4px; }
+.hd-cta .share-row { justify-content: center; }
+.hero-door .share-head { color: rgba(255, 255, 255, .92); text-shadow: 0 1px 12px rgba(0, 0, 0, .35); }
+.hero-door .share-btn { background: rgba(255, 255, 255, .88); border-color: rgba(255, 255, 255, .6); }
+
+/* ---------- スマホの画面下に出る登録ボタン ---------- */
+.sticky-cta { display: none; }
+@media (max-width: 760px) {
+  .sticky-cta {
+    display: flex; justify-content: center; position: fixed; z-index: 40; left: 0; right: 0;
+    bottom: 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    pointer-events: none; opacity: 0; translate: 0 100%;
+    transition: opacity .3s ease, translate .35s cubic-bezier(.2, .8, .2, 1);
+  }
+  .sticky-cta.is-on { opacity: 1; translate: 0 0; pointer-events: auto; }
+  .sticky-cta .btn { width: 100%; max-width: 420px; box-shadow: 0 8px 24px rgba(18, 17, 16, .28); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sticky-cta { transition: none; }
+}

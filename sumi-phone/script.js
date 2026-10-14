@@ -119,6 +119,11 @@
     const i = Number(active.dataset.bg);
     if (i !== current) {
       current = i;
+      // 背景の絵は、いまの絵と次の絵だけ読み込む（最初の画面で6枚全部を読まないように）
+      layers.forEach((l) => {
+        const n = Number(l.dataset.i), img = l.querySelector("img[data-src]");
+        if (img && (n === i || n === i + 1)) { img.src = img.dataset.src; img.removeAttribute("data-src"); }
+      });
       layers.forEach((l) => l.classList.toggle("is-active", Number(l.dataset.i) === i));
     }
     // 絵は文字よりゆっくり動く（奥行き）
@@ -242,8 +247,45 @@
   // どちらもない場合（ファイルを直接開いた場合など）は保存先がないため、その旨を表示する。
   const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwa7cTRb-GxlCZKVGaWIP2FuVBQFpsDR7FpMjVoYrGJ9G6EyfLiTS_iIfux6H1iVB0Y/exec";
   // プライバシーポリシーの版（privacy.html の「最終更新」の日付）。登録と一緒に送り、同意の記録に残す
-  const POLICY_VERSION = "2026-10-12";
+  const POLICY_VERSION = "2026-10-14";
   const SENT_KEY = "soto-preorder";
+  const CODE_KEY = "soto-code"; // この人の紹介コード（友だちに送るリンクに付ける。メールアドレスとは結びつけて残さない）
+  const FROM_KEY = "soto-from"; // 最初に来たときの経路（?from= と、どのサイトから来たか）
+  const store_ = {
+    get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) { /* 覚えられなくても登録はできる */ } },
+  };
+
+  // どこから来たかを、最初に来たときの分だけ覚えておく（Instagram のリンクに ?from=insta、名刺の QR に ?from=card のように付ける）
+  const params = new URLSearchParams(location.search);
+  const clean = (v, n) => String(v || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, n);
+  const arrival = (() => {
+    const r = clean(params.get("r"), 12);
+    const from = clean(params.get("from") || params.get("utm_source"), 40) || (r ? "friend" : "");
+    let site = "";
+    try {
+      const host = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : "";
+      if (host && host !== location.hostname) site = host.slice(0, 60);
+    } catch (_) { /* 読めない参照元は空のままでよい */ }
+    let first = null;
+    try { first = JSON.parse(store_.get(FROM_KEY) || "null"); } catch (_) { /* 壊れていたら上書きする */ }
+    if (!first || (!first.from && !first.site && !first.r && (from || site || r))) {
+      first = { from, site, r };
+      store_.set(FROM_KEY, JSON.stringify(first));
+    }
+    return first;
+  })();
+  // 紹介コード：読み間違えにくい文字だけで6けた
+  function myCode() {
+    let c = store_.get(CODE_KEY);
+    if (!c) {
+      const abc = "abcdefghjkmnpqrstuvwxyz23456789", rnd = new Uint8Array(6);
+      crypto.getRandomValues(rnd);
+      c = Array.from(rnd, (n) => abc[n % abc.length]).join("");
+      store_.set(CODE_KEY, c);
+    }
+    return c;
+  }
   const PREFS = "北海道 青森県 岩手県 宮城県 秋田県 山形県 福島県 茨城県 栃木県 群馬県 埼玉県 千葉県 東京都 神奈川県 新潟県 富山県 石川県 福井県 山梨県 長野県 岐阜県 静岡県 愛知県 三重県 滋賀県 京都府 大阪府 兵庫県 奈良県 和歌山県 鳥取県 島根県 岡山県 広島県 山口県 徳島県 香川県 愛媛県 高知県 福岡県 佐賀県 長崎県 熊本県 大分県 宮崎県 鹿児島県 沖縄県 海外".split(" ");
   const pref = document.getElementById("pref");
   if (pref && pref.tagName === "SELECT") PREFS.forEach((p) => pref.add(new Option(p, p)));
@@ -288,7 +330,9 @@
         : (EN ? "You’re registered for pre-order. We’ll email you when it launches." : "先行予約に登録済みです。発売が決まったら、メールでお知らせします。");
       // アドレスを打ち間違えても、確認メールが届かないだけで気づけない。いつでも登録し直せるようにする
       msg.append(" ", msgButton(EN ? "Wrong address? Register again" : "アドレスを間違えたときは、登録し直す", reopen));
+      if (!msg.nextElementSibling || !msg.nextElementSibling.classList.contains("share")) msg.after(shareBox());
     });
+    document.dispatchEvent(new Event("soto:registered"));
     document.querySelectorAll(".hd-fine").forEach((el) => { el.hidden = true; });
   }
 
@@ -296,6 +340,7 @@
   function reopen() {
     try { localStorage.removeItem(SENT_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
     forms.forEach(({ form, msg }) => {
+      if (msg.nextElementSibling && msg.nextElementSibling.classList.contains("share")) msg.nextElementSibling.remove();
       form.hidden = false;
       delete form.dataset.checked;
       form.querySelector("button[type=submit]").disabled = false;
@@ -304,6 +349,44 @@
     document.querySelectorAll(".hd-fine").forEach((el) => { el.hidden = false; });
     const first = forms[0] && forms[0].form.querySelector("input[type=email]");
     if (first) first.focus();
+  }
+
+  // 登録のすぐあとに、友だちに教えてもらう。リンクには紹介コードが付き、そこから登録した人の行に「紹介」として残る
+  function shareBox() {
+    const url = "https://sotophone.jp/" + (EN ? "en.html" : "") + "?r=" + myCode();
+    const text = EN ? "A phone that makes you want to go outside. Soto Phone is taking pre-orders." : "スマホを置いて、外に出たくなる携帯。Soto Phone の先行予約が始まっています。";
+    const box = document.createElement("div");
+    box.className = "share";
+    const head = document.createElement("p");
+    head.className = "share-head";
+    head.textContent = EN ? "Know someone who’d want this? Send them the link." : "気になりそうな友だちにも、教えてもらえるとうれしいです。";
+    const row = document.createElement("div");
+    row.className = "share-row";
+    const link = (label, href) => {
+      const a = document.createElement("a");
+      a.className = "share-btn"; a.href = href; a.target = "_blank"; a.rel = "noopener"; a.textContent = label;
+      return a;
+    };
+    const btn = (label, onClick) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "share-btn"; b.textContent = label;
+      b.addEventListener("click", () => onClick(b));
+      return b;
+    };
+    if (navigator.share) {
+      row.append(btn(EN ? "Share" : "共有する", () => navigator.share({ title: "Soto Phone", text, url }).catch(() => {})));
+    }
+    row.append(
+      link("LINE", "https://line.me/R/share?text=" + encodeURIComponent(text + "\n" + url)),
+      link("X", "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(url)),
+      btn(EN ? "Copy link" : "リンクをコピー", async (b) => {
+        try { await navigator.clipboard.writeText(url); } catch (_) { window.prompt(EN ? "Copy this link" : "このリンクをコピーしてください", url); return; }
+        b.textContent = EN ? "Copied" : "コピーしました";
+        setTimeout(() => { b.textContent = EN ? "Copy link" : "リンクをコピー"; }, 2000);
+      }),
+    );
+    box.append(head, row);
+    return box;
   }
 
   function msgButton(label, onClick) {
@@ -383,6 +466,11 @@
       lang: EN ? "en" : "ja",
       trial: trialEl ? trialEl.checked : false,
       source: form.id === "hero-form" ? "hero" : "bottom",
+      // 経路：最初に来たときの ?from=、参照元のサイト、紹介してくれた人のコード。それと、この人自身の紹介コード
+      from: arrival.from || "",
+      site: arrival.site || "",
+      invitedBy: arrival.r && arrival.r !== store_.get(CODE_KEY) ? arrival.r : "",
+      code: myCode(),
       // 同意の記録：下のフォームはチェックボックス、1枚目は登録欄の下の案内文。どの版のポリシーかも送る
       consent: agreeEl ? "checkbox" : "notice",
       policy: POLICY_VERSION,
@@ -417,8 +505,10 @@
           btn.disabled = false;
           return;
         }
-        // ブラウザには「登録済み」の印だけを残す（メールアドレスは残さない）
-        try { localStorage.setItem(SENT_KEY, "1"); } catch (_) { /* 覚えられなくても登録は済んでいる */ }
+        // 前に登録していた人は、そのときの紹介コードを使い続ける
+        if (out.code) store_.set(CODE_KEY, out.code);
+        // ブラウザには「登録済み」の印と紹介コードだけを残す（メールアドレスは残さない）
+        store_.set(SENT_KEY, "1");
         showDone(data);
       } catch (err) {
         // 公開の設定が「全員」でないと、Google のログイン画面に飛ばされてここに来る
@@ -478,4 +568,23 @@
     if (!queued) { queued = true; requestAnimationFrame(update); }
   }, { passive: true });
   document.addEventListener("mouseleave", () => { x = y = -9999; update(); });
+})();
+
+/* スマホで下まで読み進めた人が、上に戻らずに登録できるように、画面の下に小さく登録ボタンを出す。
+   1枚目の登録欄と、最後の登録欄が見えているあいだと、登録したあとは出さない */
+(() => {
+  const EN = document.documentElement.lang === "en";
+  const hero = document.getElementById("hero-form"), signup = document.getElementById("signup");
+  if (!hero || !signup || !("IntersectionObserver" in window)) return;
+  const bar = document.createElement("div");
+  bar.className = "sticky-cta";
+  bar.innerHTML = '<a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span></a>';
+  bar.querySelector(".btn-label").textContent = EN ? "Join the pre-order list (free)" : "先行予約に登録する（無料）";
+  document.body.append(bar);
+  const seen = { hero: true, signup: false };
+  const update = () => bar.classList.toggle("is-on", !seen.hero && !seen.signup && !hero.hidden);
+  new IntersectionObserver((es) => es.forEach((e) => { seen.hero = e.isIntersecting; update(); })).observe(hero);
+  // 登録欄を過ぎてフッターまで来たときも、出さない（フッターの文字を隠さないため）
+  new IntersectionObserver((es) => es.forEach((e) => { seen.signup = e.isIntersecting || e.boundingClientRect.top < 0; update(); }), { rootMargin: "0px 0px -20% 0px" }).observe(signup);
+  document.addEventListener("soto:registered", update);
 })();
