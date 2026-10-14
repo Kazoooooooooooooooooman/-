@@ -325,7 +325,8 @@ h2 .nw { white-space: nowrap; }
 .form-msg { margin-top: 16px; font-size: 14px; min-height: 1.5em; color: var(--paper-dim); }
 
 /* ---------- フッター ---------- */
-.footer { border-top: 1px solid var(--paper-line); padding: 72px 0 48px; font-size: 14px; color: var(--paper-dim); }
+.footer { border-top: 1px solid var(--paper-line); padding: 72px 0 48px; font-size: 14px; color: var(--paper-dim);
+  background: rgba(244, 242, 236, .9); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); } /* 夕日の海の上でも文字が読めるように */
 .footer-logo { display: flex; align-items: center; gap: 12px; font-family: var(--serif); color: var(--paper-ink); font-size: 18px; margin-bottom: 12px; }
 .footer .small { font-size: 12px; margin-top: 12px; }
 .footer .small a, .footer-links a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
@@ -376,6 +377,7 @@ h2 .nw { white-space: nowrap; }
   .flow li + li::before { display: none; }
   .icons { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 6px; }
   .icons li { font-size: 12px; }
+  .icons li span { white-space: nowrap; letter-spacing: 0; } /* 「アプリストア」が途中で折り返さないように */
   .day-cap { font-size: 21px; }
   br.pc { display: none; }
   br.sp { display: inline; }
@@ -576,7 +578,7 @@ h2 .nw { white-space: nowrap; }
   .hd-word { font-size: 25vw; }
   .hd-phone { margin-left: .25em; font-size: 18px; }
   .hero-door .hd-copy { letter-spacing: .14em; margin-left: .14em; font-size: 17px; }
-  .hd-form input { padding: 0 12px; font-size: 14px; }
+  .hd-form input { padding: 0 12px; font-size: 16px; } /* 16px 未満だと、iPhone が入力のときに画面を拡大してしまう */
   .hero-door .hd-form .btn { padding: 11px 16px; font-size: 13px; letter-spacing: .06em; }
   .hero-door .hd-form .btn-arrow { display: none; }
 }
@@ -619,4 +621,8 @@ h2 .nw { white-space: nowrap; }
 }
 @media (prefers-reduced-motion: reduce) {
   .sticky-cta { transition: none; }
+}
+
+@media (max-width: 760px) {
+  .reserve-form select, .reserve-form input[type=email] { font-size: 16px; }
 }

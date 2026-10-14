@@ -463,7 +463,7 @@
       agreeEl.focus();
       return;
     }
-    const prefEl = form.querySelector("#pref"), trialEl = form.querySelector("#trial");
+    const prefEl = form.querySelector("#pref"), trialEl = form.querySelector("#trial-opt");
     const data = {
       email: email.value.trim(),
       prefecture: prefEl ? prefEl.value.trim() : "",
@@ -585,10 +585,24 @@
   bar.innerHTML = '<a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span></a>';
   bar.querySelector(".btn-label").textContent = EN ? "Join the pre-order list (free)" : "先行予約に登録する（無料）";
   document.body.append(bar);
-  const seen = { hero: true, signup: false };
-  const update = () => bar.classList.toggle("is-on", !seen.hero && !seen.signup && !hero.hidden);
+  // 出すのは、物語を読み終えて「Soto Phone とは」に来てから。それまでは物語の邪魔をしない。
+  // ほかの登録ボタン（「先行体験に申し込む」など）が見えているあいだも、黒いボタンが2つ並ばないように隠す
+  const about = document.getElementById("about");
+  const seen = { hero: true, signup: false, before: true, other: 0 };
+  const update = () => bar.classList.toggle("is-on", !seen.hero && !seen.signup && !seen.before && !seen.other && !hero.hidden);
+  if (about) new IntersectionObserver((es) => es.forEach((e) => { seen.before = e.boundingClientRect.top > window.innerHeight * 0.5; update(); }), { threshold: [0, 0.25, 0.5, 1] }).observe(about);
+  else seen.before = false;
+  const others = new Set();
+  const oio = new IntersectionObserver((es) => es.forEach((e) => { e.isIntersecting ? others.add(e.target) : others.delete(e.target); seen.other = others.size; update(); }));
+  document.querySelectorAll("main .btn-cta").forEach((b) => { if (!b.closest("#hero-form") && !b.closest("#signup")) oio.observe(b); });
   new IntersectionObserver((es) => es.forEach((e) => { seen.hero = e.isIntersecting; update(); })).observe(hero);
   // 登録欄を過ぎてフッターまで来たときも、出さない（フッターの文字を隠さないため）
   new IntersectionObserver((es) => es.forEach((e) => { seen.signup = e.isIntersecting || e.boundingClientRect.top < 0; update(); }), { rootMargin: "0px 0px -20% 0px" }).observe(signup);
   document.addEventListener("soto:registered", update);
+})();
+
+/* 「先行体験に申し込む」から来た人は、登録欄の「先行体験にも参加したい」に最初からチェックを入れておく */
+(() => {
+  const box = document.getElementById("trial-opt");
+  document.querySelectorAll("a[data-trial]").forEach((a) => a.addEventListener("click", () => { if (box && box.type === "checkbox") box.checked = true; }));
 })();
