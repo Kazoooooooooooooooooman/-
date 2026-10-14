@@ -443,3 +443,39 @@
     }
   }));
 })();
+
+/* 先行予約ボタン：カーソルを追う光と、近づくと少し寄ってくる動き（マウスのときだけ） */
+(() => {
+  const btns = [...document.querySelectorAll(".btn-cta")];
+  if (!btns.length || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const REACH = 70, PULL = 0.22, MAX = 8;
+  let x = 0, y = 0, queued = false;
+  const update = () => {
+    queued = false;
+    btns.forEach((b) => {
+      const r = b.getBoundingClientRect();
+      const dx = x - (r.left + r.width / 2), dy = y - (r.top + r.height / 2);
+      const near = Math.abs(dx) < r.width / 2 + REACH && Math.abs(dy) < r.height / 2 + REACH;
+      if (near && !b.disabled) {
+        const max = b.closest(".hd-form") ? 2 : MAX; // 入力欄の中では、はみ出さない程度に
+        const clamp = (v) => Math.max(-max, Math.min(max, v * PULL));
+        b.style.setProperty("--tx", clamp(dx) + "px");
+        b.style.setProperty("--ty", clamp(dy) + "px");
+        b.style.setProperty("--mx", (x - r.left) + "px");
+        b.style.setProperty("--my", (y - r.top) + "px");
+        b.classList.add("is-magnet");
+      } else if (b.classList.contains("is-magnet")) {
+        b.style.setProperty("--tx", "0px");
+        b.style.setProperty("--ty", "0px");
+        b.classList.remove("is-magnet");
+      }
+    });
+  };
+  document.addEventListener("pointermove", (e) => {
+    if (e.pointerType !== "mouse") return;
+    x = e.clientX; y = e.clientY;
+    if (!queued) { queued = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  document.addEventListener("mouseleave", () => { x = y = -9999; update(); });
+})();
