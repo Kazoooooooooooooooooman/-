@@ -653,3 +653,25 @@ h2 .nw { white-space: nowrap; }
 .reg-count::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 8px; border-radius: 50%; background: #e0502e; vertical-align: middle; }
 /* 日本語の1枚目は、英語の「Digital Detox Phone」のかわりに、何の携帯かを日本語で（行は増やさない） */
 .hd-eyebrow.hd-eyebrow-ja { font-size: 12px; letter-spacing: .32em; text-transform: none; }
+
+/* 特定商取引法に基づく表記（項目と内容の表） */
+.legal-dl { display: grid; grid-template-columns: minmax(130px, 220px) 1fr; border-top: 1px solid var(--paper-line); margin-top: 32px; }
+.legal-dl dt, .legal-dl dd { padding: 16px 4px; border-bottom: 1px solid var(--paper-line); line-height: 1.9; }
+.legal-dl dt { font-weight: 500; }
+@media (max-width: 760px) {
+  .legal-dl { grid-template-columns: 1fr; }
+  .legal-dl dt { border-bottom: 0; padding-bottom: 0; }
+  .legal-dl dd { padding-top: 4px; }
+}
+
+/* ---------- 登録のあとに出す「優先予約」 ---------- */
+.deposit { margin-top: 16px; padding: 20px 22px; border-radius: 12px; background: rgba(255, 255, 255, .82); color: var(--paper-ink); text-align: left; text-shadow: none; }
+.deposit[hidden] { display: none; }
+.deposit-h { font-family: var(--serif); font-size: 17px; letter-spacing: .06em; line-height: 1.6; margin-bottom: 8px; }
+.deposit-h small { font-family: var(--sans); font-size: 12px; color: var(--paper-dim); letter-spacing: .04em; margin-left: .4em; }
+.deposit ul { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; font-size: 14px; line-height: 1.7; }
+.deposit li::before { content: "・"; }
+.deposit-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.deposit-fine { font-size: 12px; color: var(--paper-dim); }
+.deposit-fine a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.hd-cta .deposit { width: 100%; }
