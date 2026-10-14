@@ -286,16 +286,87 @@
       msg.textContent = data.email
         ? (EN ? `You’re registered for pre-order (${data.email}). We’ll email this address when it launches.` : `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`)
         : (EN ? "You’re registered for pre-order. We’ll email you when it launches." : "先行予約に登録済みです。発売が決まったら、メールでお知らせします。");
+      // アドレスを打ち間違えても、確認メールが届かないだけで気づけない。いつでも登録し直せるようにする
+      msg.append(" ", msgButton(EN ? "Wrong address? Register again" : "アドレスを間違えたときは、登録し直す", reopen));
     });
     document.querySelectorAll(".hd-fine").forEach((el) => { el.hidden = true; });
+  }
+
+  // 登録済みの表示を消して、もう一度入力できる状態に戻す（前の登録はスプレッドシートに残る）
+  function reopen() {
+    try { localStorage.removeItem(SENT_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
+    forms.forEach(({ form, msg }) => {
+      form.hidden = false;
+      delete form.dataset.checked;
+      form.querySelector("button[type=submit]").disabled = false;
+      msg.textContent = "";
+    });
+    document.querySelectorAll(".hd-fine").forEach((el) => { el.hidden = false; });
+    const first = forms[0] && forms[0].form.querySelector("input[type=email]");
+    if (first) first.focus();
+  }
+
+  function msgButton(label, onClick) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "msg-link";
+    b.textContent = label;
+    b.addEventListener("click", onClick);
+    return b;
+  }
+
+  // よく使われるメールのドメイン。1〜2文字違いなら打ち間違いの可能性が高いので、送る前に一度確かめる
+  const DOMAINS = ["gmail.com", "googlemail.com", "yahoo.co.jp", "yahoo.com", "ymail.ne.jp", "icloud.com", "me.com", "mac.com",
+    "outlook.com", "outlook.jp", "hotmail.com", "hotmail.co.jp", "live.jp", "live.com", "msn.com",
+    "docomo.ne.jp", "ezweb.ne.jp", "au.com", "softbank.ne.jp", "i.softbank.jp", "ymobile.ne.jp", "rakuten.jp", "nifty.com", "ybb.ne.jp"];
+  // 入れ替え（gmial）も1文字違いと数える編集距離
+  function distance(a, b) {
+    const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+    for (let j = 1; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+    return d[a.length][b.length];
+  }
+  function suggestEmail(value) {
+    const at = value.lastIndexOf("@");
+    if (at < 1) return "";
+    const local = value.slice(0, at), domain = value.slice(at + 1).toLowerCase();
+    if (DOMAINS.includes(domain)) return "";
+    // gmail.co.jp や icloud.jp のように、前半は合っていて後ろだけ違う場合
+    const head = domain.split(".")[0];
+    if (head === "gmail" || head === "icloud" || head === "googlemail") return local + "@" + head + ".com";
+    let best = "", bestD = 9;
+    DOMAINS.forEach((d) => { const n = distance(domain, d); if (n < bestD) { bestD = n; best = d; } });
+    const limit = domain.length >= 8 ? 2 : 1;
+    return best && bestD <= limit ? local + "@" + best : "";
   }
 
   forms.forEach(({ form, msg }) => form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = form.querySelector("input[type=email]");
     const btn = form.querySelector("button[type=submit]");
-    if (!email.checkValidity()) {
+    // 日本語入力のまま打った全角の英数字や「＠」「。」を、半角に直す
+    email.value = email.value.normalize("NFKC").replace(/[。．]/g, ".").replace(/\s+/g, "");
+    if (!email.checkValidity() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
       msg.textContent = (EN ? "Please check your email address (for example, you@example.com)." : "メールアドレスの形を確認してください（例：you@example.com）。");
+      email.focus();
+      return;
+    }
+    // gmail.con のような打ち間違いらしいときは、送る前に一度止めて確かめてもらう
+    const fix = form.dataset.checked === email.value ? "" : suggestEmail(email.value);
+    if (fix) {
+      const typed = email.value;
+      msg.textContent = EN ? `Did you mean ${fix}? ` : `「${fix}」の間違いではありませんか？ `;
+      msg.append(
+        msgButton(EN ? "Use this address" : "このアドレスに直す", () => { email.value = fix; form.dataset.checked = fix; msg.textContent = ""; form.requestSubmit(); }),
+        " ",
+        msgButton(EN ? `Keep ${typed}` : "入力したまま登録する", () => { form.dataset.checked = typed; msg.textContent = ""; form.requestSubmit(); }),
+      );
       email.focus();
       return;
     }

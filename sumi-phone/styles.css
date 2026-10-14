@@ -532,6 +532,11 @@ h2 .nw { white-space: nowrap; }
 .hd-fine a, .form-fine a, .check-field a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .hd-msg { width: max-content; max-width: 92vw; font-size: 14px; letter-spacing: .06em; color: var(--paper-ink); min-height: 0; }
 .hd-msg:empty { display: none; }
+.msg-link {
+  background: none; border: 0; padding: 0; margin: 0 .2em; font: inherit; color: inherit; cursor: pointer;
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.msg-link:hover { opacity: .75; }
 
 @media (max-width: 760px) {
   .hd-mark { padding-bottom: 60px; }
