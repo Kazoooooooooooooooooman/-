@@ -465,47 +465,6 @@ h2 .nw { white-space: nowrap; }
   font-family: var(--latin); font-weight: 800;
   font-size: clamp(72px, 16vw, 236px); line-height: 1; letter-spacing: -.035em; color: var(--paper-ink);
 }
-.hd-o { position: relative; }
-/* 高さゼロの目印を「O」の左端・ベースラインに置き、扉と床をそこから配置する */
-.hd-anchor { position: relative; display: inline-block; width: 0; height: 0; vertical-align: baseline; }
-/* 床（文字が立つ一本の線） */
-.hd-anchor::before {
-  content: ""; position: absolute; z-index: -1; top: .012em; left: -100vw; width: 200vw; height: 1px;
-  /* 床の線も、両端は霞に溶かす */
-  background: linear-gradient(90deg, transparent 12%, var(--paper-line) 32%, var(--paper-line) 68%, transparent 88%); font-size: inherit;
-}
-.hd-door {
-  position: absolute; z-index: 2; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
-  border-radius: .15em .15em 0 0; overflow: hidden;
-}
-/* 扉の向こう：サイトの他の絵と同じ水彩の景色。最初は淡く、開くと色が戻る */
-.hd-view {
-  position: absolute; inset: 0;
-  background: #c9d2d3 url(images/w5-mountain.jpg) 50% 40% / auto 210% no-repeat;
-  filter: grayscale(1) contrast(.85) brightness(1.08);
-  animation: hd-color 2.6s ease-out 1.5s forwards;
-}
-/* 枠と敷居は描かない（文字と同じ、平らな面だけで見せる） */
-.hd-frame, .hd-step { display: none; }
-/* 扉の板：飾りのない一枚の面。色はコピーと同じ朱。左の蝶番を軸に、こちら側へ開く */
-.hd-leaf {
-  position: absolute; z-index: 3; left: .2295em; bottom: -.012em; width: .3em; height: .585em;
-  border-radius: .15em .15em 0 0; transform-origin: 0 50%;
-  transform: perspective(1.7em) rotateY(0deg);
-  background: #2f5f8c;
-  animation: hd-open 2.2s cubic-bezier(.6, .02, .2, 1) .9s forwards;
-}
-.hd-knob {
-  position: absolute; right: 12%; top: 58%; width: .024em; height: .024em; border-radius: 50%;
-  background: #f6f4ef;
-}
-/* 開いた扉から床にこぼれる光：ぼかさず、紙を切り抜いたような一枚の形 */
-.hd-spill {
-  position: absolute; z-index: -1; left: .2295em; top: .012em; width: .42em; height: .17em;
-  background: rgba(255, 252, 244, .5);
-  clip-path: polygon(24% 0, 71.4% 0, 100% 100%, 36% 100%);
-  opacity: 0; animation: hd-spill 1.6s ease-out 1.8s forwards;
-}
 /* 背景の写真：山と空はそのまま、手前の木と草だけが風に揺れる */
 .hero-door { position: relative; isolation: isolate; }
 .hd-photo { position: absolute; inset: 0; z-index: -1; overflow: hidden; background: #8fb3cf; }
@@ -530,8 +489,6 @@ h2 .nw { white-space: nowrap; }
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: linear-gradient(180deg, rgba(255, 255, 255, .18) 0%, rgba(255, 255, 255, 0) 30%, rgba(14, 22, 12, 0) 52%, rgba(14, 22, 12, .42) 78%, rgba(14, 22, 12, .58) 100%);
 }
-.hero-door .hd-anchor::before { display: none; }
-.hero-door .hd-spill { display: none; }
 .hero-door .hd-motto { color: #e6f2dc; }
 .hero-door .hd-copy { color: #fff; }
 .hero-door .hd-motto, .hero-door .hd-copy, .hero-door .hd-fine, .hero-door .hd-msg { text-shadow: 0 1px 12px rgba(0, 0, 0, .35); }
@@ -541,9 +498,6 @@ h2 .nw { white-space: nowrap; }
   font-family: var(--latin); font-weight: 500;
   font-size: clamp(20px, 2.3vw, 36px); line-height: 1; margin-left: .45em; color: var(--paper-ink);
 }
-@keyframes hd-open { to { transform: perspective(1.7em) rotateY(-70deg); } }
-@keyframes hd-color { to { filter: grayscale(0) contrast(1) brightness(1.02); } }
-@keyframes hd-spill { to { opacity: 1; } }
 
 .hd-foot {
   width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -583,10 +537,7 @@ h2 .nw { white-space: nowrap; }
   .hero-door .hd-form .btn-arrow { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hd-leaf { animation: none; transform: perspective(1.7em) rotateY(-70deg); }
   .hd-birds { display: none; }
-  .hd-view { animation: none; filter: none; }
-  .hd-spill { animation: none; opacity: 1; }
 }
 
 /* ---------- 登録が済んだあとのカード（入力欄と同じ白い面に、中身をまとめる） ---------- */
@@ -667,3 +618,8 @@ h2 .nw { white-space: nowrap; }
 }
 
 .reserve-status { margin: 28px 0; padding: 16px 20px; border-radius: 8px; background: rgba(255, 255, 255, .6); border: 1px solid var(--paper-line); }
+
+/* よくある質問の最後：問い合わせの入口（メールのアプリが開かない人のために、アドレスも書いておく） */
+.faq-contact { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 28px; font-size: 15px; }
+.faq-contact .btn { min-height: 44px; display: inline-flex; align-items: center; }
+.faq-mail { width: 100%; font-size: 12px; letter-spacing: .04em; color: var(--paper-dim); margin-top: -4px; user-select: all; }
