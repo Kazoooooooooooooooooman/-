@@ -364,20 +364,20 @@
     head.className = "done-head";
     head.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
     head.append(EN ? "You’re on the list." : "登録しました。");
+    // 次に起きること。その下の行に、送り先のアドレスと「直す」（打ち間違いに、その場で気づけるように）
     const body = document.createElement("p");
     body.className = "done-body";
-    body.textContent = EN ? "We’ll email you first when it launches." : "発売が決まったら、メールでお知らせします。";
-    // 打ち間違いに気づけるよう、送り先のアドレスを見せて、その横で直せるようにする
-    const mail = document.createElement("p");
-    mail.className = "done-mail";
+    body.textContent = EN ? "We’ll email you when it launches." : "発売が決まったら、メールでお知らせします。";
+    const sub = document.createElement("p");
+    sub.className = "done-sub";
     if (data.email) {
       const addr = document.createElement("span");
       addr.textContent = data.email;
-      mail.append(addr);
+      sub.append(addr);
     }
     const fix = msgButton(EN ? (data.email ? "Fix" : "Wrong address? Fix it") : (data.email ? "直す" : "アドレスを直す"), reopen);
     fix.classList.add("done-fix");
-    mail.append(fix);
+    sub.append(fix);
     const row = document.createElement("div");
     row.className = "done-row";
     // 1つめ：共有の画面が出せる端末ではそれを、出せない端末ではリンクをコピーする
@@ -401,7 +401,7 @@
     line.rel = "noopener";
     line.textContent = EN ? "Send on LINE" : "LINE で送る";
     row.append(share, line);
-    card.append(head, body, row, mail);
+    card.append(head, body, sub, row);
     return card;
   }
 

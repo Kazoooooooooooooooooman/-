@@ -60,6 +60,7 @@ function doPost(e) {
   lock.waitLock(10000);
   try {
     const data = JSON.parse(e.postData.contents);
+    if (data.type === "contact") return handleContact(data);
     const email = String(data.email || "").trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return reply({ ok: false, error: "bad_email" });
 
@@ -110,6 +111,33 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// お問い合わせ：シート「問い合わせ」に1行ずつ残し、このスクリプトを動かしているアカウントにメールで知らせる。
+// 返信は、そのメールに「返信」すれば相手に届く（返信先を相手のアドレスにしてある）
+const CONTACT_SHEET = "問い合わせ";
+const CONTACT_HEADERS = ["受付日時", "用件", "お名前", "メールアドレス", "内容", "言語", "返信"];
+function handleContact(data) {
+  // 人には見えない欄に何か入っていたら、機械による送信。保存も通知もせず、成功と同じ返事だけ返す
+  if (String(data.website || "")) return reply({ ok: true });
+  const email = String(data.email || "").trim().toLowerCase();
+  const message = String(data.message || "").trim().slice(0, 4000);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return reply({ ok: false, error: "bad_email" });
+  if (!message) return reply({ ok: false, error: "empty" });
+  const topic = String(data.topic || "").slice(0, 40);
+  const name = String(data.name || "").slice(0, 80);
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = book.getSheetByName(CONTACT_SHEET);
+  if (!sheet) { sheet = book.insertSheet(CONTACT_SHEET); sheet.appendRow(CONTACT_HEADERS); sheet.setFrozenRows(1); }
+  // 先頭が = + - @ の内容は、スプレッドシートが式として読まないように ' を付ける
+  const safe = (v) => /^[=+\-@]/.test(v) ? "'" + v : v;
+  sheet.appendRow([new Date(), safe(topic), safe(name), email, safe(message), data.lang === "en" ? "en" : "ja", ""]);
+  if (canSendNow()) {
+    const to = Session.getEffectiveUser().getEmail();
+    const body = ["用件：" + topic, "お名前：" + (name || "（なし）"), "メールアドレス：" + email, "", message, "", "――", "このメールに返信すると、" + email + " に届きます。"].join("\n");
+    MailApp.sendEmail({ to: to, replyTo: email, subject: "【Soto Phone 問い合わせ】" + topic + "（" + (name || email) + "）", body: body, name: SENDER_NAME });
+  }
+  return reply({ ok: true });
 }
 
 // サイトに出す登録人数。水増しにならないよう、次の条件をすべて満たす人だけを数える。
