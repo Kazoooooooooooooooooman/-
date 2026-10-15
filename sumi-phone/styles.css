@@ -651,3 +651,15 @@ h2 .nw { white-space: nowrap; }
 .contact-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .contact-done { margin-top: 32px; padding: 24px; border-radius: 16px; background: rgba(255, 255, 255, .6); border: 1px solid var(--paper-line); max-width: 560px; }
 .contact-done p + p { margin-top: 6px; font-size: 14px; color: var(--paper-dim); }
+
+/* ブラウザの自動入力：Chrome が付ける水色の四角い背景を消して、欄の色と丸い形のままにする */
+.hd-form input { border-radius: 999px; }
+.hd-form input:-webkit-autofill,
+.reserve-form input:-webkit-autofill,
+.contact-form input:-webkit-autofill {
+  -webkit-text-fill-color: var(--paper-ink);
+  caret-color: var(--paper-ink);
+  transition: background-color 600000s 0s; /* 背景色の切り替えを、実質起きないほど遅らせる */
+}
+.hd-form input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #fff inset; box-shadow: 0 0 0 40px #fff inset; }
+.reserve-form input:-webkit-autofill, .contact-form input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #fbfaf7 inset; box-shadow: 0 0 0 40px #fbfaf7 inset; }
