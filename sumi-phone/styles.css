@@ -730,3 +730,6 @@ h2 .nw { white-space: nowrap; }
   .article p, .article li { font-size: 16px; }
   .column-page .nav-links a[href="/column/"] { display: none; }
 }
+.legal .article .btn { text-decoration: none; }
+.article .inline-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin: 4px 0 36px; }
+.article .inline-cta span:not(.btn-dot):not(.btn-label) { font-size: 13px; color: var(--paper-dim); }

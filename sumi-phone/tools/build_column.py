@@ -98,6 +98,15 @@ def load():
     arts.sort(key=lambda a: a["published"], reverse=True)
     return arts
 
+def place_toc(body, toc):
+    """目次の位置：本文に <!--toc--> があればそこ、なければ最初のまとめ（lead）のすぐ下"""
+    if "<!--toc-->" in body:
+        return body.replace("<!--toc-->", toc, 1)
+    if body.lstrip().startswith('<p class="lead"'):
+        head, rest = body.split("</p>", 1)
+        return head + "</p>\n" + toc + rest
+    return toc + body
+
 def build_article(a, by_slug):
     url = f"{SITE}/column/{a['slug']}.html"
     body = a["body"]
@@ -141,9 +150,7 @@ def build_article(a, by_slug):
     <article>
       <h1>{esc(a.get("h1") or a["title"])}</h1>
       <p class="article-meta">{dates}・書いた人：{AUTHOR}（Soto Phone 代表）</p>
-      {body.split("</p>", 1)[0] + "</p>" if body.lstrip().startswith('<p class="lead"') else ""}
-      <nav class="article-toc" aria-labelledby="toc-h"><p id="toc-h">この記事の内容</p><ol>{toc_html}</ol></nav>
-      {body.split("</p>", 1)[1] if body.lstrip().startswith('<p class="lead"') else body}
+      {place_toc(body, f'<nav class="article-toc" aria-labelledby="toc-h"><p id="toc-h">この記事の内容</p><ol>{toc_html}</ol></nav>')}
       {src_html}
     </article>
     <aside class="article-cta" aria-label="Soto Phone について">
