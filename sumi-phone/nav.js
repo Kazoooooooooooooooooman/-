@@ -15,7 +15,7 @@
   btn.addEventListener("click", () => setOpen(!nav.classList.contains("is-open")));
   nav.querySelectorAll(".nav-links a, .nav-cta").forEach((a) => a.addEventListener("click", () => setOpen(false)));
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && nav.classList.contains("is-open")) { setOpen(false); btn.focus(); } });
-  window.matchMedia("(min-width: 961px)").addEventListener("change", (e) => { if (e.matches) setOpen(false); });
+  window.matchMedia("(min-width: 821px)").addEventListener("change", (e) => { if (e.matches) setOpen(false); });
 
   // トップページ：画面の上から4割の位置にある節に対応するリンクに下線を引く
   const links = [...nav.querySelectorAll('.nav-links a[href^="#"]')];
