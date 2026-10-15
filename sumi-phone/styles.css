@@ -653,7 +653,6 @@ h2 .nw { white-space: nowrap; }
 .contact-done p + p { margin-top: 6px; font-size: 14px; color: var(--paper-dim); }
 
 /* ブラウザの自動入力：Chrome が付ける水色の四角い背景を消して、欄の色と丸い形のままにする */
-.hd-form input { border-radius: 999px; }
 .hd-form input:-webkit-autofill,
 .reserve-form input:-webkit-autofill,
 .contact-form input:-webkit-autofill {
@@ -661,7 +660,8 @@ h2 .nw { white-space: nowrap; }
   caret-color: var(--paper-ink);
   transition: background-color 600000s 0s; /* 背景色の切り替えを、実質起きないほど遅らせる */
 }
-.hd-form input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #fff inset; box-shadow: 0 0 0 40px #fff inset; }
+/* 1枚目の欄は、外側の白い枠と一体に見せたいので、欄の中に色の面を作らない（背景は透明のまま） */
+.hd-form input:-webkit-autofill { -webkit-box-shadow: none; box-shadow: none; background-clip: text; }
 .reserve-form input:-webkit-autofill, .contact-form input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #fbfaf7 inset; box-shadow: 0 0 0 40px #fbfaf7 inset; }
 
 /* メールアドレスの欄：英字は、本文の書体（Zen Kaku Gothic）だと細く弱く見えるので、
