@@ -11,3 +11,7 @@
 /images/*
   ! Cache-Control
   Cache-Control: public, max-age=604800
+# アイコンは、検索結果やホーム画面に出る。1週間保存する
+/favicon*
+  ! Cache-Control
+  Cache-Control: public, max-age=604800
