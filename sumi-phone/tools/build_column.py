@@ -59,12 +59,15 @@ def head(title, desc, url, extra_ld):
     <div class="nav-main">
       <a href="/#about">製品</a>
       <a href="/#points">スタンプ</a>
+      <a href="/plans.html">プラン</a>
       <a href="/#letter">私たちについて</a>
     </div>
     <div class="nav-util">
+      <a href="/shop.html">ショップ</a>
       <a href="/column/" aria-current="page">コラム</a>
-      <a href="/#faq">よくある質問</a>
-      <a class="nav-contact" href="/contact.html">お問い合わせ</a>
+      <a href="/referral.html">紹介</a>
+      <a href="/contact.html">お問い合わせ</a>
+      <a class="nav-login" href="/login.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c.9-3.9 3.9-6 7.5-6s6.6 2.1 7.5 6"/></svg><span>ログイン</span></a>
       <span class="nav-lang"><a href="/" hreflang="ja" lang="ja" aria-current="true">JA</a><span aria-hidden="true">/</span><a href="/en.html" hreflang="en" lang="en">EN</a></span>
     </div>
   </nav>
@@ -227,6 +230,7 @@ def build_index(arts):
 def build_sitemap(arts):
     base = [("/", "2026-10-15", True), ("/en.html", "2026-10-15", True), ("/column/", max([a.get("updated", a["published"]) for a in arts] or ["2026-10-15"]), False),
             ("/contact.html", "2026-10-15", False), ("/contact-en.html", "2026-10-15", False),
+            ("/shop.html", "2026-10-15", False), ("/shop-en.html", "2026-10-15", False), ("/plans.html", "2026-10-15", False), ("/plans-en.html", "2026-10-15", False), ("/referral.html", "2026-10-15", False), ("/referral-en.html", "2026-10-15", False),
             ("/privacy.html", "2026-10-14", False), ("/privacy-en.html", "2026-10-14", False),
             ("/terms.html", "2026-10-14", False), ("/terms-en.html", "2026-10-14", False)]
     alt = '\n    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en.html" />'

@@ -43,7 +43,7 @@ br.sp { display: none; }
 .logo-mark { display: block; height: 34px; width: auto; flex: none; }
 .logo-word { font-family: var(--latin); font-weight: 500; letter-spacing: .32em; font-size: 14px; }
 /* ナビは企業サイトの形：左に製品の3つ、区切り線、右に情報（コラム・質問・問い合わせ・言語）、最後に先行予約。
-   960px より狭い画面では、先行予約とメニューのボタンだけを出し、残りはメニューの中に入れる */
+   1100px より狭い画面では、先行予約とメニューのボタンだけを出し、残りはメニューの中に入れる */
 .nav-links { display: flex; align-items: center; margin-left: auto; font-size: 14px; letter-spacing: .04em; }
 .nav-main, .nav-util { display: flex; align-items: center; gap: clamp(18px, 2.2vw, 30px); }
 .nav-util { margin-left: clamp(18px, 2.2vw, 30px); padding-left: clamp(18px, 2.2vw, 30px); border-left: 1px solid var(--paper-line); }
@@ -57,7 +57,11 @@ br.sp { display: none; }
 .nav-lang a[aria-current="true"] { opacity: 1; font-weight: 500; }
 .nav-cta { margin-left: clamp(18px, 2.2vw, 28px); border: 1px solid currentColor; padding: 6px 16px; border-radius: 999px; font-size: 14px; letter-spacing: .04em; }
 .nav-toggle { display: none; }
-@media (max-width: 960px) {
+.nav-login { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; min-height: 32px; }
+.nav-login svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
+.nav-login span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.nav-util > a.nav-login::after { display: none; }
+@media (max-width: 1100px) {
   .nav-toggle { display: inline-flex; flex-direction: column; justify-content: center; align-items: center; gap: 6px; width: 44px; height: 44px; margin-left: 6px; margin-right: -10px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
   .nav-toggle span { display: block; width: 20px; height: 1.5px; background: currentColor; transition: transform .3s ease; }
   .nav.is-open .nav-toggle span:first-child { transform: translateY(3.75px) rotate(45deg); }
@@ -78,6 +82,8 @@ br.sp { display: none; }
   .nav-util > a { font-size: 16px; padding: 12px 0; opacity: .8; }
   .nav-main a::after, .nav-util > a::after { display: none; }
   .nav-links a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+  .nav-login { justify-content: flex-start; gap: 10px; }
+  .nav-login span { position: static; width: auto; height: auto; overflow: visible; clip: auto; }
   .nav-lang { margin-top: 18px; font-size: 14px; gap: 10px; }
   .nav-lang a { padding: 8px 0; }
   body.menu-open { overflow: hidden; }
@@ -819,3 +825,23 @@ h2 .nw { white-space: nowrap; }
 .article .sc-score { font-size: 13px !important; color: var(--paper-dim); }
 .article .sc-h { font-family: var(--serif); font-weight: 600; font-size: 19px !important; margin: 4px 0 6px; }
 .article .sc-note { margin-top: 16px; font-size: 12px !important; line-height: 1.8 !important; color: var(--paper-dim); }
+
+/* ---------- ショップ・プラン・紹介・ログインのページ ---------- */
+.page-lead { font-family: var(--serif); font-size: clamp(18px, 1.8vw, 20px); line-height: 2; margin: 8px 0 32px; }
+.shop-item { margin: 0 0 48px; padding: 28px 28px 30px; border-radius: 18px; background: #f9f8f4; border: 1px solid var(--paper-line); }
+.shop-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.shop-name { font-family: var(--latin); font-weight: 500; font-size: 22px; letter-spacing: .04em; }
+.shop-state { font-size: 13px; letter-spacing: .08em; padding: 3px 12px; border-radius: 999px; border: 1px solid var(--paper-line); color: var(--paper-dim); }
+.legal .shop-cta { margin-top: 28px; }
+.legal .shop-cta .btn { text-decoration: none; }
+.steps { padding-left: 1.4em; margin-bottom: 18px; }
+.steps li + li { margin-top: 10px; }
+.plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 0 0 14px; }
+.plan { padding: 24px 24px 26px; border-radius: 16px; background: #f9f8f4; border: 1px solid var(--paper-line); }
+.plan-soto { border-color: rgba(31, 30, 28, .5); }
+.plan-name { font-size: 14px; letter-spacing: .06em; color: var(--paper-dim); }
+.plan-price { font-family: var(--serif); font-weight: 600; font-size: 24px; margin: 6px 0 12px; }
+.plan p:not(.plan-name):not(.plan-price) { font-size: 15px; line-height: 1.9; }
+.plan-ex { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--paper-line); }
+.small-note { font-size: 13px !important; color: var(--paper-dim); }
+@media (max-width: 760px) { .plan-grid { grid-template-columns: 1fr; } .shop-item { padding: 22px 20px 24px; } }
