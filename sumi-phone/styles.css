@@ -663,3 +663,15 @@ h2 .nw { white-space: nowrap; }
 }
 .hd-form input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #fff inset; box-shadow: 0 0 0 40px #fff inset; }
 .reserve-form input:-webkit-autofill, .contact-form input:-webkit-autofill { -webkit-box-shadow: 0 0 0 40px #fbfaf7 inset; box-shadow: 0 0 0 40px #fbfaf7 inset; }
+
+/* メールアドレスの欄：英字は、本文の書体（Zen Kaku Gothic）だと細く弱く見えるので、
+   ロゴと数字に使っている Inter Tight の中くらいの太さにする。日本語の案内文は、本文の書体のまま */
+.hd-form input[type=email], .reserve-form input[type=email], .contact-form input[type=email] {
+  font-family: "Inter Tight", "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+  font-weight: 500; letter-spacing: .01em; color: var(--paper-ink);
+}
+.hd-form input[type=email] { font-size: 15px; }
+.hd-form input[type=email]::placeholder, .reserve-form input[type=email]::placeholder, .contact-form input[type=email]::placeholder {
+  font-family: var(--sans); font-weight: 400; letter-spacing: .04em;
+}
+@media (max-width: 760px) { .hd-form input[type=email] { font-size: 16px; } }
