@@ -251,6 +251,15 @@
   const SENT_KEY = "soto-preorder";
   const CODE_KEY = "soto-code"; // この人の紹介コード（友だちに送るリンクに付ける。メールアドレスとは結びつけて残さない）
   const FROM_KEY = "soto-from"; // 最初に来たときの経路（?from= と、どのサイトから来たか）
+  // 次に開いたときの「登録しました」に出す、アドレスの一部（yus•••@gmail.com）。アドレスそのものは残さない。
+  // 打ち間違いが多い @ の後ろは全部見せて、gamil.com のような間違いに気づけるようにする
+  const MAIL_KEY = "soto-mail";
+  const maskMail = (email) => {
+    const at = email.lastIndexOf("@");
+    if (at < 1) return "";
+    const local = email.slice(0, at);
+    return local.slice(0, local.length > 4 ? 3 : 1) + "•••" + email.slice(at);
+  };
   const store_ = {
     get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } },
     set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) { /* 覚えられなくても登録はできる */ } },
@@ -307,7 +316,7 @@
         // URL の最後に ?reset を付けて開くと、このブラウザの「登録済み」の記録を消して、もう一度試せる
         if (/[?&]reset\b/.test(location.search)) localStorage.removeItem(SENT_KEY);
         const saved = localStorage.getItem(SENT_KEY);
-        if (saved) showDone({});
+        if (saved) showDone({ masked: store_.get(MAIL_KEY) || "" });
       } catch (_) { /* 前回の登録を覚えていなくても登録はできる */ }
       return { endpoint: FORM_ENDPOINT };
     }
@@ -338,7 +347,7 @@
 
   // 登録済みの表示を消して、もう一度入力できる状態に戻す（前の登録はスプレッドシートに残る）
   function reopen() {
-    try { localStorage.removeItem(SENT_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
+    try { localStorage.removeItem(SENT_KEY); localStorage.removeItem(MAIL_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
     forms.forEach(({ form, msg }) => {
       if (form.nextElementSibling && form.nextElementSibling.classList.contains("done")) form.nextElementSibling.remove();
       form.hidden = false;
@@ -370,12 +379,13 @@
     body.textContent = EN ? "We’ll email you when it launches." : "発売が決まったら、メールでお知らせします。";
     const sub = document.createElement("p");
     sub.className = "done-sub";
-    if (data.email) {
+    const shown = data.email || data.masked;
+    if (shown) {
       const addr = document.createElement("span");
-      addr.textContent = data.email;
+      addr.textContent = shown;
       sub.append(addr);
     }
-    const fix = msgButton(EN ? (data.email ? "Fix" : "Wrong address? Fix it") : (data.email ? "直す" : "アドレスを直す"), reopen);
+    const fix = msgButton(EN ? (shown ? "Fix" : "Wrong address? Fix it") : (shown ? "直す" : "アドレスを直す"), reopen);
     fix.classList.add("done-fix");
     sub.append(fix);
     const row = document.createElement("div");
@@ -525,6 +535,7 @@
         if (out.code) store_.set(CODE_KEY, out.code);
         // ブラウザには「登録済み」の印と紹介コードだけを残す（メールアドレスは残さない）
         store_.set(SENT_KEY, "1");
+        store_.set(MAIL_KEY, maskMail(data.email));
         showDone(data);
       } catch (err) {
         // 公開の設定が「全員」でないと、Google のログイン画面に飛ばされてここに来る
