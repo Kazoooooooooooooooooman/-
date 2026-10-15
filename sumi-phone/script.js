@@ -251,15 +251,8 @@
   const SENT_KEY = "soto-preorder";
   const CODE_KEY = "soto-code"; // この人の紹介コード（友だちに送るリンクに付ける。メールアドレスとは結びつけて残さない）
   const FROM_KEY = "soto-from"; // 最初に来たときの経路（?from= と、どのサイトから来たか）
-  // 次に開いたときの「登録しました」に出す、アドレスの一部（yus•••@gmail.com）。アドレスそのものは残さない。
-  // 打ち間違いが多い @ の後ろは全部見せて、gamil.com のような間違いに気づけるようにする
+  // 次に開いたときの「登録しました」に出す、登録したアドレス（打ち間違いに、あとからでも気づけるように）
   const MAIL_KEY = "soto-mail";
-  const maskMail = (email) => {
-    const at = email.lastIndexOf("@");
-    if (at < 1) return "";
-    const local = email.slice(0, at);
-    return local.slice(0, local.length > 4 ? 3 : 1) + "•••" + email.slice(at);
-  };
   const store_ = {
     get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } },
     set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) { /* 覚えられなくても登録はできる */ } },
@@ -535,7 +528,7 @@
         if (out.code) store_.set(CODE_KEY, out.code);
         // ブラウザには「登録済み」の印と紹介コードだけを残す（メールアドレスは残さない）
         store_.set(SENT_KEY, "1");
-        store_.set(MAIL_KEY, maskMail(data.email));
+        store_.set(MAIL_KEY, data.email);
         showDone(data);
       } catch (err) {
         // 公開の設定が「全員」でないと、Google のログイン画面に飛ばされてここに来る
