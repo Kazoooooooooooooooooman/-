@@ -401,7 +401,7 @@
     line.rel = "noopener";
     line.textContent = EN ? "Send on LINE" : "LINE で送る";
     row.append(share, line);
-    card.append(head, body, mail, row);
+    card.append(head, body, row, mail);
     return card;
   }
 

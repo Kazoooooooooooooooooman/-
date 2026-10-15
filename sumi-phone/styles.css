@@ -599,9 +599,12 @@ h2 .nw { white-space: nowrap; }
 .done-head { display: flex; align-items: center; gap: 8px; font-family: var(--serif); font-size: 18px; letter-spacing: .08em; line-height: 1.5; }
 .done-head svg { flex: none; width: 18px; height: 18px; fill: none; stroke: #e0502e; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .done-body { margin-top: 4px; font-size: 13px; letter-spacing: .04em; line-height: 1.8; color: var(--paper-dim); overflow-wrap: anywhere; }
-.done-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 10px; }
+.done-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 20px; margin-top: 14px; }
 .done-line { font-size: 13px; letter-spacing: .06em; color: var(--paper-ink); text-decoration: underline; text-underline-offset: 3px; min-height: 44px; display: inline-flex; align-items: center; }
-.done-mail { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; margin-top: 2px; font-size: 13px; letter-spacing: .02em; color: var(--paper-ink); overflow-wrap: anywhere; }
+.done-mail {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 0 10px; margin-top: 14px; padding-top: 10px;
+  border-top: 1px solid var(--paper-line); font-size: 12px; letter-spacing: .02em; color: var(--paper-dim); overflow-wrap: anywhere;
+}
 .done-fix { margin: 0; font-size: 12px; color: var(--paper-dim); min-height: 32px; }
 @keyframes done-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .done { animation: none; } }
