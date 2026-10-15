@@ -329,14 +329,8 @@
   function showDone(data) {
     forms.forEach(({ form, msg }) => {
       form.hidden = true;
-      msg.textContent = data.email
-        ? (EN ? `You’re registered for pre-order (${data.email}). We’ll email this address when it launches.` : `先行予約に登録済みです（${data.email}）。発売が決まったら、このアドレスにお知らせします。`)
-        : (EN ? "You’re registered for pre-order. We’ll email you when it launches." : "先行予約に登録済みです。発売が決まったら、メールでお知らせします。");
-      // アドレスを打ち間違えても、確認メールが届かないだけで気づけない。いつでも登録し直せるようにする
-      msg.append(" ", msgButton(EN ? "Wrong address? Register again" : "アドレスを間違えたときは、登録し直す", reopen));
-      if (!msg.nextElementSibling || !msg.nextElementSibling.classList.contains("share")) {
-        msg.after(shareBox());
-      }
+      msg.textContent = "";
+      if (!(form.nextElementSibling && form.nextElementSibling.classList.contains("done"))) form.after(doneCard(data));
     });
     document.dispatchEvent(new Event("soto:registered"));
     document.querySelectorAll(".hd-fine").forEach((el) => { el.hidden = true; });
@@ -346,7 +340,7 @@
   function reopen() {
     try { localStorage.removeItem(SENT_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
     forms.forEach(({ form, msg }) => {
-      if (msg.nextElementSibling && msg.nextElementSibling.classList.contains("share")) msg.nextElementSibling.remove();
+      if (form.nextElementSibling && form.nextElementSibling.classList.contains("done")) form.nextElementSibling.remove();
       form.hidden = false;
       delete form.dataset.checked;
       form.querySelector("button[type=submit]").disabled = false;
@@ -357,42 +351,58 @@
     if (first) first.focus();
   }
 
-  // 登録のすぐあとに、友だちに教えてもらう。リンクには紹介コードが付き、そこから登録した人の行に「紹介」として残る
-  function shareBox() {
+  // 登録が済んだことを、入力欄と同じ形の1枚のカードで伝える。
+  // 中身は「済んだこと」「次に起きること」と、友だちに教える2つのボタン、アドレスを直すリンクだけ。
+  // 友だちに送るリンクには紹介コードが付き、そこから登録した人の行に「紹介」として残る
+  function doneCard(data) {
     const url = "https://sotophone.jp/" + (EN ? "en.html" : "") + "?r=" + myCode();
     const text = EN ? "A phone that makes you want to go outside. Soto Phone is taking pre-orders." : "スマホを置いて、外に出たくなる携帯。Soto Phone の先行予約が始まっています。";
-    const box = document.createElement("div");
-    box.className = "share";
+    const card = document.createElement("div");
+    card.className = "done";
+    card.setAttribute("role", "status");
     const head = document.createElement("p");
-    head.className = "share-head";
-    head.textContent = EN ? "Know someone who’d want this? Send them the link." : "気になりそうな友だちにも、教えてもらえるとうれしいです。";
-    const row = document.createElement("div");
-    row.className = "share-row";
-    const link = (label, href) => {
-      const a = document.createElement("a");
-      a.className = "share-btn"; a.href = href; a.target = "_blank"; a.rel = "noopener"; a.textContent = label;
-      return a;
-    };
-    const btn = (label, onClick) => {
-      const b = document.createElement("button");
-      b.type = "button"; b.className = "share-btn"; b.textContent = label;
-      b.addEventListener("click", () => onClick(b));
-      return b;
-    };
-    if (navigator.share) {
-      row.append(btn(EN ? "Share" : "共有する", () => navigator.share({ title: "Soto Phone", text, url }).catch(() => {})));
+    head.className = "done-head";
+    head.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
+    head.append(EN ? "You’re on the list." : "登録しました。");
+    const body = document.createElement("p");
+    body.className = "done-body";
+    body.textContent = EN ? "We’ll email you first when it launches." : "発売が決まったら、メールでお知らせします。";
+    // 打ち間違いに気づけるよう、送り先のアドレスを見せて、その横で直せるようにする
+    const mail = document.createElement("p");
+    mail.className = "done-mail";
+    if (data.email) {
+      const addr = document.createElement("span");
+      addr.textContent = data.email;
+      mail.append(addr);
     }
-    row.append(
-      link("LINE", "https://line.me/R/share?text=" + encodeURIComponent(text + "\n" + url)),
-      link("X", "https://x.com/intent/post?text=" + encodeURIComponent(text) + "&url=" + encodeURIComponent(url)),
-      btn(EN ? "Copy link" : "リンクをコピー", async (b) => {
-        try { await navigator.clipboard.writeText(url); } catch (_) { window.prompt(EN ? "Copy this link" : "このリンクをコピーしてください", url); return; }
-        b.textContent = EN ? "Copied" : "コピーしました";
-        setTimeout(() => { b.textContent = EN ? "Copy link" : "リンクをコピー"; }, 2000);
-      }),
-    );
-    box.append(head, row);
-    return box;
+    const fix = msgButton(EN ? (data.email ? "Fix" : "Wrong address? Fix it") : (data.email ? "直す" : "アドレスを直す"), reopen);
+    fix.classList.add("done-fix");
+    mail.append(fix);
+    const row = document.createElement("div");
+    row.className = "done-row";
+    // 1つめ：共有の画面が出せる端末ではそれを、出せない端末ではリンクをコピーする
+    const share = document.createElement("button");
+    share.type = "button";
+    share.className = "btn btn-cta done-share";
+    const label = EN ? "Tell a friend" : "友だちに教える";
+    share.innerHTML = '<span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span>';
+    share.querySelector(".btn-label").textContent = label;
+    share.addEventListener("click", async () => {
+      if (navigator.share) { navigator.share({ title: "Soto Phone", text, url }).catch(() => {}); return; }
+      try { await navigator.clipboard.writeText(url); } catch (_) { window.prompt(EN ? "Copy this link" : "このリンクをコピーしてください", url); return; }
+      share.querySelector(".btn-label").textContent = EN ? "Link copied" : "リンクをコピーしました";
+      setTimeout(() => { share.querySelector(".btn-label").textContent = label; }, 2200);
+    });
+    // 2つめ：日本では LINE で送る人がいちばん多い
+    const line = document.createElement("a");
+    line.className = "done-line";
+    line.href = "https://line.me/R/share?text=" + encodeURIComponent(text + "\n" + url);
+    line.target = "_blank";
+    line.rel = "noopener";
+    line.textContent = EN ? "Send on LINE" : "LINE で送る";
+    row.append(share, line);
+    card.append(head, body, mail, row);
+    return card;
   }
 
   function msgButton(label, onClick) {
