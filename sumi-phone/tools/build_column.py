@@ -98,6 +98,40 @@ def load():
     arts.sort(key=lambda a: a["published"], reverse=True)
     return arts
 
+# ---------- グラフ ----------
+# 本文に <figure class="chart" data-chart='{...}'></figure> と書くと、ここでグラフに置き換える。
+#   {"type": "hbar"（横棒）か "col"（縦棒）, "title": "グラフの見出し", "unit": "分",
+#    "rows": [["10代", 243.4], ...], "highlight": ["20代"], "max": 300（省略可）, "source": "出典の短い名前"}
+# HTML と CSS で組むので、スマホでも文字が本文と同じ大きさで読める。
+# 色は2つだけ：ふつうの棒は墨の灰色、話の中心の棒（highlight）は朱。値は棒の端に書き、表の代わりにもなる。
+# ラベルの改行は "\n" で入れる
+def fmt(v):
+    return (f"{v:,.1f}" if v % 1 else f"{int(v):,}")
+
+def chart_html(c):
+    rows, unit, hl = c["rows"], c.get("unit", ""), set(c.get("highlight", []))
+    vmax = c.get("max") or max(v for _, v in rows) * (1.0 if c["type"] == "hbar" else 1.08)
+    title = esc(c["title"])
+    items = []
+    for k, v in rows:
+        pct = max(v / vmax * 100, 1)
+        cls = " is-hl" if k in hl else ""
+        label = '<span class="ch-sep">・</span><br />'.join(esc(x) for x in k.split("\n"))
+        tip = esc(k.replace("\n", " ")) + "：" + fmt(v) + esc(unit)
+        items.append(f'<li class="ch-row{cls}" title="{tip}"><span class="ch-label">{label}</span>'
+                     f'<span class="ch-track"><span class="ch-bar" style="--v:{pct:.1f}%"></span><span class="ch-value">{fmt(v)}<small>{esc(unit)}</small></span></span></li>')
+    src = f'<span class="ch-src">出典：{esc(c["source"])}</span>' if c.get("source") else ""
+    kind = "ch-h" if c["type"] == "hbar" else "ch-c"
+    # ラベルが長い横棒は、スマホでラベルを棒の上に置く（横に並べると折り返しで崩れるため）
+    if c["type"] == "hbar" and max(max(len(x) for x in k.split("\n")) for k, _ in rows) > 5:
+        kind += " ch-stack"
+    return f'<figure class="chart {kind}"><figcaption class="ch-title">{title}</figcaption><ul class="ch-rows" role="list">{"".join(items)}</ul>{src}</figure>'
+
+def render_charts(body):
+    def rep(m):
+        return chart_html(json.loads(html.unescape(m.group(1))))
+    return re.sub(r"<figure class=\"chart\" data-chart='(.*?)'></figure>", rep, body, flags=re.S)
+
 def place_toc(body, toc):
     """目次の位置：本文に <!--toc--> があればそこ、なければ最初のまとめ（lead）のすぐ下"""
     if "<!--toc-->" in body:
@@ -109,7 +143,7 @@ def place_toc(body, toc):
 
 def build_article(a, by_slug):
     url = f"{SITE}/column/{a['slug']}.html"
-    body = a["body"]
+    body = render_charts(a["body"])
     # h2 に id を付けて、目次を作る
     toc = []
     def add_id(m):
