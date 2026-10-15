@@ -784,3 +784,15 @@ h2 .nw { white-space: nowrap; }
 }
 .article .ch-sep { display: none; }
 @media (max-width: 760px) { .article .ch-stack .ch-sep { display: inline; } }
+
+/* コラム：セルフチェック */
+.article .selfcheck { margin: 24px 0 32px; padding: 22px; border-radius: 14px; background: #fbfaf7; border: 1px solid var(--paper-line); }
+.article .sc-list { list-style: none; padding: 0 !important; margin: 0 0 20px !important; counter-reset: sc; }
+.article .sc-list li { margin: 0 !important; border-bottom: 1px solid var(--paper-line); }
+.article .sc-list label { display: flex; gap: 12px; align-items: flex-start; padding: 12px 2px; cursor: pointer; font-size: 16px; line-height: 1.8; }
+.article .sc-list input { flex: none; width: 20px; height: 20px; margin-top: 5px; accent-color: #c4462a; }
+.article .selfcheck .btn { border: 0; cursor: pointer; }
+.article .sc-result { margin-top: 20px; padding: 18px 20px; border-radius: 12px; background: #fff; border: 1px solid var(--paper-line); }
+.article .sc-score { font-size: 13px !important; color: var(--paper-dim); }
+.article .sc-h { font-family: var(--serif); font-weight: 600; font-size: 19px !important; margin: 4px 0 6px; }
+.article .sc-note { margin-top: 16px; font-size: 12px !important; line-height: 1.8 !important; color: var(--paper-dim); }
