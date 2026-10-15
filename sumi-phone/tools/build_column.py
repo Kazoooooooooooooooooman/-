@@ -21,7 +21,6 @@ CSS_VER = re.search(r'styles\.css\?v=([0-9a-z]+)', (ROOT / "index.html").read_te
 # ヘッダーのロゴは、ほかのページと同じものを使う
 TERMS = (ROOT / "terms.html").read_text()
 LOGO = re.search(r'<svg class="logo-mark".*?</svg>', TERMS, re.S).group(0)
-MAIL = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6.5L20.5 7"/></svg>'
 
 def esc(s): return html.escape(s, quote=True)
 
@@ -56,11 +55,21 @@ def head(title, desc, url, extra_ld):
   <a class="logo" href="/" aria-label="Soto Phone トップへ">
     {LOGO}<span class="logo-word">SOTO</span>
   </a>
-  <nav class="nav-links">
-    <a href="/column/">コラム</a>
-    <a class="nav-contact" href="/contact.html">{MAIL}<span>お問い合わせ</span></a>
-    <a class="nav-cta" href="/?from=column#signup">先行予約</a>
+  <nav class="nav-links" id="site-menu" aria-label="メインメニュー">
+    <div class="nav-main">
+      <a href="/#about">製品</a>
+      <a href="/#points">スタンプ</a>
+      <a href="/#letter">私たちについて</a>
+    </div>
+    <div class="nav-util">
+      <a href="/column/" aria-current="page">コラム</a>
+      <a href="/#faq">よくある質問</a>
+      <a class="nav-contact" href="/contact.html">お問い合わせ</a>
+      <span class="nav-lang"><a href="/" hreflang="ja" lang="ja" aria-current="true">JA</a><span aria-hidden="true">/</span><a href="/en.html" hreflang="en" lang="en">EN</a></span>
+    </div>
   </nav>
+  <a class="nav-cta" href="/?from=column#signup">先行予約</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="メニュー" data-close="メニューを閉じる"><span></span><span></span></button>
 </header>
 '''
 
@@ -70,6 +79,7 @@ FOOT = '''<footer class="footer">
     <p class="small">運営：Soto Phone（代表 佐々木 一真）／ <a href="/">sotophone.jp</a></p>
   </div>
 </footer>
+<script src="/nav.js?v=''' + CSS_VER + '''" defer></script>
 </body>
 </html>
 '''
