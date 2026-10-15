@@ -675,3 +675,58 @@ h2 .nw { white-space: nowrap; }
   font-family: var(--sans); font-weight: 400; letter-spacing: .04em;
 }
 @media (max-width: 760px) { .hd-form input[type=email] { font-size: 16px; } }
+
+/* ---------- コラム（記事と一覧） ----------
+   読みやすさを優先：1行は全角で35字前後、本文は17px・行間2、見出しは明朝。色は紙・墨・朱の3つだけ */
+.column-page .nav-links a:not(.nav-cta):not(.nav-contact) { opacity: .78; }
+.crumbs { display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; letter-spacing: .06em; color: var(--paper-dim); margin-bottom: 28px; }
+.legal .crumbs a { text-decoration: none; }
+.legal .crumbs a:hover { text-decoration: underline; }
+.article .wrap { max-width: 720px; }
+.article h1 { font-size: clamp(26px, 3.6vw, 38px); line-height: 1.55; letter-spacing: .04em; text-wrap: balance; word-break: auto-phrase; }
+.article-meta { font-size: 12px; letter-spacing: .04em; color: var(--paper-dim); margin: 14px 0 32px; }
+.article p, .article li { font-size: 17px; line-height: 2; }
+.article p + p { margin-top: 1.1em; }
+.article .lead { font-family: var(--serif); font-size: clamp(18px, 1.8vw, 20px); line-height: 2; margin-bottom: 32px; }
+.article h2 { font-family: var(--serif); font-weight: 600; font-size: clamp(21px, 2.3vw, 25px); line-height: 1.6; letter-spacing: .04em; margin: 64px 0 18px; padding-top: 22px; border-top: 1px solid var(--paper-line); }
+.article h3 { font-family: var(--serif); font-weight: 600; font-size: 19px; line-height: 1.6; margin: 36px 0 10px; }
+.article ul, .article ol { padding-left: 1.4em; margin: 14px 0; }
+.article li + li { margin-top: 6px; }
+.article strong { font-weight: 600; background: linear-gradient(transparent 62%, rgba(224, 80, 46, .16) 62%); }
+.article .note-box { margin: 28px 0; padding: 20px 22px; border-radius: 12px; background: rgba(255, 255, 255, .6); border: 1px solid var(--paper-line); }
+.article .note-box p { font-size: 16px; }
+.article .note-box p:first-child { font-weight: 600; }
+.article table { width: 100%; border-collapse: collapse; margin: 22px 0; font-size: 15px; }
+.article th, .article td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--paper-line); line-height: 1.7; vertical-align: top; }
+.article th { font-weight: 600; font-size: 14px; }
+.table-scroll { overflow-x: auto; }
+.article-toc { margin: 0 0 40px; padding: 20px 24px; border-radius: 12px; background: rgba(255, 255, 255, .55); border: 1px solid var(--paper-line); }
+.article-toc p { font-size: 13px !important; letter-spacing: .12em; color: var(--paper-dim); margin-bottom: 6px; }
+.article-toc ol { margin: 0; padding-left: 1.3em; }
+.article-toc li { font-size: 15px !important; line-height: 1.8 !important; }
+.legal .article-toc a { text-decoration: none; }
+.legal .article-toc a:hover { text-decoration: underline; }
+.article-sources { margin-top: 56px; }
+.article-sources h2 { font-size: 17px !important; margin-top: 0 !important; }
+.article-sources li { font-size: 13px !important; line-height: 1.8 !important; color: var(--paper-dim); overflow-wrap: anywhere; }
+.article-cta { margin: 64px 0 0; padding: 32px 28px; border-radius: 18px; background: #f9f8f4; border: 1px solid var(--paper-line); }
+.article-cta-eyebrow { font-family: var(--latin); font-weight: 500; font-size: 11px; letter-spacing: .32em; text-transform: uppercase; color: var(--paper-dim); }
+.article-cta-h { font-family: var(--serif); font-size: clamp(19px, 2vw, 22px); line-height: 1.6; margin: 8px 0 10px; }
+.article-cta p:not(.article-cta-eyebrow):not(.article-cta-h) { font-size: 15px; line-height: 1.9; color: var(--paper-dim); margin-bottom: 20px; }
+.legal .article-cta .btn { text-decoration: none; }
+.article-related { margin-top: 48px; }
+.article-related h2 { font-family: var(--serif); font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+.article-related li { font-size: 15px; }
+/* 一覧 */
+.column-lead { font-size: 15px; color: var(--paper-dim); margin: 6px 0 40px; }
+.col-list { list-style: none; padding: 0 !important; border-top: 1px solid var(--paper-line); }
+.col-item { margin: 0 !important; border-bottom: 1px solid var(--paper-line); }
+.legal .col-item a { display: block; padding: 24px 4px; text-decoration: none; }
+.col-item a:hover h2 { text-decoration: underline; text-underline-offset: 4px; }
+.col-date { font-size: 12px !important; color: var(--paper-dim); }
+.col-item h2 { font-family: var(--serif); font-weight: 600; font-size: 20px; line-height: 1.6; margin: 4px 0 6px; }
+.col-desc { font-size: 14px !important; line-height: 1.8 !important; color: var(--paper-dim); }
+@media (max-width: 760px) {
+  .article p, .article li { font-size: 16px; }
+  .column-page .nav-links a[href="/column/"] { display: none; }
+}
