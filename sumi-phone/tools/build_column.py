@@ -90,6 +90,10 @@ def load():
             raise SystemExit(f"{p.name}: 先頭に <!--meta {{...}} --> がありません")
         meta = json.loads(m.group(1))
         meta["body"] = raw[m.end():]
+        # "draft": true の記事は、出典を元の資料で確かめ終わるまで公開しない（ページも一覧もサイトマップも作らない）
+        if meta.get("draft"):
+            (OUT / f"{meta['slug']}.html").unlink(missing_ok=True)
+            continue
         arts.append(meta)
     arts.sort(key=lambda a: a["published"], reverse=True)
     return arts
