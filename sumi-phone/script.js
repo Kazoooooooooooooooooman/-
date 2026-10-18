@@ -606,6 +606,41 @@
     return d;
   };
 
+
+  // 狭い画面：文字や絵がある高さを調べ、そのあいだの余白（文字のない高さ）で左右を渡る。
+  // 文字のある高さでは、画面のふち（本文の外）だけを走る
+  const narrowRoute = (W, L, R, hero, about, mainTop) => {
+    const spans = [];
+    secs.slice(1, -1).forEach((sec) => {
+      sec.querySelectorAll("*").forEach((el) => {
+        const own = [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim());
+        if (!own && !/^(IMG|VIDEO|CANVAS|svg|BUTTON|INPUT|SELECT|FIGURE)$/.test(el.tagName)) return;
+        const r = el.getBoundingClientRect();
+        if (r.height < 1 || r.width < 1) return;
+        spans.push([r.top + scrollY - mainTop, r.bottom + scrollY - mainTop]);
+      });
+    });
+    spans.sort((a, b) => a[0] - b[0]);
+    const MIN_GAP = 140; // これより狭い余白では渡らない
+    const blocks = [];
+    spans.forEach(([a, b]) => {
+      const last = blocks[blocks.length - 1];
+      if (last && a - last[1] < MIN_GAP) last[1] = Math.max(last[1], b); else blocks.push([a, b]);
+    });
+    const pts = [[W * 0.5, hero.b - 6]];
+    let x = L;
+    blocks.forEach(([a, b], i) => {
+      const prevEnd = i ? blocks[i - 1][1] : hero.b;
+      const gap = a - prevEnd;
+      if (i) x = x === L ? R : L;                                   // 余白ごとに、反対側へ
+      pts.push([x, a - Math.min(40, gap * 0.2)]);
+      if (b - a > 260) pts.push([x + (x === L ? 3 : -3), (a + b) / 2]);
+      pts.push([x, b + Math.min(40, gap * 0.2)]);
+    });
+    pts.push([W * 0.5, about.t + 60]);
+    return pts;
+  };
+
   const build = () => {
     const W = document.documentElement.clientWidth;
     const mainTop = main.getBoundingClientRect().top + scrollY;
@@ -630,12 +665,7 @@
       [W * 0.5, ink.t + 20],
       [L + wob, ink.t + 300], [L, ink.b - 200],
       [W * 0.4, about.t - 30], [W * 0.5, about.t + 60],
-    ] : [
-      [W * 0.5, hero.b - 6],
-      [W * 0.22, phone.t + 30],
-      [L, phone.t + 120], [L, problem.t], [L, ink.t], [L, about.t - 80],
-      [W * 0.3, about.t + 20], [W * 0.5, about.t + 60],
-    ];
+    ] : narrowRoute(W, L, R, hero, about, mainTop);
     const d = smooth(pts);
     endY = about.t + 60;
     svg.setAttribute("viewBox", `0 0 ${W} ${endY + 40}`);
