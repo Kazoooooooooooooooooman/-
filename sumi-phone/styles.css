@@ -167,11 +167,13 @@ h2 .nw { white-space: nowrap; }
 .scale.reveal { opacity: 1; transform: none; }
 .sc-ask, .sc-sum { word-break: auto-phrase; text-wrap: balance; }
 .sc-ask { font-family: var(--serif); font-size: clamp(19px, 2vw, 26px); letter-spacing: .1em; margin-bottom: clamp(28px, 5vh, 56px); }
-.sc-steps { list-style: none; padding: 0; margin: 0; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(16px, 2.6vw, 40px); align-items: end; }
-.sc-step { display: flex; flex-direction: column; align-items: center; min-width: 0; opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; transition-delay: calc(var(--i) * .4s); }
+.sc-steps { list-style: none; padding: 0; margin: 0; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto auto auto; column-gap: clamp(16px, 2.6vw, 40px); }
+/* 4つの段の「名前・数字・図」を、それぞれ同じ高さの行にそろえる（数字は下の線をそろえる） */
+.sc-steps > .sc-step { grid-row: span 3; display: grid; grid-template-rows: subgrid; justify-items: center; align-items: end; }
+.sc-step { min-width: 0; opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; transition-delay: calc(var(--i) * .4s); }
 .scale.is-in .sc-step { opacity: 1; transform: none; }
 .sc-k { font-family: var(--serif); font-size: clamp(14px, 1.3vw, 17px); letter-spacing: .12em; color: var(--paper-dim); }
-.sc-v { display: flex; align-items: baseline; justify-content: center; gap: .08em; line-height: 1; margin: 8px 0 10px; white-space: nowrap; }
+.sc-v { display: flex; align-items: baseline; justify-content: center; gap: .08em; line-height: 1; margin: 6px 0 0; white-space: nowrap; }
 .sc-n { font-family: var(--latin); font-weight: 800; letter-spacing: -.04em; font-size: var(--fs); }
 .sc-u { font-family: var(--serif); font-size: calc(var(--fs) * .3); }
 .sc-step:nth-child(1) { --fs: clamp(48px, 5vw, 76px); }
@@ -179,9 +181,7 @@ h2 .nw { white-space: nowrap; }
 .sc-step:nth-child(3) { --fs: clamp(64px, 7.2vw, 112px); }
 .sc-step:nth-child(4) { --fs: clamp(76px, 8.6vw, 136px); }
 .sc-step:nth-child(4) .sc-n { color: #c4462a; }
-.sc-line { font-family: var(--serif); font-size: clamp(14px, 1.25vw, 17px); letter-spacing: .04em; line-height: 1.7; }
-.sc-fig { width: 100%; margin-top: clamp(14px, 2.4vh, 22px); display: flex; flex-direction: column; align-items: center; }
-.sc-cap { font-size: 11px; letter-spacing: .04em; color: var(--paper-dim); margin-top: 8px; }
+.sc-fig { width: 100%; margin-top: clamp(18px, 3vh, 28px); align-self: start; }
 .sc-grid { display: grid; gap: 2px; width: 100%; }
 .sc-grid i { aspect-ratio: 1; border-radius: 2px; background: var(--blank); }
 .sc-grid i.on { transition: background .3s ease; transition-delay: calc(var(--i) * .4s + .5s + var(--k) * var(--d)); }
@@ -201,13 +201,12 @@ h2 .nw { white-space: nowrap; }
   .scale { padding-block: 80px 40px; }
   .sc-ask { margin-bottom: 22px; font-size: 17px; letter-spacing: .06em; }
   .sc-steps { grid-template-columns: 1fr; gap: 14px; }
-  .sc-step { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-areas: "k fig" "v fig" "line fig"; column-gap: 14px; align-items: center; text-align: left; padding-bottom: 14px; border-bottom: 1px solid var(--paper-line); }
+  .sc-steps { grid-template-rows: none; }
+  .sc-steps > .sc-step { grid-row: auto; display: grid; grid-template-rows: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-areas: "k fig" "v fig"; column-gap: 14px; align-items: center; justify-items: start; text-align: left; padding-bottom: 14px; border-bottom: 1px solid var(--paper-line); }
   .sc-step:last-child { border-bottom: 0; }
   .sc-k { grid-area: k; font-size: 12px; }
   .sc-v { grid-area: v; justify-content: flex-start; margin: 2px 0 4px; }
-  .sc-line { grid-area: line; font-size: 11.5px; letter-spacing: 0; word-break: auto-phrase; }
-  .sc-fig { grid-area: fig; margin-top: 0; }
-  .sc-cap { font-size: 10px; margin-top: 4px; }
+  .sc-fig { grid-area: fig; margin-top: 0; align-self: center; }
   .sc-step:nth-child(1) { --fs: 40px; }
   .sc-step:nth-child(2) { --fs: 46px; }
   .sc-step:nth-child(3) { --fs: 54px; }
