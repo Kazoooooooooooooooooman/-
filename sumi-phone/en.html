@@ -26,7 +26,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261018n" />
+<link rel="stylesheet" href="styles.css?v=20261018o" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://sotophone.jp/#website", "name": "Soto Phone", "alternateName": ["ソトフォン", "Soto"], "url": "https://sotophone.jp/", "inLanguage": "en"}, {"@type": "Organization", "@id": "https://sotophone.jp/#org", "name": "Soto Phone", "url": "https://sotophone.jp/", "logo": "https://sotophone.jp/favicon-512.png", "email": "hello@sotophone.jp"}]}</script>
 </head>
 <body>
@@ -145,9 +145,12 @@
     <div class="scale wrap reveal" id="scale" aria-label="165 minutes a day adds up to about 19 hours a week, 42 days a year, and about seven and a half years of a life from age 15 to 80.">
       <p class="sc-ask">How long were you on your phone yesterday?</p>
       <div class="sc-input">
-        <label for="sc-min">Your day</label>
-        <input type="range" id="sc-min" min="15" max="600" step="15" value="165" />
-        <output id="sc-out" for="sc-min">165 min<small> (average)</small></output>
+        <div class="sc-range">
+          <output class="sc-bubble" id="sc-out" for="sc-min">165 min</output>
+          <input type="range" id="sc-min" min="15" max="600" step="15" value="165" aria-label="Minutes you spend on your phone a day" />
+          <span class="sc-avg" aria-hidden="true">average</span>
+        </div>
+        <p class="sc-hint">Move the slider to use your own time</p>
       </div>
       <ol class="sc-steps">
         <li class="sc-step" style="--i:0">
@@ -372,7 +375,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261018n"></script>
-<script src="/nav.js?v=20261018n" defer></script>
+<script src="script.js?v=20261018o"></script>
+<script src="/nav.js?v=20261018o" defer></script>
 </body>
 </html>

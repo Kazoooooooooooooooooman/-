@@ -753,8 +753,10 @@
   const update = () => {
     const m = Number(inp.value);
     sc.classList.add("is-live");
-    inp.style.setProperty("--p", `${(m - inp.min) / (inp.max - inp.min) * 100}%`);
-    out.innerHTML = (EN ? `${m} min` : `${m}分`) + (m === AVG ? (EN ? "<small> (average)</small>" : "<small>（平均）</small>") : "");
+    const r = (m - inp.min) / (inp.max - inp.min);
+    box.style.setProperty("--p", `${r * 100}%`);
+    box.style.setProperty("--pn", r);
+    out.textContent = EN ? `${m} min` : `${m}分`;
     const L = life(m);
     set(steps[0], day(m)); set(steps[1], week(m)); set(steps[2], year(m)); set(steps[3], L);
     fill(steps[0].querySelector(".sc-grid"), 24, m / 60);
@@ -765,6 +767,10 @@
     if (note) note.textContent = EN ? `Assuming ${m} minutes every day from age 15 to 80.` : `15歳から80歳まで、毎日${m}分見た場合の計算です。`;
     sum.textContent = EN ? `${m} minutes a day adds up to about ${lifeTxt} of a life.` : `1日${m}分は、一生で約${lifeTxt}になります。`;
   };
-  inp.style.setProperty("--p", `${(AVG - inp.min) / (inp.max - inp.min) * 100}%`);
+  const box = sc.querySelector(".sc-input");
+  const ra = (AVG - inp.min) / (inp.max - inp.min);
+  box.style.setProperty("--p", `${ra * 100}%`);
+  box.style.setProperty("--pn", ra);
+  box.style.setProperty("--avg", ra);
   inp.addEventListener("input", update);
 })();
