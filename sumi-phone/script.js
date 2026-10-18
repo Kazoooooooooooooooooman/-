@@ -620,7 +620,7 @@
         spans.push([r.top + scrollY - mainTop, r.bottom + scrollY - mainTop]);
       });
     });
-    // 画面に留まる場面（.scale）は、中の言葉がスクロールで動くので、箱ごと文字のある高さとして扱う
+    // 1日→一生の場面（.scale）は、マスが細かいので、箱ごと文字のある高さとして扱う
     document.querySelectorAll(".scale").forEach((el) => { const r = el.getBoundingClientRect(); spans.push([r.top + scrollY - mainTop, r.bottom + scrollY - mainTop]); });
     spans.sort((a, b) => a[0] - b[0]);
     const MIN_GAP = 140; // これより狭い余白では渡らない
@@ -716,28 +716,3 @@
   build();
 })();
 
-/* 1日 → 1週間 → 1年 → 一生：場面の箱（.scale）をスクロールするあいだ画面に留め、進み具合で4つの段を順に見せる。
-   「動きを減らす」設定のときは何もしない（4段が縦に並んだまま、マスも最初から塗られている） */
-(() => {
-  const sc = document.getElementById("scale");
-  if (!sc || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  sc.classList.add("is-pinned");
-  const steps = [...sc.querySelectorAll(".sc-step")];
-  const ticks = [...sc.querySelectorAll(".sc-ticks span")];
-  let cur = -1, queued = false;
-  const update = () => {
-    queued = false;
-    const r = sc.getBoundingClientRect();
-    const total = r.height - innerHeight;
-    const p = Math.min(Math.max(-r.top / total, 0), 0.9999);
-    const i = Math.floor(p * steps.length);
-    if (i === cur) return;
-    cur = i;
-    steps.forEach((s, k) => s.classList.toggle("is-on", k === i));
-    ticks.forEach((t, k) => t.classList.toggle("is-on", k <= i));
-  };
-  const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
-  addEventListener("scroll", onScroll, { passive: true });
-  addEventListener("resize", onScroll);
-  update();
-})();
