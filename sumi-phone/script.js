@@ -534,7 +534,7 @@
    余白を含んだ箱ではなく、中の言葉と絵そのものの位置で判定する（箱で見ると、隣の言葉と同時に見えてしまう） */
 (() => {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  const els = [...document.querySelectorAll("#problem > .wrap:first-child, #problem .year, #problem .drawn, #problem > .wrap.center:last-child, .day-panel .day-cap")];
+  const els = [...document.querySelectorAll("#problem .year-bridge, #problem .drawn, #problem > .wrap.center:last-child, .day-panel .day-cap")];
   if (!els.length) return;
   els.forEach((el) => el.classList.add("solo"));
   document.documentElement.classList.add("js-solo");
@@ -620,6 +620,8 @@
         spans.push([r.top + scrollY - mainTop, r.bottom + scrollY - mainTop]);
       });
     });
+    // 画面に留まる場面（.scale）は、中の言葉がスクロールで動くので、箱ごと文字のある高さとして扱う
+    document.querySelectorAll(".scale").forEach((el) => { const r = el.getBoundingClientRect(); spans.push([r.top + scrollY - mainTop, r.bottom + scrollY - mainTop]); });
     spans.sort((a, b) => a[0] - b[0]);
     const MIN_GAP = 140; // これより狭い余白では渡らない
     const blocks = [];
@@ -639,6 +641,16 @@
     });
     pts.push([W * 0.5, about.t + 60]);
     return pts;
+  };
+
+  // 狭い画面の道：縦の区間はまっすぐ下り、左右を渡るところは、上下に向いたS字でつなぐ（短い区間でも輪にならない）
+  const sCurve = (p) => {
+    let d = `M${p[0][0]},${p[0][1]}`;
+    for (let i = 1; i < p.length; i++) {
+      const [ax, ay] = p[i - 1], [bx, by] = p[i], h = (by - ay) / 2;
+      d += ` C${ax},${ay + h} ${bx},${by - h} ${bx},${by}`;
+    }
+    return d;
   };
 
   const build = () => {
@@ -666,7 +678,7 @@
       [L + wob, ink.t + 300], [L, ink.b - 200],
       [W * 0.4, about.t - 30], [W * 0.5, about.t + 60],
     ] : narrowRoute(W, L, R, hero, about, mainTop);
-    const d = smooth(pts);
+    const d = wide ? smooth(pts) : sCurve(pts);
     endY = about.t + 60;
     svg.setAttribute("viewBox", `0 0 ${W} ${endY + 40}`);
     svg.style.height = `${endY + 40}px`;
@@ -702,4 +714,30 @@
   addEventListener("load", build);
   if (document.fonts) document.fonts.ready.then(build);
   build();
+})();
+
+/* 1日 → 1週間 → 1年 → 一生：場面の箱（.scale）をスクロールするあいだ画面に留め、進み具合で4つの段を順に見せる。
+   「動きを減らす」設定のときは何もしない（4段が縦に並んだまま、マスも最初から塗られている） */
+(() => {
+  const sc = document.getElementById("scale");
+  if (!sc || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  sc.classList.add("is-pinned");
+  const steps = [...sc.querySelectorAll(".sc-step")];
+  const ticks = [...sc.querySelectorAll(".sc-ticks span")];
+  let cur = -1, queued = false;
+  const update = () => {
+    queued = false;
+    const r = sc.getBoundingClientRect();
+    const total = r.height - innerHeight;
+    const p = Math.min(Math.max(-r.top / total, 0), 0.9999);
+    const i = Math.floor(p * steps.length);
+    if (i === cur) return;
+    cur = i;
+    steps.forEach((s, k) => s.classList.toggle("is-on", k === i));
+    ticks.forEach((t, k) => t.classList.toggle("is-on", k <= i));
+  };
+  const onScroll = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  update();
 })();
