@@ -26,7 +26,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261015s" />
+<link rel="stylesheet" href="styles.css?v=20261018a" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://sotophone.jp/#website", "name": "Soto Phone", "alternateName": ["ソトフォン", "Soto"], "url": "https://sotophone.jp/", "inLanguage": "ja"}, {"@type": "Organization", "@id": "https://sotophone.jp/#org", "name": "Soto Phone", "url": "https://sotophone.jp/", "logo": "https://sotophone.jp/favicon-512.png", "email": "hello@sotophone.jp"}]}</script>
 </head>
 <body>
@@ -67,22 +67,16 @@
 
   <!-- 1. 扉：SOTO の O が、外への扉になって開く -->
   <section id="top" class="panel hero-copy hero-door" data-bg="0">
-    <!-- 背景の水彩画（写真をもとに tools/gen_hero_watercolor.py で作る）。木だけが風に揺れる（script.js が WebGL で動かす。動かせないときは、写真のまま） -->
-    <div class="hd-photo" aria-hidden="true">
-      <img src="images/hero-watercolor.jpg" alt="" fetchpriority="high" />
-      <canvas class="hd-wind"></canvas>
-      <!-- 空を横切る、V字の鳥の群れ（墨のにじんだ水彩の鳥）。遠くから近づきながら、右上へ抜けていく -->
-      <svg class="hd-birds" viewBox="-110 -60 130 120" aria-hidden="true"><defs><filter id="bird-ink" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="1.6"/><feGaussianBlur stdDeviation=".35"/></filter></defs><g filter="url(#bird-ink)"><path transform="translate(0 0)" d="M-9 0 Q-4.5 -6 0 0 Q4.5 -6 9 0"><animate attributeName="d" dur="0.95s" begin="-0.00s" repeatCount="indefinite" values="M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1;M-9 3 Q-4.5 2 0 0 Q4.5 2 9 3;M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1" keyTimes="0;.45;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1"/></path><path transform="translate(-30 -15)" d="M-9 0 Q-4.5 -6 0 0 Q4.5 -6 9 0"><animate attributeName="d" dur="0.99s" begin="-0.25s" repeatCount="indefinite" values="M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1;M-9 3 Q-4.5 2 0 0 Q4.5 2 9 3;M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1" keyTimes="0;.45;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1"/></path><path transform="translate(-30 16)" d="M-9 0 Q-4.5 -6 0 0 Q4.5 -6 9 0"><animate attributeName="d" dur="0.99s" begin="-0.40s" repeatCount="indefinite" values="M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1;M-9 3 Q-4.5 2 0 0 Q4.5 2 9 3;M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1" keyTimes="0;.45;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1"/></path><path transform="translate(-60 -31)" d="M-9 0 Q-4.5 -6 0 0 Q4.5 -6 9 0"><animate attributeName="d" dur="1.03s" begin="-0.15s" repeatCount="indefinite" values="M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1;M-9 3 Q-4.5 2 0 0 Q4.5 2 9 3;M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1" keyTimes="0;.45;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1"/></path><path transform="translate(-61 33)" d="M-9 0 Q-4.5 -6 0 0 Q4.5 -6 9 0"><animate attributeName="d" dur="1.05s" begin="-0.55s" repeatCount="indefinite" values="M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1;M-9 3 Q-4.5 2 0 0 Q4.5 2 9 3;M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1" keyTimes="0;.45;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1"/></path><path transform="translate(-91 -46)" d="M-9 0 Q-4.5 -6 0 0 Q4.5 -6 9 0"><animate attributeName="d" dur="0.95s" begin="-0.35s" repeatCount="indefinite" values="M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1;M-9 3 Q-4.5 2 0 0 Q4.5 2 9 3;M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1" keyTimes="0;.45;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1"/></path><path transform="translate(-92 50)" d="M-9 0 Q-4.5 -6 0 0 Q4.5 -6 9 0"><animate attributeName="d" dur="0.97s" begin="-0.05s" repeatCount="indefinite" values="M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1;M-9 3 Q-4.5 2 0 0 Q4.5 2 9 3;M-9 -1 Q-4.5 -7 0 0 Q4.5 -7 9 -1" keyTimes="0;.45;1" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1"/></path></g></svg>
+    <!-- 水彩の Soto Phone の動画（音なし・くり返し）。「動きを減らす」設定のときは、止めて1枚目の絵だけを見せる -->
+    <div class="hd-media" aria-hidden="true">
+      <video class="hd-video" autoplay muted loop playsinline preload="auto" poster="images/hero-phone.jpg"><source src="images/hero-phone.webm" type="video/webm" /><source src="images/hero-phone.mp4" type="video/mp4" /></video>
     </div>
-    <div class="hd-center">
+    <div class="hd-text">
       <p class="hd-eyebrow hd-eyebrow-ja">SNS もゲームもない、携帯電話</p>
       <div class="hd-mark" role="img" aria-label="Soto Phone">
         <span class="hd-word" aria-hidden="true">SOTO</span>
         <span class="hd-phone" aria-hidden="true">Phone</span>
       </div>
-    </div>
-
-    <div class="hd-foot">
       <div class="hd-message">
         <p class="hd-motto" lang="en">Step Out, Turn Off.</p>
         <h1 class="hd-copy">楽しさは、画面の外に。</h1>
@@ -96,6 +90,7 @@
         <p class="hd-fine">無料です。<br class="sp" /><a href="privacy.html">プライバシーポリシー</a>に同意のうえ、ご登録ください。</p>
         <p class="hd-msg" id="hero-msg" role="status"></p>
       </div>
+      <a class="hd-more" href="#phone">Soto Phone を見る<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
     </div>
   </section>
 
@@ -345,7 +340,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261015s"></script>
-<script src="/nav.js?v=20261015s" defer></script>
+<script src="script.js?v=20261018a"></script>
+<script src="/nav.js?v=20261018a" defer></script>
 </body>
 </html>
