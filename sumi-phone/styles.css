@@ -167,6 +167,19 @@ h2 .nw { white-space: nowrap; }
 .scale.reveal { opacity: 1; transform: none; }
 .sc-ask, .sc-sum { word-break: auto-phrase; text-wrap: balance; }
 .sc-ask { font-family: var(--serif); font-size: clamp(19px, 2vw, 26px); letter-spacing: .1em; margin-bottom: clamp(28px, 5vh, 56px); }
+.sc-input label { white-space: nowrap; }
+.sc-input { display: flex; align-items: center; justify-content: center; gap: 14px; margin: calc(clamp(28px, 5vh, 56px) * -.5) 0 clamp(28px, 5vh, 52px); font-size: 13px; letter-spacing: .06em; color: var(--paper-dim); }
+.sc-input input { -webkit-appearance: none; appearance: none; width: min(46vw, 320px); height: 28px; background: transparent; cursor: pointer; }
+.sc-input input::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: linear-gradient(90deg, var(--paper-ink) var(--p, 26%), rgba(31, 30, 28, .18) var(--p, 26%)); }
+.sc-input input::-moz-range-track { height: 2px; border-radius: 2px; background: rgba(31, 30, 28, .18); }
+.sc-input input::-moz-range-progress { height: 2px; background: var(--paper-ink); }
+.sc-input input::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; margin-top: -10px; border-radius: 50%; background: #fff; border: 1.5px solid var(--paper-ink); box-shadow: 0 1px 4px rgba(0, 0, 0, .12); }
+.sc-input input::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 1.5px solid var(--paper-ink); }
+.sc-input input:focus-visible { outline: 2px solid var(--paper-ink); outline-offset: 4px; border-radius: 4px; }
+.sc-input output { min-width: 7.5em; text-align: left; font-family: var(--latin); font-weight: 500; font-size: 15px; color: var(--paper-ink); }
+.sc-input output small { font-family: var(--sans); font-weight: 400; font-size: 11px; color: var(--paper-dim); }
+/* つまみを動かしたあとは、待たずにすぐ塗り替える */
+.scale.is-live .sc-grid i, .scale.is-live .sc-grid i.on { transition: background .15s ease; transition-delay: 0s; }
 .sc-steps { list-style: none; padding: 0; margin: 0; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto auto auto; column-gap: clamp(16px, 2.6vw, 40px); }
 /* 4つの段の「名前・数字・図」を、それぞれ同じ高さの行にそろえる（数字は下の線をそろえる） */
 .sc-steps > .sc-step { grid-row: span 3; display: grid; grid-template-rows: subgrid; justify-items: center; align-items: end; }
@@ -200,6 +213,9 @@ h2 .nw { white-space: nowrap; }
 @media (max-width: 820px) {
   .scale { padding-block: 80px 40px; }
   .sc-ask { margin-bottom: 22px; font-size: 17px; letter-spacing: .06em; }
+  .sc-input { gap: 10px; margin: -8px 0 18px; font-size: 12px; }
+  .sc-input input { width: 46vw; }
+  .sc-input output { font-size: 14px; min-width: 6.5em; }
   .sc-steps { grid-template-columns: 1fr; gap: 14px; }
   .sc-steps { grid-template-rows: none; }
   .sc-steps > .sc-step { grid-row: auto; display: grid; grid-template-rows: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-areas: "k fig" "v fig"; column-gap: 14px; align-items: center; justify-items: start; text-align: left; padding-bottom: 14px; border-bottom: 1px solid var(--paper-line); }

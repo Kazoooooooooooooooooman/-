@@ -26,7 +26,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261018l" />
+<link rel="stylesheet" href="styles.css?v=20261018n" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://sotophone.jp/#website", "name": "Soto Phone", "alternateName": ["ソトフォン", "Soto"], "url": "https://sotophone.jp/", "inLanguage": "en"}, {"@type": "Organization", "@id": "https://sotophone.jp/#org", "name": "Soto Phone", "url": "https://sotophone.jp/", "logo": "https://sotophone.jp/favicon-512.png", "email": "hello@sotophone.jp"}]}</script>
 </head>
 <body>
@@ -142,8 +142,13 @@
   <section id="problem" class="sec" data-bg="0">
     <!-- データから物語へのつなぎ：1日の165分が、1週間・1年・一生と積み上がる。
          勢いよくスクロールする人にも伝わるよう、4つを1画面に並べ、右（スマホでは下）ほど数字を大きくする。画面に入ったら、順に現れる -->
-    <div class="scale wrap reveal" id="scale" role="img" aria-label="165 minutes a day adds up to about 19 hours a week, 42 days a year, and about seven and a half years of a life from age 15 to 80.">
+    <div class="scale wrap reveal" id="scale" aria-label="165 minutes a day adds up to about 19 hours a week, 42 days a year, and about seven and a half years of a life from age 15 to 80.">
       <p class="sc-ask">How long were you on your phone yesterday?</p>
+      <div class="sc-input">
+        <label for="sc-min">Your day</label>
+        <input type="range" id="sc-min" min="15" max="600" step="15" value="165" />
+        <output id="sc-out" for="sc-min">165 min<small> (average)</small></output>
+      </div>
       <ol class="sc-steps">
         <li class="sc-step" style="--i:0">
           <p class="sc-k">A day</p>
@@ -166,8 +171,8 @@
           <div class="sc-fig" aria-hidden="true"><div class="sc-grid g-life"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--k:0"></i><i class="on" style="--k:1"></i><i class="on" style="--k:2"></i><i class="on" style="--k:3"></i><i class="on" style="--k:4"></i><i class="on" style="--k:5"></i><i class="on" style="--k:6"></i><i class="on part" style="--k:7;--f:45%"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
         </li>
       </ol>
-      <p class="sc-sum">165 minutes a day adds up to about seven and a half years of a life.</p>
-      <p class="sc-src">Source: Hakuhodo Institute of Media Environment, Media Teiten Survey 2025 (Tokyo, ages 15–69)<br />Assuming 165 minutes every day from age 15 to 80.</p>
+      <p class="sc-sum" id="sc-sum">165 minutes a day adds up to about seven and a half years of a life.</p>
+      <p class="sc-src">Source: Hakuhodo Institute of Media Environment, Media Teiten Survey 2025 (Tokyo, ages 15–69)<br /><span id="sc-note">Assuming 165 minutes every day from age 15 to 80.</span></p>
     </div>
     <div class="wrap center year-bridge reveal">
       <p class="bridge">I was in those hours too.</p>
@@ -367,7 +372,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261018l"></script>
-<script src="/nav.js?v=20261018l" defer></script>
+<script src="script.js?v=20261018n"></script>
+<script src="/nav.js?v=20261018n" defer></script>
 </body>
 </html>

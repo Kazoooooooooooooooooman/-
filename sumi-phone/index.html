@@ -26,7 +26,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261018l" />
+<link rel="stylesheet" href="styles.css?v=20261018n" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://sotophone.jp/#website", "name": "Soto Phone", "alternateName": ["ソトフォン", "Soto"], "url": "https://sotophone.jp/", "inLanguage": "ja"}, {"@type": "Organization", "@id": "https://sotophone.jp/#org", "name": "Soto Phone", "url": "https://sotophone.jp/", "logo": "https://sotophone.jp/favicon-512.png", "email": "hello@sotophone.jp"}]}</script>
 </head>
 <body>
@@ -143,8 +143,13 @@
   <section id="problem" class="sec" data-bg="0">
     <!-- データから物語へのつなぎ：1日の165分が、1週間・1年・一生と積み上がる。
          勢いよくスクロールする人にも伝わるよう、4つを1画面に並べ、右（スマホでは下）ほど数字を大きくする。画面に入ったら、順に現れる -->
-    <div class="scale wrap reveal" id="scale" role="img" aria-label="1日165分は、1週間で約19時間、1年で約42日、15歳から80歳までの一生では約7年半になります。">
+    <div class="scale wrap reveal" id="scale" aria-label="1日165分は、1週間で約19時間、1年で約42日、15歳から80歳までの一生では約7年半になります。">
       <p class="sc-ask">昨日、スマホを何分見ていましたか。</p>
+      <div class="sc-input">
+        <label for="sc-min">あなたの1日</label>
+        <input type="range" id="sc-min" min="15" max="600" step="15" value="165" />
+        <output id="sc-out" for="sc-min">165分<small>（平均）</small></output>
+      </div>
       <ol class="sc-steps">
         <li class="sc-step" style="--i:0">
           <p class="sc-k">1日</p>
@@ -167,8 +172,8 @@
           <div class="sc-fig" aria-hidden="true"><div class="sc-grid g-life"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--k:0"></i><i class="on" style="--k:1"></i><i class="on" style="--k:2"></i><i class="on" style="--k:3"></i><i class="on" style="--k:4"></i><i class="on" style="--k:5"></i><i class="on" style="--k:6"></i><i class="on part" style="--k:7;--f:45%"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
         </li>
       </ol>
-      <p class="sc-sum">1日165分は、一生で約7年半になります。</p>
-      <p class="sc-src">出典：博報堂 メディア環境研究所「メディア定点調査2025」（東京地区・15〜69歳）<br />15歳から80歳まで、毎日165分見た場合の計算です。</p>
+      <p class="sc-sum" id="sc-sum">1日165分は、一生で約7年半になります。</p>
+      <p class="sc-src">出典：博報堂 メディア環境研究所「メディア定点調査2025」（東京地区・15〜69歳）<br /><span id="sc-note">15歳から80歳まで、毎日165分見た場合の計算です。</span></p>
     </div>
     <div class="wrap center year-bridge reveal">
       <p class="bridge">その時間の中に、私もいました。</p>
@@ -370,7 +375,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261018l"></script>
-<script src="/nav.js?v=20261018l" defer></script>
+<script src="script.js?v=20261018n"></script>
+<script src="/nav.js?v=20261018n" defer></script>
 </body>
 </html>

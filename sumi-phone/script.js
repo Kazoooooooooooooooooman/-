@@ -716,3 +716,55 @@
   build();
 })();
 
+
+/* 1日→一生の場面：つまみで「あなたの1日」を変えると、1週間・1年・一生の数字とマスが変わる。
+   一生は、15歳から80歳まで同じ時間を見た場合の計算（最初の表示の注記と同じ前提） */
+(() => {
+  const sc = document.getElementById("scale");
+  const inp = document.getElementById("sc-min");
+  if (!sc || !inp) return;
+  const EN = document.documentElement.lang === "en";
+  const out = document.getElementById("sc-out");
+  const sum = document.getElementById("sc-sum");
+  const note = document.getElementById("sc-note");
+  const steps = sc.querySelectorAll(".sc-step");
+  const AVG = 165;
+  const r1 = (x) => Math.round(x * 10) / 10;
+  // 数字と単位：大きい段ほど、ちょうどよい単位に切り替える
+  const day = (m) => [String(m), EN ? "min" : "分"];
+  const week = (m) => { const h = m * 7 / 60; return h < 1 ? [String(Math.round(m * 7)), EN ? "min" : "分"] : [String(Math.round(h)), EN ? "hours" : "時間"]; };
+  const year = (m) => { const d = m * 365 / 60 / 24; return d < 1 ? [String(Math.round(d * 24)), EN ? "hours" : "時間"] : [String(Math.round(d)), EN ? "days" : "日"]; };
+  const life = (m) => {
+    const y = m * 365 / 60 / 24 * 65 / 365;
+    if (y < 1) return [String(Math.max(1, Math.round(y * 12))), EN ? "months" : "か月"];
+    const half = Math.round(y * 2) / 2;
+    if (EN) return [String(half), "years"];
+    return Number.isInteger(half) ? [String(half), "年"] : [String(Math.floor(half)), "年半"];
+  };
+  const fill = (grid, n, amount, start = 0) => {
+    let h = "";
+    for (let i = 0; i < n; i++) {
+      const f = i < start ? 0 : Math.min(Math.max(amount - (i - start), 0), 1);
+      h += f >= 1 ? `<i class="on" style="--k:${i - start}"></i>` : f > 0 ? `<i class="on part" style="--k:${i - start};--f:${Math.round(f * 100)}%"></i>` : "<i></i>";
+    }
+    grid.innerHTML = h;
+  };
+  const set = (step, [n, u]) => { step.querySelector(".sc-n").textContent = n; step.querySelector(".sc-u").textContent = u; };
+  const update = () => {
+    const m = Number(inp.value);
+    sc.classList.add("is-live");
+    inp.style.setProperty("--p", `${(m - inp.min) / (inp.max - inp.min) * 100}%`);
+    out.innerHTML = (EN ? `${m} min` : `${m}分`) + (m === AVG ? (EN ? "<small> (average)</small>" : "<small>（平均）</small>") : "");
+    const L = life(m);
+    set(steps[0], day(m)); set(steps[1], week(m)); set(steps[2], year(m)); set(steps[3], L);
+    fill(steps[0].querySelector(".sc-grid"), 24, m / 60);
+    fill(steps[1].querySelector(".sc-grid"), 168, m * 7 / 60);
+    fill(steps[2].querySelector(".sc-grid"), 365, m * 365 / 60 / 24);
+    fill(steps[3].querySelector(".sc-grid"), 80, Math.min(65, m * 365 / 60 / 24 * 65 / 365), 15);
+    const lifeTxt = EN ? `${L[0]} ${L[1]}` : `${L[0]}${L[1]}`;
+    if (note) note.textContent = EN ? `Assuming ${m} minutes every day from age 15 to 80.` : `15歳から80歳まで、毎日${m}分見た場合の計算です。`;
+    sum.textContent = EN ? `${m} minutes a day adds up to about ${lifeTxt} of a life.` : `1日${m}分は、一生で約${lifeTxt}になります。`;
+  };
+  inp.style.setProperty("--p", `${(AVG - inp.min) / (inp.max - inp.min) * 100}%`);
+  inp.addEventListener("input", update);
+})();
