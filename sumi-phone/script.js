@@ -731,7 +731,9 @@
   const AVG = 165;
   const r1 = (x) => Math.round(x * 10) / 10;
   // 数字と単位：大きい段ほど、ちょうどよい単位に切り替える
-  const day = (m) => [String(m), EN ? "min" : "分"];
+  // 1日の時間は「2時間45分」の形で出す（つまみは30分刻み。最初だけ平均の2時間45分）
+  const hm = (m) => { const h = Math.floor(m / 60), r = m % 60; return EN ? (h ? `${h}h${r ? ` ${r}m` : ""}` : `${r}m`) : (h ? `${h}時間${r ? `${r}分` : ""}` : `${r}分`); };
+  const day = (m) => { const h = Math.floor(m / 60), r = m % 60; if (!h) return [String(r), EN ? "min" : "分"]; return [String(h), EN ? (r ? `h ${r}m` : "hours") : (r ? `時間${r}分` : "時間")]; };
   const week = (m) => { const h = m * 7 / 60; return h < 1 ? [String(Math.round(m * 7)), EN ? "min" : "分"] : [String(Math.round(h)), EN ? "hours" : "時間"]; };
   const year = (m) => { const d = m * 365 / 60 / 24; return d < 1 ? [String(Math.round(d * 24)), EN ? "hours" : "時間"] : [String(Math.round(d)), EN ? "days" : "日"]; };
   const life = (m) => {
@@ -749,14 +751,16 @@
     }
     grid.innerHTML = h;
   };
-  const set = (step, [n, u]) => { step.querySelector(".sc-n").textContent = n; step.querySelector(".sc-u").textContent = u; };
+  const set = (step, [n, u]) => { step.querySelector(".sc-n").textContent = n; step.querySelector(".sc-u").textContent = EN && n === "1" ? u.replace(/s$/, "") : u; };
   const update = () => {
-    const m = Number(inp.value);
+    const m = Math.min(600, Math.max(30, Math.round(Number(inp.value) / 30) * 30));
+    inp.value = m;
+    inp.setAttribute("aria-valuetext", hm(m));
     sc.classList.add("is-live");
     const r = (m - inp.min) / (inp.max - inp.min);
     box.style.setProperty("--p", `${r * 100}%`);
     box.style.setProperty("--pn", r);
-    out.textContent = EN ? `${m} min` : `${m}分`;
+    out.textContent = hm(m);
     const L = life(m);
     set(steps[0], day(m)); set(steps[1], week(m)); set(steps[2], year(m)); set(steps[3], L);
     fill(steps[0].querySelector(".sc-grid"), 24, m / 60);
@@ -764,8 +768,8 @@
     fill(steps[2].querySelector(".sc-grid"), 365, m * 365 / 60 / 24);
     fill(steps[3].querySelector(".sc-grid"), 80, Math.min(65, m * 365 / 60 / 24 * 65 / 365), 15);
     const lifeTxt = EN ? `${L[0]} ${L[1]}` : `${L[0]}${L[1]}`;
-    if (note) note.textContent = EN ? `Assuming ${m} minutes every day from age 15 to 80.` : `15歳から80歳まで、毎日${m}分見た場合の計算です。`;
-    sum.textContent = EN ? `${m} minutes a day adds up to about ${lifeTxt} of a life.` : `1日${m}分は、一生で約${lifeTxt}になります。`;
+    if (note) note.textContent = EN ? `Assuming ${hm(m)} every day from age 15 to 80.` : `15歳から80歳まで、毎日${hm(m)}見た場合の計算です。`;
+    sum.textContent = EN ? `${hm(m)} a day adds up to about ${lifeTxt} of a life.` : `1日${hm(m)}は、一生で約${lifeTxt}になります。`;
   };
   const box = sc.querySelector(".sc-input");
   const ra = (AVG - inp.min) / (inp.max - inp.min);
