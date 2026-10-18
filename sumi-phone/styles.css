@@ -488,7 +488,7 @@ h2 .nw { white-space: nowrap; }
 .hd-word {
   position: relative; z-index: 0; display: inline-block;
   font-family: var(--latin); font-weight: 800;
-  font-size: clamp(64px, 8.6vw, 150px); line-height: 1; letter-spacing: -.035em; color: var(--paper-ink);
+  font-size: clamp(60px, 7.2vw, 124px); line-height: 1; letter-spacing: -.035em; color: var(--paper-ink);
 }
 .hd-phone {
   font-family: var(--latin); font-weight: 500;
@@ -841,12 +841,15 @@ h2 .nw { white-space: nowrap; }
   display: block; width: 100%; height: 100%; object-fit: cover;
   -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect;
 }
-.hd-text { order: 1; justify-self: end; display: flex; flex-direction: column; align-items: flex-start; text-align: left; width: min(100%, 470px); }
+.hd-text { order: 1; justify-self: end; display: flex; flex-direction: column; align-items: flex-start; text-align: left; width: min(100%, 440px); }
 .hd-eyebrow { margin-bottom: clamp(10px, 2vh, 18px); }
 .hd-mark { display: flex; align-items: baseline; flex-wrap: wrap; margin-left: -.04em; }
 .hd-message { margin: clamp(18px, 3vh, 28px) 0 clamp(20px, 3.4vh, 30px); }
 .hero-door .hd-copy { margin-left: 0; }
 .hd-cta { align-items: flex-start; width: 100%; }
+/* 登録が済んだあとのカードも、左の列にそろえて左寄せにする（スマホでは列ごと中央そろえ） */
+.hero-door .done { text-align: left; }
+.hero-door .done-head, .hero-door .done-sub, .hero-door .done-row { justify-content: flex-start; }
 .hd-more {
   display: inline-flex; align-items: center; gap: 8px; margin-top: clamp(22px, 4vh, 36px); min-height: 44px;
   font-size: 14px; letter-spacing: .08em; color: var(--paper-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px;
@@ -863,6 +866,8 @@ h2 .nw { white-space: nowrap; }
   .hd-phone { font-size: 16px; margin-left: .3em; }
   .hd-message { margin: 12px 0 18px; }
   .hd-cta { align-items: center; }
+  .hero-door .done { text-align: center; }
+  .hero-door .done-head, .hero-door .done-sub, .hero-door .done-row { justify-content: center; }
   .hd-more { margin-top: 10px; }
 }
 @media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-phone.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
