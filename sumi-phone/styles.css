@@ -854,16 +854,19 @@ h2 .nw { white-space: nowrap; }
 .hd-more svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s ease; }
 .hd-more:hover svg { transform: translateY(3px); }
 @media (max-width: 820px) {
-  .hero-door { grid-template-columns: minmax(0, 1fr); gap: 4px; padding-top: 76px; padding-bottom: 28px; align-content: center; }
-  .hd-media { order: 0; justify-self: center; width: min(86vw, calc(47svh * 480 / 608)); }
+  /* スマホ：1画面に詰め込まず、絵・名前・言葉・登録欄のあいだに息つぎの余白をとる。
+     登録欄までが最初の画面に入れば十分で、「Soto Phone を見る」は少し下にはみ出してよい */
+  .hero-door { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 72px 28px 44px; align-content: start; }
+  .hd-media { order: 0; justify-self: center; width: min(78vw, calc(44svh * 480 / 608)); margin-bottom: 22px; }
   .hd-text { justify-self: center; align-items: center; text-align: center; }
-  .hd-eyebrow { margin-bottom: 6px; }
+  .hd-eyebrow { margin-bottom: 12px; font-size: 11px; }
   .hd-mark { justify-content: center; margin-left: 0; }
-  .hd-word { font-size: 17vw; }
-  .hd-phone { font-size: 16px; margin-left: .3em; }
-  .hd-message { margin: 12px 0 18px; }
-  .hd-cta { align-items: center; }
-  .hd-more { margin-top: 10px; }
+  .hd-word { font-size: 15.5vw; }
+  .hd-phone { font-size: 15px; margin-left: .3em; }
+  .hd-message { margin: 22px 0 28px; }
+  .hd-cta { align-items: center; gap: 12px; }
+  .hd-fine { line-height: 1.9; }
+  .hd-more { margin-top: 30px; }
 }
 @media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-phone.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
 
