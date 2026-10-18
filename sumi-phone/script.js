@@ -579,3 +579,97 @@
   }, { rootMargin: "600px 0px" });
   io.observe(form);
 })();
+
+/* 動画の道の続き：1枚目の動画の下から、紙の上を左右に曲がりながら、景色の入口（#about）まで下りていく道。
+   道は文字の上を通らないよう、本文の外の余白を縦に走り、節と節のあいだの余白で反対側へ渡る。
+   スクロールした分だけ、画面の下のほうまで描き進める。「動きを減らす」設定のときは、最初から全部描いておく */
+(() => {
+  const svg = document.querySelector(".road");
+  const main = document.getElementById("main");
+  const ids = ["top", "phone", "problem", "ink", "about"];
+  const secs = ids.map((id) => document.getElementById(id));
+  if (!svg || secs.some((s) => !s)) return;
+  const video = document.querySelector(".hd-media");
+  const paths = svg.querySelectorAll(".road-shadow, .road-edge, .road-body");
+  const reveal = svg.querySelector(".road-reveal");
+  const grad = svg.querySelector(".road-grad");
+  const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let len = 0, top0 = 0, endY = 0;
+
+  // 点を通るなめらかな曲線（Catmull-Rom を3次ベジェに直す）
+  const smooth = (p) => {
+    let d = `M${p[0][0]},${p[0][1]}`;
+    for (let i = 0; i < p.length - 1; i++) {
+      const a = p[i - 1] || p[i], b = p[i], c = p[i + 1], e = p[i + 2] || c;
+      d += ` C${b[0] + (c[0] - a[0]) / 6},${b[1] + (c[1] - a[1]) / 6} ${c[0] - (e[0] - b[0]) / 6},${c[1] - (e[1] - b[1]) / 6} ${c[0]},${c[1]}`;
+    }
+    return d;
+  };
+
+  const build = () => {
+    const W = document.documentElement.clientWidth;
+    const mainTop = main.getBoundingClientRect().top + scrollY;
+    const box = (el) => { const r = el.getBoundingClientRect(); return { t: r.top + scrollY - mainTop, b: r.bottom + scrollY - mainTop }; };
+    const [hero, phone, problem, ink, about] = secs.map(box);
+    const wrapW = Math.min(W - 2 * Math.min(Math.max(20, W * 0.06), 96), 1120);
+    const margin = (W - wrapW) / 2;
+    const wide = margin >= 90;
+    const width = wide ? 30 : 12;                       // 道の幅
+    const L = wide ? margin * 0.5 : 12, R = W - L;      // 左右の余白の真ん中を走る
+    const wob = wide ? 14 : 3;                          // 縦に走るところの、ゆるい揺れ
+    const v = video ? video.getBoundingClientRect() : null;
+    const startX = v ? v.left + v.width * 0.62 : W * 0.7;
+    const startY = v ? v.bottom + scrollY - mainTop - v.height * 0.06 : hero.b - 120; // 動画の下のぼかしの中から出てくる
+    // 広い画面：左右の余白を交互に走り、節のあいだで渡る。狭い画面：文字に重ならないよう、左のふちだけを下りる
+    const pts = wide ? [
+      [startX, startY],
+      [W * 0.45, hero.b + 10],
+      [L + wob, phone.t + 70], [L - wob, (phone.t + phone.b) / 2 + 60], [L + wob, phone.b - 120],
+      [W * 0.5, phone.b + 30],
+      [R - wob, problem.t + 260], [R + wob, (problem.t + problem.b) / 2], [R - wob, problem.b - 160],
+      [W * 0.5, ink.t + 20],
+      [L + wob, ink.t + 300], [L, ink.b - 200],
+      [W * 0.4, about.t - 30], [W * 0.5, about.t + 60],
+    ] : [
+      [W * 0.5, hero.b - 6],
+      [W * 0.22, phone.t + 30],
+      [L, phone.t + 120], [L, problem.t], [L, ink.t], [L, about.t - 80],
+      [W * 0.3, about.t + 20], [W * 0.5, about.t + 60],
+    ];
+    const d = smooth(pts);
+    endY = about.t + 60;
+    svg.setAttribute("viewBox", `0 0 ${W} ${endY + 40}`);
+    svg.style.height = `${endY + 40}px`;
+    paths.forEach((p) => p.setAttribute("d", d));
+    reveal.setAttribute("d", d);
+    svg.style.setProperty("--road-w", `${width}px`);
+    reveal.setAttribute("stroke-width", width * 3);
+    // 出だしは動画のぼかしから、終わりは景色の中へ、どちらも少しずつ消す
+    const y0 = pts[0][1];
+    grad.setAttribute("y1", y0); grad.setAttribute("y2", endY);
+    grad.querySelector(".road-in").setAttribute("offset", Math.min(0.2, 90 / (endY - y0)));
+    len = reveal.getTotalLength();
+    reveal.style.strokeDasharray = `${len} ${len}`;
+    top0 = mainTop;
+    draw();
+  };
+
+  // 画面の下から3割の高さまで、道を描き進める
+  const draw = () => {
+    if (!len) return;
+    if (still) { reveal.style.strokeDashoffset = 0; return; }
+    const front = scrollY + innerHeight * 0.7 - top0;
+    // 道の長さのうち、front より上にある分を二分探索で求める
+    let lo = 0, hi = len;
+    for (let i = 0; i < 18; i++) { const m = (lo + hi) / 2; if (reveal.getPointAtLength(m).y < front) lo = m; else hi = m; }
+    reveal.style.strokeDashoffset = len - lo;
+  };
+
+  let raf = 0;
+  addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; draw(); }); }, { passive: true });
+  let t;
+  addEventListener("resize", () => { clearTimeout(t); t = setTimeout(build, 150); });
+  addEventListener("load", build);
+  if (document.fonts) document.fonts.ready.then(build);
+  build();
+})();
