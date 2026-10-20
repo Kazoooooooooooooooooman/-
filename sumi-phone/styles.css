@@ -184,21 +184,21 @@ h2 .nw { white-space: nowrap; }
 .sc-input input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px rgba(31, 30, 28, .14); }
 /* つまみを動かしたあとは、待たずにすぐ塗り替える */
 .scale.is-live .sc-grid i, .scale.is-live .sc-grid i.on { transition: background .15s ease; transition-delay: 0s; }
-.sc-steps { list-style: none; padding: 0; margin: 0; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto auto auto; column-gap: clamp(16px, 2.6vw, 40px); }
-/* 4つの段の「名前・数字・図」を、それぞれ同じ高さの行にそろえる（数字は下の線をそろえる） */
-.sc-steps > .sc-step { grid-row: span 3; display: grid; grid-template-rows: subgrid; justify-items: center; align-items: end; }
-.sc-step { min-width: 0; opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; transition-delay: calc(var(--i) * .4s); }
+/* 見せる数字は一生の1つだけ。1週間・1年は、そこへ至る途中として小さく1行に並べる（1日はつまみの上に出ているので省く） */
+.sc-steps { list-style: none; padding: 0; margin: 0; width: 100%; display: grid; grid-template-columns: repeat(2, auto); justify-content: center; column-gap: clamp(20px, 3vw, 40px); row-gap: clamp(18px, 3.4vh, 36px); }
+.sc-step { min-width: 0; display: flex; align-items: baseline; gap: .5em; opacity: 0; transform: translateY(14px); transition: opacity .7s ease, transform .7s ease; transition-delay: calc(var(--i) * .4s); }
 .scale.is-in .sc-step { opacity: 1; transform: none; }
-.sc-k { font-family: var(--serif); font-size: clamp(14px, 1.3vw, 17px); letter-spacing: .12em; color: var(--paper-dim); }
-.sc-v { display: flex; align-items: baseline; justify-content: center; gap: .08em; line-height: 1; margin: 6px 0 0; white-space: nowrap; }
+.sc-k { font-family: var(--serif); font-size: clamp(14px, 1.3vw, 17px); letter-spacing: .12em; color: var(--paper-dim); white-space: nowrap; }
+.sc-v { display: flex; align-items: baseline; gap: .08em; line-height: 1; margin: 0; white-space: nowrap; }
 .sc-n { font-family: var(--latin); font-weight: 800; letter-spacing: -.04em; font-size: var(--fs); }
-.sc-u { font-family: var(--serif); font-size: calc(var(--fs) * .3); }
-.sc-step:nth-child(1) { --fs: clamp(48px, 5vw, 76px); }
-.sc-step:nth-child(2) { --fs: clamp(56px, 6vw, 92px); }
-.sc-step:nth-child(3) { --fs: clamp(64px, 7.2vw, 112px); }
-.sc-step:nth-child(4) { --fs: clamp(76px, 8.6vw, 136px); }
+.sc-u { font-family: var(--serif); font-size: calc(var(--fs) * .42); }
+.sc-step:nth-child(1) { display: none; }
+.sc-step:nth-child(2), .sc-step:nth-child(3) { --fs: clamp(28px, 2.6vw, 38px); color: var(--paper-dim); }
+.sc-step:nth-child(3)::before { content: "→"; margin-right: clamp(12px, 2vw, 28px); font-size: 18px; color: var(--paper-dim); align-self: center; }
+.sc-step:nth-child(4) { grid-column: 1 / -1; flex-direction: column; align-items: center; gap: 2px; --fs: clamp(110px, 13vw, 200px); }
+.sc-step:nth-child(4) .sc-k { font-size: clamp(16px, 1.5vw, 20px); color: var(--paper-ink); }
+.sc-step:nth-child(4) .sc-u { font-size: calc(var(--fs) * .3); }
 .sc-step:nth-child(4) .sc-n { color: #c4462a; }
-.sc-fig { width: 100%; margin-top: clamp(18px, 3vh, 28px); align-self: start; }
 .sc-grid { display: grid; gap: 2px; width: 100%; }
 .sc-grid i { aspect-ratio: 1; border-radius: 2px; background: var(--blank); }
 .sc-grid i.on { transition: background .3s ease; transition-delay: calc(var(--i) * .4s + .5s + var(--k) * var(--d)); }
@@ -223,17 +223,12 @@ h2 .nw { white-space: nowrap; }
   .sc-input { margin: -10px 0 16px; }
   .sc-range { padding-top: 32px; }
   .sc-bubble { font-size: 18px; }
-  .sc-steps { grid-template-columns: 1fr; gap: 14px; }
-  .sc-steps { grid-template-rows: none; }
-  .sc-steps > .sc-step { grid-row: auto; display: grid; grid-template-rows: none; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); grid-template-areas: "k fig" "v fig"; column-gap: 14px; align-items: center; justify-items: start; text-align: left; padding-bottom: 14px; border-bottom: 1px solid var(--paper-line); }
-  .sc-step:last-child { border-bottom: 0; }
-  .sc-k { grid-area: k; font-size: 12px; }
-  .sc-v { grid-area: v; justify-content: flex-start; margin: 2px 0 4px; }
-  .sc-fig { grid-area: fig; margin-top: 0; align-self: center; }
-  .sc-step:nth-child(1) { --fs: 40px; }
-  .sc-step:nth-child(2) { --fs: 46px; }
-  .sc-step:nth-child(3) { --fs: 54px; }
-  .sc-step:nth-child(4) { --fs: 64px; }
+  .sc-steps { column-gap: 14px; row-gap: 18px; }
+  .sc-step:nth-child(2), .sc-step:nth-child(3) { --fs: 24px; gap: .4em; }
+  .sc-step:nth-child(3)::before { margin-right: 10px; font-size: 14px; }
+  .sc-k { font-size: 12px; }
+  .sc-step:nth-child(4) { --fs: 108px; }
+  .sc-step:nth-child(4) .sc-k { font-size: 15px; }
   .sc-grid { gap: 1px; }
   .g-life { gap: 1px; }
   .g-life i { height: 22px; border-radius: 1px; }
