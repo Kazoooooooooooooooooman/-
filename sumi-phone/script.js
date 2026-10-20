@@ -761,8 +761,8 @@
     out.textContent = hm(m);
     const L = life(m);
     set(steps[0], day(m)); set(steps[1], week(m)); set(steps[2], year(m)); set(steps[3], L);
-    // マスは一生の段だけ（80マス＝80年。15歳から先が埋まる）
-    fill(steps[3].querySelector(".sc-grid"), 80, Math.min(65, m * 365 / 60 / 24 * 65 / 365), 15);
+    // マスは、4つの数字の下に横一列で置いた一生の帯だけ（80マス＝80年。15歳から先が埋まる）
+    fill(sc.querySelector(".g-life"), 80, Math.min(65, m * 365 / 60 / 24 * 65 / 365), 15);
   };
   const box = sc.querySelector(".sc-input");
   const ra = (AVG - inp.min) / (inp.max - inp.min);
