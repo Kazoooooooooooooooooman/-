@@ -717,57 +717,45 @@
 })();
 
 
-/* 1日→一生の場面：つまみで「あなたの1日」を変えると、1週間・1年・一生の数字とマスが変わる。
+/* スクリーンタイムの場面：＋−で昨日の時間を30分ずつ変えると、グラフ・1週間・1年と、通知の一生の数字が変わる。
    一生は、15歳から80歳まで同じ時間を見た場合の計算（出典の行に書いた前提） */
 (() => {
   const sc = document.getElementById("scale");
-  const inp = document.getElementById("sc-min");
-  if (!sc || !inp) return;
+  const note = sc && sc.querySelector(".st-note");
+  if (!note) return;
   const EN = document.documentElement.lang === "en";
-  const out = document.getElementById("sc-out");
-  const steps = sc.querySelectorAll(".sc-step");
-  const AVG = 165;
-  const r1 = (x) => Math.round(x * 10) / 10;
-  // 数字と単位：大きい段ほど、ちょうどよい単位に切り替える
-  // 1日の時間は「2時間45分」の形で出す（つまみは30分刻み。最初だけ平均の2時間45分）
+  const $ = (id) => document.getElementById(id);
   const hm = (m) => { const h = Math.floor(m / 60), r = m % 60; return EN ? (h ? `${h}h${r ? ` ${r}m` : ""}` : `${r}m`) : (h ? `${h}時間${r ? `${r}分` : ""}` : `${r}分`); };
-  const day = (m) => { const h = Math.floor(m / 60), r = m % 60; if (!h) return [String(r), EN ? "min" : "分"]; return [String(h), EN ? (r ? `h ${r}m` : "hours") : (r ? `時間${r}分` : "時間")]; };
-  const week = (m) => { const h = m * 7 / 60; return h < 1 ? [String(Math.round(m * 7)), EN ? "min" : "分"] : [String(Math.round(h)), EN ? "hours" : "時間"]; };
-  const year = (m) => { const d = m * 365 / 60 / 24; return d < 1 ? [String(Math.round(d * 24)), EN ? "hours" : "時間"] : [String(Math.round(d)), EN ? "days" : "日"]; };
+  const unit = (n, u) => (EN ? `${n} ${n === "1" ? u.replace(/s$/, "") : u}` : `${n}${u}`);
+  const week = (m) => { const h = m * 7 / 60; return h < 1 ? unit(String(Math.round(m * 7)), EN ? "min" : "分") : unit(String(Math.round(h)), EN ? "hours" : "時間"); };
+  const year = (m) => { const d = m * 365 / 60 / 24; return d < 1 ? unit(String(Math.round(d * 24)), EN ? "hours" : "時間") : unit(String(Math.round(d)), EN ? "days" : "日"); };
   const life = (m) => {
     const y = m * 365 / 60 / 24 * 65 / 365;
-    if (y < 1) return [String(Math.max(1, Math.round(y * 12))), EN ? "months" : "か月"];
+    if (y < 1) return unit(String(Math.max(1, Math.round(y * 12))), EN ? "months" : "か月");
     const half = Math.round(y * 2) / 2;
-    if (EN) return [String(half), "years"];
-    return Number.isInteger(half) ? [String(half), "年"] : [String(Math.floor(half)), "年半"];
+    if (EN) return unit(String(half), "years");
+    return Number.isInteger(half) ? `${half}年` : `${Math.floor(half)}年半`;
   };
-  const fill = (grid, n, amount, start = 0) => {
-    let h = "";
-    for (let i = 0; i < n; i++) {
-      const f = i < start ? 0 : Math.min(Math.max(amount - (i - start), 0), 1);
-      h += f >= 1 ? `<i class="on" style="--k:${i - start}"></i>` : f > 0 ? `<i class="on part" style="--k:${i - start};--f:${Math.round(f * 100)}%"></i>` : "<i></i>";
-    }
-    grid.innerHTML = h;
+  // 1週間の棒は、昨日（右端）を基準に少しずつばらつかせる
+  const F = [0.8, 1.15, 0.9, 1.25, 0.95, 1.1, 1];
+  const bars = sc.querySelectorAll(".st-chart b");
+  const btns = sc.querySelectorAll(".st-btn");
+  let m = 165;
+  const render = () => {
+    $("st-day").textContent = hm(m);
+    $("st-week").textContent = week(m);
+    $("st-year").textContent = year(m);
+    $("st-life").textContent = life(m);
+    const max = Math.max(m * 1.25, 240);
+    bars.forEach((b, i) => { b.style.height = `${(m * F[i] / max) * 100}%`; });
+    btns.forEach((b) => { b.disabled = b.dataset.d < 0 ? m <= 30 : m >= 600; });
   };
-  const set = (step, [n, u]) => { step.querySelector(".sc-n").textContent = n; step.querySelector(".sc-u").textContent = EN && n === "1" ? u.replace(/s$/, "") : u; };
-  const update = () => {
-    const m = Math.min(600, Math.max(30, Math.round(Number(inp.value) / 30) * 30));
-    inp.value = m;
-    inp.setAttribute("aria-valuetext", hm(m));
-    sc.classList.add("is-live");
-    const r = (m - inp.min) / (inp.max - inp.min);
-    box.style.setProperty("--p", `${r * 100}%`);
-    box.style.setProperty("--pn", r);
-    out.textContent = hm(m);
-    const L = life(m);
-    set(steps[0], day(m)); set(steps[1], week(m)); set(steps[2], year(m)); set(steps[3], L);
-    // マスは、4つの数字の下に横一列で置いた一生の帯だけ（80マス＝80年。15歳から先が埋まる）
-    fill(sc.querySelector(".g-life"), 80, Math.min(65, m * 365 / 60 / 24 * 65 / 365), 15);
-  };
-  const box = sc.querySelector(".sc-input");
-  const ra = (AVG - inp.min) / (inp.max - inp.min);
-  box.style.setProperty("--p", `${ra * 100}%`);
-  box.style.setProperty("--pn", ra);
-  box.style.setProperty("--avg", ra);
-  inp.addEventListener("input", update);
+  btns.forEach((b) => b.addEventListener("click", () => {
+    // 平均の2時間45分から動かすときも、30分刻みの値にそろえる
+    m = b.dataset.d > 0 ? Math.floor(m / 30) * 30 + 30 : Math.ceil(m / 30) * 30 - 30;
+    m = Math.min(600, Math.max(30, m));
+    render();
+    note.classList.remove("is-bump"); void note.offsetWidth; note.classList.add("is-bump");
+  }));
+  render();
 })();

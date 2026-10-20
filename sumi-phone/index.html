@@ -26,7 +26,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261020d" />
+<link rel="stylesheet" href="styles.css?v=20261020e" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://sotophone.jp/#website", "name": "Soto Phone", "alternateName": ["ソトフォン", "Soto"], "url": "https://sotophone.jp/", "inLanguage": "ja"}, {"@type": "Organization", "@id": "https://sotophone.jp/#org", "name": "Soto Phone", "url": "https://sotophone.jp/", "logo": "https://sotophone.jp/favicon-512.png", "email": "hello@sotophone.jp"}]}</script>
 </head>
 <body>
@@ -134,36 +134,30 @@
   <section id="problem" class="sec" data-bg="0">
     <!-- データから物語へのつなぎ：1日の165分が、1週間・1年・一生と積み上がる。
          勢いよくスクロールする人にも伝わるよう、4つを1画面に並べ、右（スマホでは下）ほど数字を大きくする。画面に入ったら、順に現れる -->
-    <div class="scale wrap reveal" id="scale" aria-label="1日165分は、1週間で約19時間、1年で約42日、15歳から80歳までの一生では約7年半になります。">
+    <div class="scale wrap reveal" id="scale" aria-label="1日2時間45分スマホを見ると、1週間で約19時間、1年で約42日、15歳から80歳までの一生では約7年半になります。">
       <p class="sc-ask">昨日、スマホを何時間見ていましたか。</p>
-      <div class="sc-input">
-        <div class="sc-range">
-          <output class="sc-bubble" id="sc-out" for="sc-min">2時間45分</output>
-          <input type="range" id="sc-min" min="30" max="600" step="15" value="165" aria-label="あなたが1日にスマホを見る時間" aria-valuetext="2時間45分" />
-          <span class="sc-avg" aria-hidden="true">平均</span>
+      <div class="st-phone">
+        <div class="st-screen">
+          <div class="st-status" aria-hidden="true"><span>10:24</span><span class="st-batt"></span></div>
+          <div class="st-note" role="status" aria-live="polite">
+            <p class="st-note-h"><span class="st-icon" aria-hidden="true"></span><span>スクリーンタイム</span><span class="st-now">今</span></p>
+            <p class="st-note-b">このペースだと、一生のうち<b id="st-life">7年半</b>を画面の中で過ごします。</p>
+          </div>
+          <p class="st-sub">昨日のスクリーンタイム</p>
+          <div class="st-stepper">
+            <button type="button" class="st-btn" data-d="-1" aria-label="30分減らす">−</button>
+            <output class="st-day" id="st-day" lang="ja">2時間45分</output>
+            <button type="button" class="st-btn" data-d="1" aria-label="30分増やす">+</button>
+          </div>
+          <p class="st-avg">全国平均 2時間45分</p>
+          <p class="st-hint">＋ と − で、あなたの時間に変えられます</p>
+          <div class="st-chart" aria-hidden="true"><i><b></b><span>月</span></i><i><b></b><span>火</span></i><i><b></b><span>水</span></i><i><b></b><span>木</span></i><i><b></b><span>金</span></i><i><b></b><span>土</span></i><i class="is-y"><b></b><span>日</span></i></div>
+          <p class="st-cap">このペースだと</p>
+          <ul class="st-list">
+            <li><span>1週間</span><b id="st-week">19時間</b></li>
+            <li><span>1年</span><b id="st-year">42日</b></li>
+          </ul>
         </div>
-      </div>
-      <ol class="sc-steps">
-        <li class="sc-step" style="--i:0">
-          <p class="sc-k">1日</p>
-          <p class="sc-v"><span class="sc-n" lang="en">2</span><span class="sc-u">時間45分</span></p>
-        </li>
-        <li class="sc-step" style="--i:1">
-          <p class="sc-k">1週間</p>
-          <p class="sc-v"><span class="sc-n" lang="en">19</span><span class="sc-u">時間</span></p>
-        </li>
-        <li class="sc-step" style="--i:2">
-          <p class="sc-k">1年</p>
-          <p class="sc-v"><span class="sc-n" lang="en">42</span><span class="sc-u">日</span></p>
-        </li>
-        <li class="sc-step" style="--i:3">
-          <p class="sc-k">一生で</p>
-          <p class="sc-v"><span class="sc-n" lang="en">7</span><span class="sc-u">年半</span></p>
-        </li>
-      </ol>
-      <div class="sc-life" style="--i:4" aria-hidden="true">
-        <div class="sc-grid g-life"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--k:0"></i><i class="on" style="--k:1"></i><i class="on" style="--k:2"></i><i class="on" style="--k:3"></i><i class="on" style="--k:4"></i><i class="on" style="--k:5"></i><i class="on" style="--k:6"></i><i class="on part" style="--k:7;--f:45%"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="sc-ticks"><span style="--a:0">0歳</span><span style="--a:15">15歳</span><span style="--a:80">80歳</span></div>
       </div>
       <p class="sc-src">出典：博報堂 メディア環境研究所「メディア定点調査2025」（東京地区・15〜69歳）。一生は15〜80歳で計算</p>
     </div>
@@ -367,7 +361,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261020d"></script>
-<script src="/nav.js?v=20261020d" defer></script>
+<script src="script.js?v=20261020e"></script>
+<script src="/nav.js?v=20261020e" defer></script>
 </body>
 </html>

@@ -26,7 +26,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261020d" />
+<link rel="stylesheet" href="styles.css?v=20261020e" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://sotophone.jp/#website", "name": "Soto Phone", "alternateName": ["ソトフォン", "Soto"], "url": "https://sotophone.jp/", "inLanguage": "en"}, {"@type": "Organization", "@id": "https://sotophone.jp/#org", "name": "Soto Phone", "url": "https://sotophone.jp/", "logo": "https://sotophone.jp/favicon-512.png", "email": "hello@sotophone.jp"}]}</script>
 </head>
 <body>
@@ -133,36 +133,30 @@
   <section id="problem" class="sec" data-bg="0">
     <!-- データから物語へのつなぎ：1日の165分が、1週間・1年・一生と積み上がる。
          勢いよくスクロールする人にも伝わるよう、4つを1画面に並べ、右（スマホでは下）ほど数字を大きくする。画面に入ったら、順に現れる -->
-    <div class="scale wrap reveal" id="scale" aria-label="165 minutes a day adds up to about 19 hours a week, 42 days a year, and about seven and a half years of a life from age 15 to 80.">
+    <div class="scale wrap reveal" id="scale" aria-label="2 hours 45 minutes a day adds up to about 19 hours a week, 42 days a year, and about seven and a half years of a life from age 15 to 80.">
       <p class="sc-ask">How long were you on your phone yesterday?</p>
-      <div class="sc-input">
-        <div class="sc-range">
-          <output class="sc-bubble" id="sc-out" for="sc-min">2h 45m</output>
-          <input type="range" id="sc-min" min="30" max="600" step="15" value="165" aria-label="Time you spend on your phone a day" aria-valuetext="2 hours 45 minutes" />
-          <span class="sc-avg" aria-hidden="true">average</span>
+      <div class="st-phone">
+        <div class="st-screen">
+          <div class="st-status" aria-hidden="true"><span>10:24</span><span class="st-batt"></span></div>
+          <div class="st-note" role="status" aria-live="polite">
+            <p class="st-note-h"><span class="st-icon" aria-hidden="true"></span><span>Screen Time</span><span class="st-now">now</span></p>
+            <p class="st-note-b">At this pace, you’ll spend <b id="st-life">7.5 years</b> of your life looking at a screen.</p>
+          </div>
+          <p class="st-sub">Yesterday’s screen time</p>
+          <div class="st-stepper">
+            <button type="button" class="st-btn" data-d="-1" aria-label="30 minutes less">−</button>
+            <output class="st-day" id="st-day">2h 45m</output>
+            <button type="button" class="st-btn" data-d="1" aria-label="30 minutes more">+</button>
+          </div>
+          <p class="st-avg">National average 2h 45m</p>
+          <p class="st-hint">Use + and − to set your own time</p>
+          <div class="st-chart" aria-hidden="true"><i><b></b><span>M</span></i><i><b></b><span>T</span></i><i><b></b><span>W</span></i><i><b></b><span>T</span></i><i><b></b><span>F</span></i><i><b></b><span>S</span></i><i class="is-y"><b></b><span>S</span></i></div>
+          <p class="st-cap">At this pace</p>
+          <ul class="st-list">
+            <li><span>A week</span><b id="st-week">19 hours</b></li>
+            <li><span>A year</span><b id="st-year">42 days</b></li>
+          </ul>
         </div>
-      </div>
-      <ol class="sc-steps">
-        <li class="sc-step" style="--i:0">
-          <p class="sc-k">A day</p>
-          <p class="sc-v"><span class="sc-n" lang="en">2</span><span class="sc-u">h 45m</span></p>
-        </li>
-        <li class="sc-step" style="--i:1">
-          <p class="sc-k">A week</p>
-          <p class="sc-v"><span class="sc-n" lang="en">19</span><span class="sc-u">hours</span></p>
-        </li>
-        <li class="sc-step" style="--i:2">
-          <p class="sc-k">A year</p>
-          <p class="sc-v"><span class="sc-n" lang="en">42</span><span class="sc-u">days</span></p>
-        </li>
-        <li class="sc-step" style="--i:3">
-          <p class="sc-k">A lifetime</p>
-          <p class="sc-v"><span class="sc-n" lang="en">7.5</span><span class="sc-u">years</span></p>
-        </li>
-      </ol>
-      <div class="sc-life" style="--i:4" aria-hidden="true">
-        <div class="sc-grid g-life"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="on" style="--k:0"></i><i class="on" style="--k:1"></i><i class="on" style="--k:2"></i><i class="on" style="--k:3"></i><i class="on" style="--k:4"></i><i class="on" style="--k:5"></i><i class="on" style="--k:6"></i><i class="on part" style="--k:7;--f:45%"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="sc-ticks"><span style="--a:0">Age 0</span><span style="--a:15">15</span><span style="--a:80">80</span></div>
       </div>
       <p class="sc-src">Source: Hakuhodo Institute of Media Environment, Media Teiten Survey 2025 (Tokyo, ages 15–69). Lifetime = ages 15–80</p>
     </div>
@@ -364,7 +358,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261020d"></script>
-<script src="/nav.js?v=20261020d" defer></script>
+<script src="script.js?v=20261020e"></script>
+<script src="/nav.js?v=20261020e" defer></script>
 </body>
 </html>
