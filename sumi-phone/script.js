@@ -718,15 +718,13 @@
 
 
 /* 1日→一生の場面：つまみで「あなたの1日」を変えると、1週間・1年・一生の数字とマスが変わる。
-   一生は、15歳から80歳まで同じ時間を見た場合の計算（最初の表示の注記と同じ前提） */
+   一生は、15歳から80歳まで同じ時間を見た場合の計算（出典の行に書いた前提） */
 (() => {
   const sc = document.getElementById("scale");
   const inp = document.getElementById("sc-min");
   if (!sc || !inp) return;
   const EN = document.documentElement.lang === "en";
   const out = document.getElementById("sc-out");
-  const sum = document.getElementById("sc-sum");
-  const note = document.getElementById("sc-note");
   const steps = sc.querySelectorAll(".sc-step");
   const AVG = 165;
   const r1 = (x) => Math.round(x * 10) / 10;
@@ -763,13 +761,8 @@
     out.textContent = hm(m);
     const L = life(m);
     set(steps[0], day(m)); set(steps[1], week(m)); set(steps[2], year(m)); set(steps[3], L);
-    fill(steps[0].querySelector(".sc-grid"), 24, m / 60);
-    fill(steps[1].querySelector(".sc-grid"), 168, m * 7 / 60);
-    fill(steps[2].querySelector(".sc-grid"), 365, m * 365 / 60 / 24);
+    // マスは一生の段だけ（80マス＝80年。15歳から先が埋まる）
     fill(steps[3].querySelector(".sc-grid"), 80, Math.min(65, m * 365 / 60 / 24 * 65 / 365), 15);
-    const lifeTxt = EN ? `${L[0]} ${L[1]}` : `${L[0]}${L[1]}`;
-    if (note) note.textContent = EN ? `Assuming ${hm(m)} every day from age 15 to 80.` : `15歳から80歳まで、毎日${hm(m)}見た場合の計算です。`;
-    sum.textContent = EN ? `${hm(m)} a day adds up to about ${lifeTxt} of a life.` : `1日${hm(m)}は、一生で約${lifeTxt}になります。`;
   };
   const box = sc.querySelector(".sc-input");
   const ra = (AVG - inp.min) / (inp.max - inp.min);

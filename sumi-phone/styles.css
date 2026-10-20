@@ -165,7 +165,7 @@ h2 .nw { white-space: nowrap; }
    画面に入ると（.is-in）、4つが0.4秒ずつずれて現れ、黒いマスが先頭から塗られる */
 .scale { --ink: var(--paper-ink); --blank: rgba(31, 30, 28, .1); min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-block: clamp(90px, 12vh, 130px) clamp(40px, 6vh, 70px); }
 .scale.reveal { opacity: 1; transform: none; }
-.sc-ask, .sc-sum { word-break: auto-phrase; text-wrap: balance; }
+.sc-ask { word-break: auto-phrase; text-wrap: balance; }
 .sc-ask { font-family: var(--serif); font-size: clamp(19px, 2vw, 26px); letter-spacing: .1em; margin-bottom: clamp(28px, 5vh, 56px); }
 /* 「あなたの1日」のつまみ：今の値を、つまみの真上に大きく出す。165分（平均）の位置には印を付ける。
    つまみの中心は、幅22pxのぶん両端から11px内側を動くので、位置は calc(11px + (100% - 22px) * 割合) で合わせる */
@@ -182,7 +182,6 @@ h2 .nw { white-space: nowrap; }
 .sc-input input::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 1.5px solid var(--paper-ink); }
 .sc-input input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px rgba(31, 30, 28, .14); }
 .sc-input input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px rgba(31, 30, 28, .14); }
-.sc-hint { font-size: 11px; letter-spacing: .04em; color: var(--paper-dim); margin-top: 8px; }
 /* つまみを動かしたあとは、待たずにすぐ塗り替える */
 .scale.is-live .sc-grid i, .scale.is-live .sc-grid i.on { transition: background .15s ease; transition-delay: 0s; }
 .sc-steps { list-style: none; padding: 0; margin: 0; width: 100%; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto auto auto; column-gap: clamp(16px, 2.6vw, 40px); }
@@ -211,8 +210,6 @@ h2 .nw { white-space: nowrap; }
 .g-life { grid-template-columns: repeat(20, 1fr); gap: 3px; }
 .g-day { --d: 180ms; } .g-week { --d: 30ms; } .g-year { --d: 14ms; } .g-life { --d: 90ms; }
 .sc-step:nth-child(4) .sc-grid i.on { --ink: #c4462a; }
-.sc-sum { font-family: var(--serif); font-size: clamp(19px, 2vw, 26px); letter-spacing: .08em; margin-top: clamp(30px, 5vh, 56px); opacity: 0; transition: opacity .8s ease 2s; }
-.scale.is-in .sc-sum { opacity: 1; }
 .sc-src { font-size: 11px; line-height: 1.8; color: var(--paper-dim); margin-top: 14px; }
 /* スマホ：4つを縦に並べ、左に数字、右に図。下ほど数字を大きくする */
 @media (max-width: 820px) {
@@ -234,10 +231,9 @@ h2 .nw { white-space: nowrap; }
   .sc-step:nth-child(4) { --fs: 64px; }
   .sc-grid { gap: 1px; }
   .g-life { gap: 2px; }
-  .sc-sum { margin-top: 22px; font-size: 17px; letter-spacing: .04em; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .sc-step, .sc-sum { opacity: 1; transform: none; transition: none; }
+  .sc-step { opacity: 1; transform: none; transition: none; }
   .sc-grid i.on { background: var(--ink); transition: none; }
   .sc-grid i.part { background: linear-gradient(90deg, var(--ink) var(--f), var(--blank) var(--f)); }
 }
@@ -488,11 +484,11 @@ h2 .nw { white-space: nowrap; }
 /* ---------- 製品：これが Soto Phone ---------- */
 .product-in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
 .ph { margin: 0; text-align: center; }
-.ph-svg { width: min(100%, 300px); height: auto; overflow: visible; }
+.ph-svg { width: min(100%, 320px); height: auto; overflow: visible; }
 .ph-line { fill: none; stroke: var(--paper-ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 .ph-line .ph-screen { fill: rgba(31, 30, 28, .05); stroke-width: 1.6; }
-.ph-ui text { font-family: var(--sans); font-size: 17px; letter-spacing: .06em; fill: var(--paper-ink); }
-.ph-ui .ph-time { font-family: var(--latin); font-weight: 500; font-size: 44px; letter-spacing: 0; }
+.ph-ui text { font-family: var(--sans); font-size: 15px; letter-spacing: .06em; fill: var(--paper-ink); }
+.ph-ui .ph-time { font-family: var(--latin); font-weight: 500; font-size: 38px; letter-spacing: 0; }
 .ph figcaption { margin-top: 14px; font-size: 12px; letter-spacing: .1em; color: var(--paper-dim); }
 .feats { list-style: none; display: flex; flex-direction: column; gap: 22px; margin-bottom: 36px; }
 .feats li { font-size: 15px; color: var(--paper-dim); line-height: 1.8; }
@@ -501,7 +497,7 @@ h2 .nw { white-space: nowrap; }
 .btn.btn-line { background: transparent; color: var(--paper-ink); box-shadow: inset 0 0 0 1.5px var(--paper-ink); }
 @media (max-width: 760px) {
   .product-in { grid-template-columns: 1fr; }
-  .ph-svg { width: 170px; }
+  .ph-svg { width: 200px; }
   .product .product-copy { text-align: left; }
 }
 
