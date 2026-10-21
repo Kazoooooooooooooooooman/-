@@ -911,6 +911,7 @@ h2 .nw { white-space: nowrap; }
 .hero-door .hd-copy { margin: .7em 0 0 .22em; } /* 字間のぶん右へずれないように */
 .hd-cta { align-items: center; width: 100%; gap: 14px; }
 .hd-more {
+  position: relative; z-index: 2; /* 道（.road, z-index 1）が上を通っても、文字が隠れないように前に出す */
   display: inline-flex; align-items: center; gap: 8px; margin-top: clamp(30px, 6vh, 60px); min-height: 44px;
   font-size: 14px; letter-spacing: .08em; color: var(--paper-ink); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px;
 }
