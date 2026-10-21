@@ -715,7 +715,7 @@
 })();
 
 
-/* スクリーンタイムの場面：グラフの棒の高さを決める。＋−のボタンを置けば、30分ずつ時間を変えられる（今は全国平均で固定にしていて、ボタンは置いていない）。
+/* スクリーンタイムの場面：グラフの棒の高さを決める。＋−のボタンで、15分ずつ時間を変えられる（最初は全国平均の2時間45分）。
    一生は、15歳から80歳まで同じ時間を見た場合の計算（出典の行に書いた前提） */
 (() => {
   const sc = document.getElementById("scale");
@@ -740,14 +740,17 @@
   const render = () => {
     $("st-day").textContent = hm(m);
     $("st-life").textContent = life(m);
+    // 下の一文（「その7年半に…」）も、同じ数字にそろえる
+    document.querySelectorAll(".st-life-ref").forEach((el) => { el.textContent = life(m); });
     const max = Math.max(m * 1.25, 240);
     bars.forEach((b, i) => { b.style.height = `${(m * F[i] / max) * 100}%`; });
-    btns.forEach((b) => { b.disabled = b.dataset.d < 0 ? m <= 30 : m >= 600; });
+    btns.forEach((b) => { b.disabled = b.dataset.d < 0 ? m <= 15 : m >= 600; });
+    // 平均から動かしたら、平均の行は比べる相手として残す
+    const avg = $("st-avg");
+    if (avg) avg.textContent = m === 165 ? (EN ? "National average (ages 15–69)" : "全国平均（15〜69歳）") : (EN ? "National average: 2h 45m" : "全国平均は2時間45分");
   };
   btns.forEach((b) => b.addEventListener("click", () => {
-    // 平均の2時間45分から動かすときも、30分刻みの値にそろえる
-    m = b.dataset.d > 0 ? Math.floor(m / 30) * 30 + 30 : Math.ceil(m / 30) * 30 - 30;
-    m = Math.min(600, Math.max(30, m));
+    m = Math.min(600, Math.max(15, m + Number(b.dataset.d)));
     render();
     note.classList.remove("is-bump"); void note.offsetWidth; note.classList.add("is-bump");
   }));

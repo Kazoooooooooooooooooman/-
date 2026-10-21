@@ -176,9 +176,9 @@ h2 .nw { white-space: nowrap; }
 .st-batt { width: 22px; height: 11px; border: 1.5px solid currentColor; border-radius: 3px; position: relative; }
 .st-batt::after { content: ""; position: absolute; inset: 1.5px 6px 1.5px 1.5px; background: currentColor; border-radius: 1px; }
 .st-sub { font-size: 13px; color: #8a8984; margin-top: clamp(104px, 9vw, 116px); }
-.st-stepper { margin-top: 6px; }
-.st-day { font-family: var(--latin); font-size: 30px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; }
-.st-btn { width: 40px; height: 40px; flex: none; border: 0; border-radius: 50%; background: #e4e3de; color: #1d1d1b; font: 500 22px/1 var(--latin); cursor: pointer; transition: background .2s, transform .1s; }
+.st-stepper { margin-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.st-day { flex: 1; text-align: center; font-family: var(--latin); font-size: 28px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; }
+.st-btn { width: 36px; height: 36px; flex: none; border: 0; border-radius: 50%; background: #e4e3de; color: #1d1d1b; font: 500 22px/1 var(--latin); cursor: pointer; transition: background .2s, transform .1s; }
 .st-btn:hover { background: #d8d7d1; }
 .st-btn:active { transform: scale(.92); }
 .st-btn:disabled { opacity: .35; cursor: default; }
@@ -196,7 +196,7 @@ h2 .nw { white-space: nowrap; }
 .st-list li + li { border-top: 1px solid #ecebe6; }
 .st-list b { font-family: var(--latin); font-size: 16px; font-weight: 700; white-space: nowrap; }
 /* 一生の数字は通知で届く。画面に入ってから少し間をおいて、上から降りてくる */
-.st-note { position: absolute; z-index: 2; top: 44px; left: 10px; right: 10px; padding: 12px 14px 13px; border-radius: 20px; background: rgba(255, 255, 255, .86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 10px 30px -10px rgba(31, 30, 28, .35); transform: translateY(-160%); transition: transform .7s cubic-bezier(.2, 1.2, .3, 1) 1.6s; }
+.st-note { position: absolute; z-index: 2; top: 44px; left: 10px; right: 10px; padding: 12px 14px 13px; border-radius: 20px; background: rgba(255, 255, 255, .86); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); box-shadow: 0 10px 30px -10px rgba(31, 30, 28, .35); transform: translateY(-160%); transition: transform .6s cubic-bezier(.2, 1.2, .3, 1) .5s; }
 .scale.is-in .st-note { transform: none; }
 .st-note-h { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #6f6e69; }
 .st-icon { width: 18px; height: 18px; border-radius: 5px; background: #1d1d1b; position: relative; }
