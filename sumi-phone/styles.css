@@ -901,7 +901,7 @@ h2 .nw { white-space: nowrap; }
   .hd-fine { line-height: 1.9; }
   .hd-more { margin-top: 30px; }
 }
-@media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-square.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
+@media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-square2.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
 
 /* ---------- 動画の道の続き（形は script.js が決める） ----------
    動画の道と同じく、紙色の帯に、鉛筆の点線のふちと、うすい影 */
