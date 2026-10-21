@@ -223,12 +223,31 @@ def build_index(arts):
 ''' + FOOT
     (OUT / "index.html").write_text(page)
 
+def changed_on(name):
+    """ページの中身を最後に変えた日。CSS・JS の版番号（?v=…）だけが変わった日は数えない（毎回すべてのページが「更新」に見えてしまうため）。
+    まだコミットしていない変更があれば、今日の日付にする"""
+    import datetime, subprocess
+    norm = lambda t: re.sub(r"\?v=[0-9a-z]+", "", t)
+    git = lambda *a: subprocess.run(["git", *a], cwd=ROOT, capture_output=True, text=True).stdout
+    rel = str((ROOT / name).relative_to(pathlib.Path(git("rev-parse", "--show-toplevel").strip())))
+    now = (ROOT / name).read_text()
+    head = git("show", f"HEAD:{rel}")
+    if head and norm(head) != norm(now):
+        return datetime.date.today().isoformat()
+    for line in git("log", "--format=%H %cs", "--", rel).splitlines():
+        sha, day = line.split()
+        before = git("show", f"{sha}^:{rel}")
+        if norm(before) != norm(git("show", f"{sha}:{rel}")):
+            return day
+    return datetime.date.today().isoformat()
+
 def build_sitemap(arts):
-    base = [("/", "2026-10-15", True), ("/en", "2026-10-15", True), ("/column/", max([a.get("updated", a["published"]) for a in arts] or ["2026-10-15"]), False),
-            ("/contact", "2026-10-15", False), ("/contact-en", "2026-10-15", False),
-            ("/shop", "2026-10-15", False), ("/shop-en", "2026-10-15", False), ("/plans", "2026-10-15", False), ("/plans-en", "2026-10-15", False), ("/referral", "2026-10-15", False), ("/referral-en", "2026-10-15", False),
-            ("/privacy", "2026-10-14", False), ("/privacy-en", "2026-10-14", False),
-            ("/terms", "2026-10-14", False), ("/terms-en", "2026-10-14", False)]
+    pages = [("/", "index.html", True), ("/en", "en.html", True), ("/column/", "column/index.html", False),
+             ("/contact", "contact.html", False), ("/contact-en", "contact-en.html", False),
+             ("/shop", "shop.html", False), ("/shop-en", "shop-en.html", False), ("/plans", "plans.html", False), ("/plans-en", "plans-en.html", False), ("/referral", "referral.html", False), ("/referral-en", "referral-en.html", False),
+             ("/privacy", "privacy.html", False), ("/privacy-en", "privacy-en.html", False),
+             ("/terms", "terms.html", False), ("/terms-en", "terms-en.html", False)]
+    base = [(p, changed_on(f), a) for p, f, a in pages]
     alt = '\n    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" />'
     rows = [f'  <url><loc>{SITE}{p}</loc><lastmod>{d}</lastmod>{alt if a else ""}</url>' for p, d, a in base]
     rows += [f'  <url><loc>{SITE}/column/{a["slug"]}</loc><lastmod>{a.get("updated", a["published"])}</lastmod></url>' for a in arts]
