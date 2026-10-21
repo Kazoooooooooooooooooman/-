@@ -460,7 +460,11 @@ h2 .nw { white-space: nowrap; }
 /* ---------- 製品：これが Soto Phone ---------- */
 .product-in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
 .ph { margin: 0; text-align: center; }
-.ph-photo { width: min(100%, 440px); margin-inline: auto; }
+.ph-svg { width: min(100%, 320px); height: auto; overflow: visible; }
+.ph-line { fill: none; stroke: var(--paper-ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.ph-line .ph-screen { fill: rgba(31, 30, 28, .05); stroke-width: 1.6; }
+.ph-ui text { font-family: var(--sans); font-size: 15px; letter-spacing: .06em; fill: var(--paper-ink); }
+.ph-ui .ph-time { font-family: var(--latin); font-weight: 500; font-size: 38px; letter-spacing: 0; }
 .card.product-in { max-width: 1120px; }
 .product .eyebrow { margin-bottom: 10px; }
 .product .product-copy h2 { margin-bottom: 14px; }
@@ -469,9 +473,6 @@ h2 .nw { white-space: nowrap; }
 .letter-note { margin: 26px 0 30px; padding: 4px 0 4px 18px; border-left: 2px solid var(--paper-line); }
 .letter-note p { font-family: var(--serif); font-size: 15px; line-height: 2; color: var(--paper-ink); }
 .letter-note .sign { margin-top: 8px; font-family: var(--sans); font-size: 12px; color: var(--paper-dim); }
-.ph-photo img { display: block; width: 100%; height: auto; border-radius: 14px; }
-.ph-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-.ph-sub img { aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; }
 .ph figcaption { margin-top: 14px; font-size: 12px; letter-spacing: .1em; color: var(--paper-dim); }
 .feats { list-style: none; display: flex; flex-direction: column; gap: 22px; margin-bottom: 36px; }
 .feats li { font-size: 15px; color: var(--paper-dim); line-height: 1.8; }
@@ -480,7 +481,7 @@ h2 .nw { white-space: nowrap; }
 .btn.btn-line { background: transparent; color: var(--paper-ink); box-shadow: inset 0 0 0 1.5px var(--paper-ink); }
 @media (max-width: 760px) {
   .product-in { grid-template-columns: 1fr; }
-  .ph-photo { width: min(100%, 360px); }
+  .ph-svg { width: 200px; }
   .product .product-copy { text-align: left; }
 }
 
@@ -867,7 +868,7 @@ h2 .nw { white-space: nowrap; }
 }
 
 /* ---------- 1枚目：左に言葉と登録、右に水彩の Soto Phone の動画 ----------
-   動画は正方形に近い（760×720）ので、画面いっぱいには広げない。ほぼ元の大きさで置き、ふちを紙の色へぼかして、絵が紙に描かれているように見せる */
+   動画は縦長（480×608）で小さいので、画面いっぱいには広げない。ほぼ元の大きさで置き、ふちを紙の色へぼかして、絵が紙に描かれているように見せる */
 .hero-door {
   position: relative; isolation: isolate; overflow: hidden;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, 4vw, 72px);
@@ -877,7 +878,7 @@ h2 .nw { white-space: nowrap; }
 .hd-media {
   /* ふちだけを、上下左右とも1割ほどかけて紙の色へ消す（楕円にすると、寄りの場面で縁取りが目立つ） */
   --hd-fade: linear-gradient(90deg, transparent, #000 11%, #000 89%, transparent), linear-gradient(180deg, transparent, #000 9%, #000 91%, transparent);
-  order: 2; justify-self: start; width: min(100%, calc(min(74vh, 660px) * 760 / 720)); aspect-ratio: 760 / 720; }
+  order: 2; justify-self: start; width: min(100%, calc(min(80vh, 740px) * 480 / 608)); aspect-ratio: 480 / 608; }
 .hd-video {
   display: block; width: 100%; height: 100%; object-fit: cover;
   -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect;
@@ -898,7 +899,7 @@ h2 .nw { white-space: nowrap; }
   /* スマホ：1画面に詰め込まず、絵・名前・言葉・登録欄のあいだに息つぎの余白をとる。
      登録欄までが最初の画面に入れば十分で、「Soto Phone を見る」は少し下にはみ出してよい */
   .hero-door { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 72px 28px 44px; align-content: start; }
-  .hd-media { order: 0; justify-self: center; width: min(86vw, calc(42svh * 760 / 720)); margin-bottom: 22px; }
+  .hd-media { order: 0; justify-self: center; width: min(78vw, calc(44svh * 480 / 608)); margin-bottom: 22px; }
   .hd-text { justify-self: center; align-items: center; text-align: center; }
   .hd-eyebrow { margin-bottom: 12px; font-size: 11px; }
   .hd-mark { justify-content: center; margin-left: 0; }
@@ -909,7 +910,7 @@ h2 .nw { white-space: nowrap; }
   .hd-fine { line-height: 1.9; }
   .hd-more { margin-top: 30px; }
 }
-@media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-square2.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
+@media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-road.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
 
 /* ---------- 動画の道の続き（形は script.js が決める） ----------
    動画の道と同じく、紙色の帯に、鉛筆の点線のふちと、うすい影 */
