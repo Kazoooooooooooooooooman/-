@@ -7,7 +7,7 @@
 // メールの最後には、配信停止とデータ削除のリンクが入る（このウェブアプリの URL に、本人だけが使える印を付けたもの）。
 
 const SHEET_NAME = "先行予約";
-const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止", "フォーム", "経路", "参照元", "紹介コード", "紹介した人"];
+const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止", "フォーム", "経路", "参照元", "紹介コード", "紹介した人", "番号"];
 const MAIL_COL = 6; // 「確認メール」の列（送った日時が入る）
 const CONSENT_COL = 7; // 「同意」の列（どの方法で、どの版のプライバシーポリシーに同意したか）
 const STOP_COL = 8; // 「配信停止」の列（停止した日時が入る。入っている人には、お知らせを送らない）
@@ -16,6 +16,8 @@ const STOP_COL = 8; // 「配信停止」の列（停止した日時が入る。
 // 紹介した人数は、空いている列に =COUNTIF(M:M, L2) と入れると数えられる
 const FORM_COL = 9;
 const CODE_COL = 12;
+// 14列目「番号」：登録した順に1から付ける番号（No.001 のように見せる）。登録し直しても変わらない
+const NUM_COL = 14;
 
 // ---- メールの設定（ここだけ書き換えればよい） ----
 const SENDER_NAME = "Soto Phone";
@@ -95,16 +97,22 @@ function doPost(e) {
       code,
       prev[4] || (invitedBy !== code ? invitedBy : ""),
     ]]);
+    // 番号：まだない人にだけ付ける（登録し直した人は、前の番号のまま）
+    let number = Number(sheet.getRange(rowIndex, NUM_COL).getValue()) || 0;
+    if (!number) {
+      number = nextNumber(sheet);
+      sheet.getRange(rowIndex, NUM_COL).setValue(number);
+    }
     // 配信を停止していた人が登録し直したら、もう一度お知らせを受け取れるようにする
     sheet.getRange(rowIndex, STOP_COL).setValue("");
 
     // 確認メールは、まだ送っていない人にだけ送る
     const sentAt = sheet.getRange(rowIndex, MAIL_COL).getValue();
     if (!sentAt && canSendNow()) {
-      sendConfirmation(email, lang, trial);
+      sendConfirmation(email, lang, trial, number);
       sheet.getRange(rowIndex, MAIL_COL).setValue(new Date());
     }
-    return reply({ ok: true, code: code });
+    return reply({ ok: true, code: code, number: number });
   } catch (err) {
     console.error(err); // Apps Script の「実行数」に原因が残る
     return reply({ ok: false, error: "server" });
@@ -221,30 +229,59 @@ function page(title, text, en, buttons) {
   return HtmlService.createHtmlOutput(html).setTitle("Soto Phone").addMetaTag("viewport", "width=device-width, initial-scale=1");
 }
 
+// 次の番号。シートの「番号」の列でいちばん大きい数に1を足す（行を消しても、同じ番号は使い回さない）
+function nextNumber(sheet) {
+  const props = PropertiesService.getScriptProperties();
+  const last = sheet.getLastRow();
+  const nums = last > 1 ? sheet.getRange(2, NUM_COL, last - 1, 1).getValues().flat().map(Number).filter((n) => n > 0) : [];
+  const n = Math.max(Number(props.getProperty("LAST_NUMBER") || 0), nums.length ? Math.max.apply(null, nums) : 0) + 1;
+  props.setProperty("LAST_NUMBER", String(n));
+  return n;
+}
+
+// 番号を付ける前に登録した人に、登録した順で番号を付ける。Apps Script の画面でこの関数を選んで、一度だけ「実行」する
+function assignMissingNumbers() {
+  const sheet = getSheet();
+  const last = sheet.getLastRow();
+  if (last < 2) return;
+  const rows = sheet.getRange(2, 1, last - 1, NUM_COL).getValues()
+    .map((r, i) => ({ row: i + 2, at: new Date(r[0]).getTime() || 0, num: Number(r[NUM_COL - 1]) || 0 }))
+    .filter((r) => !r.num)
+    .sort((a, b) => a.at - b.at);
+  rows.forEach((r) => sheet.getRange(r.row, NUM_COL).setValue(nextNumber(sheet)));
+}
+
+// 番号の見せ方：No.007
+function numberLabel(n) {
+  return "No." + String(n).padStart(3, "0");
+}
+
 // 確認メールを送れなかった人（上限に達したときなど）に、まとめて送る。
 // Apps Script の画面でこの関数を選んで「実行」するか、時間主導のトリガーで1時間ごとに動かす。
 function sendPendingConfirmations() {
   const sheet = getSheet();
   const last = sheet.getLastRow();
   if (last < 2) return;
-  const rows = sheet.getRange(2, 1, last - 1, MAIL_COL).getValues();
+  const rows = sheet.getRange(2, 1, last - 1, NUM_COL).getValues();
   rows.forEach((r, i) => {
     const email = r[1], lang = r[3] === "en" ? "en" : "ja", trial = r[4] === "参加したい", sentAt = r[5];
     const stopped = sheet.getRange(i + 2, STOP_COL).getValue();
     if (!email || sentAt || stopped || !canSendNow()) return;
-    sendConfirmation(email, lang, trial);
+    let number = Number(r[NUM_COL - 1]) || 0;
+    if (!number) { number = nextNumber(sheet); sheet.getRange(i + 2, NUM_COL).setValue(number); }
+    sendConfirmation(email, lang, trial, number);
     sheet.getRange(i + 2, MAIL_COL).setValue(new Date());
   });
 }
 
 // 届くメールを自分で確かめる用。Apps Script の画面でこの関数を選んで「実行」すると、自分あてに日本語版が届く。
 function testSendToMe() {
-  sendConfirmation(Session.getEffectiveUser().getEmail(), "ja", true);
+  sendConfirmation(Session.getEffectiveUser().getEmail(), "ja", true, 7);
 }
 
-function sendConfirmation(email, lang, trial) {
+function sendConfirmation(email, lang, trial, number) {
   const link = manageUrl(email, lang);
-  const m = lang === "en" ? mailEn(trial, link) : mailJa(trial, link);
+  const m = lang === "en" ? mailEn(trial, link, number) : mailJa(trial, link, number);
   if (FROM_ADDRESS) {
     // エイリアスから送れるのは GmailApp だけ（MailApp は自分のアドレスからしか送れない）
     const opts = { htmlBody: m.html, name: SENDER_NAME, from: FROM_ADDRESS };
@@ -268,10 +305,12 @@ function canSendNow() {
   return true;
 }
 
-function mailJa(trial, link) {
+function mailJa(trial, link, number) {
   const lines = [
     "Soto Phone の先行予約にご登録いただき、ありがとうございます。",
     "",
+    number ? "あなたの番号は " + numberLabel(number) + " です。" + number + "番目に登録してくださった方です。" : null,
+    number ? "" : null,
     "発売が決まったら、このメールアドレスにいちばん先にお知らせします。",
     trial ? "試作機の先行体験の募集が始まったときも、こちらからご案内します。" : "",
     "",
@@ -291,13 +330,15 @@ function mailJa(trial, link) {
     "お問い合わせ：" + CONTACT,
     "プライバシーポリシー：" + SITE_URL + "privacy.html",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: "【Soto Phone】先行予約の登録を受け付けました", text: lines.join("\n"), html: toHtml(lines) };
+  return { subject: "【Soto Phone】先行予約の登録を受け付けました" + (number ? "（" + numberLabel(number) + "）" : ""), text: lines.join("\n"), html: toHtml(lines, number, "あなたの番号") };
 }
 
-function mailEn(trial, link) {
+function mailEn(trial, link, number) {
   const lines = [
     "Thank you for joining the Soto Phone pre-order list.",
     "",
+    number ? "Your number is " + numberLabel(number) + ". You were person number " + number + " to sign up." : null,
+    number ? "" : null,
     "We'll email this address first when it launches.",
     trial ? "We'll also let you know here when prototype trials open." : "",
     "",
@@ -317,14 +358,16 @@ function mailEn(trial, link) {
     "Contact: " + CONTACT,
     "Privacy policy: " + SITE_URL + "privacy-en.html",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: "Soto Phone: you're on the pre-order list", text: lines.join("\n"), html: toHtml(lines) };
+  return { subject: "Soto Phone: you're on the pre-order list" + (number ? " (" + numberLabel(number) + ")" : ""), text: lines.join("\n"), html: toHtml(lines, number, "Your number") };
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする
-function toHtml(lines) {
+// 番号があるときは、本文の上に番号だけの小さなカードを置く
+function toHtml(lines, number, cardLabel) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   // 長い URL は、押せるリンクにする
   const link = (s) => esc(s).replace(/https?:\/\/[^\s<]+/g, (u) => '<a href="' + u + '" style="color:#1f1e1c">' + u + "</a>");
   const body = lines.map((l) => (l === "" ? "<br>" : link(l) + "<br>")).join("");
-  return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;color:#1f1e1c;max-width:560px">' + body + "</div>";
+  const card = number ? '<div style="margin:0 0 24px;padding:22px 24px;border:1px solid #e2dfd8;border-radius:16px;background:#f6f5f1;text-align:center"><div style="font-size:12px;letter-spacing:.2em;color:#8a8984">SOTO PHONE · ' + esc(cardLabel) + '</div><div style="margin-top:6px;font-family:Georgia,serif;font-size:40px;letter-spacing:.06em;color:#1f1e1c">' + numberLabel(number) + "</div></div>" : "";
+  return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;color:#1f1e1c;max-width:560px">' + card + body + "</div>";
 }

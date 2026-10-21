@@ -160,6 +160,8 @@
   const FROM_KEY = "soto-from"; // 最初に来たときの経路（?from= と、どのサイトから来たか）
   // 次に開いたときの「登録しました」に出す、登録したアドレス（打ち間違いに、あとからでも気づけるように）
   const MAIL_KEY = "soto-mail";
+  // 登録した順の番号（No.007 のように見せる）。次に開いたときのカードにも出す
+  const NUM_KEY = "soto-number";
   const store_ = {
     get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } },
     set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) { /* 覚えられなくても登録はできる */ } },
@@ -247,7 +249,7 @@
 
   // 登録済みの表示を消して、もう一度入力できる状態に戻す（前の登録はスプレッドシートに残る）
   function reopen() {
-    try { localStorage.removeItem(SENT_KEY); localStorage.removeItem(MAIL_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
+    try { localStorage.removeItem(SENT_KEY); localStorage.removeItem(MAIL_KEY); localStorage.removeItem(NUM_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
     forms.forEach(({ form, msg }) => {
       if (form.nextElementSibling && form.nextElementSibling.classList.contains("done")) form.nextElementSibling.remove();
       form.hidden = false;
@@ -273,6 +275,16 @@
     head.className = "done-head";
     head.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
     head.append(EN ? "You’re on the list." : "登録しました。");
+    // 登録した順の番号。ある人にだけ、見出しのすぐ下に大きく出す
+    const num = Number(store_.get(NUM_KEY)) || 0;
+    const badge = document.createElement("p");
+    badge.className = "done-num";
+    if (num) {
+      const label = "No." + String(num).padStart(3, "0");
+      badge.innerHTML = '<span class="done-num-k"></span><span class="done-num-v"></span>';
+      badge.querySelector(".done-num-k").textContent = EN ? "Your number" : "あなたの番号";
+      badge.querySelector(".done-num-v").textContent = label;
+    }
     // 次に起きること。その下の行に、送り先のアドレスと「直す」（打ち間違いに、その場で気づけるように）
     const body = document.createElement("p");
     body.className = "done-body";
@@ -311,7 +323,9 @@
     line.rel = "noopener";
     line.textContent = EN ? "Send on LINE" : "LINE で送る";
     row.append(share, line);
-    card.append(head, body, sub, row);
+    card.append(head);
+    if (num) card.append(badge);
+    card.append(body, sub, row);
     return card;
   }
 
@@ -433,6 +447,7 @@
         }
         // 前に登録していた人は、そのときの紹介コードを使い続ける
         if (out.code) store_.set(CODE_KEY, out.code);
+        if (out.number) store_.set(NUM_KEY, String(out.number));
         // ブラウザには「登録済み」の印と紹介コードだけを残す（メールアドレスは残さない）
         store_.set(SENT_KEY, "1");
         store_.set(MAIL_KEY, data.email);

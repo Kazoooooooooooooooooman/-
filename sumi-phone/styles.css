@@ -581,6 +581,10 @@ h2 .nw { white-space: nowrap; }
 .reserve-form + .done { grid-column: 1 / -1; background: rgba(255, 255, 255, .6); border-color: var(--paper-line); max-width: 520px; text-align: left; }
 .done-head { display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--serif); font-size: 18px; letter-spacing: .08em; line-height: 1.4; }
 .done-head svg { flex: none; width: 18px; height: 18px; fill: none; stroke: #e0502e; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.done-num { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 14px 0 4px; }
+.reserve-form + .done .done-num { align-items: flex-start; }
+.done-num-k { font-size: 11px; letter-spacing: .2em; color: var(--paper-dim); }
+.done-num-v { font-family: var(--serif); font-size: clamp(30px, 4vw, 38px); letter-spacing: .06em; line-height: 1.2; }
 .done-body { margin-top: 8px; font-size: 13px; letter-spacing: .04em; line-height: 1.8; color: var(--paper-dim); overflow-wrap: anywhere; }
 .done-sub { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0 12px; margin-top: 2px; font-size: 12px; letter-spacing: .02em; line-height: 1.8; color: var(--paper-dim); overflow-wrap: anywhere; }
 .reserve-form + .done .done-sub { justify-content: flex-start; }
