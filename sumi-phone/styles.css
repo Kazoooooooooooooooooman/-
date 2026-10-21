@@ -859,7 +859,7 @@ h2 .nw { white-space: nowrap; }
 }
 
 /* ---------- 1枚目：左に言葉と登録、右に水彩の Soto Phone の動画 ----------
-   動画は縦長（480×608）で小さいので、画面いっぱいには広げない。ほぼ元の大きさで置き、ふちを紙の色へぼかして、絵が紙に描かれているように見せる */
+   動画は正方形に近い（760×720）ので、画面いっぱいには広げない。ほぼ元の大きさで置き、ふちを紙の色へぼかして、絵が紙に描かれているように見せる */
 .hero-door {
   position: relative; isolation: isolate; overflow: hidden;
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(24px, 4vw, 72px);
@@ -869,7 +869,7 @@ h2 .nw { white-space: nowrap; }
 .hd-media {
   /* ふちだけを、上下左右とも1割ほどかけて紙の色へ消す（楕円にすると、寄りの場面で縁取りが目立つ） */
   --hd-fade: linear-gradient(90deg, transparent, #000 11%, #000 89%, transparent), linear-gradient(180deg, transparent, #000 9%, #000 91%, transparent);
-  order: 2; justify-self: start; width: min(100%, calc(min(80vh, 740px) * 480 / 608)); aspect-ratio: 480 / 608; }
+  order: 2; justify-self: start; width: min(100%, calc(min(74vh, 660px) * 760 / 720)); aspect-ratio: 760 / 720; }
 .hd-video {
   display: block; width: 100%; height: 100%; object-fit: cover;
   -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect;
@@ -890,7 +890,7 @@ h2 .nw { white-space: nowrap; }
   /* スマホ：1画面に詰め込まず、絵・名前・言葉・登録欄のあいだに息つぎの余白をとる。
      登録欄までが最初の画面に入れば十分で、「Soto Phone を見る」は少し下にはみ出してよい */
   .hero-door { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 72px 28px 44px; align-content: start; }
-  .hd-media { order: 0; justify-self: center; width: min(78vw, calc(44svh * 480 / 608)); margin-bottom: 22px; }
+  .hd-media { order: 0; justify-self: center; width: min(86vw, calc(42svh * 760 / 720)); margin-bottom: 22px; }
   .hd-text { justify-self: center; align-items: center; text-align: center; }
   .hd-eyebrow { margin-bottom: 12px; font-size: 11px; }
   .hd-mark { justify-content: center; margin-left: 0; }
@@ -901,7 +901,7 @@ h2 .nw { white-space: nowrap; }
   .hd-fine { line-height: 1.9; }
   .hd-more { margin-top: 30px; }
 }
-@media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-phone.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
+@media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-square.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
 
 /* ---------- 動画の道の続き（形は script.js が決める） ----------
    動画の道と同じく、紙色の帯に、鉛筆の点線のふちと、うすい影 */
