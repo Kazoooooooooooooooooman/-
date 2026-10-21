@@ -161,7 +161,8 @@ h2 .nw { white-space: nowrap; }
 .turn { margin: clamp(70px, 11vh, 120px) 0 0; font-size: clamp(30px, 4.6vw, 60px); }
 
 /* データから物語へのつなぎ：誰もが見たことのある「スクリーンタイム」の画面の中で見せる。
-   昨日の時間を ＋− で合わせると、1週間・1年が下に並び、一生の数字は通知として上から届く */
+   全国平均の2時間45分で見せる。1週間・1年が下に並び、一生の数字（7年半）は通知として上から届く。
+   数字を変えられる形も試したが、「7年半」と決まっている方が伝わる、という声で固定にした */
 .scale { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-block: clamp(90px, 12vh, 130px) clamp(40px, 6vh, 70px); }
 .scale.reveal { opacity: 1; transform: none; }
 .sc-ask { font-family: var(--serif); font-size: clamp(19px, 2vw, 26px); letter-spacing: .1em; margin-bottom: clamp(24px, 4vh, 44px); word-break: auto-phrase; text-wrap: balance; }
@@ -174,7 +175,7 @@ h2 .nw { white-space: nowrap; }
 .st-batt { width: 22px; height: 11px; border: 1.5px solid currentColor; border-radius: 3px; position: relative; }
 .st-batt::after { content: ""; position: absolute; inset: 1.5px 6px 1.5px 1.5px; background: currentColor; border-radius: 1px; }
 .st-sub { font-size: 13px; color: #8a8984; margin-top: clamp(104px, 9vw, 116px); }
-.st-stepper { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+.st-stepper { margin-top: 6px; }
 .st-day { font-family: var(--latin); font-size: 30px; font-weight: 700; letter-spacing: -.01em; white-space: nowrap; }
 .st-btn { width: 40px; height: 40px; flex: none; border: 0; border-radius: 50%; background: #e4e3de; color: #1d1d1b; font: 500 22px/1 var(--latin); cursor: pointer; transition: background .2s, transform .1s; }
 .st-btn:hover { background: #d8d7d1; }
