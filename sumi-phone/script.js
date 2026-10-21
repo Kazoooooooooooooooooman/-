@@ -667,14 +667,14 @@
     const v = video ? video.getBoundingClientRect() : null;
     const startX = v ? v.left + v.width * 0.62 : W * 0.7;
     const startY = v ? v.bottom + scrollY - mainTop - v.height * 0.06 : hero.b - 120; // 動画の下のぼかしの中から出てくる
-    // 広い画面：左右の余白を交互に走り、節のあいだで渡る。狭い画面：文字に重ならないよう、左のふちだけを下りる
+    // 広い画面：動画の下からまず左の余白へ回り、そのあと右、と交互に走って、節のあいだで渡る。狭い画面：文字に重ならないよう、左のふちだけを下りる
     const pts = wide ? [
       [startX, startY],
       [W * 0.45, hero.b + 10],
-      [R - wob, problem.t + 260], [R + wob, (problem.t + problem.b) / 2], [R - wob, problem.b - 160],
+      [L + wob, problem.t + 260], [L - wob, (problem.t + problem.b) / 2], [L + wob, problem.b - 160],
       [W * 0.5, ink.t + 20],
-      [L + wob, ink.t + 300], [L, ink.b - 200],
-      [W * 0.4, about.t - 30], [W * 0.5, about.t + 60],
+      [R - wob, ink.t + 300], [R, ink.b - 200],
+      [W * 0.6, about.t - 30], [W * 0.5, about.t + 60],
     ] : narrowRoute(W, L, R, hero, about, mainTop);
     const d = wide ? smooth(pts) : sCurve(pts);
     endY = about.t + 60;
