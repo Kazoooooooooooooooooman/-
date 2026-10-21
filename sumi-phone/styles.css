@@ -719,7 +719,9 @@ h2 .nw { white-space: nowrap; }
 .article table { width: 100%; border-collapse: collapse; margin: 22px 0; font-size: 15px; }
 .article th, .article td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--paper-line); line-height: 1.7; vertical-align: top; }
 .article th { font-weight: 600; font-size: 14px; }
-.table-scroll { overflow-x: auto; }
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll table.wide { min-width: 640px; }
+.table-scroll table.wide td:first-child { white-space: nowrap; font-weight: 600; }
 .article-toc { margin: 0 0 40px; padding: 20px 24px; border-radius: 12px; background: rgba(255, 255, 255, .55); border: 1px solid var(--paper-line); }
 .article-toc p { font-size: 13px !important; letter-spacing: .12em; color: var(--paper-dim); margin-bottom: 6px; }
 .article-toc ol { margin: 0; padding-left: 1.3em; }
