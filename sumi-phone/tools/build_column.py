@@ -213,7 +213,7 @@ def build_index(arts):
     ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "コラム｜Soto Phone", "url": url, "inLanguage": "ja"}
     items = "" if arts else '<li class="col-item"><p class="col-desc" style="padding:24px 4px">最初の記事を準備しています。</p></li>'
     items += "".join(f'''<li class="col-item"><a href="/column/{a["slug"]}"><p class="col-date"><time datetime="{a["published"]}">{jdate(a["published"])}</time></p><h2>{esc(a.get("h1") or a["title"])}</h2><p class="col-desc">{esc(a["description"])}</p></a></li>''' for a in arts)
-    page = head("コラム｜Soto Phone", "スマホとの付き合い方、集中のしかた、画面の外で過ごす時間について。SNS もゲームもない携帯電話を作る Soto Phone のコラムです。", url, ld) + f'''<main id="main" class="legal column-index">
+    page = head("スマホとの付き合い方コラム｜デジタルデトックス・スマホ依存・ミニマルフォン｜Soto Phone", "スマホ依存のセルフチェック、スクリーンタイムが続かない理由、デジタルデトックスのやり方、日本で使えるミニマルフォンまで。データと出典つきで解説する、Soto Phone のコラムです。", url, ld) + f'''<main id="main" class="legal column-index">
   <div class="wrap">
     <h1>コラム</h1>
     <p class="column-lead">スマホとの付き合い方、集中のしかた、画面の外で過ごす時間について書いています。</p>
