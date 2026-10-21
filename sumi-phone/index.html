@@ -26,7 +26,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261021b" />
+<link rel="stylesheet" href="styles.css?v=20261021e" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://sotophone.jp/#website", "name": "Soto Phone", "alternateName": ["ソトフォン", "Soto"], "url": "https://sotophone.jp/", "inLanguage": "ja"}, {"@type": "Organization", "@id": "https://sotophone.jp/#org", "name": "Soto Phone", "url": "https://sotophone.jp/", "logo": "https://sotophone.jp/favicon-512.png", "email": "hello@sotophone.jp"}]}</script>
 </head>
 <body>
@@ -42,7 +42,6 @@
   <div class="bg-layer" data-i="5"><div class="bg-move"><img data-src="images/w5-mountain.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g class="ov-clouds"><ellipse class="cl c1" cx="420" cy="150" rx="230" ry="38"/><ellipse class="cl c2" cx="1380" cy="220" rx="300" ry="44"/></g></svg></div></div>
   <div class="bg-layer" data-i="6"><div class="bg-move"><img data-src="images/w6-sunset.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><circle class="glow" cx="962" cy="672" r="190"/><g class="ov-glint"><path class="gl g1" d="M690 812h70"/><path class="gl g2" d="M1180 848h60"/><path class="gl g3" d="M900 878h90"/><path class="gl g4" d="M1060 905h70"/></g><g class="ov-birds"><path class="bd b1" d="M0 0q8-9 16 0q8-9 16 0"/><path class="bd b2" d="M0 0q7-8 14 0q7-8 14 0"/></g></svg></div></div>
 </div>
-
 
 <header class="nav">
   <a class="logo" href="#top" aria-label="Soto Phone トップへ">
@@ -64,7 +63,7 @@
 </header>
 
 <main id="main" class="has-road">
-  <!-- 動画の道の続き：1枚目の動画の下から、紙の上を曲がりながら、景色の入口（#about）まで下りていく。形は script.js が節の位置から決め、スクロールに合わせて描き進める -->
+  <!-- 動画の道の続き：1枚目の動画の下から、紙の上を曲がりながら、景色の入口（#phone）まで下りていく。形は script.js が節の位置から決め、スクロールに合わせて描き進める -->
   <svg class="road" aria-hidden="true" focusable="false">
     <defs>
       <linearGradient id="road-fade" class="road-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000"/><stop class="road-in" offset=".02" stop-color="#fff"/><stop offset=".86" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>
@@ -104,29 +103,6 @@
         <p class="hd-msg" id="hero-msg" role="status"></p>
       </div>
       <a class="hd-more" href="#phone">Soto Phone を見る<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
-    </div>
-  </section>
-
-  <!-- 1.5 製品：1スクロール目で「何の、どんな携帯か」が分かるように。形は開発中なので、手描きのイメージで見せる -->
-  <section id="phone" class="sec product" data-bg="0">
-    <div class="wrap product-in">
-      <figure class="ph ph-photo reveal">
-        <img class="ph-main" src="images/product/colors2.webp" alt="墨・白・緑の3色の Soto Phone" width="670" height="240" loading="lazy" decoding="async" />
-        <div class="ph-sub">
-          <img src="images/product/back.webp" alt="緑の背面" width="450" height="346" loading="lazy" decoding="async" />
-          <img src="images/product/logo.webp" alt="背面に型押しした「外」のマーク" width="476" height="346" loading="lazy" decoding="async" />
-        </div>
-        <figcaption>開発中のイメージ</figcaption>
-      </figure>
-      <div class="product-copy">
-        <h2 class="reveal">Soto Phone</h2>
-        <ul class="feats reveal">
-          <li><b>SNS もゲームも、入っていない。</b>出かけるのに必要なものだけ。</li>
-          <li><b>画面は、白黒。</b>写真を開いたときだけ、色が戻る。</li>
-          <li><b>外で過ごすほど、携帯代が安く。</b>提携店でスタンプ。翌月の携帯代が下がる。</li>
-        </ul>
-        <div class="product-btns reveal"><a class="btn btn-line" href="#tools">詳しく見る</a><a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">先行予約する</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
-      </div>
     </div>
   </section>
 
@@ -230,13 +206,28 @@
     </div>
   </section>
 
-  <!-- 3. Soto Phone：ここから紙に色がつく。背景は水彩の丘 -->
-  <section id="about" class="sec on-color" data-bg="1">
-    <div class="wrap card center">
-      <p class="eyebrow reveal" lang="en">Soto Phone</p>
-      <h2 class="reveal"><span class="nw">Soto（ソト）は、</span><br /><span class="nw">日本語の「外」。</span></h2>
-      <p class="body reveal">画面に張り付く理由になる SNS とゲームを、最初から入れない。集中したいときは、通知が止まる。外で過ごすほど、携帯代が安くなる。</p>
-      <p class="body reveal">画面の外へ、出かけるための携帯電話です。</p>
+<!-- 3. Soto Phone：問題のあとに、解決として製品を見せる。ここから紙に色がつく。背景は水彩の丘 -->
+  <section id="phone" class="sec on-color product" data-bg="1">
+    <div class="wrap card product-in">
+      <figure class="ph ph-photo reveal">
+        <img class="ph-main" src="images/product/colors2.webp" alt="墨・白・緑の3色の Soto Phone" width="670" height="240" loading="lazy" decoding="async" />
+        <div class="ph-sub">
+          <img src="images/product/back.webp" alt="緑の背面" width="450" height="346" loading="lazy" decoding="async" />
+          <img src="images/product/logo.webp" alt="背面に型押しした「外」のマーク" width="476" height="346" loading="lazy" decoding="async" />
+        </div>
+        <figcaption>開発中のイメージ</figcaption>
+      </figure>
+      <div class="product-copy">
+        <p class="eyebrow reveal" lang="en">Soto Phone</p>
+        <h2 class="reveal"><span class="nw">Soto（ソト）は、</span><br /><span class="nw">日本語の「外」。</span></h2>
+        <p class="body reveal">画面の外へ、出かけるための携帯電話です。</p>
+        <ul class="feats reveal">
+          <li><b>SNS もゲームも、入っていない。</b>出かけるのに必要なものだけ。</li>
+          <li><b>画面は、白黒。</b>写真を開いたときだけ、色が戻る。</li>
+          <li><b>外で過ごすほど、携帯代が安く。</b>提携店でスタンプ。翌月の携帯代が下がる。</li>
+        </ul>
+        <div class="product-btns reveal"><a class="btn btn-line" href="#tools">詳しく見る</a><a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">先行予約する</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      </div>
     </div>
   </section>
   <section class="day-panel" data-bg="2">
@@ -266,38 +257,16 @@
       <ol class="flow reveal"><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M30 78h100"/><path d="M48 74l6-14h52l6 14z"/><path d="M60 64h40"/><circle cx="118" cy="34" r="16"/><path d="M118 24v10l7 4"/><path d="M34 40c0-9 7-16 16-16-5 4-7 9-7 15 0 7 5 13 12 15-3 1-5 2-8 2-7 0-13-7-13-16z"/></svg></figure><span class="step-n" lang="en">01</span><strong>集中する</strong><span class="step-b">「90分、英単語」と決めて押すと、終わるまで通知が止まる。</span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M24 34l34-12 40 12 34-12v58l-34 12-40-12-34 12z"/><path d="M58 22v58M98 34v58"/><path d="M80 66s-14-14-14-24a14 14 0 0 1 28 0c0 10-14 24-14 24z"/><circle cx="80" cy="42" r="5"/></svg></figure><span class="step-n" lang="en">02</span><strong>行き先を選ぶ</strong><span class="step-b">自習できるカフェ、本屋、銭湯。提携店が地図に並ぶ。</span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M26 34h108"/><path d="M34 34l6-12h80l6 12"/><path d="M38 34v54M122 34v54"/><path d="M48 34v28M68 34v28M88 34v28M108 34v28"/><path d="M48 62h60"/><path d="M72 76h16v12H72z"/><path d="M30 88h100"/></svg></figure><span class="step-n" lang="en">03</span><strong>スタンプ</strong><span class="step-b">お店でかざすと、1日1つ。どのお店も同じカード。</span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><ellipse cx="62" cy="80" rx="22" ry="7"/><path d="M40 80v-9M84 80v-9"/><ellipse cx="62" cy="71" rx="22" ry="7"/><path d="M40 71v-9M84 71v-9"/><ellipse cx="62" cy="62" rx="22" ry="7"/><path d="M99 47h22"/><path d="M102 82c6-4 14-4 20 0"/></svg></figure><span class="step-n" lang="en">04</span><strong>携帯代が下がる</strong><span class="step-b">例：月に5回で <b>−500円</b></span></li></ol>
       <p class="calc reveal"><span class="nw">月1,980円のプラン</span> <span class="nw">→ 提携店に月5回で <b>1,480円</b></span></p>
       <div class="why reveal"><p class="why-q">どうして、安くなるの？</p><p>割引のお金は、提携しているお店が出しています。お店にとっては、新しいお客さんに来てもらうための広告費のかわりです。お店が Soto に払うのは、実際にお客さんが来たときだけです。</p></div>
-      <div class="why reveal"><p class="why-q">学生と、保護者の方へ</p><p>集中モードでやり切った時間は、記録に残ります。保護者の方は、その時間に合わせてごほうびを決められます。見えるのは時間だけで、何をしていたかは見えません。</p></div>
       <p class="note reveal">金額は説明のための例です。料金プラン、提携先、割引の内容は準備中です。</p>
     </div>
   </section>
-  <!-- 7. 先行体験：本物の声は、ここに集める -->
-  <section id="trial" class="sec on-color" data-bg="5">
-    <div class="wrap card center">
-      <p class="eyebrow reveal" lang="en">Trial</p>
-      <h2 class="reveal">先行体験を<br />受け付けています。</h2>
-      <p class="body reveal">試作機ができたら、少人数の方に<br class="sp" />2週間、実際に使っていただきます。</p>
-      <p class="body reveal">スマホを減らそうとして、<br class="sp" />続かなかったことがある方に、<br class="sp" />特に使ってみてほしいです。</p>
-      <a class="btn btn-cta reveal" href="#signup" data-trial><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">先行体験に申し込む</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-    </div>
-  </section>
 
-  <!-- 8. 手紙 -->
-  <section id="letter" class="sec on-color" data-bg="5">
-    <div class="wrap card letter">
-      <p class="eyebrow reveal" lang="en">Letter</p>
-      <h2 class="reveal">なぜ、作るのか。</h2>
-      <div class="letter-body reveal">
-        <p>僕は、携帯を作ったことがありません。<br />でも、携帯に支配されていた側の人間です。</p>
-        <p>気づけば画面を見ていて、一日が終わっている。やめたいと思ってスクリーンタイムを設定しても、自分で解除してしまう。アプリを消しても、また入れてしまう。意志の力では、どうにもなりませんでした。</p>
-        <p>同じように感じている人は、きっとたくさんいます。だから、意志に頼らなくても、自然と外に出たくなる携帯を作ることにしました。</p>
-        <p>一人では作れません。発売までの道のりは、このページで正直にお伝えしていきます。見守ってもらえたら、うれしいです。</p>
-      </div>
-      <p class="sign reveal">Soto Phone 代表　佐々木 一真</p>
-    </div>
+  <section class="day-panel" data-bg="6">
+    <p class="day-cap reveal"><span class="day-time">夕方</span>通知に邪魔されずに、夕日を。</p>
   </section>
 
   <!-- 8.5 よくある質問：開け閉めできる形にして、ページが混まないようにする -->
-  <section id="faq" class="sec on-color" data-bg="5" aria-label="よくある質問">
+  <section id="faq" class="sec on-color" data-bg="6" aria-label="よくある質問">
     <div class="wrap card">
       <p class="eyebrow reveal" lang="en">FAQ</p>
       <h2 class="reveal">よくある質問</h2>
@@ -307,13 +276,10 @@
         <details class="faq-item"><summary>LINE は使えますか？</summary><p>LINE の扱いは、発売前に決めてお知らせします。クラスや部活の連絡に欠かせない一方で、画面に引き戻される理由にもなるため、通知を絞った形で入れる方法を開発の中で確かめています。</p></details>
         <details class="faq-item"><summary>今のスマホと、2台持ちになりますか？</summary><p>どちらの使い方にも対応します。Soto 1台で暮らすことも、ふだんは Soto を持ち歩き、スマホは家に置いておくこともできます。</p></details>
         <details class="faq-item"><summary>携帯会社や SIM は？</summary><p>今お使いの携帯会社の SIM を、そのまま入れて使えるようにします。あわせて、外で過ごすほど携帯代が安くなる Soto の料金プランを準備しています。</p></details>
+        <details class="faq-item"><summary>学生と、保護者の方へ</summary><p>集中モードでやり切った時間は、記録に残ります。保護者の方は、その時間に合わせてごほうびを決められます。見えるのは時間だけで、何をしていたかは見えません。</p></details>
         <details class="faq-item" data-deposit hidden><summary>予約金について</summary><p>発売したら買うと決めている方のために、3,000円の予約金を受け付ける予定です。いつでも全額を返金し、お預かりしたお金は開発費とは別の口座で保管します。くわしくは<a href="reservation.html">予約金について</a>をご覧ください。</p></details>
       </div>
     </div>
-  </section>
-
-  <section class="day-panel" data-bg="6">
-    <p class="day-cap reveal"><span class="day-time">夕方</span>通知に邪魔されずに、夕日を。</p>
   </section>
 
   <!-- 9. 先行予約 -->
@@ -321,7 +287,8 @@
     <div class="wrap card">
       <p class="eyebrow reveal" lang="en">Pre-order</p>
       <h2 class="reveal">楽しさは、<br />画面の外に。</h2>
-      <p class="body reveal">発売が決まったら、いちばん先にお知らせします。<br />試作機の先行体験も、まずここからご案内します。</p>
+      <p class="body reveal">発売が決まったら、いちばん先にお知らせします。<br />試作機を2週間使う先行体験も、ここから申し込めます。</p>
+    <div class="letter-note reveal"><p>僕は、携帯を作ったことがありません。でも、携帯に支配されていた側の人間です。スクリーンタイムを設定しても、自分で解除してしまう。だから、意志に頼らなくても自然と外に出たくなる携帯を作ります。</p><p class="sign">Soto Phone 代表　佐々木 一真</p></div>
     <form class="reserve-form reveal" id="reserve-form" novalidate>
       <div class="field wide">
         <label for="email">メールアドレス</label>
@@ -361,7 +328,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261021b"></script>
-<script src="/nav.js?v=20261021b" defer></script>
+<script src="script.js?v=20261021e"></script>
+<script src="/nav.js?v=20261021e" defer></script>
 </body>
 </html>

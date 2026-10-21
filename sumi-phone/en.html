@@ -26,7 +26,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="images/apple-touch-icon.png" />
 <link rel="stylesheet" href="fonts/fonts.css" />
-<link rel="stylesheet" href="styles.css?v=20261021b" />
+<link rel="stylesheet" href="styles.css?v=20261021e" />
 <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://sotophone.jp/#website", "name": "Soto Phone", "alternateName": ["ソトフォン", "Soto"], "url": "https://sotophone.jp/", "inLanguage": "en"}, {"@type": "Organization", "@id": "https://sotophone.jp/#org", "name": "Soto Phone", "url": "https://sotophone.jp/", "logo": "https://sotophone.jp/favicon-512.png", "email": "hello@sotophone.jp"}]}</script>
 </head>
 <body>
@@ -42,7 +42,6 @@
   <div class="bg-layer" data-i="5"><div class="bg-move"><img data-src="images/w5-mountain.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g class="ov-clouds"><ellipse class="cl c1" cx="420" cy="150" rx="230" ry="38"/><ellipse class="cl c2" cx="1380" cy="220" rx="300" ry="44"/></g></svg></div></div>
   <div class="bg-layer" data-i="6"><div class="bg-move"><img data-src="images/w6-sunset.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><circle class="glow" cx="962" cy="672" r="190"/><g class="ov-glint"><path class="gl g1" d="M690 812h70"/><path class="gl g2" d="M1180 848h60"/><path class="gl g3" d="M900 878h90"/><path class="gl g4" d="M1060 905h70"/></g><g class="ov-birds"><path class="bd b1" d="M0 0q8-9 16 0q8-9 16 0"/><path class="bd b2" d="M0 0q7-8 14 0q7-8 14 0"/></g></svg></div></div>
 </div>
-
 
 <header class="nav">
   <a class="logo" href="#top" aria-label="Soto Phone, back to top">
@@ -63,7 +62,7 @@
 </header>
 
 <main id="main" class="has-road">
-  <!-- 動画の道の続き：1枚目の動画の下から、紙の上を曲がりながら、景色の入口（#about）まで下りていく。形は script.js が節の位置から決め、スクロールに合わせて描き進める -->
+  <!-- 動画の道の続き：1枚目の動画の下から、紙の上を曲がりながら、景色の入口（#phone）まで下りていく。形は script.js が節の位置から決め、スクロールに合わせて描き進める -->
   <svg class="road" aria-hidden="true" focusable="false">
     <defs>
       <linearGradient id="road-fade" class="road-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000"/><stop class="road-in" offset=".02" stop-color="#fff"/><stop offset=".86" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient>
@@ -103,29 +102,6 @@
         <p class="hd-msg" id="hero-msg" role="status"></p>
       </div>
       <a class="hd-more" href="#phone">See Soto Phone<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
-    </div>
-  </section>
-
-  <!-- 1.5 The phone: show what it is on the second screen. The shape is still in development, so it is drawn by hand -->
-  <section id="phone" class="sec product" data-bg="0">
-    <div class="wrap product-in">
-      <figure class="ph ph-photo reveal">
-        <img class="ph-main" src="images/product/colors2.webp" alt="Soto Phone in charcoal, white and green" width="670" height="240" loading="lazy" decoding="async" />
-        <div class="ph-sub">
-          <img src="images/product/back.webp" alt="The green back" width="450" height="346" loading="lazy" decoding="async" />
-          <img src="images/product/logo.webp" alt="The 外 mark pressed into the back" width="476" height="346" loading="lazy" decoding="async" />
-        </div>
-        <figcaption>Concept image, in development</figcaption>
-      </figure>
-      <div class="product-copy">
-        <h2 class="reveal">Soto Phone</h2>
-        <ul class="feats reveal">
-          <li><b>No social media, no games.</b>Just what you need to head out.</li>
-          <li><b>A black-and-white screen.</b>Colour comes back only for photos.</li>
-          <li><b>Go out more, pay less.</b>Collect stamps at partner shops and your next phone bill goes down.</li>
-        </ul>
-        <div class="product-btns reveal"><a class="btn btn-line" href="#tools">Learn more</a><a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Pre-order</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
-      </div>
     </div>
   </section>
 
@@ -229,13 +205,28 @@
     </div>
   </section>
 
-  <!-- 3. Soto Phone：ここから紙に色がつく。背景は水彩の丘 -->
-  <section id="about" class="sec on-color" data-bg="1">
-    <div class="wrap card center">
-      <p class="eyebrow reveal" lang="en">Soto Phone</p>
-      <h2 class="reveal">Soto means<br />“outside” in Japanese.</h2>
-      <p class="body reveal">No social media or games, the apps that keep you glued to the screen. Notifications stop when you need to focus, and the more time you spend out, the less you pay for your phone.</p>
-      <p class="body reveal">A phone for heading outside the screen.</p>
+<!-- 3. Soto Phone：問題のあとに、解決として製品を見せる。ここから紙に色がつく。背景は水彩の丘 -->
+  <section id="phone" class="sec on-color product" data-bg="1">
+    <div class="wrap card product-in">
+      <figure class="ph ph-photo reveal">
+        <img class="ph-main" src="images/product/colors2.webp" alt="Soto Phone in charcoal, white and green" width="670" height="240" loading="lazy" decoding="async" />
+        <div class="ph-sub">
+          <img src="images/product/back.webp" alt="The green back" width="450" height="346" loading="lazy" decoding="async" />
+          <img src="images/product/logo.webp" alt="The 外 mark pressed into the back" width="476" height="346" loading="lazy" decoding="async" />
+        </div>
+        <figcaption>Concept image, in development</figcaption>
+      </figure>
+      <div class="product-copy">
+        <p class="eyebrow reveal" lang="en">Soto Phone</p>
+        <h2 class="reveal">Soto means<br />“outside” in Japanese.</h2>
+        <p class="body reveal">A phone for heading outside the screen.</p>
+        <ul class="feats reveal">
+          <li><b>No social media, no games.</b>Just what you need to head out.</li>
+          <li><b>A black-and-white screen.</b>Colour comes back only for photos.</li>
+          <li><b>Go out more, pay less.</b>Collect stamps at partner shops and your next phone bill goes down.</li>
+        </ul>
+        <div class="product-btns reveal"><a class="btn btn-line" href="#tools">Learn more</a><a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Pre-order</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      </div>
     </div>
   </section>
   <section class="day-panel" data-bg="2">
@@ -265,38 +256,16 @@
       <ol class="flow reveal"><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M30 78h100"/><path d="M48 74l6-14h52l6 14z"/><path d="M60 64h40"/><circle cx="118" cy="34" r="16"/><path d="M118 24v10l7 4"/><path d="M34 40c0-9 7-16 16-16-5 4-7 9-7 15 0 7 5 13 12 15-3 1-5 2-8 2-7 0-13-7-13-16z"/></svg></figure><span class="step-n" lang="en">01</span><strong>Focus</strong><span class="step-b">Set “90 minutes, vocab” and notifications stop until it ends.</span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M24 34l34-12 40 12 34-12v58l-34 12-40-12-34 12z"/><path d="M58 22v58M98 34v58"/><path d="M80 66s-14-14-14-24a14 14 0 0 1 28 0c0 10-14 24-14 24z"/><circle cx="80" cy="42" r="5"/></svg></figure><span class="step-n" lang="en">02</span><strong>Pick a place</strong><span class="step-b">Study cafés, bookshops, bathhouses. Partner shops show up on the map.</span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M26 34h108"/><path d="M34 34l6-12h80l6 12"/><path d="M38 34v54M122 34v54"/><path d="M48 34v28M68 34v28M88 34v28M108 34v28"/><path d="M48 62h60"/><path d="M72 76h16v12H72z"/><path d="M30 88h100"/></svg></figure><span class="step-n" lang="en">03</span><strong>Get a stamp</strong><span class="step-b">Tap at the shop. One a day, one card for every shop.</span></li><li><figure><svg viewBox="0 0 160 110" aria-hidden="true"><ellipse cx="62" cy="80" rx="22" ry="7"/><path d="M40 80v-9M84 80v-9"/><ellipse cx="62" cy="71" rx="22" ry="7"/><path d="M40 71v-9M84 71v-9"/><ellipse cx="62" cy="62" rx="22" ry="7"/><path d="M99 47h22"/><path d="M102 82c6-4 14-4 20 0"/></svg></figure><span class="step-n" lang="en">04</span><strong>Pay less</strong><span class="step-b">e.g. 5 visits a month: <b>−¥500</b></span></li></ol>
       <p class="calc reveal"><span class="nw">A ¥1,980 monthly plan</span> <span class="nw">→ 5 shop visits: <b>¥1,480</b></span></p>
       <div class="why reveal"><p class="why-q">Why does it get cheaper?</p><p>Partner shops pay for the discount. For a shop, it replaces advertising: they pay Soto only when a customer actually walks in.</p></div>
-      <div class="why reveal"><p class="why-q">For students and parents</p><p>Time finished in focus mode is recorded. Parents can set rewards based on that time. They see only the time, never what you were doing.</p></div>
       <p class="note reveal">Amounts are examples. Plans, partner shops and discounts are still being prepared.</p>
     </div>
   </section>
-  <!-- 7. Trial: real voices will be collected here -->
-  <section id="trial" class="sec on-color" data-bg="5">
-    <div class="wrap card center">
-      <p class="eyebrow reveal">Trial</p>
-      <h2 class="reveal">Now accepting<br />trial sign-ups.</h2>
-      <p class="body reveal">When the prototype is ready, a small group will use it for two weeks.</p>
-      <p class="body reveal">We'd especially like to hear from people who have tried to cut back, and found it didn't stick.</p>
-      <a class="btn btn-cta reveal" href="#signup" data-trial><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Apply for the trial</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a>
-    </div>
-  </section>
 
-  <!-- 8. Letter -->
-  <section id="letter" class="sec on-color" data-bg="5">
-    <div class="wrap card letter">
-      <p class="eyebrow reveal">Letter</p>
-      <h2 class="reveal">Why I'm building this.</h2>
-      <div class="letter-body reveal">
-        <p>I've never built a phone.<br />But I know what it's like to be controlled by one.</p>
-        <p>I'd look at my screen, and the day would be gone. I set screen time limits, and switched them off myself. I deleted apps, and installed them again. Willpower didn't work.</p>
-        <p>I think a lot of people feel the same way. So I decided to build a phone that makes you want to go outside, without relying on willpower.</p>
-        <p>I can't build it alone. I'll share the road to launch honestly, right here. I'd be glad if you followed along.</p>
-      </div>
-      <p class="sign reveal">Kazuma Sasaki, Founder, Soto Phone</p>
-    </div>
+  <section class="day-panel" data-bg="6">
+    <p class="day-cap reveal"><span class="day-time">Evening</span>A sunset, with no notifications.</p>
   </section>
 
   <!-- 8.5 よくある質問：開け閉めできる形にして、ページが混まないようにする -->
-  <section id="faq" class="sec on-color" data-bg="5" aria-label="Questions">
+  <section id="faq" class="sec on-color" data-bg="6" aria-label="Questions">
     <div class="wrap card">
       <p class="eyebrow reveal" lang="en">FAQ</p>
       <h2 class="reveal">Questions</h2>
@@ -306,13 +275,10 @@
         <details class="faq-item"><summary>Does it have LINE?</summary><p>We’ll decide how LINE works before launch and tell you. It’s essential for school and club groups in Japan, but it also pulls you back to the screen, so we’re testing a way to include it with notifications kept to a minimum.</p></details>
         <details class="faq-item"><summary>Will I need two phones?</summary><p>Soto works both ways. You can use Soto as your only phone, or carry Soto and leave your smartphone at home.</p></details>
         <details class="faq-item"><summary>What about carriers and SIM cards?</summary><p>You’ll be able to use the SIM from your current carrier. We’re also preparing a Soto plan that gets cheaper the more you go out.</p></details>
+        <details class="faq-item"><summary>For students and parents</summary><p>Time finished in focus mode is recorded. Parents can set rewards based on that time. They see only the time, never what you were doing.</p></details>
         <details class="faq-item" data-deposit hidden><summary>About the reservation deposit</summary><p>We plan to take a ¥3,000 deposit from people who have decided to buy at launch. It’s fully refundable at any time, and we keep deposits in a separate account from development funds. See <a href="reservation-en.html">the details</a>.</p></details>
       </div>
     </div>
-  </section>
-
-  <section class="day-panel" data-bg="6">
-    <p class="day-cap reveal"><span class="day-time">Evening</span>A sunset, with no notifications.</p>
   </section>
 
   <!-- 9. Pre-order -->
@@ -320,7 +286,8 @@
     <div class="wrap card">
       <p class="eyebrow reveal">Pre-order</p>
       <h2 class="reveal">Joy lives<br />outside the screen.</h2>
-      <p class="body reveal">We'll tell you first when it launches.<br />Prototype trials will be announced here first, too.</p>
+      <p class="body reveal">We’ll tell you first when it launches.<br />You can also sign up here to try a prototype for two weeks.</p>
+    <div class="letter-note reveal"><p>I’ve never built a phone. But I know what it’s like to be controlled by one. I set screen time limits, and switched them off myself. So I’m building a phone that makes you want to go outside, without relying on willpower.</p><p class="sign">Kazuma Sasaki, Founder, Soto Phone</p></div>
     <form class="reserve-form reveal" id="reserve-form" novalidate>
       <div class="field wide">
         <label for="email">Email</label>
@@ -358,7 +325,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=20261021b"></script>
-<script src="/nav.js?v=20261021b" defer></script>
+<script src="script.js?v=20261021e"></script>
+<script src="/nav.js?v=20261021e" defer></script>
 </body>
 </html>

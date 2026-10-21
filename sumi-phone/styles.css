@@ -133,7 +133,7 @@ br.sp { display: none; }
 /* ---------- セクションの共通 ---------- */
 .panel { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; padding: 120px clamp(16px, 6vw, 96px) 48px; }
 .hero-copy { position: relative; }
-.sec { padding: clamp(110px, 16vh, 180px) 0; }
+.sec { padding: clamp(72px, 10vh, 120px) 0; }
 .sec + .sec { border-top: 1px solid var(--paper-line); }
 .wrap { --gutter: clamp(20px, 6vw, 96px); width: min(100% - var(--gutter) * 2, 1120px); margin-inline: auto; }
 .center { text-align: center; display: flex; flex-direction: column; align-items: center; }
@@ -150,7 +150,7 @@ h2 .nw { white-space: nowrap; }
 /* ---------- 2. はじまり ---------- */
 /* 数字と言葉は中央に。絵は絵本のように、絵の下に一行ずつ */
 #problem { padding-top: 0; }
-.scenes-drawn { display: flex; flex-direction: column; align-items: center; gap: clamp(80px, 13vh, 150px); margin-top: clamp(110px, 16vh, 170px); }
+.scenes-drawn { display: flex; flex-direction: column; align-items: center; gap: clamp(64px, 10vh, 110px); margin-top: clamp(64px, 10vh, 110px); }
 .drawn { display: flex; flex-direction: column; align-items: center; gap: clamp(22px, 3vh, 36px); width: 100%; text-align: center; }
 .drawn > figure { width: min(100%, 520px); }
 .drawn > .swipe-art { width: min(100%, 420px); }
@@ -213,7 +213,7 @@ h2 .nw { white-space: nowrap; }
   .st-phone, .st-note { transition: none; }
   .st-note { transform: none; }
 }
-.year-bridge { min-height: 60vh; min-height: 60svh; display: flex; align-items: center; justify-content: center; }
+.year-bridge { min-height: 38vh; min-height: 38svh; display: flex; align-items: center; justify-content: center; }
 .year-bridge.reveal { opacity: 1; transform: none; }
 .bridge { font-family: var(--serif); font-size: clamp(20px, 2.2vw, 28px); letter-spacing: .14em; opacity: 0; transform: translateY(12px); transition: opacity 1.4s ease .4s, transform 1.4s ease .4s; }
 .year-bridge.is-in .bridge { opacity: 1; transform: none; }
@@ -326,11 +326,11 @@ h2 .nw { white-space: nowrap; }
 @keyframes fly { from { transform: translate(-80px, 320px); } to { transform: translate(2000px, 200px); } }
 
 /* 色がついてからのセクション：水彩の上に、紙を一枚のせて読みやすく */
-.on-color { padding: clamp(70px, 12vh, 140px) 0; }
+.on-color { padding: clamp(44px, 7vh, 80px) 0; }
 .sec.on-color + .sec.on-color, .day-panel + .sec, .sec + .day-panel { border-top: 0; }
 .card { background: rgba(244, 242, 236, .86); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 10px; padding: clamp(36px, 6vw, 80px); box-shadow: 0 20px 60px rgba(31, 30, 28, .08); }
 .card.center { text-align: center; }
-.day-panel { min-height: 76vh; min-height: 76svh; display: flex; align-items: flex-end; justify-content: center; padding: 0 20px clamp(80px, 16vh, 160px); }
+.day-panel { min-height: 48vh; min-height: 48svh; display: flex; align-items: flex-end; justify-content: center; padding: 0 20px clamp(80px, 16vh, 160px); }
 .day-cap { word-break: auto-phrase; text-wrap: balance; font-family: var(--serif); font-size: clamp(24px, 3.4vw, 44px); line-height: 1.6; text-align: center; letter-spacing: .08em; padding: .5em 1.2em; border-radius: 10px; background: rgba(244, 242, 236, .78); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
 .day-cap .day-time { display: block; font-family: var(--sans); font-size: 12px; letter-spacing: .4em; color: var(--paper-dim); }
 
@@ -461,6 +461,14 @@ h2 .nw { white-space: nowrap; }
 .product-in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
 .ph { margin: 0; text-align: center; }
 .ph-photo { width: min(100%, 440px); margin-inline: auto; }
+.card.product-in { max-width: 1120px; }
+.product .eyebrow { margin-bottom: 10px; }
+.product .product-copy h2 { margin-bottom: 14px; }
+.product .product-copy .body { margin-bottom: 26px; }
+/* 先行予約に添える、代表のひとこと */
+.letter-note { margin: 26px 0 30px; padding: 4px 0 4px 18px; border-left: 2px solid var(--paper-line); }
+.letter-note p { font-family: var(--serif); font-size: 15px; line-height: 2; color: var(--paper-ink); }
+.letter-note .sign { margin-top: 8px; font-family: var(--sans); font-size: 12px; color: var(--paper-dim); }
 .ph-photo img { display: block; width: 100%; height: auto; border-radius: 14px; }
 .ph-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
 .ph-sub img { aspect-ratio: 4 / 3; object-fit: cover; border-radius: 10px; }

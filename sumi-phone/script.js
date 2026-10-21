@@ -508,9 +508,9 @@
   bar.innerHTML = '<a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span></a>';
   bar.querySelector(".btn-label").textContent = EN ? "Join the pre-order list (free)" : "先行予約に登録する（無料）";
   document.body.append(bar);
-  // 出すのは、物語を読み終えて「Soto Phone とは」に来てから。それまでは物語の邪魔をしない。
+  // 出すのは、物語を読み終えて製品の節（#phone）に来てから。それまでは物語の邪魔をしない。
   // ほかの登録ボタン（「先行体験に申し込む」など）が見えているあいだも、黒いボタンが2つ並ばないように隠す
-  const about = document.getElementById("about");
+  const about = document.getElementById("phone");
   const seen = { hero: true, signup: false, before: true, other: 0 };
   const update = () => bar.classList.toggle("is-on", !seen.hero && !seen.signup && !seen.before && !seen.other && !hero.hidden);
   if (about) new IntersectionObserver((es) => es.forEach((e) => { seen.before = e.boundingClientRect.top > window.innerHeight * 0.5; update(); }), { threshold: [0, 0.25, 0.5, 1] }).observe(about);
@@ -580,13 +580,13 @@
   io.observe(form);
 })();
 
-/* 動画の道の続き：1枚目の動画の下から、紙の上を左右に曲がりながら、景色の入口（#about）まで下りていく道。
+/* 動画の道の続き：1枚目の動画の下から、紙の上を左右に曲がりながら、景色の入口（製品の節 #phone）まで下りていく道。
    道は文字の上を通らないよう、本文の外の余白を縦に走り、節と節のあいだの余白で反対側へ渡る。
    スクロールした分だけ、画面の下のほうまで描き進める。「動きを減らす」設定のときは、最初から全部描いておく */
 (() => {
   const svg = document.querySelector(".road");
   const main = document.getElementById("main");
-  const ids = ["top", "phone", "problem", "ink", "about"];
+  const ids = ["top", "problem", "ink", "phone"];
   const secs = ids.map((id) => document.getElementById(id));
   if (!svg || secs.some((s) => !s)) return;
   const video = document.querySelector(".hd-media");
@@ -657,7 +657,7 @@
     const W = document.documentElement.clientWidth;
     const mainTop = main.getBoundingClientRect().top + scrollY;
     const box = (el) => { const r = el.getBoundingClientRect(); return { t: r.top + scrollY - mainTop, b: r.bottom + scrollY - mainTop }; };
-    const [hero, phone, problem, ink, about] = secs.map(box);
+    const [hero, problem, ink, about] = secs.map(box);
     const wrapW = Math.min(W - 2 * Math.min(Math.max(20, W * 0.06), 96), 1120);
     const margin = (W - wrapW) / 2;
     const wide = margin >= 90;
@@ -671,8 +671,6 @@
     const pts = wide ? [
       [startX, startY],
       [W * 0.45, hero.b + 10],
-      [L + wob, phone.t + 70], [L - wob, (phone.t + phone.b) / 2 + 60], [L + wob, phone.b - 120],
-      [W * 0.5, phone.b + 30],
       [R - wob, problem.t + 260], [R + wob, (problem.t + problem.b) / 2], [R - wob, problem.b - 160],
       [W * 0.5, ink.t + 20],
       [L + wob, ink.t + 300], [L, ink.b - 200],
