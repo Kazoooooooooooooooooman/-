@@ -6,22 +6,22 @@
 
 | 順 | URL | メモ |
 |---|---|---|
-| 1 | https://sotophone.jp/column/minimal-phone.html | 前回、上限で押せなかった |
-| 2 | https://sotophone.jp/shop.html | 2026-10-15 公開 |
-| 3 | https://sotophone.jp/plans.html | 2026-10-15 公開 |
-| 4 | https://sotophone.jp/referral.html | 2026-10-15 公開 |
-| 5 | https://sotophone.jp/en.html | 押したかどうか記録がない。押しておく |
-| 6 | https://sotophone.jp/shop-en.html | 英語版 |
-| 7 | https://sotophone.jp/plans-en.html | 英語版 |
-| 8 | https://sotophone.jp/referral-en.html | 英語版 |
+| 1 | https://sotophone.jp/column/minimal-phone | 前回、上限で押せなかった |
+| 2 | https://sotophone.jp/shop | 2026-10-15 公開 |
+| 3 | https://sotophone.jp/plans | 2026-10-15 公開 |
+| 4 | https://sotophone.jp/referral | 2026-10-15 公開 |
+| 5 | https://sotophone.jp/en | 押したかどうか記録がない。押しておく |
+| 6 | https://sotophone.jp/shop-en | 英語版 |
+| 7 | https://sotophone.jp/plans-en | 英語版 |
+| 8 | https://sotophone.jp/referral-en | 英語版 |
 
 ## 下書きを公開したら押すもの
 
 | URL | 状態 |
 |---|---|
-| https://sotophone.jp/column/phone-before-bed.html | 下書き・数字の確認待ち |
-| https://sotophone.jp/column/two-phones.html | 下書き・数字の確認待ち |
-| https://sotophone.jp/column/without-line.html | 下書き・数字の確認待ち |
+| https://sotophone.jp/column/phone-before-bed | 下書き・数字の確認待ち |
+| https://sotophone.jp/column/two-phones | 下書き・数字の確認待ち |
+| https://sotophone.jp/column/without-line | 下書き・数字の確認待ち |
 
 ## 押さなくてよいもの
 

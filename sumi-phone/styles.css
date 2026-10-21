@@ -161,14 +161,15 @@ h2 .nw { white-space: nowrap; }
 .turn { margin: clamp(70px, 11vh, 120px) 0 0; font-size: clamp(30px, 4.6vw, 60px); }
 
 /* データから物語へのつなぎ：誰もが見たことのある「スクリーンタイム」の画面の中で見せる。
-   全国平均の2時間45分で見せる。1週間・1年が下に並び、一生の数字（7年半）は通知として上から届く。
+   全国平均の2時間45分で見せる。一生の数字（7年半）は通知として上から届く。
+   画面の中は、通知・昨日の時間・1週間のグラフだけにする（1週間・1年の一覧は、情報が多すぎるので外した）。
    数字を変えられる形も試したが、「7年半」と決まっている方が伝わる、という声で固定にした */
 .scale { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-block: clamp(90px, 12vh, 130px) clamp(40px, 6vh, 70px); }
 .scale.reveal { opacity: 1; transform: none; }
 .sc-ask { font-family: var(--serif); font-size: clamp(19px, 2vw, 26px); letter-spacing: .1em; margin-bottom: clamp(24px, 4vh, 44px); word-break: auto-phrase; text-wrap: balance; }
 .sc-src { font-size: 11px; line-height: 1.8; color: var(--paper-dim); margin-top: clamp(18px, 3vh, 28px); max-width: 560px; text-wrap: balance; }
 
-.st-phone { --red: #c4462a; width: clamp(272px, 22vw, 304px); aspect-ratio: 9 / 18.5; padding: 10px; border-radius: 46px; background: #1d1d1b; box-shadow: 0 30px 60px -28px rgba(31, 30, 28, .45), inset 0 0 0 1.5px #3a3a37; opacity: 0; transform: translateY(18px); transition: opacity .8s ease, transform .8s ease; }
+.st-phone { --red: #c4462a; width: clamp(272px, 22vw, 304px); aspect-ratio: 9 / 13; padding: 10px; border-radius: 46px; background: #1d1d1b; box-shadow: 0 30px 60px -28px rgba(31, 30, 28, .45), inset 0 0 0 1.5px #3a3a37; opacity: 0; transform: translateY(18px); transition: opacity .8s ease, transform .8s ease; }
 .scale.is-in .st-phone { opacity: 1; transform: none; }
 .st-screen { position: relative; height: 100%; overflow: hidden; border-radius: 37px; background: #f4f4f1; color: #1d1d1b; text-align: left; padding: 0 20px; font-family: var(--sans); letter-spacing: .01em; }
 .st-status { display: flex; justify-content: space-between; align-items: center; height: 40px; padding: 0 8px; font-family: var(--latin); font-size: 13px; font-weight: 600; }

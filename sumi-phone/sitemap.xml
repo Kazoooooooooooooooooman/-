@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url><loc>https://sotophone.jp/</loc><lastmod>2026-10-15</lastmod>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en.html" /></url>
-  <url><loc>https://sotophone.jp/en.html</loc><lastmod>2026-10-15</lastmod>
-    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en.html" /></url>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" /></url>
+  <url><loc>https://sotophone.jp/en</loc><lastmod>2026-10-15</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" /></url>
   <url><loc>https://sotophone.jp/column/</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/contact.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/contact-en.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/shop.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/shop-en.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/plans.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/plans-en.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/referral.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/referral-en.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/privacy.html</loc><lastmod>2026-10-14</lastmod></url>
-  <url><loc>https://sotophone.jp/privacy-en.html</loc><lastmod>2026-10-14</lastmod></url>
-  <url><loc>https://sotophone.jp/terms.html</loc><lastmod>2026-10-14</lastmod></url>
-  <url><loc>https://sotophone.jp/terms-en.html</loc><lastmod>2026-10-14</lastmod></url>
-  <url><loc>https://sotophone.jp/column/about-soto-phone.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/digital-detox.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/garakei-2026.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/kids-smartphone-age.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/minimal-phone.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/phone-addiction-check.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/phone-time-japan.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/screen-time.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/short-video.html</loc><lastmod>2026-10-15</lastmod></url>
-  <url><loc>https://sotophone.jp/column/study-phone.html</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/contact</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/contact-en</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/shop</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/shop-en</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/plans</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/plans-en</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/referral</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/referral-en</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/privacy</loc><lastmod>2026-10-14</lastmod></url>
+  <url><loc>https://sotophone.jp/privacy-en</loc><lastmod>2026-10-14</lastmod></url>
+  <url><loc>https://sotophone.jp/terms</loc><lastmod>2026-10-14</lastmod></url>
+  <url><loc>https://sotophone.jp/terms-en</loc><lastmod>2026-10-14</lastmod></url>
+  <url><loc>https://sotophone.jp/column/about-soto-phone</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/digital-detox</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/garakei-2026</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/kids-smartphone-age</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/minimal-phone</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/phone-addiction-check</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/phone-time-japan</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/screen-time</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/short-video</loc><lastmod>2026-10-15</lastmod></url>
+  <url><loc>https://sotophone.jp/column/study-phone</loc><lastmod>2026-10-15</lastmod></url>
 </urlset>

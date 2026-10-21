@@ -58,12 +58,12 @@ def head(title, desc, url, extra_ld):
   <nav class="nav-links" id="site-menu" aria-label="メインメニュー">
     <div class="nav-main">
       <a href="/#phone">製品</a>
-      <a href="/plans.html">プラン</a>
+      <a href="/plans">プラン</a>
       <a href="/column/" aria-current="page">コラム</a>
     </div>
     <div class="nav-util">
-      <a href="/contact.html">お問い合わせ</a>
-      <span class="nav-lang"><a href="/" hreflang="ja" lang="ja" aria-current="true">JA</a><span aria-hidden="true">/</span><a href="/en.html" hreflang="en" lang="en">EN</a></span>
+      <a href="/contact">お問い合わせ</a>
+      <span class="nav-lang"><a href="/" hreflang="ja" lang="ja" aria-current="true">JA</a><span aria-hidden="true">/</span><a href="/en" hreflang="en" lang="en">EN</a></span>
     </div>
   </nav>
   <a class="nav-cta" href="/?from=column#signup">先行予約</a>
@@ -73,8 +73,8 @@ def head(title, desc, url, extra_ld):
 
 FOOT = '''<footer class="footer">
   <div class="wrap">
-    <p class="footer-links footer-site"><a href="/#phone">製品</a><a href="/plans.html">プラン</a><a href="/shop.html">ショップ</a><a href="/referral.html">紹介</a><a href="/#letter">私たちについて</a><a href="/column/">コラム</a><a href="/login.html">ログイン</a></p>
-    <p class="footer-links"><a href="/column/">コラム</a><a href="/privacy.html">プライバシーポリシー</a><a href="/terms.html">利用規約・返金</a><a href="/privacy.html#cookies">Cookie</a><a href="/contact.html">お問い合わせ</a></p>
+    <p class="footer-links footer-site"><a href="/#phone">製品</a><a href="/plans">プラン</a><a href="/shop">ショップ</a><a href="/referral">紹介</a><a href="/#signup">私たちについて</a><a href="/column/">コラム</a><a href="/login">ログイン</a></p>
+    <p class="footer-links"><a href="/column/">コラム</a><a href="/privacy">プライバシーポリシー</a><a href="/terms">利用規約・返金</a><a href="/privacy#cookies">Cookie</a><a href="/contact">お問い合わせ</a></p>
     <p class="small">運営：Soto Phone（代表 佐々木 一真）／ <a href="/">sotophone.jp</a></p>
   </div>
 </footer>
@@ -151,7 +151,7 @@ def place_toc(body, toc):
     return toc + body
 
 def build_article(a, by_slug):
-    url = f"{SITE}/column/{a['slug']}.html"
+    url = f"{SITE}/column/{a['slug']}"
     body = render_charts(a["body"])
     # h2 に id を付けて、目次を作る
     toc = []
@@ -173,7 +173,7 @@ def build_article(a, by_slug):
     rel_html = ""
     if rel:
         rel_html = '<section class="article-related" aria-labelledby="rel-h"><h2 id="rel-h">あわせて読みたい</h2><ul>' + "".join(
-            f'<li><a href="/column/{r["slug"]}.html">{esc(r.get("h1") or r["title"])}</a></li>' for r in rel) + "</ul></section>"
+            f'<li><a href="/column/{r["slug"]}">{esc(r.get("h1") or r["title"])}</a></li>' for r in rel) + "</ul></section>"
     ld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Article", "headline": a.get("h1") or a["title"], "description": a["description"],
          "datePublished": a["published"], "dateModified": a.get("updated", a["published"]),
@@ -212,7 +212,7 @@ def build_index(arts):
     url = f"{SITE}/column/"
     ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "コラム｜Soto Phone", "url": url, "inLanguage": "ja"}
     items = "" if arts else '<li class="col-item"><p class="col-desc" style="padding:24px 4px">最初の記事を準備しています。</p></li>'
-    items += "".join(f'''<li class="col-item"><a href="/column/{a["slug"]}.html"><p class="col-date"><time datetime="{a["published"]}">{jdate(a["published"])}</time></p><h2>{esc(a.get("h1") or a["title"])}</h2><p class="col-desc">{esc(a["description"])}</p></a></li>''' for a in arts)
+    items += "".join(f'''<li class="col-item"><a href="/column/{a["slug"]}"><p class="col-date"><time datetime="{a["published"]}">{jdate(a["published"])}</time></p><h2>{esc(a.get("h1") or a["title"])}</h2><p class="col-desc">{esc(a["description"])}</p></a></li>''' for a in arts)
     page = head("コラム｜Soto Phone", "スマホとの付き合い方、集中のしかた、画面の外で過ごす時間について。SNS もゲームもない携帯電話を作る Soto Phone のコラムです。", url, ld) + f'''<main id="main" class="legal column-index">
   <div class="wrap">
     <h1>コラム</h1>
@@ -224,14 +224,14 @@ def build_index(arts):
     (OUT / "index.html").write_text(page)
 
 def build_sitemap(arts):
-    base = [("/", "2026-10-15", True), ("/en.html", "2026-10-15", True), ("/column/", max([a.get("updated", a["published"]) for a in arts] or ["2026-10-15"]), False),
-            ("/contact.html", "2026-10-15", False), ("/contact-en.html", "2026-10-15", False),
-            ("/shop.html", "2026-10-15", False), ("/shop-en.html", "2026-10-15", False), ("/plans.html", "2026-10-15", False), ("/plans-en.html", "2026-10-15", False), ("/referral.html", "2026-10-15", False), ("/referral-en.html", "2026-10-15", False),
-            ("/privacy.html", "2026-10-14", False), ("/privacy-en.html", "2026-10-14", False),
-            ("/terms.html", "2026-10-14", False), ("/terms-en.html", "2026-10-14", False)]
-    alt = '\n    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en.html" />'
+    base = [("/", "2026-10-15", True), ("/en", "2026-10-15", True), ("/column/", max([a.get("updated", a["published"]) for a in arts] or ["2026-10-15"]), False),
+            ("/contact", "2026-10-15", False), ("/contact-en", "2026-10-15", False),
+            ("/shop", "2026-10-15", False), ("/shop-en", "2026-10-15", False), ("/plans", "2026-10-15", False), ("/plans-en", "2026-10-15", False), ("/referral", "2026-10-15", False), ("/referral-en", "2026-10-15", False),
+            ("/privacy", "2026-10-14", False), ("/privacy-en", "2026-10-14", False),
+            ("/terms", "2026-10-14", False), ("/terms-en", "2026-10-14", False)]
+    alt = '\n    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" />'
     rows = [f'  <url><loc>{SITE}{p}</loc><lastmod>{d}</lastmod>{alt if a else ""}</url>' for p, d, a in base]
-    rows += [f'  <url><loc>{SITE}/column/{a["slug"]}.html</loc><lastmod>{a.get("updated", a["published"])}</lastmod></url>' for a in arts]
+    rows += [f'  <url><loc>{SITE}/column/{a["slug"]}</loc><lastmod>{a.get("updated", a["published"])}</lastmod></url>' for a in arts]
     (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(rows) + "\n</urlset>\n")
 
 if __name__ == "__main__":

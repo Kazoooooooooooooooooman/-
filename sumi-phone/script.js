@@ -264,7 +264,7 @@
   // 中身は「済んだこと」「次に起きること」と、友だちに教える2つのボタン、アドレスを直すリンクだけ。
   // 友だちに送るリンクには紹介コードが付き、そこから登録した人の行に「紹介」として残る
   function doneCard(data) {
-    const url = "https://sotophone.jp/" + (EN ? "en.html" : "") + "?r=" + myCode();
+    const url = "https://sotophone.jp/" + (EN ? "en" : "") + "?r=" + myCode();
     const text = EN ? "A phone that makes you want to go outside. Soto Phone is taking pre-orders." : "スマホを置いて、外に出たくなる携帯。Soto Phone の先行予約が始まっています。";
     const card = document.createElement("div");
     card.className = "done";
@@ -725,8 +725,6 @@
   const $ = (id) => document.getElementById(id);
   const hm = (m) => { const h = Math.floor(m / 60), r = m % 60; return EN ? (h ? `${h}h${r ? ` ${r}m` : ""}` : `${r}m`) : (h ? `${h}時間${r ? `${r}分` : ""}` : `${r}分`); };
   const unit = (n, u) => (EN ? `${n} ${n === "1" ? u.replace(/s$/, "") : u}` : `${n}${u}`);
-  const week = (m) => { const h = m * 7 / 60; return h < 1 ? unit(String(Math.round(m * 7)), EN ? "min" : "分") : unit(String(Math.round(h)), EN ? "hours" : "時間"); };
-  const year = (m) => { const d = m * 365 / 60 / 24; return d < 1 ? unit(String(Math.round(d * 24)), EN ? "hours" : "時間") : unit(String(Math.round(d)), EN ? "days" : "日"); };
   const life = (m) => {
     const y = m * 365 / 60 / 24 * 65 / 365;
     if (y < 1) return unit(String(Math.max(1, Math.round(y * 12))), EN ? "months" : "か月");
@@ -741,8 +739,6 @@
   let m = 165;
   const render = () => {
     $("st-day").textContent = hm(m);
-    $("st-week").textContent = week(m);
-    $("st-year").textContent = year(m);
     $("st-life").textContent = life(m);
     const max = Math.max(m * 1.25, 240);
     bars.forEach((b, i) => { b.style.height = `${(m * F[i] / max) * 100}%`; });
