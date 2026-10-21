@@ -581,10 +581,23 @@ h2 .nw { white-space: nowrap; }
 .reserve-form + .done { grid-column: 1 / -1; background: rgba(255, 255, 255, .6); border-color: var(--paper-line); max-width: 520px; text-align: left; }
 .done-head { display: flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--serif); font-size: 18px; letter-spacing: .08em; line-height: 1.4; }
 .done-head svg { flex: none; width: 18px; height: 18px; fill: none; stroke: #e0502e; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.done-num { display: flex; flex-direction: column; align-items: center; gap: 2px; margin: 14px 0 4px; }
-.reserve-form + .done .done-num { align-items: flex-start; }
-.done-num-k { font-size: 11px; letter-spacing: .2em; color: var(--paper-dim); }
-.done-num-v { font-family: var(--serif); font-size: clamp(30px, 4vw, 38px); letter-spacing: .06em; line-height: 1.2; }
+/* 番号のきっぷ：左に川の絵（紙の色に薄く混ぜた画像）、右に切り取り線と番号 */
+.ticket { --tk: #f3ecdc; --tk-ink: #7a6f58; --stub: 92px; position: relative; display: flex; width: 100%; max-width: 360px; min-height: 160px; margin: 16px auto 8px; border-radius: 14px; background: var(--tk); overflow: hidden; text-align: left; }
+.reserve-form + .done .ticket { margin-left: 0; }
+/* 切り取り線の上下の半円の切り欠き。どんな背景の上でも透けるように、マスクでくり抜く */
+.ticket { -webkit-mask: radial-gradient(circle at calc(100% - var(--stub) - 1px) 0, transparent 10px, #000 10.5px) top / 100% 51% no-repeat, radial-gradient(circle at calc(100% - var(--stub) - 1px) 100%, transparent 10px, #000 10.5px) bottom / 100% 51% no-repeat; mask: radial-gradient(circle at calc(100% - var(--stub) - 1px) 0, transparent 10px, #000 10.5px) top / 100% 51% no-repeat, radial-gradient(circle at calc(100% - var(--stub) - 1px) 100%, transparent 10px, #000 10.5px) bottom / 100% 51% no-repeat; }
+.tk-main { flex: 1; display: flex; flex-direction: column; justify-content: space-between; gap: 10px; padding: 16px 18px; background: url(images/ticket-river.jpg) center / cover no-repeat; border-right: 2px dashed rgba(31, 30, 28, .22); }
+.tk-brand { font: 500 10px var(--latin); letter-spacing: .22em; color: var(--tk-ink); }
+.tk-title { font-family: var(--serif); font-size: clamp(17px, 5vw, 21px); font-weight: 600; letter-spacing: .1em; white-space: nowrap; line-height: 1.3; color: var(--paper-ink, #1f1e1c); }
+.tk-sub { margin-top: 2px; font-size: 10.5px; line-height: 1.6; letter-spacing: .06em; color: var(--tk-ink); }
+.tk-date { min-height: 1em; font: 500 10.5px var(--latin); letter-spacing: .06em; color: var(--tk-ink); }
+.tk-stub { flex: none; width: var(--stub); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.tk-k { font: 500 10px var(--latin); letter-spacing: .2em; color: var(--tk-ink); }
+.tk-v { font-family: var(--serif); font-size: 30px; font-weight: 600; line-height: 1.15; color: var(--paper-ink, #1f1e1c); }
+.tk-k2 { font-size: 10.5px; color: var(--tk-ink); }
+@media (max-width: 420px) { .ticket { --stub: 70px; min-height: 140px; } .tk-main { padding: 14px 14px; } .tk-v { font-size: 25px; } }
+.tk-perk { max-width: 360px; margin: 6px auto 0; font-size: 11.5px; line-height: 1.8; letter-spacing: .03em; color: var(--paper-dim); }
+.reserve-form + .done .tk-perk { margin-left: 0; }
 .done-body { margin-top: 8px; font-size: 13px; letter-spacing: .04em; line-height: 1.8; color: var(--paper-dim); overflow-wrap: anywhere; }
 .done-sub { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center; gap: 0 12px; margin-top: 2px; font-size: 12px; letter-spacing: .02em; line-height: 1.8; color: var(--paper-dim); overflow-wrap: anywhere; }
 .reserve-form + .done .done-sub { justify-content: flex-start; }

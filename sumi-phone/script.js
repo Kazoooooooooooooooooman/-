@@ -162,6 +162,7 @@
   const MAIL_KEY = "soto-mail";
   // 登録した順の番号（No.007 のように見せる）。次に開いたときのカードにも出す
   const NUM_KEY = "soto-number";
+  const DAY_KEY = "soto-day"; // 登録した日（きっぷの「発行」の日付）
   const store_ = {
     get: (k) => { try { return localStorage.getItem(k); } catch (_) { return null; } },
     set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) { /* 覚えられなくても登録はできる */ } },
@@ -249,7 +250,7 @@
 
   // 登録済みの表示を消して、もう一度入力できる状態に戻す（前の登録はスプレッドシートに残る）
   function reopen() {
-    try { localStorage.removeItem(SENT_KEY); localStorage.removeItem(MAIL_KEY); localStorage.removeItem(NUM_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
+    try { localStorage.removeItem(SENT_KEY); localStorage.removeItem(MAIL_KEY); localStorage.removeItem(NUM_KEY); localStorage.removeItem(DAY_KEY); } catch (_) { /* 覚えていなくても入力はできる */ }
     forms.forEach(({ form, msg }) => {
       if (form.nextElementSibling && form.nextElementSibling.classList.contains("done")) form.nextElementSibling.remove();
       form.hidden = false;
@@ -275,16 +276,28 @@
     head.className = "done-head";
     head.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
     head.append(EN ? "You’re on the list." : "登録しました。");
-    // 登録した順の番号。ある人にだけ、見出しのすぐ下に大きく出す
+    // 登録した順の番号。ある人にだけ、見出しのすぐ下に「先行予約券」のきっぷとして出す
     const num = Number(store_.get(NUM_KEY)) || 0;
-    const badge = document.createElement("p");
-    badge.className = "done-num";
+    const badge = document.createElement("div");
+    badge.className = "ticket";
     if (num) {
-      const label = "No." + String(num).padStart(3, "0");
-      badge.innerHTML = '<span class="done-num-k"></span><span class="done-num-v"></span>';
-      badge.querySelector(".done-num-k").textContent = EN ? "Your number" : "あなたの番号";
-      badge.querySelector(".done-num-v").textContent = label;
+      const day = store_.get(DAY_KEY) || "";
+      badge.setAttribute("role", "img");
+      badge.setAttribute("aria-label", (EN ? "Pre-order ticket, number " : "先行予約券、番号 ") + num);
+      badge.innerHTML = '<div class="tk-main"><p class="tk-brand">SOTO PHONE</p><div><p class="tk-title"></p><p class="tk-sub"></p></div><p class="tk-date"></p></div>'
+        + '<div class="tk-stub"><p class="tk-k">NO.</p><p class="tk-v"></p><p class="tk-k2"></p></div>';
+      badge.querySelector(".tk-title").textContent = EN ? "Pre-order ticket" : "先行予約券";
+      badge.querySelector(".tk-sub").textContent = EN ? "First to hear when it launches." : "発売のお知らせを、いちばん先に。";
+      badge.querySelector(".tk-date").textContent = day ? day + (EN ? " issued" : " 発行") : "";
+      badge.querySelector(".tk-v").textContent = String(num).padStart(3, "0");
+      badge.querySelector(".tk-k2").textContent = EN ? "Pre-order" : "先行予約";
     }
+    // 番号の特典。早い番号ほど先に案内し、No.300 までは希望で本体に番号を刻める
+    const perk = document.createElement("p");
+    perk.className = "tk-perk";
+    perk.textContent = EN
+      ? "The earlier your number, the sooner we’ll invite you to buy. Numbers up to No.300 can be engraved on the phone if you’d like."
+      : "番号が早いほど、発売のとき先にご案内します。No.300 までの方は、ご希望で本体に番号を刻めます。";
     // 次に起きること。その下の行に、送り先のアドレスと「直す」（打ち間違いに、その場で気づけるように）
     const body = document.createElement("p");
     body.className = "done-body";
@@ -324,7 +337,7 @@
     line.textContent = EN ? "Send on LINE" : "LINE で送る";
     row.append(share, line);
     card.append(head);
-    if (num) card.append(badge);
+    if (num) card.append(badge, perk);
     card.append(body, sub, row);
     return card;
   }
@@ -448,6 +461,7 @@
         // 前に登録していた人は、そのときの紹介コードを使い続ける
         if (out.code) store_.set(CODE_KEY, out.code);
         if (out.number) store_.set(NUM_KEY, String(out.number));
+        if (out.number && !store_.get(DAY_KEY)) { const d = new Date(); store_.set(DAY_KEY, d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0")); }
         // ブラウザには「登録済み」の印と紹介コードだけを残す（メールアドレスは残さない）
         store_.set(SENT_KEY, "1");
         store_.set(MAIL_KEY, data.email);

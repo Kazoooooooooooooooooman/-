@@ -310,6 +310,7 @@ function mailJa(trial, link, number) {
     "Soto Phone の先行予約にご登録いただき、ありがとうございます。",
     "",
     number ? "あなたの番号は " + numberLabel(number) + " です。" + number + "番目に登録してくださった方です。" : null,
+    number ? "番号が早いほど、発売のとき先にご案内します。No.300 までの方は、ご希望で本体に番号を刻めます。" : null,
     number ? "" : null,
     "発売が決まったら、このメールアドレスにいちばん先にお知らせします。",
     trial ? "試作機の先行体験の募集が始まったときも、こちらからご案内します。" : "",
@@ -338,6 +339,7 @@ function mailEn(trial, link, number) {
     "Thank you for joining the Soto Phone pre-order list.",
     "",
     number ? "Your number is " + numberLabel(number) + ". You were person number " + number + " to sign up." : null,
+    number ? "The earlier your number, the sooner we'll invite you to buy. Numbers up to No.300 can be engraved on the phone if you'd like." : null,
     number ? "" : null,
     "We'll email this address first when it launches.",
     trial ? "We'll also let you know here when prototype trials open." : "",
@@ -362,12 +364,28 @@ function mailEn(trial, link, number) {
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする
-// 番号があるときは、本文の上に番号だけの小さなカードを置く
+// 番号があるときは、本文の上に「先行予約券」のきっぷを置く（サイトの登録済みカードと同じ見た目）。
+// メールの画面では細かい CSS が効かないことが多いので、表（table）で組み、背景の絵は紙の色に混ぜ済みの画像を使う
 function toHtml(lines, number, cardLabel) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   // 長い URL は、押せるリンクにする
   const link = (s) => esc(s).replace(/https?:\/\/[^\s<]+/g, (u) => '<a href="' + u + '" style="color:#1f1e1c">' + u + "</a>");
   const body = lines.map((l) => (l === "" ? "<br>" : link(l) + "<br>")).join("");
-  const card = number ? '<div style="margin:0 0 24px;padding:22px 24px;border:1px solid #e2dfd8;border-radius:16px;background:#f6f5f1;text-align:center"><div style="font-size:12px;letter-spacing:.2em;color:#8a8984">SOTO PHONE · ' + esc(cardLabel) + '</div><div style="margin-top:6px;font-family:Georgia,serif;font-size:40px;letter-spacing:.06em;color:#1f1e1c">' + numberLabel(number) + "</div></div>" : "";
+  const en = cardLabel === "Your number";
+  const d = new Date();
+  const day = d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0");
+  const ink = "#7a6f58";
+  const card = number
+    ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:440px;margin:0 0 24px;border-collapse:separate;border-radius:14px;background:#f3ecdc"><tr>'
+      + '<td background="' + SITE_URL + 'images/ticket-river.jpg" bgcolor="#f3ecdc" style="padding:16px 18px;border-radius:14px 0 0 14px;background:#f3ecdc url(' + SITE_URL + 'images/ticket-river.jpg) center/cover no-repeat;border-right:2px dashed #cbbf9f;vertical-align:top">'
+      + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.22em;color:' + ink + '">SOTO PHONE</div>'
+      + '<div style="margin-top:18px;font-family:\'Hiragino Mincho ProN\',\'Yu Mincho\',Georgia,serif;font-size:21px;font-weight:600;letter-spacing:.12em;color:#1f1e1c">' + (en ? "Pre-order ticket" : "先行予約券") + "</div>"
+      + '<div style="margin-top:2px;font-size:11px;color:' + ink + '">' + (en ? "First to hear when it launches." : "発売のお知らせを、いちばん先に。") + "</div>"
+      + '<div style="margin-top:18px;font:500 10.5px Helvetica,Arial,sans-serif;color:' + ink + '">' + day + (en ? " issued" : " 発行") + "</div></td>"
+      + '<td width="92" align="center" style="width:92px;padding:12px 4px;vertical-align:middle;text-align:center">'
+      + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.2em;color:' + ink + '">NO.</div>'
+      + '<div style="font-family:Georgia,serif;font-size:30px;font-weight:600;line-height:1.2;color:#1f1e1c">' + String(number).padStart(3, "0") + "</div>"
+      + '<div style="font-size:10.5px;color:' + ink + '">' + (en ? "Pre-order" : "先行予約") + "</div></td></tr></table>"
+    : "";
   return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;color:#1f1e1c;max-width:560px">' + card + body + "</div>";
 }
