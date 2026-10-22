@@ -2,7 +2,7 @@
 
 > Soto Phone（ソトフォン）は、SNS・ゲーム・動画アプリ・アプリストア・ブラウザを入れない、日本向けの携帯電話（ミニマルフォン）です。電話・SMS・地図・乗換・カメラ・音楽・防災速報など、出かけるのに必要な機能だけを入れています。日本の電波と技適に合わせて開発中で、本体は5〜6万円台の予定。先行予約（無料）を sotophone.jp で受け付けています。運営は Soto Phone（代表 佐々木 一真、東京都港区）。
 
-公式サイトは https://sotophone.jp/ だけです。テックニュースアプリ「Sotophone - Tech News」とは関係ありません。
+公式サイトは https://sotophone.jp/ だけです。公式 Instagram は https://www.instagram.com/sotophone.jp/ です。テックニュースアプリ「Sotophone - Tech News」とは関係ありません。
 
 ## 主なページ
 - [トップ・先行予約](https://sotophone.jp/)
