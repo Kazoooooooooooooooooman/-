@@ -2,6 +2,9 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8" />
+<!-- 1枚目の見せ方を比べるためのパターン（a・b・c）。?h=b のように URL で選べる。選ばれていない人には a〜c のどれかを決めて覚えておく。
+     検索エンジンのロボットには、いつも a を見せる。o（最初の版）と p（お誘いの2行の版）は、URL で選んだときだけ出す -->
+<script>(function(){var d=document.documentElement,h="a",src="auto";try{var m=location.search.match(/[?&]h=([abcop])\b/);if(m){h=m[1];src="url"}else if(!/bot|crawl|spider|slurp|lighthouse|headless|preview/i.test(navigator.userAgent)){h=localStorage.getItem("soto-h")||"abc".charAt(Math.floor(Math.random()*3));if("abc".indexOf(h)<0)h="a";localStorage.setItem("soto-h",h)}}catch(e){}d.setAttribute("data-h",h);d.setAttribute("data-hsrc",src)})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Soto Phone（ソトフォン）｜SNSもゲームもない、日本で使えるミニマルフォン</title>
 <meta name="description" content="楽しさは、画面の外に。Soto Phone は、スマホから離れてできた時間を、大事な人やスポーツ、新しい挑戦に向けるための携帯電話です。電話・地図・カメラなど必要なものだけを入れ、外で過ごすほど携帯代が安くなります。先行予約は無料です。" />
@@ -92,7 +95,10 @@
         <span class="hd-phone" aria-hidden="true">Phone</span>
       </div>
       <div class="hd-message">
+        <p class="hd-motto" lang="en">Step Out, Turn Off.</p>
         <h1 class="hd-copy">楽しさは、画面の外に。</h1>
+        <p class="hd-sub">SNS もゲームもない携帯電話</p>
+        <p class="hd-invite">いま、試作機をつくっています。<br />できあがったら、いちばん最初に見せます。</p>
       </div>
       </div>
       <div class="hd-cta">
@@ -107,6 +113,16 @@
       <a class="hd-more" href="#phone" aria-label="Soto Phone を見る"><span class="hd-more-label">Soto Phone を見る</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
     </div>
   </section>
+  <!-- パターンごとの言葉（a は上に書いたまま） -->
+  <script>(function(){var h=document.documentElement.getAttribute("data-h");var hook="外で過ごすほど、<br />携帯代が安くなる。";var T={
+    b:{copy:hook,btn:"完成品を最初に見る"},
+    c:{copy:hook,btn:"料金を最初に知る"},
+    o:{eyebrow:"SNS もゲームもない、携帯電話",btn:"先行予約に登録",fine:'無料です。<br class="sp" /><a href="privacy">プライバシーポリシー</a>に同意のうえ、ご登録ください。',nav:"先行予約"},
+    p:{eyebrow:"SNS もゲームもない、携帯電話",btn:"最初に見る",ph:"メールアドレス（送り先）",fine:'無料です。<br class="sp" />登録で<a href="privacy">プライバシーポリシー</a>に同意したものとします',nav:"先行予約"}}[h];
+    if(!T)return;var q=function(s){return document.querySelector(s)};
+    if(T.copy)q(".hero-door .hd-copy").innerHTML=T.copy;if(T.eyebrow)q(".hd-eyebrow").textContent=T.eyebrow;
+    if(T.btn)q("#hero-form .btn-label").textContent=T.btn;if(T.ph)q("#hero-email").placeholder=T.ph;
+    if(T.fine)q(".hero-door .hd-fine").innerHTML=T.fine;if(T.nav)q(".nav-cta").textContent=T.nav;})();</script>
 
   <!-- 2. はじまり：画面の中で過ぎていく一日 -->
   <section id="problem" class="sec" data-bg="0">
