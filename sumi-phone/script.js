@@ -193,7 +193,7 @@
   })();
   // きっぷの言葉は、押したボタンの約束に合わせる（「先行予約」と書いてあるのは、最初の版 o だけ）
   function ticketWords() {
-    const h = (heroVariant() || "a").replace("-url", "");
+    const h = (heroVariant() || "a").split("-")[0];
     if (EN) return { title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone" };
     if (h === "o") return { title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約" };
     if (h === "c") return { title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone" };
@@ -203,7 +203,8 @@
   function heroVariant() {
     const d = document.documentElement, h = d.getAttribute("data-h");
     if (!h || EN) return "";
-    return h + (d.getAttribute("data-hsrc") === "url" ? "-url" : "");
+    const src = d.getAttribute("data-hsrc");
+    return h + (src === "url" || src === "ad" ? "-" + src : ""); // 広告（?from=ig_ad など）から来た人は b-ad、URL で選んで見た人は b-url
   }
   // 1枚目のパターンごとに、見た人の数を数える（同じブラウザでは1日1回だけ）
   (() => {
