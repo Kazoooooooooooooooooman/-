@@ -275,7 +275,7 @@
     const head = document.createElement("p");
     head.className = "done-head";
     head.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
-    head.append(EN ? "You’re on the list." : "登録しました。");
+    head.append(EN ? "You’re in." : "受け付けました。");
     // 登録した順の番号。ある人にだけ、見出しのすぐ下に「先行予約券」のきっぷとして出す
     const num = Number(store_.get(NUM_KEY)) || 0;
     const badge = document.createElement("div");
@@ -287,7 +287,7 @@
       badge.innerHTML = '<div class="tk-main"><p class="tk-brand">SOTO PHONE</p><div><p class="tk-title"></p><p class="tk-sub"></p></div><p class="tk-date"></p></div>'
         + '<div class="tk-stub"><p class="tk-k">NO.</p><p class="tk-v"></p><p class="tk-k2"></p></div>';
       badge.querySelector(".tk-title").textContent = EN ? "Pre-order ticket" : "先行予約券";
-      badge.querySelector(".tk-sub").textContent = EN ? "First to hear when it launches." : "発売のお知らせを、いちばん先に。";
+      badge.querySelector(".tk-sub").textContent = EN ? "See the finished phone first." : "完成品を、いちばん先に。";
       badge.querySelector(".tk-date").textContent = day ? day + (EN ? " issued" : " 発行") : "";
       badge.querySelector(".tk-v").textContent = String(num).padStart(3, "0");
       badge.querySelector(".tk-k2").textContent = EN ? "Pre-order" : "先行予約";
@@ -301,7 +301,7 @@
     // 次に起きること。その下の行に、送り先のアドレスと「直す」（打ち間違いに、その場で気づけるように）
     const body = document.createElement("p");
     body.className = "done-body";
-    body.textContent = EN ? "We’ll email you when it launches." : "発売が決まったら、メールでお知らせします。";
+    body.textContent = EN ? "We’ll email you the development letter and launch news." : "開発レターと発売のお知らせを、メールでお送りします。";
     const sub = document.createElement("p");
     sub.className = "done-sub";
     const shown = data.email || data.masked;
@@ -535,7 +535,7 @@
   const bar = document.createElement("div");
   bar.className = "sticky-cta";
   bar.innerHTML = '<a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span></a>';
-  bar.querySelector(".btn-label").textContent = EN ? "Join the pre-order list (free)" : "先行予約に登録する（無料）";
+  bar.querySelector(".btn-label").textContent = EN ? "See it first (free)" : "完成品を最初に見る（無料）";
   document.body.append(bar);
   // 出すのは、物語を読み終えて製品の節（#phone）に来てから。それまでは物語の邪魔をしない。
   // ほかの登録ボタン（「先行体験に申し込む」など）が見えているあいだも、黒いボタンが2つ並ばないように隠す

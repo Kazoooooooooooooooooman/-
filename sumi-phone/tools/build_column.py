@@ -66,7 +66,7 @@ def head(title, desc, url, extra_ld):
       <span class="nav-lang"><a href="/" hreflang="ja" lang="ja" aria-current="true">JA</a><span aria-hidden="true">/</span><a href="/en" hreflang="en" lang="en">EN</a></span>
     </div>
   </nav>
-  <a class="nav-cta" href="/?from=column#signup">先行予約</a>
+  <a class="nav-cta" href="/?from=column#signup">最初に見る</a>
   <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="メニュー" data-close="メニューを閉じる"><span></span><span></span></button>
 </header>
 '''
