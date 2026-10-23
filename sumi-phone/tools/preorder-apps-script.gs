@@ -59,6 +59,9 @@ function getSheet() {
     sheet.appendRow(HEADERS);
     sheet.setFrozenRows(1);
   } else {
+    // 列が足りないシート（使わない列を消したものなど）には、先に列を足す。足りないと書き込みが失敗する
+    const need = HEADERS.length - sheet.getMaxColumns();
+    if (need > 0) sheet.insertColumnsAfter(sheet.getMaxColumns(), need);
     // 前のバージョンで作ったシートには、あとから足した列の見出しがないので、足す
     const head = sheet.getRange(1, 1, 1, HEADERS.length).getValues()[0];
     head.forEach((v, i) => { if (v === "") sheet.getRange(1, i + 1).setValue(HEADERS[i]); });
