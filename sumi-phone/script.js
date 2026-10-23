@@ -191,6 +191,14 @@
     }
     return first;
   })();
+  // きっぷの言葉は、押したボタンの約束に合わせる（「先行予約」と書いてあるのは、最初の版 o だけ）
+  function ticketWords() {
+    const h = (heroVariant() || "a").replace("-url", "");
+    if (EN) return { title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone" };
+    if (h === "o") return { title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約" };
+    if (h === "c") return { title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone" };
+    return { title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone" };
+  }
   // 1枚目のパターン（index.html の先頭で決めて、html の data-h に入れてある）
   function heroVariant() {
     const d = document.documentElement, h = d.getAttribute("data-h");
@@ -301,14 +309,15 @@
     if (num) {
       const day = store_.get(DAY_KEY) || "";
       badge.setAttribute("role", "img");
-      badge.setAttribute("aria-label", (EN ? "Pre-order ticket, number " : "先行予約券、番号 ") + num);
+      const w = ticketWords();
+      badge.setAttribute("aria-label", w.title + (EN ? ", number " : "、番号 ") + num);
       badge.innerHTML = '<div class="tk-main"><p class="tk-brand">SOTO PHONE</p><div><p class="tk-title"></p><p class="tk-sub"></p></div><p class="tk-date"></p></div>'
         + '<div class="tk-stub"><p class="tk-k">NO.</p><p class="tk-v"></p><p class="tk-k2"></p></div>';
-      badge.querySelector(".tk-title").textContent = EN ? "Pre-order ticket" : "先行予約券";
-      badge.querySelector(".tk-sub").textContent = EN ? "See the finished phone first." : "完成品を、いちばん先に。";
+      badge.querySelector(".tk-title").textContent = w.title;
+      badge.querySelector(".tk-sub").textContent = w.sub;
       badge.querySelector(".tk-date").textContent = day ? day + (EN ? " issued" : " 発行") : "";
       badge.querySelector(".tk-v").textContent = String(num).padStart(3, "0");
-      badge.querySelector(".tk-k2").textContent = EN ? "Pre-order" : "先行予約";
+      badge.querySelector(".tk-k2").textContent = w.stub;
     }
     // 番号の特典。早い番号ほど先に案内、月1回の開発レター、No.300 までは希望で番号刻印、ポップアップへの先行入場
     const perk = document.createElement("p");

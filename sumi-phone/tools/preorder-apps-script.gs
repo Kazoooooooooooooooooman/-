@@ -110,7 +110,7 @@ function doPost(e) {
     // 確認メールは、まだ送っていない人にだけ送る
     const sentAt = sheet.getRange(rowIndex, MAIL_COL).getValue();
     if (!sentAt && canSendNow()) {
-      sendConfirmation(email, lang, trial, number);
+      sendConfirmation(email, lang, trial, number, variantTag(data.variant));
       sheet.getRange(rowIndex, MAIL_COL).setValue(new Date());
     }
     return reply({ ok: true, code: code, number: number });
@@ -303,7 +303,7 @@ function sendPendingConfirmations() {
     if (!email || sentAt || stopped || !canSendNow()) return;
     let number = Number(r[NUM_COL - 1]) || 0;
     if (!number) { number = nextNumber(sheet); sheet.getRange(i + 2, NUM_COL).setValue(number); }
-    sendConfirmation(email, lang, trial, number);
+    sendConfirmation(email, lang, trial, number, String(r[FORM_COL - 1] || "").split("・")[1] || "");
     sheet.getRange(i + 2, MAIL_COL).setValue(new Date());
   });
 }
@@ -313,9 +313,9 @@ function testSendToMe() {
   sendConfirmation(Session.getEffectiveUser().getEmail(), "ja", true, 7);
 }
 
-function sendConfirmation(email, lang, trial, number) {
+function sendConfirmation(email, lang, trial, number, variant) {
   const link = manageUrl(email, lang);
-  const m = lang === "en" ? mailEn(trial, link, number) : mailJa(trial, link, number);
+  const m = lang === "en" ? mailEn(trial, link, number) : mailJa(trial, link, number, variant);
   if (FROM_ADDRESS) {
     // エイリアスから送れるのは GmailApp だけ（MailApp は自分のアドレスからしか送れない）
     const opts = { htmlBody: m.html, name: SENDER_NAME, from: FROM_ADDRESS };
@@ -339,7 +339,17 @@ function canSendNow() {
   return true;
 }
 
-function mailJa(trial, link, number) {
+// 押したボタンの約束に合わせた言葉（サイトの script.js の ticketWords と同じ）。
+// 1枚目のパターン：o は最初の版（先行予約に登録）、c は「料金を最初に知る」、それ以外は「完成品を最初に見る」
+function promiseJa(variant) {
+  const h = String(variant || "").replace("-url", "");
+  if (h === "o") return { title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約", line: "発売が決まったら、\nいちばん先にお知らせします。" };
+  if (h === "c") return { title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone", line: "料金が決まったら、\nいちばん先にお知らせします。" };
+  return { title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone", line: "完成したら、いちばん先にお見せします。" };
+}
+
+function mailJa(trial, link, number, variant) {
+  const w = promiseJa(variant);
   // 短く、急かさない。伝えるのは「番号」「これから何が届くか」「刻印」の3つだけ
   const lines = [
     "ご登録、ありがとうございます。",
@@ -349,7 +359,7 @@ function mailJa(trial, link, number) {
     "短い手紙にしてお送りします。",
     trial ? "試作機を使ってもらう会を開くときも、ここからお声がけします。" : null,
     "",
-    "完成したら、いちばん先にお見せします。",
+    w.line,
     number && number <= 300 ? "No.300 までの方は、" : null,
     number && number <= 300 ? "ご希望で本体に番号を刻めます。" : null,
     "",
@@ -364,7 +374,7 @@ function mailJa(trial, link, number) {
     "お問い合わせ：" + CONTACT,
     "プライバシーポリシー：" + SITE_URL + "privacy",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: number ? "Soto Phone｜" + numberLabel(number) + " で受け付けました" : "Soto Phone｜受け付けました", text: lines.join("\n"), html: toHtml(lines, number, "あなたの番号") };
+  return { subject: number ? "Soto Phone | " + numberLabel(number) + " で受け付けました" : "Soto Phone | 受け付けました", text: lines.join("\n"), html: toHtml(lines, number, w) };
 }
 
 function mailEn(trial, link, number) {
@@ -391,17 +401,20 @@ function mailEn(trial, link, number) {
     "Contact: " + CONTACT,
     "Privacy policy: " + SITE_URL + "privacy-en",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: lines.join("\n"), html: toHtml(lines, number, "Your number") };
+  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: lines.join("\n"), html: toHtml(lines, number, { title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone", en: true }) };
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする
 // 番号があるときは、本文の上に「先行予約券」のきっぷを置く（サイトの登録済みカードと同じ見た目）。
 // メールの画面では細かい CSS が効かないことが多いので、表（table）で組み、背景の絵は紙の色に混ぜ済みの画像を使う
-function toHtml(lines, number, cardLabel) {
+function toHtml(lines, number, w) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   // 長い URL は、押せるリンクにする
-  const link = (s) => esc(s).replace(/https?:\/\/[^\s<]+/g, (u) => '<a href="' + u + '" style="color:#1f1e1c">' + u + "</a>");
-  const en = cardLabel === "Your number";
+  const link = (s) => ent(esc(s)).replace(/https?:\/\/[^\s<]+/g, (u) => '<a href="' + u + '" style="color:#1f1e1c">' + u + "</a>");
+  const en = !!w.en;
+  // 日本語は数値の文字参照にして送る（メールの画面によって文字化けしないように）
+  const ent = (s) => String(s).replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
+  const sans = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif";
   const d = new Date();
   const day = d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0");
   const ink = "#7a6f58";
@@ -409,13 +422,13 @@ function toHtml(lines, number, cardLabel) {
     ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:440px;margin:0 0 24px;border-collapse:separate;border-radius:14px;background:#f3ecdc"><tr>'
       + '<td background="' + SITE_URL + 'images/ticket-river.jpg" bgcolor="#f3ecdc" style="padding:16px 18px;border-radius:14px 0 0 14px;background:#f3ecdc url(' + SITE_URL + 'images/ticket-river.jpg) center/cover no-repeat;border-right:2px dashed #cbbf9f;vertical-align:top">'
       + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.22em;color:' + ink + '">SOTO PHONE</div>'
-      + '<div style="margin-top:18px;font-family:\'Hiragino Mincho ProN\',\'Yu Mincho\',Georgia,serif;font-size:21px;font-weight:600;letter-spacing:.12em;color:#1f1e1c">' + (en ? "Pre-order ticket" : "先行予約券") + "</div>"
-      + '<div style="margin-top:2px;font-size:11px;color:' + ink + '">' + (en ? "See the finished phone first." : "完成品を、いちばん先に。") + "</div>"
-      + '<div style="margin-top:18px;font:500 10.5px Helvetica,Arial,sans-serif;color:' + ink + '">' + day + (en ? " issued" : " 発行") + "</div></td>"
+      + '<div style="margin-top:18px;font-family:' + sans + ';font-size:20px;font-weight:700;letter-spacing:.1em;color:#1f1e1c">' + ent(w.title) + "</div>"
+      + '<div style="margin-top:2px;font-family:' + sans + ';font-size:11px;color:' + ink + '">' + ent(w.sub) + "</div>"
+      + '<div style="margin-top:18px;font:500 10.5px ' + sans + ';color:' + ink + '">' + day + (en ? " issued" : ent(" 発行")) + "</div></td>"
       + '<td width="92" align="center" style="width:92px;padding:12px 4px;vertical-align:middle;text-align:center">'
       + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.2em;color:' + ink + '">NO.</div>'
       + '<div style="font-family:Georgia,serif;font-size:30px;font-weight:600;line-height:1.2;color:#1f1e1c">' + String(number).padStart(3, "0") + "</div>"
-      + '<div style="font-size:10.5px;color:' + ink + '">' + (en ? "Pre-order" : "先行予約") + "</div></td></tr></table>"
+      + '<div style="font-family:' + sans + ';font-size:10.5px;color:' + ink + '">' + ent(w.stub) + "</div></td></tr></table>"
     : "";
   // 本文は、空行で区切った段落ごとに間をあける。「――」より下（送信者や配信停止）は、小さく薄く
   const cut = lines.findIndex((l) => l === "――" || l === "--");
