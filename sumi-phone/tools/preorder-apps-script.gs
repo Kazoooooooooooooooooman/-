@@ -76,6 +76,7 @@ function doPost(e) {
     const data = JSON.parse(e.postData.contents);
     if (data.type === "contact") return handleContact(data);
     if (data.type === "view") return handleView(data);
+    if (data.type === "stay") return handleStay(data);
     const email = String(data.email || "").trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return reply({ ok: false, error: "bad_email" });
 
@@ -189,6 +190,37 @@ function handleView(data) {
   }
   // 並びは VIEW_LOG_HEADERS と同じ（devValues の最後の「秒」は、見ただけのときは空）
   log.appendRow([new Date(), v, tag(data.from, 40), tag(data.site, 60)].concat(dev));
+  return reply({ ok: true });
+}
+
+// 1回の訪問で、どれだけ見てもらえたか。シート「滞在ログ」に、訪問ごとに1行（同じ訪問の続きが届いたら、その行を新しい値に直す）
+const STAY_SHEET = "滞在ログ";
+const STAY_HEADERS = ["日時", "訪問", "パターン", "経路", "見ていた秒数", "スクロール（％）", "いちばん奥の節", "登録欄に触れた", "ボタンを押した", "登録した",
+  "端末", "OS", "ブラウザ", "アプリ内", "画面", "表示域", "端末の言語", "時間帯", "表示モード", "時刻"];
+function handleStay(data) {
+  const v = variantTag(data.variant);
+  const visit = String(data.visit || "").replace(/[^0-9a-f]/g, "").slice(0, 16);
+  if (!v || !visit) return reply({ ok: false });
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = book.getSheetByName(STAY_SHEET);
+  if (!sheet) {
+    sheet = book.insertSheet(STAY_SHEET);
+    sheet.appendRow(STAY_HEADERS);
+    sheet.setFrozenRows(1);
+  }
+  const yes = (x) => (x === true ? "はい" : "");
+  const num = (x, max) => Math.max(0, Math.min(max, Math.round(Number(x) || 0)));
+  const row = [new Date(), visit, v, String(data.from || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, 40),
+    num(data.seconds, 86400), num(data.scroll, 100), String(data.deepest || "").slice(0, 12),
+    yes(data.touched), yes(data.pressed), yes(data.registered)].concat(devValues(data.device).slice(0, 10));
+  const last = sheet.getLastRow();
+  const from = Math.max(2, last - 300);
+  if (last >= 2) {
+    const ids = sheet.getRange(from, 2, last - from + 1, 1).getValues().flat();
+    const i = ids.lastIndexOf(visit);
+    if (i >= 0) { sheet.getRange(from + i, 1, 1, row.length).setValues([row]); return reply({ ok: true }); }
+  }
+  sheet.appendRow(row);
   return reply({ ok: true });
 }
 

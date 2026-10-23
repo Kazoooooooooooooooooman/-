@@ -263,6 +263,43 @@
     } catch (_) { /* 数えられなくても表示には関係ない */ }
   })();
 
+  // 1回の訪問で、どれだけ見てもらえたかを残す（ページを閉じたり、別のアプリに切りかえたりしたときに送る）。
+  // 画面に出ていた秒数、いちばん下までのうち何％まで見たか、どの節まで行ったか、登録欄に触れたか、ボタンを押したか、登録できたか
+  (() => {
+    const v = heroVariant();
+    if (!v || !FORM_ENDPOINT || !document.getElementById("hero-form") || !navigator.sendBeacon) return;
+    const visit = Array.from(crypto.getRandomValues(new Uint8Array(6)), (n) => n.toString(16).padStart(2, "0")).join("");
+    const order = ["top", "problem", "phone", "tools", "points", "faq", "signup"];
+    const names = { top: "1枚目", problem: "はじまり", phone: "製品", tools: "機能", points: "スタンプ", faq: "よくある質問", signup: "登録欄" };
+    let shown = 0, since = document.visibilityState === "visible" ? Date.now() : 0, maxPct = 0, deepest = "top", touched = false, pressed = false, done = false, sent = 0;
+    const onScroll = () => {
+      const h = document.documentElement.scrollHeight - innerHeight;
+      maxPct = Math.max(maxPct, h > 0 ? Math.round((scrollY / h) * 100) : 100);
+      for (let i = order.length - 1; i >= 0; i--) {
+        const el = document.getElementById(order[i]);
+        if (el && el.getBoundingClientRect().top < innerHeight * 0.6) { if (order.indexOf(deepest) < i) deepest = order[i]; break; }
+      }
+    };
+    addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("focusin", (e) => { if (e.target && e.target.type === "email") touched = true; });
+    document.addEventListener("submit", () => { pressed = true; }, true);
+    document.addEventListener("soto:registered", () => { done = true; });
+    const send = () => {
+      if (since) { shown += Date.now() - since; since = 0; }
+      const seconds = Math.round(shown / 1000);
+      if (seconds === sent) return; // 前に送った分から変わっていなければ送らない
+      sent = seconds;
+      const body = JSON.stringify({ type: "stay", variant: v, visit, seconds, scroll: maxPct, deepest: names[deepest] || deepest,
+        touched, pressed, registered: done, from: arrival.from || "", device: deviceInfo() });
+      try { navigator.sendBeacon(FORM_ENDPOINT, new Blob([body], { type: "text/plain;charset=utf-8" })); } catch (_) { /* 送れなくても表示には関係ない */ }
+    };
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") send();
+      else since = Date.now();
+    });
+    addEventListener("pagehide", send);
+  })();
+
   // 紹介コード：読み間違えにくい文字だけで6けた
   function myCode() {
     let c = store_.get(CODE_KEY);
