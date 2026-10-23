@@ -357,7 +357,8 @@ function mailJa(trial, link, number, variant) {
     "",
     "これから月に1回、開発の様子を",
     "短い手紙にしてお送りします。",
-    trial ? "試作機を使ってもらう会を開くときも、ここからお声がけします。" : null,
+    trial ? "試作機を使ってもらう会を開くときも、" : null,
+    trial ? "ここからお声がけします。" : null,
     "",
     w.line,
     number && number <= 300 ? "No.300 までの方は、" : null,
@@ -384,7 +385,8 @@ function mailEn(trial, link, number) {
     "",
     "Once a month, we'll send you a short letter",
     "about how the phone is coming along.",
-    trial ? "We'll also reach out here when we invite people to try a prototype." : null,
+    trial ? "We'll also write here when we invite" : null,
+    trial ? "people to try a prototype." : null,
     "",
     "When it's finished, you'll see it first.",
     number && number <= 300 ? "Numbers up to No.300 can be engraved" : null,
@@ -420,7 +422,8 @@ function toHtml(lines, number, w) {
   const ink = "#7a6f58";
   const card = number
     ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:440px;margin:0 0 24px;border-collapse:separate;border-radius:14px;background:#f3ecdc"><tr>'
-      + '<td background="' + SITE_URL + 'images/ticket-river.jpg" bgcolor="#f3ecdc" style="padding:16px 18px;border-radius:14px 0 0 14px;background:#f3ecdc url(' + SITE_URL + 'images/ticket-river.jpg) center/cover no-repeat;border-right:2px dashed #cbbf9f;vertical-align:top">'
+      // 背景に絵を敷くと、黒い画面（ダークモード）で文字だけ白くなって読めなくなるので、色だけにする
+      + '<td bgcolor="#ebe4d0" style="padding:16px 18px;border-radius:14px 0 0 14px;background-color:#ebe4d0;border-right:2px dashed #cbbf9f;vertical-align:top">'
       + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.22em;color:' + ink + '">SOTO PHONE</div>'
       + '<div style="margin-top:18px;font-family:' + sans + ';font-size:20px;font-weight:700;letter-spacing:.1em;color:#1f1e1c">' + ent(w.title) + "</div>"
       + '<div style="margin-top:2px;font-family:' + sans + ';font-size:11px;color:' + ink + '">' + ent(w.sub) + "</div>"
