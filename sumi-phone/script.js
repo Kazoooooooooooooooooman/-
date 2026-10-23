@@ -191,6 +191,24 @@
     }
     return first;
   })();
+  // 1枚目のパターン（index.html の先頭で決めて、html の data-h に入れてある）
+  function heroVariant() {
+    const d = document.documentElement, h = d.getAttribute("data-h");
+    if (!h || EN) return "";
+    return h + (d.getAttribute("data-hsrc") === "url" ? "-url" : "");
+  }
+  // 1枚目のパターンごとに、見た人の数を数える（同じブラウザでは1日1回だけ）
+  (() => {
+    const v = heroVariant();
+    if (!v || !FORM_ENDPOINT || !document.getElementById("hero-form")) return;
+    const day = new Date().toISOString().slice(0, 10), key = "soto-hv-" + v;
+    if (store_.get(key) === day) return;
+    store_.set(key, day);
+    try {
+      fetch(FORM_ENDPOINT, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ type: "view", variant: v }) });
+    } catch (_) { /* 数えられなくても表示には関係ない */ }
+  })();
+
   // 紹介コード：読み間違えにくい文字だけで6けた
   function myCode() {
     let c = store_.get(CODE_KEY);
@@ -419,6 +437,8 @@
       lang: EN ? "en" : "ja",
       trial: trialEl ? trialEl.checked : false,
       source: form.id === "hero-form" ? "hero" : "bottom",
+      // 1枚目のどのパターンを見て登録したか（URL の ?h= で選んで見た人は、末尾に -url を付けて、自然に来た人と分ける）
+      variant: heroVariant(),
       // 経路：最初に来たときの ?from=、参照元のサイト、紹介してくれた人のコード。それと、この人自身の紹介コード
       from: arrival.from || "",
       site: arrival.site || "",

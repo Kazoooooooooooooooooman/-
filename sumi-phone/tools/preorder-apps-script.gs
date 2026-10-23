@@ -63,6 +63,7 @@ function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     if (data.type === "contact") return handleContact(data);
+    if (data.type === "view") return handleView(data);
     const email = String(data.email || "").trim().toLowerCase();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) return reply({ ok: false, error: "bad_email" });
 
@@ -91,7 +92,7 @@ function doPost(e) {
     const code = prev[3] || tag(data.code, 12);
     const invitedBy = tag(data.invitedBy, 12);
     sheet.getRange(rowIndex, FORM_COL, 1, 5).setValues([[
-      data.source === "hero" ? "1枚目" : "最後",
+      (data.source === "hero" ? "1枚目" : "最後") + (variantTag(data.variant) ? "・" + variantTag(data.variant) : ""),
       prev[1] || tag(data.from, 40),
       prev[2] || tag(data.site, 60),
       code,
@@ -119,6 +120,39 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+// 1枚目のパターン（a・b・c、URL で選んで見た人は a-url のように）を、記号だけに整える
+function variantTag(v) {
+  return String(v || "").toLowerCase().replace(/[^a-z-]/g, "").slice(0, 8);
+}
+
+// 1枚目のパターンごとに、見た人の数を数える。シート「表示」に「日付・パターン・人数」を1行ずつ。
+// 同じブラウザからは1日1回しか届かないので、人数はおおよその訪問者数になる。
+// 登録率 ＝ 「先行予約」シートの「フォーム」列でそのパターンを数えた数 ÷ ここの人数の合計
+const VIEW_SHEET = "表示";
+function handleView(data) {
+  const v = variantTag(data.variant);
+  if (!v) return reply({ ok: false });
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = book.getSheetByName(VIEW_SHEET);
+  if (!sheet) {
+    sheet = book.insertSheet(VIEW_SHEET);
+    sheet.appendRow(["日付", "パターン", "人数"]);
+    sheet.setFrozenRows(1);
+  }
+  const day = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd");
+  const last = sheet.getLastRow();
+  const rows = last > 1 ? sheet.getRange(2, 1, last - 1, 2).getDisplayValues() : [];
+  for (let i = rows.length - 1; i >= 0 && i >= rows.length - 40; i--) {
+    if (rows[i][0] === day && rows[i][1] === v) {
+      const cell = sheet.getRange(i + 2, 3);
+      cell.setValue(Number(cell.getValue() || 0) + 1);
+      return reply({ ok: true });
+    }
+  }
+  sheet.appendRow(["'" + day, v, 1]); // 先頭の ' で、日付ではなく文字として残す（探すときに見た目のまま比べるため）
+  return reply({ ok: true });
 }
 
 // お問い合わせ：シート「問い合わせ」に1行ずつ残し、このスクリプトを動かしているアカウントにメールで知らせる。
