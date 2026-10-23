@@ -340,61 +340,58 @@ function canSendNow() {
 }
 
 function mailJa(trial, link, number) {
+  // 短く、急かさない。伝えるのは「番号」「これから何が届くか」「刻印」の3つだけ
   const lines = [
-    "Soto Phone の先行予約にご登録いただき、ありがとうございます。",
+    "ご登録、ありがとうございます。",
+    number ? "あなたの番号は " + numberLabel(number) + " です。" : null,
     "",
-    number ? "あなたの番号は " + numberLabel(number) + " です。" + number + "番目に登録してくださった方です。" : null,
-    number ? "番号が早いほど、発売のとき先にご案内します。登録した方には、代表からの開発レターを月1回お届けします。No.300 までの方は、ご希望で本体に番号を刻めます。東京でポップアップストアを開くときは、先にお入りいただけます。" : null,
-    number ? "" : null,
-    "発売が決まったら、このメールアドレスにいちばん先にお知らせします。",
-    trial ? "試作機の先行体験の募集が始まったときも、こちらからご案内します。" : "",
+    "これから月に1回、開発の様子を",
+    "短い手紙にしてお送りします。",
+    trial ? "試作機を使ってもらう会を開くときも、ここからお声がけします。" : null,
     "",
-    "登録は無料です。購入の確定やお支払いは発生しません。",
+    "完成したら、いちばん先にお見せします。",
+    number && number <= 300 ? "No.300 までの方は、" : null,
+    number && number <= 300 ? "ご希望で本体に番号を刻めます。" : null,
     "",
     "楽しさは、画面の外に。",
-    "Soto Phone",
-    SITE_URL,
+    "佐々木 一真（Soto Phone）",
     "",
     "――",
-    "このメールは、" + SITE_URL + " で先行予約に登録された方にお送りしています。",
+    "このメールは、sotophone.jp で登録された方にお送りしています。",
     "配信の停止・登録情報の削除：" + link,
-    "（お心当たりがない場合も、こちらから削除できます）",
-    "",
     "送信者：" + SENDER_ORG,
     SENDER_ADDRESS ? "所在地：" + SENDER_ADDRESS : null,
     "お問い合わせ：" + CONTACT,
-    "プライバシーポリシー：" + SITE_URL + "privacy.html",
+    "プライバシーポリシー：" + SITE_URL + "privacy",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: "【Soto Phone】先行予約の登録を受け付けました" + (number ? "（" + numberLabel(number) + "）" : ""), text: lines.join("\n"), html: toHtml(lines, number, "あなたの番号") };
+  return { subject: number ? "Soto Phone｜" + numberLabel(number) + " で受け付けました" : "Soto Phone｜受け付けました", text: lines.join("\n"), html: toHtml(lines, number, "あなたの番号") };
 }
 
 function mailEn(trial, link, number) {
   const lines = [
-    "Thank you for joining the Soto Phone pre-order list.",
+    "Thanks for signing up.",
+    number ? "Your number is " + numberLabel(number) + "." : null,
     "",
-    number ? "Your number is " + numberLabel(number) + ". You were person number " + number + " to sign up." : null,
-    number ? "The earlier your number, the sooner we'll invite you to buy. Everyone on the list gets a monthly development letter from our founder. Numbers up to No.300 can be engraved on the phone if you'd like. When we open a pop-up store in Tokyo, you'll get in first." : null,
-    number ? "" : null,
-    "We'll email this address first when it launches.",
-    trial ? "We'll also let you know here when prototype trials open." : "",
+    "Once a month, we'll send you a short letter",
+    "about how the phone is coming along.",
+    trial ? "We'll also reach out here when we invite people to try a prototype." : null,
     "",
-    "Registration is free. Nothing is purchased and no payment is taken.",
+    "When it's finished, you'll see it first.",
+    number && number <= 300 ? "Numbers up to No.300 can be engraved" : null,
+    number && number <= 300 ? "on the phone if you'd like." : null,
     "",
     "Joy lives outside the screen.",
-    "Soto Phone",
-    SITE_URL,
+    "Kazuma Sasaki (Soto Phone)",
     "",
     "--",
-    "You're receiving this because this address was registered for pre-order at " + SITE_URL + ".",
+    "You're receiving this because this address was registered at " + SITE_URL + ".",
     "Unsubscribe or delete your data: " + link,
-    "(If this wasn't you, you can delete it there too.)",
-    "",
     "Sender: Soto Phone (Kazuma Sasaki)",
     "Address: 6F Aoyama Marutake Bldg., 3-1-36 Minami-Aoyama, Minato-ku, Tokyo 107-0062, Japan",
     "Contact: " + CONTACT,
-    "Privacy policy: " + SITE_URL + "privacy-en.html",
+    "Privacy policy: " + SITE_URL + "privacy-en",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: "Soto Phone: you're on the pre-order list" + (number ? " (" + numberLabel(number) + ")" : ""), text: lines.join("\n"), html: toHtml(lines, number, "Your number") };
+  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: lines.join("\n"), html: toHtml(lines, number, "Your number") };
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする
@@ -404,7 +401,6 @@ function toHtml(lines, number, cardLabel) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   // 長い URL は、押せるリンクにする
   const link = (s) => esc(s).replace(/https?:\/\/[^\s<]+/g, (u) => '<a href="' + u + '" style="color:#1f1e1c">' + u + "</a>");
-  const body = lines.map((l) => (l === "" ? "<br>" : link(l) + "<br>")).join("");
   const en = cardLabel === "Your number";
   const d = new Date();
   const day = d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0");
@@ -414,12 +410,18 @@ function toHtml(lines, number, cardLabel) {
       + '<td background="' + SITE_URL + 'images/ticket-river.jpg" bgcolor="#f3ecdc" style="padding:16px 18px;border-radius:14px 0 0 14px;background:#f3ecdc url(' + SITE_URL + 'images/ticket-river.jpg) center/cover no-repeat;border-right:2px dashed #cbbf9f;vertical-align:top">'
       + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.22em;color:' + ink + '">SOTO PHONE</div>'
       + '<div style="margin-top:18px;font-family:\'Hiragino Mincho ProN\',\'Yu Mincho\',Georgia,serif;font-size:21px;font-weight:600;letter-spacing:.12em;color:#1f1e1c">' + (en ? "Pre-order ticket" : "先行予約券") + "</div>"
-      + '<div style="margin-top:2px;font-size:11px;color:' + ink + '">' + (en ? "First to hear when it launches." : "発売のお知らせを、いちばん先に。") + "</div>"
+      + '<div style="margin-top:2px;font-size:11px;color:' + ink + '">' + (en ? "See the finished phone first." : "完成品を、いちばん先に。") + "</div>"
       + '<div style="margin-top:18px;font:500 10.5px Helvetica,Arial,sans-serif;color:' + ink + '">' + day + (en ? " issued" : " 発行") + "</div></td>"
       + '<td width="92" align="center" style="width:92px;padding:12px 4px;vertical-align:middle;text-align:center">'
       + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.2em;color:' + ink + '">NO.</div>'
       + '<div style="font-family:Georgia,serif;font-size:30px;font-weight:600;line-height:1.2;color:#1f1e1c">' + String(number).padStart(3, "0") + "</div>"
       + '<div style="font-size:10.5px;color:' + ink + '">' + (en ? "Pre-order" : "先行予約") + "</div></td></tr></table>"
     : "";
-  return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;color:#1f1e1c;max-width:560px">' + card + body + "</div>";
+  // 本文は、空行で区切った段落ごとに間をあける。「――」より下（送信者や配信停止）は、小さく薄く
+  const cut = lines.findIndex((l) => l === "――" || l === "--");
+  const main = cut >= 0 ? lines.slice(0, cut) : lines, foot = cut >= 0 ? lines.slice(cut + 1) : [];
+  const paras = main.join("\n").split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+  const bodyHtml = paras.map((p) => '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
+  const footHtml = foot.length ? '<div style="margin-top:36px;padding-top:14px;border-top:1px solid #e4e0d6;font-size:11px;line-height:1.8;color:#8a857b">' + foot.map(link).join("<br>") + "</div>" : "";
+  return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;letter-spacing:.02em;color:#1f1e1c;max-width:480px">' + card + bodyHtml + footHtml + "</div>";
 }
