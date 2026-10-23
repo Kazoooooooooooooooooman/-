@@ -154,7 +154,7 @@
   // どちらもない場合（ファイルを直接開いた場合など）は保存先がないため、その旨を表示する。
   const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwa7cTRb-GxlCZKVGaWIP2FuVBQFpsDR7FpMjVoYrGJ9G6EyfLiTS_iIfux6H1iVB0Y/exec";
   // プライバシーポリシーの版（privacy.html の「最終更新」の日付）。登録と一緒に送り、同意の記録に残す
-  const POLICY_VERSION = "2026-10-14";
+  const POLICY_VERSION = "2026-10-24";
   const SENT_KEY = "soto-preorder";
   const CODE_KEY = "soto-code"; // この人の紹介コード（友だちに送るリンクに付ける。メールアドレスとは結びつけて残さない）
   const FROM_KEY = "soto-from"; // 最初に来たときの経路（?from= と、どのサイトから来たか）
@@ -199,6 +199,51 @@
     if (h === "c") return { title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone" };
     return { title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone" };
   }
+  // 見ている環境（人を特定しない範囲で、ページの見せ方を直すためだけに使う）。
+  // 端末の種類・OS とその版・ブラウザとその版・アプリの中のブラウザか・画面の大きさ・言語・時間帯・ダークモード
+  function deviceInfo() {
+    const ua = navigator.userAgent || "";
+    const touch = (navigator.maxTouchPoints || 0) > 1;
+    const ipad = /iPad/.test(ua) || (/Macintosh/.test(ua) && touch); // iPadOS は Mac のふりをする
+    let type = "パソコン";
+    if (ipad || (/Android/.test(ua) && !/Mobile/.test(ua)) || /Tablet|Silk|Kindle|PlayBook/.test(ua)) type = "タブレット";
+    else if (/iPhone|iPod|Android.*Mobile|Mobile.*Firefox|Windows Phone|Mobi/.test(ua)) type = "スマホ";
+    let os = "その他", m;
+    if ((m = ua.match(/(?:iPhone|iPad|iPod)[^)]*OS (\d+)[_.](\d+)/))) os = (ipad ? "iPadOS " : "iOS ") + m[1] + "." + m[2];
+    else if (ipad) os = "iPadOS";
+    else if ((m = ua.match(/Android (\d+(?:\.\d+)?)/))) os = "Android " + m[1];
+    else if (/Windows NT 10/.test(ua)) os = "Windows 10/11";
+    else if ((m = ua.match(/Windows NT (\d+\.\d+)/))) os = "Windows NT " + m[1];
+    else if ((m = ua.match(/Mac OS X (\d+)[_.](\d+)/))) os = "macOS " + m[1] + "." + m[2];
+    else if (/CrOS/.test(ua)) os = "ChromeOS";
+    else if (/Linux/.test(ua)) os = "Linux";
+    const app = /Instagram/.test(ua) ? "Instagram" : /FBAN|FBAV|FB_IAB/.test(ua) ? "Facebook" : /\bLine\//.test(ua) ? "LINE"
+      : /musical_ly|BytedanceWebview|TikTok/i.test(ua) ? "TikTok" : /Twitter|TwitterAndroid/.test(ua) ? "X" : /GSA\//.test(ua) ? "Googleアプリ" : "";
+    let br = "その他";
+    if ((m = ua.match(/EdgA?\/(\d+)/))) br = "Edge " + m[1];
+    else if ((m = ua.match(/SamsungBrowser\/(\d+)/))) br = "Samsung " + m[1];
+    else if ((m = ua.match(/(?:CriOS|Chrome)\/(\d+)/))) br = "Chrome " + m[1];
+    else if ((m = ua.match(/(?:FxiOS|Firefox)\/(\d+)/))) br = "Firefox " + m[1];
+    else if ((m = ua.match(/Version\/(\d+(?:\.\d+)?).*Safari/))) br = "Safari " + m[1];
+    else if (/AppleWebKit/.test(ua) && /Mobile/.test(ua)) br = "WebView";
+    const dpr = Math.round((window.devicePixelRatio || 1) * 100) / 100;
+    let tz = "";
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (_) { /* 取れなくてもよい */ }
+    const p = new URLSearchParams(location.search);
+    const utm = ["utm_source", "utm_medium", "utm_campaign", "utm_content"].map((k) => clean(p.get(k), 40)).filter(Boolean).join("/");
+    return {
+      type, os, browser: br, app,
+      screen: (screen.width || 0) + "x" + (screen.height || 0) + "@" + dpr,
+      viewport: (window.innerWidth || 0) + "x" + (window.innerHeight || 0),
+      lang: String(navigator.language || "").slice(0, 12),
+      tz: tz.slice(0, 40),
+      dark: window.matchMedia && matchMedia("(prefers-color-scheme: dark)").matches ? "ダーク" : "ライト",
+      hour: new Date().getHours(),
+      utm,
+    };
+  }
+  const OPENED_AT = Date.now();
+
   // 1枚目のパターン（index.html の先頭で決めて、html の data-h に入れてある）
   function heroVariant() {
     const d = document.documentElement, h = d.getAttribute("data-h");
@@ -214,7 +259,7 @@
     if (store_.get(key) === day) return;
     store_.set(key, day);
     try {
-      fetch(FORM_ENDPOINT, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ type: "view", variant: v }) });
+      fetch(FORM_ENDPOINT, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ type: "view", variant: v, from: arrival.from || "", site: arrival.site || "", device: deviceInfo() }) });
     } catch (_) { /* 数えられなくても表示には関係ない */ }
   })();
 
@@ -449,6 +494,8 @@
       source: form.id === "hero-form" ? "hero" : "bottom",
       // 1枚目のどのパターンを見て登録したか（URL の ?h= で選んで見た人は、末尾に -url を付けて、自然に来た人と分ける）
       variant: heroVariant(),
+      // 見ている環境と、ページを開いてから登録するまでの秒数
+      device: Object.assign(deviceInfo(), { seconds: Math.round((Date.now() - OPENED_AT) / 1000) }),
       // 経路：最初に来たときの ?from=、参照元のサイト、紹介してくれた人のコード。それと、この人自身の紹介コード
       from: arrival.from || "",
       site: arrival.site || "",

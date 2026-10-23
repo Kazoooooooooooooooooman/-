@@ -7,7 +7,8 @@
 // メールの最後には、配信停止とデータ削除のリンクが入る（このウェブアプリの URL に、本人だけが使える印を付けたもの）。
 
 const SHEET_NAME = "先行予約";
-const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止", "フォーム", "経路", "参照元", "紹介コード", "紹介した人", "番号"];
+const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止", "フォーム", "経路", "参照元", "紹介コード", "紹介した人", "番号",
+  "端末", "OS", "ブラウザ", "アプリ内", "画面", "表示域", "端末の言語", "時間帯", "表示モード", "登録した時刻", "登録までの秒数", "utm"];
 const MAIL_COL = 6; // 「確認メール」の列（送った日時が入る）
 const CONSENT_COL = 7; // 「同意」の列（どの方法で、どの版のプライバシーポリシーに同意したか）
 const STOP_COL = 8; // 「配信停止」の列（停止した日時が入る。入っている人には、お知らせを送らない）
@@ -18,6 +19,14 @@ const FORM_COL = 9;
 const CODE_COL = 12;
 // 14列目「番号」：登録した順に1から付ける番号（No.001 のように見せる）。登録し直しても変わらない
 const NUM_COL = 14;
+// 15〜26列目：登録したときの環境（端末の種類、OS・ブラウザとその版、アプリの中のブラウザか、画面の大きさなど）
+const DEVICE_COL = 15;
+const DEVICE_KEYS = ["type", "os", "browser", "app", "screen", "viewport", "lang", "tz", "dark", "hour", "seconds", "utm"];
+// 環境の値は、短い文字だけにして残す（数式として読まれないよう、先頭の = + - @ は外す）
+function devValues(d) {
+  d = d && typeof d === "object" ? d : {};
+  return DEVICE_KEYS.map((k) => String(d[k] === undefined || d[k] === null ? "" : d[k]).replace(/^[=+\-@]+/, "").slice(0, 40));
+}
 
 // ---- メールの設定（ここだけ書き換えればよい） ----
 const SENDER_NAME = "Soto Phone";
@@ -98,6 +107,7 @@ function doPost(e) {
       code,
       prev[4] || (invitedBy !== code ? invitedBy : ""),
     ]]);
+    sheet.getRange(rowIndex, DEVICE_COL, 1, DEVICE_KEYS.length).setValues([devValues(data.device)]);
     // 番号：まだない人にだけ付ける（登録し直した人は、前の番号のまま）
     let number = Number(sheet.getRange(rowIndex, NUM_COL).getValue()) || 0;
     if (!number) {
@@ -127,31 +137,55 @@ function variantTag(v) {
   return String(v || "").toLowerCase().replace(/[^a-z-]/g, "").slice(0, 8);
 }
 
-// 1枚目のパターンごとに、見た人の数を数える。シート「表示」に「日付・パターン・人数」を1行ずつ。
-// 同じブラウザからは1日1回しか届かないので、人数はおおよその訪問者数になる。
-// 登録率 ＝ 「先行予約」シートの「フォーム」列でそのパターンを数えた数 ÷ ここの人数の合計
+// 1枚目のパターンごとに、見た人の数を数える（同じブラウザからは1日1回だけ届く）。
+// シート「表示」：日付・パターン・端末ごとの人数（すぐ見る用）
+// シート「表示ログ」：1回ごとに1行。環境をすべて残す（ピボットテーブルで、OS別・アプリ内ブラウザ別なども見られる）
+// 登録率 ＝ 「先行予約」シートの「フォーム」列でそのパターンを数えた数 ÷ 「表示」の人数の合計
 const VIEW_SHEET = "表示";
+const VIEW_LOG_SHEET = "表示ログ";
+const VIEW_LOG_HEADERS = ["日時", "パターン", "経路", "参照元", "端末", "OS", "ブラウザ", "アプリ内", "画面", "表示域", "端末の言語", "時間帯", "表示モード", "時刻", "秒", "utm"];
 function handleView(data) {
   const v = variantTag(data.variant);
   if (!v) return reply({ ok: false });
   const book = SpreadsheetApp.getActiveSpreadsheet();
+  const dev = devValues(data.device);
+  const type = dev[0] || "不明";
+  const tag = (x, n) => String(x || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, n);
+
   let sheet = book.getSheetByName(VIEW_SHEET);
   if (!sheet) {
     sheet = book.insertSheet(VIEW_SHEET);
-    sheet.appendRow(["日付", "パターン", "人数"]);
+    sheet.appendRow(["日付", "パターン", "端末", "人数"]);
     sheet.setFrozenRows(1);
+  } else if (sheet.getRange(1, 3).getValue() === "人数") {
+    // 前の版（日付・パターン・人数）のシートには、「端末」の列を足す
+    sheet.insertColumnAfter(2);
+    sheet.getRange(1, 3).setValue("端末");
+    const n = sheet.getLastRow() - 1;
+    if (n > 0) sheet.getRange(2, 3, n, 1).setValue("不明");
   }
   const day = Utilities.formatDate(new Date(), "Asia/Tokyo", "yyyy-MM-dd");
   const last = sheet.getLastRow();
-  const rows = last > 1 ? sheet.getRange(2, 1, last - 1, 2).getDisplayValues() : [];
-  for (let i = rows.length - 1; i >= 0 && i >= rows.length - 40; i--) {
-    if (rows[i][0] === day && rows[i][1] === v) {
-      const cell = sheet.getRange(i + 2, 3);
+  const rows = last > 1 ? sheet.getRange(2, 1, last - 1, 3).getDisplayValues() : [];
+  let done = false;
+  for (let i = rows.length - 1; i >= 0 && i >= rows.length - 60; i--) {
+    if (rows[i][0] === day && rows[i][1] === v && rows[i][2] === type) {
+      const cell = sheet.getRange(i + 2, 4);
       cell.setValue(Number(cell.getValue() || 0) + 1);
-      return reply({ ok: true });
+      done = true;
+      break;
     }
   }
-  sheet.appendRow(["'" + day, v, 1]); // 先頭の ' で、日付ではなく文字として残す（探すときに見た目のまま比べるため）
+  if (!done) sheet.appendRow(["'" + day, v, type, 1]); // 先頭の ' で、日付ではなく文字として残す
+
+  let log = book.getSheetByName(VIEW_LOG_SHEET);
+  if (!log) {
+    log = book.insertSheet(VIEW_LOG_SHEET);
+    log.appendRow(VIEW_LOG_HEADERS);
+    log.setFrozenRows(1);
+  }
+  // 並びは VIEW_LOG_HEADERS と同じ（devValues の最後の「秒」は、見ただけのときは空）
+  log.appendRow([new Date(), v, tag(data.from, 40), tag(data.site, 60)].concat(dev));
   return reply({ ok: true });
 }
 
