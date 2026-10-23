@@ -343,9 +343,9 @@ function canSendNow() {
 // 1枚目のパターン：o は最初の版（先行予約に登録）、c は「料金を最初に知る」、それ以外は「完成品を最初に見る」
 function promiseJa(variant) {
   const h = String(variant || "").replace("-url", "");
-  if (h === "o") return { title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約", line: "発売が決まったら、\nいちばん先にお知らせします。" };
-  if (h === "c") return { title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone", line: "料金が決まったら、\nいちばん先にお知らせします。" };
-  return { title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone", line: "完成したら、いちばん先にお見せします。" };
+  if (h === "o") return { img: "hatsubai", title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約", line: "発売が決まったら、\nいちばん先にお知らせします。" };
+  if (h === "c") return { img: "ryokin", title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone", line: "料金が決まったら、\nいちばん先にお知らせします。" };
+  return { img: "kansei", title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone", line: "完成したら、いちばん先にお見せします。" };
 }
 
 function mailJa(trial, link, number, variant) {
@@ -403,7 +403,7 @@ function mailEn(trial, link, number) {
     "Contact: " + CONTACT,
     "Privacy policy: " + SITE_URL + "privacy-en",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: lines.join("\n"), html: toHtml(lines, number, { title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone", en: true }) };
+  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: lines.join("\n"), html: toHtml(lines, number, { img: "en", title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone", en: true }) };
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする
@@ -422,16 +422,15 @@ function toHtml(lines, number, w) {
   const ink = "#7a6f58";
   const card = number
     ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:440px;margin:0 0 24px;border-collapse:separate;border-radius:14px;background:#f3ecdc"><tr>'
-      // 背景に絵を敷くと、黒い画面（ダークモード）で文字だけ白くなって読めなくなるので、色だけにする
-      + '<td bgcolor="#ebe4d0" style="padding:16px 18px;border-radius:14px 0 0 14px;background-color:#ebe4d0;border-right:2px dashed #cbbf9f;vertical-align:top">'
-      + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.22em;color:' + ink + '">SOTO PHONE</div>'
-      + '<div style="margin-top:18px;font-family:' + sans + ';font-size:20px;font-weight:700;letter-spacing:.1em;color:#1f1e1c">' + ent(w.title) + "</div>"
-      + '<div style="margin-top:2px;font-family:' + sans + ';font-size:11px;color:' + ink + '">' + ent(w.sub) + "</div>"
-      + '<div style="margin-top:18px;font:500 10.5px ' + sans + ';color:' + ink + '">' + day + (en ? " issued" : ent(" 発行")) + "</div></td>"
-      + '<td width="92" align="center" style="width:92px;padding:12px 4px;vertical-align:middle;text-align:center">'
+      // 左半分は、水彩の絵と文字をいっしょに焼き込んだ画像（images/mail/ticket-*.png）。
+      // 黒い画面（ダークモード）でも、画像の中の文字は色が変わらないので読める。日付と番号は、右の半券に文字で入れる
+      + '<td width="79%" style="width:79%;padding:0;border-right:2px dashed #cbbf9f;vertical-align:top;line-height:0">'
+      + '<img src="' + SITE_URL + 'images/mail/ticket-' + w.img + '.png" width="348" alt="' + ent(w.title + "：" + w.sub) + '" style="display:block;width:100%;max-width:348px;height:auto;border:0;border-radius:14px 0 0 14px"></td>'
+      + '<td width="21%" align="center" style="width:21%;min-width:70px;padding:10px 2px;vertical-align:middle;text-align:center">'
       + '<div style="font:500 10px Helvetica,Arial,sans-serif;letter-spacing:.2em;color:' + ink + '">NO.</div>'
       + '<div style="font-family:Georgia,serif;font-size:30px;font-weight:600;line-height:1.2;color:#1f1e1c">' + String(number).padStart(3, "0") + "</div>"
-      + '<div style="font-family:' + sans + ';font-size:10.5px;color:' + ink + '">' + ent(w.stub) + "</div></td></tr></table>"
+      + '<div style="font-family:' + sans + ';font-size:10.5px;color:' + ink + '">' + ent(w.stub) + "</div>"
+      + '<div style="margin-top:6px;font:500 9.5px ' + sans + ';color:' + ink + '">' + day.slice(5) + (en ? "" : ent(" 発行")) + "</div></td></tr></table>"
     : "";
   // 本文は、空行で区切った段落ごとに間をあける。「――」より下（送信者や配信停止）は、小さく薄く
   const cut = lines.findIndex((l) => l === "――" || l === "--");
