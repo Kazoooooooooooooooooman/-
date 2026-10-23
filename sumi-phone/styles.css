@@ -917,22 +917,29 @@ h2 .nw { white-space: nowrap; }
 }
 .hd-more svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; transition: transform .3s ease; }
 .hd-more:hover svg { transform: translateY(3px); }
+.hd-head { display: contents; }
 @media (max-width: 820px) {
-  /* スマホ：1画面に詰め込まず、絵・名前・言葉・登録欄のあいだに息つぎの余白をとる。
-     登録欄までが最初の画面に入れば十分で、「Soto Phone を見る」は少し下にはみ出してよい */
-  .hero-door { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 72px 28px 44px; align-content: start; }
-  .hd-media { order: 0; justify-self: center; width: min(78vw, calc(44svh * 480 / 608)); margin-bottom: 22px; }
-  .hd-text { justify-self: center; align-items: center; text-align: center; }
-  .hd-eyebrow { margin-bottom: 12px; font-size: 11px; }
+  /* スマホ：動画を画面幅いっぱいの帯にして上に置き、下を紙の色へ消す。
+     その下に名前・言葉・登録欄を均等にならべ、登録欄までを最初の画面に収める */
+  .hero-door { display: flex; flex-direction: column; min-height: 100svh; gap: 0; padding: 0 24px; }
+  .hd-media { order: 0; width: 100vw; max-width: none; aspect-ratio: auto; height: 40svh; margin: 0 -24px; flex: none; --hd-fade: linear-gradient(180deg, #000 0%, #000 60%, transparent 100%); }
+  .hd-video { object-position: 50% 30%; }
+  .hd-text { flex: 1; justify-content: space-evenly; align-items: center; text-align: center; justify-self: auto; width: 100%; margin-top: -3svh; padding-bottom: 4svh; position: relative; z-index: 2; }
+  .hd-head { display: block; }
+  .hd-eyebrow { margin-bottom: 10px; font-size: 11px; }
   .hd-mark { justify-content: center; margin-left: 0; }
   .hd-word { font-size: 15.5vw; }
   .hd-phone { font-size: 15px; margin-left: .3em; }
-  .hd-message { margin: 22px 0 28px; }
+  .hd-motto { display: none; }
+  .hd-message { margin: 12px 0 0; }
   .hd-cta { align-items: center; gap: 12px; }
-  .hd-fine { line-height: 1.9; }
-  .hd-more { margin-top: 30px; }
+  .hd-fine { font-size: 11.5px; line-height: 1.7; }
+  /* 「Soto Phone を見る」は矢印だけにする（読み上げでは名前を残す） */
+  .hd-more { margin-top: 0; min-height: 32px; text-decoration: none; }
+  .hd-more-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hd-more svg { width: 20px; height: 20px; }
 }
-@media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-road.jpg) center / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
+@media (prefers-reduced-motion: reduce) { .hd-video { display: none; } .hd-media { background: url(images/hero-road.jpg) center 30% / cover; -webkit-mask-image: var(--hd-fade); mask-image: var(--hd-fade); -webkit-mask-composite: source-in; mask-composite: intersect; } }
 
 /* ---------- 動画の道の続き（形は script.js が決める） ----------
    動画の道と同じく、紙色の帯に、鉛筆の点線のふちと、うすい影 */
