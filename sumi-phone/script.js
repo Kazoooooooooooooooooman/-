@@ -292,12 +292,12 @@
       badge.querySelector(".tk-v").textContent = String(num).padStart(3, "0");
       badge.querySelector(".tk-k2").textContent = EN ? "Pre-order" : "先行予約";
     }
-    // 番号の特典。早い番号ほど先に案内し、No.300 までは希望で本体に番号を刻める
+    // 番号の特典。早い番号ほど先に案内、月1回の開発レター、No.300 までは希望で番号刻印、ポップアップへの先行入場
     const perk = document.createElement("p");
     perk.className = "tk-perk";
     perk.textContent = EN
-      ? "The earlier your number, the sooner we’ll invite you to buy. Numbers up to No.300 can be engraved on the phone if you’d like."
-      : "番号が早いほど、発売のとき先にご案内します。No.300 までの方は、ご希望で本体に番号を刻めます。";
+      ? "The earlier your number, the sooner we’ll invite you to buy. Everyone on the list gets a monthly development letter from our founder. Numbers up to No.300 can be engraved on the phone if you’d like. When we open a pop-up store in Tokyo, you’ll get in first."
+      : "番号が早いほど、発売のとき先にご案内します。登録した方には、代表からの開発レターを月1回お届けします。No.300 までの方は、ご希望で本体に番号を刻めます。東京でポップアップストアを開くときは、先にお入りいただけます。";
     // 次に起きること。その下の行に、送り先のアドレスと「直す」（打ち間違いに、その場で気づけるように）
     const body = document.createElement("p");
     body.className = "done-body";
