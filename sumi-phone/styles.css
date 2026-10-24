@@ -1042,3 +1042,23 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
   [data-h="d"] .hero-door .hd-form .btn { padding: 13px 12px; font-size: 13px; letter-spacing: .02em; }
   [data-h="d"] .hd-form input { padding: 0 6px 0 12px; letter-spacing: 0; }
 }
+
+/* ---------- Soto Rental（スマホを預けて、Soto Phone を借りる） ---------- */
+.rental .rental-tag { display: inline-block; margin: 0 0 14px; padding: 5px 12px; border-radius: 999px; font-size: 12px; letter-spacing: .1em; color: var(--paper-dim); border: 1px solid var(--paper-line); }
+.rental h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(30px, 4.4vw, 46px); line-height: 1.45; letter-spacing: .04em; }
+.rental-hero { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 8px 0 8px; }
+.rental-hero > div { display: flex; flex-direction: column; gap: 4px; padding: 18px 20px; border-radius: 16px; background: #f9f8f4; border: 1px solid var(--paper-line); }
+.rental-hero span { font-size: 12.5px; color: var(--paper-dim); }
+.rental-hero strong { font-family: var(--serif); font-weight: 600; font-size: 20px; line-height: 1.4; }
+.rental-hero em { font-style: normal; font-size: 12px; color: var(--paper-dim); }
+.rental-steps { list-style: none; counter-reset: st; padding: 0; margin: 6px 0 10px; display: grid; gap: 10px; }
+.rental-steps li { counter-increment: st; position: relative; padding: 16px 18px 16px 62px; border-radius: 14px; background: #f9f8f4; border: 1px solid var(--paper-line); display: flex; flex-direction: column; gap: 2px; }
+.rental-steps li::before { content: counter(st); position: absolute; left: 18px; top: 16px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font: 600 14px var(--latin); color: #fff; background: var(--paper-ink); }
+.rental-steps strong { font-size: 16px; }
+.rental-steps span { font-size: 14.5px; color: var(--paper-dim); line-height: 1.8; }
+.rental-when { padding-left: 1.2em; }
+.rental-when li + li { margin-top: 6px; }
+.rental .faq-list { margin-top: 4px; }
+@media (max-width: 760px) {
+  .rental-hero { grid-template-columns: minmax(0, 1fr); }
+}
