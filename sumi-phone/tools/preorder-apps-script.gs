@@ -409,10 +409,11 @@ function canSendNow() {
 }
 
 // 押したボタンの約束に合わせた言葉（サイトの script.js の ticketWords と同じ）。
-// 1枚目のパターン：o は最初の版（先行予約に登録）、c は「料金を最初に知る」、それ以外は「完成品を最初に見る」
+// 1枚目のパターン：o は最初の版（先行予約に登録）、c は「料金を最初に知る」、d は「発売のお知らせを受け取る」、それ以外は「完成品を最初に見る」
 function promiseJa(variant) {
   const h = String(variant || "").split("-")[0];
   if (h === "o") return { img: "hatsubai", title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約", line: "発売が決まったら、\nいちばん先にお知らせします。" };
+  if (h === "d") return { img: "oshirase", title: "招待券", sub: "発売のお知らせを、いちばん先に。", stub: "Soto Phone", line: "発売が決まったら、\nいちばん先にお知らせします。" };
   if (h === "c") return { img: "ryokin", title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone", line: "料金が決まったら、\nいちばん先にお知らせします。" };
   return { img: "kansei", title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone", line: "完成したら、いちばん先にお見せします。" };
 }

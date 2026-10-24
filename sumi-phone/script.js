@@ -197,6 +197,7 @@
     if (EN) return { title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone" };
     if (h === "o") return { title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約" };
     if (h === "c") return { title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone" };
+    if (h === "d") return { title: "招待券", sub: "発売のお知らせを、いちばん先に。", stub: "Soto Phone" };
     return { title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone" };
   }
   // 見ている環境（人を特定しない範囲で、ページの見せ方を直すためだけに使う）。
