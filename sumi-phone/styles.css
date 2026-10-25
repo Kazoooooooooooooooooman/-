@@ -773,6 +773,12 @@ h2 .nw { white-space: nowrap; }
 .article .inline-cta span:not(.btn-dot):not(.btn-label) { font-size: 13px; color: var(--paper-dim); }
 
 /* コラムのグラフ（tools/build_column.py が HTML で作る）。棒は根元が四角、先が4pxの丸。目盛りの線は細く、控えめに */
+/* 記事の写真（出典つき） */
+.article .photo { margin: 28px 0 32px; }
+.article .photo img { display: block; width: 100%; height: auto; border-radius: 12px; background: #ece9e2; }
+.article .photo figcaption { margin-top: 10px; font-size: 13px; line-height: 1.7; color: var(--paper-dim); }
+.article .photo .credit { display: block; font-size: 11.5px; opacity: .8; }
+.article .photo .credit a { color: inherit; }
 .article .chart { margin: 28px 0 32px; padding: 20px 22px 16px; border-radius: 12px; background: #fbfaf7; border: 1px solid var(--paper-line); }
 .article .ch-title { font-family: var(--serif); font-weight: 600; font-size: 16px; line-height: 1.6; margin-bottom: 16px; }
 .article .ch-rows { list-style: none; margin: 0 !important; padding: 0 !important; }
