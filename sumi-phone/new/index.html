@@ -361,6 +361,13 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
 .credits{max-width:none;padding-right:max(var(--m),calc(100% - 1100px))}
 html,body{background:var(--paper)}
 .ch-last .ticket{max-width:300px}
+/* 道のり：カードは少し濃い紙、レシートは白。境目がはっきり見えるように */
+.slipwrap .wcard{background:rgba(226,220,206,.95);-webkit-backdrop-filter:none;backdrop-filter:none;max-width:1180px}
+.slipwrap .slip{background:#fffdf8;color:var(--ink);justify-self:end}
+.slipwrap .slip .r{color:var(--ink)}
+.slipwrap .slip .r i{opacity:.4}
+.slipwrap .lead{color:var(--ink)}
+@media (max-width:820px){.slipwrap .slip{justify-self:stretch}}
 .foot{background:var(--paper)}.word,.credits{background:var(--paper)}
 .close .txt.wcard{background:rgba(244,242,236,.88);padding:clamp(28px,4.5vw,56px)}
 .close img{display:none!important}
