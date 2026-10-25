@@ -22,7 +22,7 @@
   function onScrollBg() {
     const mid = window.innerHeight / 2;
     let active = panels[0];
-    panels.forEach((p) => { if (p.getBoundingClientRect().top <= mid) active = p; });
+    panels.forEach((p) => { const r = p.getBoundingClientRect(); if (r.height && r.top <= mid) active = p; }); // 隠れているセクション（パターン n 専用など）は数えない
     const i = Number(active.dataset.bg);
     if (i !== current) {
       current = i;
