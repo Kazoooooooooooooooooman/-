@@ -67,6 +67,20 @@
   .hn-perks{font-size:12.5px;gap:4px 14px}
 }
 @media (max-width:560px){ .hero-n .hd-form .btn{padding:13px 16px;font-size:14px} .hero-n .hd-form input{font-size:16px;padding:0 10px 0 14px} }
+.n-only{display:none} [data-h="n"] .n-only{display:block}
+.n-road{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:start;max-width:1120px}
+.slip{background:#fbfaf6;padding:28px 32px 44px;box-shadow:0 10px 30px rgba(31,30,28,.08);position:relative;font-size:15px;line-height:1.8;-webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - 14px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/24px 14px repeat-x;mask:linear-gradient(#000,#000) top/100% calc(100% - 14px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/24px 14px repeat-x}
+.slip h3{font-size:14px;font-weight:700;letter-spacing:.08em;margin:18px 0 6px}
+.slip h3:first-child{margin-top:0}
+.slip .r{display:flex;align-items:baseline;gap:10px;padding:4px 0}
+.slip .r i{flex:1;border-bottom:2px dotted rgba(31,30,28,.35);transform:translateY(-4px)}
+.slip .end{margin:22px -32px 0;background:var(--paper-ink);color:#f4f2ec;display:flex;justify-content:space-between;gap:12px;padding:12px 32px}
+.n-letter{max-width:680px;font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(16px,1.3vw,18px);line-height:2.1}
+.n-letter p+p{margin-top:1em}
+.n-letter .sign{margin-top:1.6em;font-size:22px}
+.n-letter .role{margin-top:0;font-family:var(--sans);font-size:12px;letter-spacing:.1em;color:var(--paper-dim)}
+.slip .r span{white-space:nowrap}.slip .end span{white-space:nowrap}
+@media (max-width:820px){.n-road{grid-template-columns:1fr}.n-road .slip{margin:0 calc(-1 * clamp(36px,6vw,80px) + 14px);padding:20px 18px 38px;font-size:13.5px}.slip .r i{min-width:12px}.slip .end{margin:18px -18px 0;padding:12px 18px;font-size:13px}}
 [data-h="n"] .ph-svg{display:none} .ph-real{width:min(100%,300px);height:auto;margin:0 auto;filter:drop-shadow(0 22px 30px rgba(40,28,18,.25))} @media (max-width:820px){.ph-real{width:200px}} /* n は2画面目の携帯も、1枚目と同じ立体の携帯にそろえる */
 </style>
 </head>
@@ -339,6 +353,35 @@
       <div class="why reveal"><p class="why-q">どうして、安くなるの？</p><p>割引のお金は、提携するお店が出す仕組みにします。お店にとっては、新しいお客さんに来てもらうための広告費のかわりです。お店が Soto に払うのは、実際にお客さんが来たときだけにする予定です。</p></div>
       <p class="note reveal">金額は説明のための例です。料金プラン、提携先、割引の内容は準備中です。</p>
     </div>
+  </section>
+
+  <!-- パターン n だけ：届くまでの道のりと、代表の手紙（水彩の上のカード） -->
+  <section id="road" class="sec on-color n-only" data-bg="4" aria-label="届くまでの道のり">
+    <div class="wrap card n-road">
+      <div>
+        <p class="eyebrow reveal" lang="en">Roadmap</p>
+        <h2 class="reveal">届くまでの道のり</h2>
+        <p class="body reveal">いきなり売りません。試作機を、少ない人数で使ってもらってから決めます。</p>
+      </div>
+      <div class="slip reveal" role="table" aria-label="発売までの進め方">
+        <h3>いま</h3>
+        <div class="r"><span>試作機をつくる</span><i></i><span>進行中</span></div>
+        <div class="r"><span>月1回の開発レター</span><i></i><span>毎月</span></div>
+        <h3>試作のあと</h3>
+        <div class="r"><span>少人数で使ってもらう</span><i></i><span>1週間〜</span></div>
+        <div class="r"><span>クラウドファンディング</span><i></i><span>時期は未定</span></div>
+        <div class="end"><span>完成品が、手元に届く</span><span>番号の早い順</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="sec on-color n-only" data-bg="4" aria-label="代表から">
+    <article class="wrap card n-letter reveal">
+      <p>僕は、携帯を作ったことがありません。でも、携帯に支配されていた側の人間です。</p>
+      <p>スクリーンタイムを設定しても、自分で解除してしまう。だから、意志に頼らなくても、自然と外に出たくなる携帯を作ります。</p>
+      <p>できあがるまでの様子は、月に1回、短い手紙にしてお送りします。</p>
+      <p class="sign">佐々木 一真</p>
+      <p class="role">Soto Phone 代表</p>
+    </article>
   </section>
 
   <section class="day-panel" data-bg="6">
