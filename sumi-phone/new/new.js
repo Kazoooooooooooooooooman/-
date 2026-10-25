@@ -71,7 +71,7 @@
       hour: new Date().getHours(), utm,
     };
   }
-  const post = (body) => fetch(FORM_ENDPOINT, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) });
+  const post = (body) => fetch(FORM_ENDPOINT, { method: "POST", mode: "no-cors", keepalive: true, headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(body) }).catch(() => { /* 数えられなくても表示には関係ない */ });
 
   // 見た人の数（同じブラウザでは1日1回だけ）
   (() => {
