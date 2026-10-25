@@ -370,6 +370,17 @@ html,body{background:var(--paper)}
 .slipwrap .slip .r i{opacity:.4}
 .slipwrap .lead{color:var(--ink)}
 @media (max-width:820px){.slipwrap .slip{justify-self:stretch}}
+/* 時間：写真ではなく、水彩と同じ鉛筆の線の絵。ボタンと注はカードの中に */
+.out.out-ic{background:#fbf9f3;border:1px solid rgba(31,30,28,.12);border-radius:14px;padding:18px 16px 16px;display:flex;flex-direction:column}
+.out-ic svg{width:100%;height:auto;aspect-ratio:6/5;display:block}
+.out-ic .wash{opacity:.55;filter:url(#wash-n)}
+.out-ic .pen{fill:none;stroke:var(--ink);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;filter:url(#pencil-n)}
+.out-ic figcaption{position:static;background:none;color:var(--ink);padding:10px 2px 0}
+.out-ic b{color:var(--ink)}
+.out-ic span{color:var(--soft)}
+.tw .tw-cta{grid-column:1/-1;margin:clamp(24px,3vw,40px) 0 0;padding-top:clamp(20px,2.4vw,32px);border-top:1px solid rgba(31,30,28,.12);justify-content:space-between}
+.tw .tw-note{grid-column:1/-1;margin:12px 0 0;max-width:none}
+@media (max-width:820px){.out.out-ic{padding:10px 8px 10px}.out-ic figcaption{padding-top:6px}.tw .tw-cta{justify-content:flex-start}}
 .foot{background:var(--paper)}.word,.credits{background:var(--paper)}
 .close .txt.wcard{background:rgba(244,242,236,.88);padding:clamp(28px,4.5vw,56px)}
 .close img{display:none!important}
@@ -466,6 +477,7 @@ html,body{background:var(--paper)}
 </div>
 
 <section class="time" id="time" data-w="0">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil-n" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="1" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter><filter id="wash-n"><feGaussianBlur stdDeviation="5"/></filter></svg>
   <div class="tw wcard">
     <div class="tw-l">
       <h2 class="h2">昨日、スマホを<br>何時間見ていましたか。</h2>
@@ -477,14 +489,14 @@ html,body{background:var(--paper)}
     <div class="tw-r" id="outs" aria-live="polite">
       <p class="tw-cap">その時間が、毎年、外にあったら。</p>
       <div class="outs-row">
-        <figure class="out"><img src="img/t-read.jpg" alt="木のあいだに吊ったハンモックで、本を読む男性" loading="lazy" width="900" height="1200"><figcaption><b id="o-book">167</b><span>冊、本を読む</span></figcaption></figure>
-        <figure class="out"><img src="img/t-fuji.jpg" alt="富士山の頂上近くで、雲海から昇る朝日を眺める2人" loading="lazy" width="900" height="1200"><figcaption><b id="o-fuji">100</b><span>回、富士山に登る</span></figcaption></figure>
-        <figure class="out"><img src="img/t-trip.jpg" alt="青い海を渡るフェリーの甲板で、風に吹かれて笑う女性" loading="lazy" width="900" height="1200"><figcaption><b id="o-trip">4</b><span>回、2週間の旅に出る</span></figcaption></figure>
+        <figure class="out out-ic"><svg viewBox="0 0 120 100" aria-hidden="true"><ellipse class="wash" cx="60" cy="58" rx="46" ry="30" fill="#e8c98f"/><g class="pen"><path d="M18 32c14-8 30-8 42 2c12-10 28-10 42-2v46c-14-8-30-8-42 2c-12-10-28-10-42-2z"/><path d="M60 34v46"/><path d="M28 44c8-3 16-3 24 1M28 54c8-3 16-3 24 1M68 45c8-4 16-4 24-1M68 55c8-4 16-4 24-1"/></g></svg><figcaption><b id="o-book">167</b><span>冊、本を読む</span></figcaption></figure>
+        <figure class="out out-ic"><svg viewBox="0 0 120 100" aria-hidden="true"><ellipse class="wash" cx="60" cy="62" rx="50" ry="28" fill="#9cb8cf"/><circle class="wash" cx="88" cy="26" r="11" fill="#f0b48a"/><g class="pen"><path d="M8 84l38-48c6-7 22-7 28 0l38 48"/><path d="M40 44l8 6 6-6 6 7 6-7 6 6 6-4"/><circle cx="88" cy="26" r="9"/><path d="M4 86h112"/></g></svg><figcaption><b id="o-fuji">100</b><span>回、富士山に登る</span></figcaption></figure>
+        <figure class="out out-ic"><svg viewBox="0 0 120 100" aria-hidden="true"><ellipse class="wash" cx="60" cy="64" rx="48" ry="26" fill="#a9c9b8"/><g class="pen"><path d="M28 40h64c3 0 5 2 5 5v34c0 3-2 5-5 5H28c-3 0-5-2-5-5V45c0-3 2-5 5-5z"/><path d="M48 40v-8c0-2 2-4 4-4h16c2 0 4 2 4 4v8"/><path d="M42 40v44M78 40v44"/><path d="M32 88v4M88 88v4"/></g></svg><figcaption><b id="o-trip">4</b><span>回、2週間の旅に出る</span></figcaption></figure>
       </div>
     </div>
+    <div class="tw-cta"><p>この時間を、少しずつ外へ。</p><a class="btn btn-cta btn-cta-paper" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    <p class="tw-note">一生は15〜80歳、本は1冊6時間、富士山は往復10時間で計算。</p>
   </div>
-  <div class="tw-cta"><p>この時間を、少しずつ外へ。</p><a class="btn btn-cta btn-cta-paper" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
-  <p class="tw-note">一生は15〜80歳、本は1冊6時間、富士山は往復10時間で計算。</p>
 </section>
 
 <section class="page slipwrap" id="road" data-w="1">
