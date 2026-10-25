@@ -199,7 +199,7 @@ def build_article(a, by_slug):
     <aside class="article-cta" aria-label="Soto Phone について">
       <p class="article-cta-eyebrow" lang="en">Soto Phone</p>
       <p class="article-cta-h">SNS もゲームもない携帯電話を、作っています。</p>
-      <p>集中したいときは通知が止まり、外で過ごすほど携帯代が安くなる。発売が決まったら、先行予約に登録した方に最初にお知らせします。</p>
+      <p>電話・地図・乗換・カメラなど、外で使う道具だけを入れています。集中したいときは通知が止まります。発売が決まったら、先行予約に登録した方に最初にお知らせします。</p>
       <a class="btn btn-cta" href="/?from={cta_from}#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">先行予約に登録する（無料）</span></a>
     </aside>
     {rel_html}
