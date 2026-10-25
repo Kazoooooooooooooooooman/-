@@ -265,6 +265,8 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
 @media (max-width:820px) and (max-aspect-ratio:1/1){
   .stage[data-ch="0"]{--px:12%;--ps:.9}
   .stage[data-ch="0"] .phone{--py:262%}
+  .stage[data-ch="0"][data-h0="b"]{--px:-50%;--ps:1.02}
+  .stage[data-ch="0"][data-h0="b"] .phone{--py:0%;rotate:-3deg}
 }
 
 /* 登録まわり：かかる手間・確かな特典・届くものを、押す前に見せる */
@@ -299,6 +301,25 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
   .ticket figcaption small{display:none}
   .tw-cta{gap:12px}
 }
+
+/* スマホ・縦長タブレットの最初の画面：何だろう → いいな → 欲しい → 押す、の順に見せる。
+   はじめは見出しと写真だけ。少し進むと見出しが消え、携帯が空に大きく出て、下に登録欄が上がってくる */
+.h0-act .l1{display:none}
+@media (max-aspect-ratio:1/1){
+  .ch[data-i="0"]{top:0;bottom:0;padding-top:calc(92px + env(safe-area-inset-top,0px))}
+  .h0-head .lead br,.h0-head .lead .ph:first-child{display:none}
+  .ch[data-i="0"] > .h0-head,.ch[data-i="0"] > .h0-act{animation:none}
+  .h0-head{transition:opacity .6s var(--ease),transform .7s var(--ease)}
+  .h0-act{position:absolute;left:0;right:0;bottom:calc(30px + env(safe-area-inset-bottom,0px));transition:opacity .6s var(--ease),transform .7s var(--ease)}
+  .h0-act .l1{display:block;margin-bottom:14px;font-size:17px}
+  .stage:not([data-h0="b"]) .h0-act{opacity:0;transform:translateY(28px);pointer-events:none}
+  .stage[data-h0="b"] .h0-head{opacity:0;transform:translateY(-18px);pointer-events:none}
+  .stage[data-ch="0"][data-h0="b"] .scrim{background:linear-gradient(0deg,rgba(20,14,8,.8) 0%,rgba(20,14,8,.42) 34%,rgba(20,14,8,0) 56%)}
+}
+@media (min-width:821px) and (max-aspect-ratio:1/1){
+  .stage[data-ch="0"][data-h0="b"]{--px:-50%;--py:-112%;--ps:.78}
+  .h0-act{left:var(--m);right:auto;width:min(560px,70vw)}
+}
 </style>
 </head>
 <body>
@@ -331,12 +352,17 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
     <div class="phone"><img src="img/phone-cut.webp" alt="Soto Phone のデザイン案。正方形に近い白黒の画面に、時刻と、電話・地図・カメラ・集中モード・メッセージ・乗換の文字が並ぶ" width="982" height="1024"></div>
 
     <div class="ch on" data-i="0">
-      <h1 class="display"><span class="nw"><span class="en">SNS</span>もゲームもない</span><br>携帯電話</h1>
-      <p class="lead"><span class="ph">電話・地図・乗換・カメラだけ。</span><br><span class="ph">楽しさは、</span><span class="ph">画面の外に。</span></p>
-      <form class="form" id="hero-form" action="#join" novalidate><label class="sr" for="m1">メールアドレス</label><input id="m1" type="email" inputmode="email" placeholder="メールアドレス" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="hero-msg" role="status" aria-live="polite"></p>
-      <ul class="perks" aria-label="登録について"><li>無料</li><li>メールアドレスだけ</li><li>いつでも配信停止</li></ul>
-      <p class="fine perk300"><span class="ph"><b class="no300">No.300 まで</b>の方は、</span><span class="ph">ご希望で本体に登録番号を刻めます。</span></p>
-      <p class="fine"><span class="ph">登録で<a class="pp" href="/privacy">プライバシーポリシー</a>に同意したものとします。</span></p>
+      <div class="h0-head">
+        <h1 class="display"><span class="nw"><span class="en">SNS</span>もゲームもない</span><br>携帯電話</h1>
+        <p class="lead"><span class="ph">電話・地図・乗換・カメラだけ。</span><br><span class="ph">楽しさは、</span><span class="ph">画面の外に。</span></p>
+      </div>
+      <div class="h0-act">
+        <p class="lead l1" aria-hidden="true"><span class="ph">電話・地図・乗換・カメラだけ。</span></p>
+        <form class="form" id="hero-form" action="#join" novalidate><label class="sr" for="m1">メールアドレス</label><input id="m1" type="email" inputmode="email" placeholder="メールアドレス" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="hero-msg" role="status" aria-live="polite"></p>
+        <ul class="perks" aria-label="登録について"><li>無料</li><li>メールアドレスだけ</li><li>いつでも配信停止</li></ul>
+        <p class="fine perk300"><span class="ph"><b class="no300">No.300 まで</b>の方は、</span><span class="ph">ご希望で本体に登録番号を刻めます。</span></p>
+        <p class="fine"><span class="ph">登録で<a class="pp" href="/privacy">プライバシーポリシー</a>に同意したものとします。</span></p>
+      </div>
     </div>
     <div class="ch" data-i="1" id="inside">
       <h2 class="h2">出かける道具だけ、<br>入っている。</h2>
@@ -483,6 +509,7 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
     if(i!==cur){cur=i;stage.dataset.ch=i;bgs.forEach((b,k)=>b.classList.toggle('on',k===i));chs.forEach((c,k)=>c.classList.toggle('on',k===i));cap.textContent=caps[i];motion(i);}
     const local=p*5-i; stage.style.setProperty('--gray', i===2? Math.min(1,local*2.2):0);
     reveal(p*5);
+    if(portrait){ const ph=(i===0&&local>.16)?'b':'a'; if(stage.dataset.h0!==ph) stage.dataset.h0=ph; } else if(stage.dataset.h0) delete stage.dataset.h0;
     chs.forEach((c,k)=>{c.style.opacity = (k===i && i<4) ? Math.max(0,1-Math.max(0,local-.68)/.2).toFixed(3) : '';});
     if(i===0 && innerWidth>=820 && !portrait){const u=Math.min(1,Math.max(0,(local-.35)/.6)); stage.style.setProperty('--py',(52-102*ease(u)).toFixed(1)+'%');} else stage.style.removeProperty('--py');
     let dark=false; document.querySelectorAll('[data-tone=dark]').forEach(el=>{const q=el.getBoundingClientRect(); if(q.top<=40&&q.bottom>40) dark=true;}); nav.classList.toggle('on-paper', !dark);

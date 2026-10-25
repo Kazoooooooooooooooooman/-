@@ -204,7 +204,8 @@
     const r = story.getBoundingClientRect();
     const pastHero = -r.top > innerHeight * 0.6;
     const atJoin = r.bottom < innerHeight * 1.15 && r.bottom > 0;
-    const show = pastHero && !atJoin && !registered;
+    const stg = document.getElementById("stage"), heroForm = stg && stg.dataset.ch === "0";
+    const show = pastHero && !atJoin && !heroForm && !registered;
     bar.classList.toggle("show", show);
     bar.setAttribute("aria-hidden", show ? "false" : "true");
     bar.tabIndex = show ? 0 : -1;
