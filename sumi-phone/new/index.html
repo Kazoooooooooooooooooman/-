@@ -358,6 +358,9 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
 .close img{display:none}
 .close .txt{position:static;width:auto;max-width:640px;margin:0 auto;text-align:center}
 .close .txt .lead{color:var(--soft)}
+.credits{max-width:none;padding-right:max(var(--m),calc(100% - 1100px))}
+html,body{background:var(--paper)}
+.ch-last .ticket{max-width:300px}
 .foot{background:var(--paper)}.word,.credits{background:var(--paper)}
 .close .txt.wcard{background:rgba(244,242,236,.88);padding:clamp(28px,4.5vw,56px)}
 .close img{display:none!important}
@@ -430,7 +433,7 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
     </div>
     <div class="ch" data-i="1" id="inside">
       <h2 class="h2">出かける道具だけ、<br>入っている。</h2>
-      <p class="words"><span class="ph">電話、</span><span class="ph">SMS、</span><span class="ph">地図、</span><span class="ph">乗換、</span><span class="ph">天気、</span><span class="ph">カメラ、</span><span class="ph">音楽、</span><span class="ph">防災、</span><span class="ph">時計、</span><span class="ph">メモ。</span><br><span class="ph">入れないもの：</span><s><span class="ph">SNS</span></s>　<s><span class="ph">ゲーム</span></s>　<s><span class="ph">動画</span></s>　<s><span class="ph">アプリストア</span></s>　<s><span class="ph">ブラウザ</span></s></p>
+      <p class="words">電話・地図・乗換・カメラ・音楽など。<br>入れないもの：<s>SNS</s>　<s>ゲーム</s>　<s>動画</s></p>
     </div>
     <div class="ch" data-i="2">
       <h2 class="h2">画面は、<br>ふだんは白黒。</h2>
@@ -442,10 +445,11 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
     </div>
     <div class="ch ch-last" data-i="4" id="join">
       <h2 class="h2">完成品を、<br>いちばん先に。</h2>
-      <p class="lead"><span class="ph">本体は5〜6万円台を予定しています。</span><span class="ph">試作機ができたら、</span><span class="ph">登録した方から順にご案内します。</span></p>
+      <p class="lead"><span class="ph">試作機ができたら、</span><span class="ph">登録した順にご案内します。</span></p>
       <figure class="ticket"><img src="/images/mail/ticket-kansei.png" width="348" height="160" alt="登録すると届く招待券。完成品を、いちばん先に。"><figcaption><span>NO.</span><b>— — —</b><small>登録すると、この券がメールで届きます</small></figcaption></figure>
       <form class="form" id="join-form" action="#join" novalidate><label class="sr" for="m2">メールアドレス</label><input id="m2" type="email" inputmode="email" placeholder="メールアドレス" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="join-msg" role="status" aria-live="polite"></p>
-      <p class="fine"><span class="ph">登録は無料。</span><span class="ph">月に1回、開発の様子を短い手紙でお送りします。</span><span class="ph"><b class="no300">No.300 まで</b>は本体に番号を刻めます。</span><span class="ph">登録で<a class="pp" href="/privacy">プライバシーポリシー</a>に同意したものとします。</span></p>
+      <ul class="perks" aria-label="登録について"><li>無料</li><li>メールアドレスだけ</li><li>いつでも配信停止</li></ul>
+      <p class="fine">登録で<a class="pp" href="/privacy">プライバシーポリシー</a>に同意したものとします。</p>
     </div>
 
     <p class="cap" id="cap"></p>
@@ -471,7 +475,7 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
     </div>
   </div>
   <div class="tw-cta"><p>この時間を、少しずつ外へ。</p><a class="btn btn-cta btn-cta-paper" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
-  <p class="tw-note">一生は15〜80歳の65年、最初の165分は東京の15〜69歳の平均に近い値。本は1冊6時間、富士山は往復10時間、旅は起きている時間（1日16時間）で数えています。</p>
+  <p class="tw-note">一生は15〜80歳、本は1冊6時間、富士山は往復10時間で計算。</p>
 </section>
 
 <section class="page slipwrap" id="road" data-w="1">
@@ -494,9 +498,8 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
 
 <section class="page" data-w="1">
   <article class="letter reveal">
-    <p>僕は、携帯を作ったことがありません。でも、携帯に支配されていた側の人間です。</p>
-    <p>スクリーンタイムを設定しても、自分で解除してしまう。だから、意志に頼らなくても、自然と外に出たくなる携帯を作ります。</p>
-    <p>できあがるまでの様子は、月に1回、短い手紙にしてお送りします。</p>
+    <p>スクリーンタイムを設定しても、自分で解除してしまう。僕は、携帯に支配されていた側の人間です。</p>
+    <p>だから、意志に頼らなくても、外に出たくなる携帯を作っています。</p>
     <p class="sign">佐々木 一真</p>
     <p class="role">Soto Phone 代表</p>
   </article>

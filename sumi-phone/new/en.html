@@ -358,6 +358,9 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
 .close img{display:none}
 .close .txt{position:static;width:auto;max-width:640px;margin:0 auto;text-align:center}
 .close .txt .lead{color:var(--soft)}
+.credits{max-width:none;padding-right:max(var(--m),calc(100% - 1100px))}
+html,body{background:var(--paper)}
+.ch-last .ticket{max-width:300px}
 .foot{background:var(--paper)}.word,.credits{background:var(--paper)}
 .close .txt.wcard{background:rgba(244,242,236,.88);padding:clamp(28px,4.5vw,56px)}
 .close img{display:none!important}
@@ -430,7 +433,7 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
     </div>
     <div class="ch" data-i="1" id="inside">
       <h2 class="h2">Only the tools<br>for heading out.</h2>
-      <p class="words">Calls, SMS, maps, transit, weather, camera, music, emergency alerts, clock, notes.<br>Left out: <s>Social media</s>&ensp;<s>Games</s>&ensp;<s>Video</s>&ensp;<s>App store</s>&ensp;<s>Browser</s></p>
+      <p class="words">Calls, maps, transit, camera, music and a few more.<br>Left out: <s>Social media</s>&ensp;<s>Games</s>&ensp;<s>Video</s></p>
     </div>
     <div class="ch" data-i="2">
       <h2 class="h2">A screen that’s<br>black and white.</h2>
@@ -442,10 +445,11 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
     </div>
     <div class="ch ch-last" data-i="4" id="join">
       <h2 class="h2">See the finished<br>phone first.</h2>
-      <p class="lead">We’re planning a price between ¥50,000 and ¥70,000. When the prototype is ready, people on the list hear first, in order of sign-up.</p>
+      <p class="lead">When the prototype is ready, you’ll hear first.</p>
       <figure class="ticket"><img src="/images/mail/ticket-en.png" width="348" height="160" alt="The invitation you receive after joining: see the finished phone first."><figcaption><span>NO.</span><b>— — —</b><small>This ticket arrives by email when you join</small></figcaption></figure>
       <form class="form" id="join-form" action="#join" novalidate><label class="sr" for="m2">Email</label><input id="m2" type="email" inputmode="email" placeholder="Your email" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="join-msg" role="status" aria-live="polite"></p>
-      <p class="fine">Free to join. Once a month, a short letter about how the phone is coming along. The first <b class="no300">300 people</b> can have their number engraved. By joining, you agree to our <a class="pp" href="/privacy-en">privacy policy</a>.</p>
+      <ul class="perks" aria-label="About the list"><li>Free</li><li>Email only</li><li>Unsubscribe anytime</li></ul>
+      <p class="fine">By joining, you agree to our <a class="pp" href="/privacy-en">privacy policy</a>.</p>
     </div>
 
     <p class="cap" id="cap"></p>
@@ -471,7 +475,7 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
     </div>
   </div>
   <div class="tw-cta"><p>Move that time outside, a little at a time.</p><a class="btn btn-cta btn-cta-paper" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
-  <p class="tw-note">A lifetime here is the 65 years from age 15 to 80. The starting 165 minutes is close to the average for ages 15–69 in Tokyo. A book takes 6 hours, Mount Fuji 10 hours round trip, and a trip counts waking hours (16 a day).</p>
+  <p class="tw-note">Based on a lifetime from age 15 to 80, 6 hours per book and 10 hours per Fuji climb.</p>
 </section>
 
 <section class="page slipwrap" id="road" data-w="1">
@@ -494,9 +498,8 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
 
 <section class="page" data-w="1">
   <article class="letter reveal">
-    <p>I’ve never built a phone before. But I know what it’s like to be run by one.</p>
-    <p>I’d set screen time limits, then turn them off myself. So I’m building a phone that makes you want to head out, without relying on willpower.</p>
-    <p>Once a month, I’ll send a short letter about how it’s coming along.</p>
+    <p>I’d set screen time limits, then turn them off myself. I know what it’s like to be run by a phone.</p>
+    <p>So I’m building one that makes you want to head out, without relying on willpower.</p>
     <p class="sign">Kazuma Sasaki</p>
     <p class="role">Founder, Soto Phone</p>
   </article>
