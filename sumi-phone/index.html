@@ -4,8 +4,8 @@
 <meta charset="utf-8" />
 <!-- 1枚目の見せ方を比べるためのパターン（a・b・c・d）。?h=b のように URL で選べる。選ばれていない人には a〜d のどれかを決めて覚えておく。
      検索エンジンも人と同じに扱う（ロボットだけ別の中身を見せると、Google の禁止する「クローキング」になる）。
-     ?h= の付いた URL も canonical は https://sotophone.jp/ のまま。o（最初の版）と p（お誘いの2行の版）は、URL で選んだときだけ出す -->
-<script>(function(){var d=document.documentElement,h="a",src="auto";try{var m=location.search.match(/[?&]h=([abcdop])\b/);if(m){h=m[1];src=/[?&]from=[^&]*ad\b/.test(location.search)?"ad":"url"}else{h=localStorage.getItem("soto-h")||"abcd".charAt(Math.floor(Math.random()*4));if("abcd".indexOf(h)<0)h="a";localStorage.setItem("soto-h",h)}}catch(e){}d.setAttribute("data-h",h);d.setAttribute("data-hsrc",src)})();</script>
+     ?h= の付いた URL も canonical は https://sotophone.jp/ のまま。初めて来た人の半分は n（新しいデザイン /new/）に一時的に転送する。/new/ の canonical はトップなので、検索にはトップだけが出る（Google の A/B テストの案内どおり）。o（最初の版）と p（お誘いの2行の版）は、URL で選んだときだけ出す -->
+<script>(function(){var d=document.documentElement,h="a",src="auto";try{var m=location.search.match(/[?&]h=([abcdnop])\b/);if(m){h=m[1];src=/[?&]from=[^&]*ad\b/.test(location.search)?"ad":"url"}else{h=localStorage.getItem("soto-h");if(!h){h=Math.random()<.5?"n":"abcd".charAt(Math.floor(Math.random()*4));localStorage.setItem("soto-h",h)}if("abcdn".indexOf(h)<0)h="a"}if(h==="n"){location.replace("/new/"+location.search+location.hash);return}}catch(e){}d.setAttribute("data-h",h);d.setAttribute("data-hsrc",src)})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Soto Phone（ソトフォン）｜SNSもゲームもない、日本で使えるミニマルフォン</title>
 <meta name="description" content="楽しさは、画面の外に。Soto Phone は、スマホから離れてできた時間を、大事な人やスポーツ、新しい挑戦に向けるための携帯電話です。電話・地図・カメラなど必要なものだけを入れ、外で過ごすほど携帯代が安くなります。先行予約は無料です。" />

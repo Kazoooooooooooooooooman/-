@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="ja" data-h="n">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Soto Phone（ソトフォン）｜SNSもゲームもない携帯電話</title>
+<meta name="description" content="楽しさは、画面の外に。Soto Phone は、電話・地図・乗換・カメラなど出かける道具だけを入れた、SNS もゲームもない携帯電話です。完成品をいちばん先に見られる先行登録は無料です。" />
+<!-- 新しいデザインの比較用ページ。canonical をトップにして、検索にはトップ（/）だけを出す -->
+<link rel="canonical" href="https://sotophone.jp/" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+<link rel="stylesheet" href="/fonts/fonts.css" />
+<meta property="og:title" content="Soto Phone｜楽しさは、画面の外に。" />
+<meta property="og:image" content="https://sotophone.jp/images/og-ja-2.jpg" />
+<style>
+.msg{margin-top:10px;font-size:14px;min-height:1.4em}
+.msg button{font:inherit;background:none;border:0;color:inherit;text-decoration:underline;cursor:pointer;padding:0}
+.done{margin-top:18px;padding:18px 20px;border-radius:14px;background:rgba(244,242,236,.94);color:var(--ink);max-width:460px}
+.done b{font-family:var(--serif);font-weight:500;font-size:22px}
+
+:root{
+  --paper:#f4f2ec; --ink:#1f1e1c; --soft:rgba(31,30,28,.74); --dark:#161513; --accent:#a94c2f;
+  --serif:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --sans:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --latin:"Inter Tight","Helvetica Neue",Arial,sans-serif;
+  --m:clamp(20px,3.2vw,48px);
+  --ease:cubic-bezier(.22,.7,.12,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+html{color-scheme:light;overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.8;letter-spacing:.03em;-webkit-font-smoothing:antialiased;overflow-x:clip}
+a{color:inherit}
+img{display:block;max-width:100%}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* nav: plain bar */
+.nav{position:fixed;inset:0 0 auto 0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:calc(18px + env(safe-area-inset-top,0px)) var(--m) 18px;color:var(--paper);transition:color .4s,background-color .4s}
+.nav.on-paper{color:var(--ink);background:var(--paper)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-family:var(--latin);font-weight:500;letter-spacing:.32em;font-size:15px}
+.brand .mark{height:30px;width:auto}
+.nav ul{display:flex;gap:30px;list-style:none;align-items:center;font-size:15px}
+.nav ul a{text-decoration:none}
+.nav ul a:hover{text-decoration:underline;text-underline-offset:6px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 26px;border-radius:999px;border:0;font:500 15px/1 var(--sans);letter-spacing:.06em;cursor:pointer;text-decoration:none;transition:transform .2s var(--ease),background-color .2s}
+.btn:active{transform:scale(.97)}
+.btn-paper{background:var(--paper);color:var(--ink)}
+.btn-paper:hover{background:#fff}
+.btn-ink{background:var(--ink);color:var(--paper)}
+.btn-ink:hover{background:#000}
+.nav .btn{height:40px;padding:0 20px}
+.nav.on-paper .btn{background:var(--ink);color:var(--paper)}
+
+/* the story: phone stays, the outside changes */
+.story{position:relative;height:620svh;background:var(--dark)}
+.stage{position:sticky;top:0;height:100svh;overflow:hidden;color:var(--paper)}
+.bg{position:absolute;inset:0;background:#2a2a26;will-change:clip-path}
+.bg:not(:first-child){clip-path:inset(50% 50% 50% 50% round 18px)}
+.bg img{background:#2a2a26}
+.bg img,.bg video{transform:scale(var(--z,1))}
+.bg img{width:100%;height:100%;object-fit:cover}
+.bg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bg picture{position:absolute;inset:0;display:block}
+.bg .bgposter{position:absolute;inset:0}
+.bg.playing .bgposter{opacity:0;transition:opacity .6s}
+.bg[data-k="ch3"] img,.bg[data-k="ch3"] video{filter:grayscale(var(--gray,0))}
+.scrim{position:absolute;inset:0;background:linear-gradient(90deg,rgba(38,28,20,.55) 0%,rgba(38,28,20,.24) 46%,rgba(38,28,20,0) 70%),linear-gradient(0deg,rgba(38,28,20,.4) 0%,rgba(38,28,20,0) 34%)}
+.phone{position:absolute;left:50%;top:50%;width:min(46svh,40vw);aspect-ratio:982/1024;transform:translate(var(--px,8%),var(--py,-50%)) scale(var(--ps,1));transition:transform 1.2s var(--ease),filter 1.2s var(--ease);filter:drop-shadow(0 24px 36px rgba(40,28,18,.28))}
+.phone img{width:100%;height:100%}
+.stage[data-ch="0"]{--px:-18%;--ps:.66}
+.stage[data-ch="0"]{--py:52%}
+.phone{transition:transform 1.2s var(--ease),filter 1.2s var(--ease),opacity .9s var(--ease)}
+.stage[data-ch="0"] .scrim{background:linear-gradient(0deg,rgba(30,24,18,.72) 0%,rgba(30,24,18,.42) 34%,rgba(30,24,18,0) 60%),linear-gradient(90deg,rgba(30,24,18,.35) 0%,rgba(30,24,18,0) 45%)}
+.stage[data-ch="1"]{--px:4%;--ps:1}
+.stage[data-ch="2"]{--px:-114%;--py:-68%;--ps:.84}
+.stage[data-ch="3"]{--px:-112%;--py:-66%;--ps:.88}
+.stage[data-ch="4"]{--px:-118%;--ps:.9}
+.stage[data-ch="3"] .phone{filter:drop-shadow(0 30px 40px rgba(0,0,0,.35)) grayscale(1)}
+
+.ch{position:absolute;left:var(--m);bottom:clamp(56px,11svh,120px);width:min(560px,44vw);opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .9s var(--ease);pointer-events:none}
+.ch.on{opacity:1;transform:none;pointer-events:auto}
+.ch.on > *{animation:rise .9s var(--ease) both}
+.ch.on > *:nth-child(2){animation-delay:.08s}.ch.on > *:nth-child(3){animation-delay:.16s}.ch.on > *:nth-child(4){animation-delay:.24s}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.ch-last{left:auto;right:var(--m)}
+.ch[data-i="0"]{width:min(760px,52vw)}
+.nw{white-space:nowrap}
+.ph{display:inline-block}
+.pp{white-space:nowrap}
+.split > *{min-width:0}
+.display{font-family:var(--serif);font-weight:400;font-size:clamp(34px,4.1vw,66px);line-height:1.22;letter-spacing:.01em;font-feature-settings:"palt"}
+.display .en{font-family:var(--latin);font-weight:500;letter-spacing:-.01em;margin-right:.12em}
+.h2{font-family:var(--serif);font-weight:400;font-size:clamp(30px,3.3vw,52px);line-height:1.3;letter-spacing:.01em;font-feature-settings:"palt"}
+.lead{margin-top:22px;font-size:clamp(17px,1.3vw,19px);line-height:1.9;max-width:30em;letter-spacing:.04em}
+.words{margin-top:26px;font-size:clamp(17px,1.3vw,19px);line-height:2}
+.words s{text-decoration-thickness:1px;opacity:.75}
+.form{margin-top:36px;display:flex;gap:6px;max-width:440px;background:rgba(244,242,236,.96);border-radius:999px;padding:5px}
+.form .btn{height:46px;padding:0 20px 0 18px;font-size:14px;flex:0 0 auto}
+/* the signup button: near-black pill, vermilion dot, arrow that turns, light that follows the finger, slight pull toward the pointer */
+.btn.btn-cta{--tx:0px;--ty:0px;--mx:50%;--my:50%;position:relative;isolation:isolate;overflow:hidden;gap:.7em;background:#121110;color:#f4f2ec;translate:var(--tx) var(--ty);transition:translate .35s cubic-bezier(.2,.8,.2,1),scale .15s ease,background-color .2s}
+.btn.btn-cta:active{scale:.97;transform:none}
+.btn.btn-cta.is-magnet{transition:translate .12s linear,scale .15s ease}
+.btn.btn-cta::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:radial-gradient(120px circle at var(--mx) var(--my),rgba(255,244,230,.22),transparent 70%);opacity:0;transition:opacity .3s}
+.btn.btn-cta:hover::before{opacity:1}
+.btn-dot{flex:none;width:6px;height:6px;border-radius:50%;background:#e0502e;box-shadow:0 0 6px rgba(224,80,46,.7)}
+.btn-arrow{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.btn.btn-cta:hover .btn-arrow,.btn.btn-cta:focus-visible .btn-arrow{transform:rotate(-45deg)}
+.btn.btn-cta-paper{background:var(--paper);color:var(--ink)}
+.btn.btn-cta-paper::before{background:radial-gradient(120px circle at var(--mx) var(--my),rgba(31,30,28,.12),transparent 70%)}
+@media (prefers-reduced-motion:reduce){.btn.btn-cta,.btn-arrow{transition:none;translate:none}}
+.fine .pp{opacity:.9;text-underline-offset:3px}
+.form input{flex:1;min-width:0;border:0;background:transparent;padding:0 18px;font:16px var(--sans);color:var(--ink)}
+.form input:focus{outline:none}
+.form:focus-within{outline:2px solid var(--paper);outline-offset:3px}
+.fine{margin-top:14px;font-size:13px;opacity:.82;letter-spacing:.04em}
+.cap{position:absolute;right:var(--m);bottom:22px;font-size:13px;opacity:.82;transition:opacity .6s}
+
+/* paper sections */
+section.page{padding:clamp(120px,16vw,220px) var(--m)}
+.wrap{max-width:1344px;margin:0 auto}
+.split{display:grid;grid-template-columns:5fr 7fr;gap:clamp(32px,5vw,96px);align-items:start}
+
+/* figures + live calculator */
+.figs{display:grid;gap:30px;margin-top:56px}
+.fig{display:grid;grid-template-columns:200px 1fr;gap:28px;align-items:baseline}
+.fig b{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3vw,44px);text-align:right;font-feature-settings:"tnum";letter-spacing:0}
+.fig p{max-width:34em}
+.fig small{display:block;font-size:14px;color:var(--soft);margin-top:4px}
+.calc{background:var(--ink);color:var(--paper);padding:clamp(32px,4vw,64px);position:sticky;top:96px}
+.calc h3{font-family:var(--serif);font-weight:500;font-size:clamp(24px,2.2vw,32px);line-height:1.4}
+.dial{margin-top:36px;display:flex;align-items:center;gap:18px}
+.dial button{width:56px;height:56px;border-radius:50%;border:0;background:var(--paper);color:var(--ink);font-size:26px;cursor:pointer;transition:transform .15s}
+.dial button:active{transform:scale(.92)}
+.dial output{font-family:var(--serif);font-size:clamp(34px,4.4vw,64px);font-feature-settings:"tnum";flex:1;text-align:center;white-space:nowrap}
+.years{margin-top:36px;font-size:clamp(18px,1.5vw,22px);line-height:1.8}
+.years strong{font-family:var(--serif);font-weight:500;font-size:clamp(44px,5vw,76px);display:block;line-height:1.1;margin:8px 0}
+.calc .fine{opacity:.75}
+
+
+/* time: a question on the left, what that time could be on the right */
+.time{background:#ebe5d8;color:var(--ink);padding:clamp(96px,10vw,150px) var(--m) clamp(48px,5vw,72px)}
+.tw > *{min-width:0}
+.tw{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,5vw,96px);align-items:center;max-width:1500px;margin:0 auto}
+.time .h2{font-size:clamp(28px,2.8vw,42px)}
+.time .dial{margin-top:clamp(32px,3.4vw,52px);display:flex;align-items:center;gap:16px}
+.time .dial button{width:48px;height:48px;border-radius:50%;border:0;background:var(--ink);color:var(--paper);font-size:22px;line-height:1;cursor:pointer;flex:0 0 auto;transition:transform .15s var(--ease)}
+.time .dial button:active{transform:scale(.92)}
+.time .dial output{flex:1;text-align:center;font-family:var(--serif);font-weight:500;font-size:clamp(30px,3vw,46px);font-variant-numeric:tabular-nums;white-space:nowrap}
+.time input[type=range]{width:100%;margin-top:18px;accent-color:var(--ink);height:24px}
+.res{margin-top:clamp(28px,3vw,44px)}
+.res p{font-size:16px}
+.res strong{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(56px,6.4vw,104px);line-height:1;letter-spacing:-.01em;margin:10px 0 12px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tw-cap{font-size:15px;opacity:.75;margin-bottom:14px}
+.outs-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.out{margin:0;position:relative;min-width:0;border-radius:14px;overflow:hidden}
+.out img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover;background:#d9d2c4;filter:grayscale(var(--tg,0));transition:filter .6s var(--ease)}
+.out figcaption{position:absolute;left:0;right:0;bottom:0;padding:44px 16px 16px;color:#fff;background:linear-gradient(0deg,rgba(20,16,12,.62),rgba(20,16,12,0))}
+.out b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(30px,2.8vw,44px);line-height:1;font-variant-numeric:tabular-nums}
+.out span{display:block;margin-top:6px;font-size:14px}
+.tw-note{max-width:1500px;margin:clamp(36px,4vw,56px) auto 0;font-size:12px;opacity:.55}
+@media (max-width:820px){
+  .tw{grid-template-columns:1fr;gap:36px}
+  .time .h2{font-size:6.6vw}
+  .res strong{font-size:16vw}
+  .time .dial output{font-size:8vw}
+  .outs-row{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin:0 calc(var(--m) * -1);padding:0 var(--m);scrollbar-width:none}
+  .out{flex:0 0 62vw;scroll-snap-align:start}
+}
+
+/* outside gallery: drag row */
+.row-head{display:flex;justify-content:space-between;align-items:baseline;padding:0 var(--m);max-width:1440px;margin:0 auto 32px}
+.row{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding:0 var(--m) 8px;scrollbar-width:none;height:68svh;min-height:420px}
+.row::-webkit-scrollbar{display:none}
+.row figure{flex:0 0 auto;height:100%;scroll-snap-align:start;position:relative}
+.row figure img{height:100%;width:auto;object-fit:cover;border-radius:14px}
+.row .tall img{aspect-ratio:3/4}
+.row .wide img{aspect-ratio:16/10}
+.row figcaption{position:absolute;left:14px;bottom:12px;color:#fff;font-size:14px;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+
+/* the slip */
+.slipwrap{background:#e7e3d9}
+.slip{background:var(--paper);width:min(480px,100%);padding:40px 36px 64px;clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),96% 100%,92% calc(100% - 14px),88% 100%,84% calc(100% - 14px),80% 100%,76% calc(100% - 14px),72% 100%,68% calc(100% - 14px),64% 100%,60% calc(100% - 14px),56% 100%,52% calc(100% - 14px),48% 100%,44% calc(100% - 14px),40% 100%,36% calc(100% - 14px),32% 100%,28% calc(100% - 14px),24% 100%,20% calc(100% - 14px),16% 100%,12% calc(100% - 14px),8% 100%,4% calc(100% - 14px),0 100%);font-size:16px;justify-self:end}
+.slip h3{font-size:16px;font-weight:700;margin-top:28px}
+.slip h3:first-child{margin-top:0}
+.slip .r{display:flex;gap:10px;align-items:baseline;margin-top:8px}
+.slip .r span:first-child{flex:0 1 auto}
+.slip .r i{flex:1;align-self:center;height:4px;background-image:radial-gradient(circle,var(--ink) 1.4px,transparent 1.6px);background-size:8px 4px;opacity:.5}
+.slip .r span:last-child{white-space:nowrap}
+.slip .end{margin:32px -36px 0;background:var(--ink);color:var(--paper);display:flex;justify-content:space-between;padding:12px 36px}
+
+/* letter */
+.letter{max-width:640px;margin:0 auto;background:#fffdf8;padding:60px;font-size:17px;line-height:1.95;border-radius:4px}
+.letter p+p{margin-top:1.4em}
+.letter .sign{margin-top:36px;font-family:var(--serif);font-size:22px}
+.letter .role{font-size:14px;color:var(--soft)}
+
+/* faq */
+.faq details{padding:18px 0}
+.faq summary{font-size:19px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";width:10px;height:10px;border-right:2px solid;border-bottom:2px solid;transform:rotate(45deg);margin-top:8px;flex:0 0 auto;transition:transform .3s var(--ease)}
+.faq details[open] summary::after{transform:rotate(225deg)}
+.faq details p{margin-top:12px;color:var(--soft)}
+.faq .tall{position:relative}
+.faq .tall img{width:100%;aspect-ratio:5/4;object-fit:cover;border-radius:14px}
+.faq .tall .sq{position:absolute;left:-40px;bottom:-40px;width:38%;aspect-ratio:1;object-fit:cover;border:10px solid var(--paper)}
+
+/* close */
+.close{position:relative;height:90svh;min-height:560px;color:var(--paper)}
+.close img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.72)}
+.close .txt{position:absolute;right:var(--m);bottom:12svh;width:min(520px,44vw)}
+.foot{display:grid;grid-template-columns:1fr auto 1fr;gap:24px;padding:22svh var(--m) 30px;font-size:14px;color:var(--soft);align-items:end}
+.foot nav{display:flex;gap:24px;color:var(--ink)}
+.foot .r{text-align:right}
+.credits{padding:0 var(--m) 40px;font-size:13px;color:var(--soft);max-width:1100px}
+.word{font-family:var(--latin);font-weight:400;font-size:clamp(120px,22vw,340px);letter-spacing:-.04em;line-height:.8;padding:0 var(--m);color:var(--ink);transform-origin:left bottom;scale:var(--ws,.94)}
+
+.reveal > *{transition:opacity .8s var(--ease),transform .9s var(--ease)}
+.reveal.in > *{opacity:1;transform:none}
+.reveal.in > *:nth-child(2){transition-delay:.08s}.reveal.in > *:nth-child(3){transition-delay:.16s}.reveal.in > *:nth-child(4){transition-delay:.24s}
+
+@media (min-width:821px) and (max-aspect-ratio:1/1){
+  .stage[data-ch="0"]{--px:8%;--py:-118%;--ps:.62}
+}
+@media (max-aspect-ratio:1/1){
+  .ch[data-i="0"]{top:calc(92px + env(safe-area-inset-top,0px));bottom:auto}
+  .stage[data-ch="0"] .scrim{background:linear-gradient(180deg,rgba(30,24,18,.6) 0%,rgba(30,24,18,.3) 36%,rgba(30,24,18,0) 54%)}
+}
+@media (max-width:820px){
+  .nav ul li:not(:last-child){display:none}
+  .phone{width:min(58vw,32svh);left:50%;top:11svh;--py:0%}
+  .stage[data-ch]{--px:-50%}
+  .stage[data-ch="0"]{--px:-102%;--py:0%;--ps:1.1}
+  .stage[data-ch="0"] .phone{transform-origin:0 0;rotate:-6deg;filter:drop-shadow(0 28px 34px rgba(20,14,8,.5))}
+  .phone{transition:transform 1.2s var(--ease),rotate 1.2s var(--ease),filter 1.2s var(--ease)}
+  .stage[data-ch="4"]{--px:-50%;--ps:.78;--py:-14%}
+  .ch,.ch-last,.ch[data-i="0"]{left:20px;right:20px;width:auto;bottom:40px}
+  .display{font-size:7.4vw}
+  .row-head span{display:none}
+  .form input{padding:0 12px 0 16px;font-size:16px}
+  .form .btn{padding:0 16px;gap:.55em}
+  .form .btn-arrow{display:none}
+  .dial button{width:48px;height:48px;flex:0 0 auto}
+  .scrim{background:linear-gradient(0deg,rgba(12,12,11,.78) 0%,rgba(12,12,11,.4) 42%,rgba(12,12,11,0) 64%)}
+  .cap{display:none}
+  .split{grid-template-columns:1fr}
+  .fig{grid-template-columns:1fr;gap:4px}
+  .fig b{text-align:left;font-size:34px}
+  .calc{position:static}
+  .slip{justify-self:stretch}
+  .letter{padding:32px 24px}
+  .faq .tall .sq{left:auto;right:-8px;bottom:-30px}
+  .close .txt{position:static;width:auto;padding:28px 20px;background:var(--ink)}
+  .close{height:auto;min-height:0}
+  .close img{position:static;height:70svh}
+  .foot{grid-template-columns:1fr;padding-top:16svh}
+  .foot .r{text-align:left}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms!important;animation:none!important}
+  .reveal > *{opacity:1;transform:none}
+}
+@media (max-width:820px) and (max-aspect-ratio:1/1){
+  .stage[data-ch="0"]{--px:12%;--ps:.9}
+  .stage[data-ch="0"] .phone{--py:262%}
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <a class="brand" href="#top" aria-label="Soto Phone">
+    <svg class="mark" viewBox="-78 -327 1310 1490" aria-hidden="true"><path d="M1067.0 792.4L1067.0 988.0Q1067.0 1138.0 917.0 1138.0L97.0 1138.0Q-53.0 1138.0 -53.0 988.0L-53.0 -152.0Q-53.0 -302.0 97.0 -302.0L917.0 -302.0Q1067.0 -302.0 1067.0 -152.0L1067.0 490.0" fill="none" stroke="currentColor" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/><path d="M649.0 171.0V343.0Q597.0 284.0 561.0 204.0L548.0 211.0Q586.0 345.0 649.0 437.0V604.0Q648.0 694.0 645.0 749.5Q642.0 805.0 638.0 864.0Q638.0 872.0 646.0 878.0Q654.0 884.0 667.0 884.0Q693.0 884.0 718.0 872.5Q743.0 861.0 749.0 849.0Q745.0 777.0 742.0 647.0V543.0Q789.0477905273438 584.073486328125 848.3649291992188 615.1083984375L1104.0 755.0882568359375V755.1527709960938Q1123.350830078125 765.2035522460938 1144.0 774.1920166015625Q1152.0 739.1920166015625 1172.0 716.6920166015625Q1192.0 694.1920166015625 1220.0 687.1920166015625L1222.0 676.1920166015625Q1161.33349609375 660.5361328125 1105.933349609375 634.3485717773438L850.0 494.3609313964844V494.2386779785156Q849.103759765625 493.81134033203125 848.2086181640625 493.381103515625L848.0 493.2669982910156V493.2807922363281Q792.3226318359375 466.4952697753906 742.0 429.0V33.0L759.0 22.0Q767.0 16.0 767.0 13.0Q767.0 5.0 738.5 -5.5Q710.0 -16.0 636.0 -34.0Q649.0 45.0 649.0 171.0ZM58.0 515.0Q148.0 443.0 214.0 335.0Q240.0 367.0 260.0 403.0Q280.0 439.0 287.0 472.0Q305.0 486.0 324.0 486.0Q343.0 486.0 355.0 472.0Q367.0 458.0 367.0 436.0Q367.0 402.0 334.0 366.0Q301.0 330.0 232.0 306.0Q270.0 240.0 301.0 158.0H440.0Q407.0 394.0 314.5 577.0Q222.0 760.0 50.0 871.0L60.0 884.0Q213.0 814.0 310.0 706.0Q407.0 598.0 458.0 467.5Q509.0 337.0 536.0 175.0Q553.0 174.0 561.5 170.0Q570.0 166.0 576.0 159.0Q576.0 152.0 557.0 131.0Q538.0 110.0 516.5 91.0Q495.0 72.0 489.0 72.0Q483.0 72.0 473.0 84.0Q463.0 96.0 458.0 101.0L434.0 129.0H313.0Q336.0 60.0 347.0 17.0L365.0 9.0Q374.0 5.0 374.0 1.0Q374.0 -13.0 239.0 -47.0Q240.0 -7.0 229.0 59.5Q218.0 126.0 203.0 175.0Q173.0 271.0 132.5 356.0Q92.0 441.0 46.0 506.0Z" fill="currentColor"/></svg>
+    SOTO
+  </a>
+  <ul>
+    <li><a href="#inside">中身</a></li>
+    <li><a href="#time">時間</a></li>
+    <li><a href="#road">届くまで</a></li>
+    <li><a href="#faq">質問</a></li>
+    <li><a class="btn btn-paper" href="#join">先行登録</a></li>
+  </ul>
+</header>
+
+<main id="top">
+<div class="story" id="story" data-tone="dark">
+  <div class="stage" id="stage" data-ch="0">
+    <div class="bg on" data-k="ch1" data-v="s-hero" data-vp="s-hero-p"><picture><source media="(max-aspect-ratio:1/1)" srcset="img/s-hero-p.jpg"><img class="bgposter" src="img/s-hero.jpg" alt="海の見える崖の上で、水色のバンのまわりで笑っている友だち3人。屋根の上の1人は手を上げている" width="2560" height="1440" fetchpriority="high"></picture></div>
+    <div class="bg" data-k="ch2"><picture><source media="(max-width:819px)" srcset="img/s-canyon-m.jpg"><img src="img/s-canyon.jpg" alt="夕方のグランドキャニオンの縁を、リュックを背負って歩く2人" width="2560" height="1440" decoding="async"></picture></div>
+    <div class="bg" data-k="ch3"><picture><source media="(max-width:819px)" srcset="img/s-festival-m.jpg"><img src="img/s-festival.jpg" alt="ちょうちんが並ぶ夏祭りの夜店の通りを、浴衣の女性と友だちが笑いながら歩いている" width="2560" height="1440" decoding="async"></picture></div>
+    <div class="bg" data-k="ch4"><picture><source media="(max-width:819px)" srcset="img/s-library-m.jpg"><img src="img/s-library.jpg" alt="図書館の窓辺の机で、ノートに向かって集中する学生" width="2560" height="1440" decoding="async"></picture></div>
+    <div class="bg" data-k="ch5" data-v="s-aurora"><picture><source media="(max-width:819px)" srcset="img/s-aurora-m.jpg"><img class="bgposter" src="img/s-aurora.jpg" alt="夜の道に停めた車のそばで、オーロラを指さす2人" width="2560" height="1440" decoding="async"></picture></div>
+    <div class="scrim"></div>
+
+    <div class="phone"><img src="img/phone-cut.webp" alt="Soto Phone のデザイン案。正方形に近い白黒の画面に、時刻と、電話・地図・カメラ・集中モード・メッセージ・乗換の文字が並ぶ" width="982" height="1024"></div>
+
+    <div class="ch on" data-i="0">
+      <h1 class="display"><span class="nw"><span class="en">SNS</span>もゲームもない</span><br>携帯電話</h1>
+      <p class="lead"><span class="ph">電話・地図・乗換・カメラだけ。</span><br><span class="ph">楽しさは、</span><span class="ph">画面の外に。</span></p>
+      <form class="form" id="hero-form" action="#join" novalidate><label class="sr" for="m1">メールアドレス</label><input id="m1" type="email" inputmode="email" placeholder="メールアドレス" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="hero-msg" role="status" aria-live="polite"></p>
+      <p class="fine"><span class="ph">番号つきの招待券がメールで届きます。</span><span class="ph">登録で<a class="pp" href="/privacy">プライバシーポリシー</a>に同意したものとします。</span></p>
+    </div>
+    <div class="ch" data-i="1" id="inside">
+      <h2 class="h2">出かける道具だけ、<br>入っている。</h2>
+      <p class="words"><span class="ph">電話、</span><span class="ph">SMS、</span><span class="ph">地図、</span><span class="ph">乗換、</span><span class="ph">天気、</span><span class="ph">カメラ、</span><span class="ph">音楽、</span><span class="ph">防災、</span><span class="ph">時計、</span><span class="ph">メモ。</span><br><span class="ph">入れないもの：</span><s><span class="ph">SNS</span></s>　<s><span class="ph">ゲーム</span></s>　<s><span class="ph">動画</span></s>　<s><span class="ph">アプリストア</span></s>　<s><span class="ph">ブラウザ</span></s></p>
+    </div>
+    <div class="ch" data-i="2">
+      <h2 class="h2">画面は、<br>ふだんは白黒。</h2>
+      <p class="lead"><span class="ph">写真を開いたときだけ、</span><span class="ph">色が戻ります。</span><span class="ph">色のない画面は、</span><span class="ph">見続ける理由をひとつ減らします。</span></p>
+    </div>
+    <div class="ch" data-i="3">
+      <h2 class="h2">決めた時間、<br>通知が止まる。</h2>
+      <p class="lead"><span class="ph">「90分、英単語」と</span><span class="ph">決めて押すと、</span><span class="ph">終わるまで通知が届きません。</span><span class="ph">やり切った時間は、</span><span class="ph">記録に残ります。</span></p>
+    </div>
+    <div class="ch ch-last" data-i="4" id="join">
+      <h2 class="h2">完成品を、<br>いちばん先に。</h2>
+      <p class="lead"><span class="ph">本体は5〜6万円台を予定しています。</span><span class="ph">試作機ができたら、</span><span class="ph">登録した方から順にご案内します。</span></p>
+      <form class="form" id="join-form" action="#join" novalidate><label class="sr" for="m2">メールアドレス</label><input id="m2" type="email" inputmode="email" placeholder="メールアドレス" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="join-msg" role="status" aria-live="polite"></p>
+      <p class="fine"><span class="ph">登録は無料です。</span><span class="ph">月に1回、</span><span class="ph">開発の様子を短い手紙でお送りします。</span><span class="ph">登録で<a class="pp" href="/privacy">プライバシーポリシー</a>に同意したものとします。</span></p>
+    </div>
+
+    <p class="cap" id="cap"></p>
+  </div>
+</div>
+
+<section class="time" id="time">
+  <div class="tw">
+    <div class="tw-l">
+      <h2 class="h2">昨日、スマホを<br>何時間見ていましたか。</h2>
+      <div class="dial"><button type="button" id="minus" aria-label="15分減らす">−</button><output id="hours" for="range">2時間45分</output><button type="button" id="plus" aria-label="15分増やす">＋</button></div>
+      <label class="sr" for="range">スクリーンタイム</label>
+      <input id="range" type="range" min="15" max="720" step="15" value="165">
+      <div class="res" aria-live="polite"><p>このペースだと、一生のうち</p><strong id="years">7年5か月</strong><p>を、画面の中で過ごします。</p></div>
+    </div>
+    <div class="tw-r" id="outs" aria-live="polite">
+      <p class="tw-cap">その時間が、毎年、外にあったら。</p>
+      <div class="outs-row">
+        <figure class="out"><img src="img/t-read.jpg" alt="木のあいだに吊ったハンモックで、本を読む男性" loading="lazy" width="900" height="1200"><figcaption><b id="o-book">167</b><span>冊、本を読む</span></figcaption></figure>
+        <figure class="out"><img src="img/t-fuji.jpg" alt="富士山の頂上近くで、雲海から昇る朝日を眺める2人" loading="lazy" width="900" height="1200"><figcaption><b id="o-fuji">100</b><span>回、富士山に登る</span></figcaption></figure>
+        <figure class="out"><img src="img/t-trip.jpg" alt="青い海を渡るフェリーの甲板で、風に吹かれて笑う女性" loading="lazy" width="900" height="1200"><figcaption><b id="o-trip">4</b><span>回、2週間の旅に出る</span></figcaption></figure>
+      </div>
+    </div>
+  </div>
+  <p class="tw-note">一生は15〜80歳の65年、最初の165分は東京の15〜69歳の平均に近い値。本は1冊6時間、富士山は往復10時間、旅は起きている時間（1日16時間）で数えています。</p>
+</section>
+
+<section class="page slipwrap" id="road">
+  <div class="wrap split">
+    <div class="reveal">
+      <h2 class="h2">届くまでの道のり</h2>
+      <p class="lead"><span class="ph">いきなり売りません。</span><span class="ph">試作機を、</span><span class="ph">少ない人数で使ってもらってから決めます。</span></p>
+    </div>
+    <div class="slip reveal" role="table" aria-label="発売までの進め方">
+      <h3>いま</h3>
+      <div class="r"><span>深圳の工場と設計の相談</span><i></i><span>進行中</span></div>
+      <div class="r"><span>月1回の開発レター</span><i></i><span>毎月</span></div>
+      <h3>11月</h3>
+      <div class="r"><span>深圳の工場を訪問</span><i></i><span>予定</span></div>
+      <h3>試作のあと</h3>
+      <div class="r"><span>少人数で使ってもらう</span><i></i><span>1週間〜</span></div>
+      <div class="r"><span>クラウドファンディング</span><i></i><span>時期は未定</span></div>
+      <div class="end"><span>完成品が、手元に届く</span><span>番号の早い順</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="page">
+  <article class="letter reveal">
+    <p>僕は、携帯を作ったことがありません。でも、携帯に支配されていた側の人間です。</p>
+    <p>スクリーンタイムを設定しても、自分で解除してしまう。だから、意志に頼らなくても、自然と外に出たくなる携帯を作ります。</p>
+    <p>できあがるまでの様子は、月に1回、短い手紙にしてお送りします。</p>
+    <p class="sign">佐々木 一真</p>
+    <p class="role">Soto Phone 代表</p>
+  </article>
+</section>
+
+<section class="page faq" id="faq">
+  <div class="wrap" style="max-width:820px">
+    <div class="reveal">
+      <h2 class="h2">よくある質問</h2>
+      <div style="margin-top:40px">
+        <details><summary>いくらですか？</summary><p>本体は5〜6万円台を予定しています。正式な価格は、準備中の料金プランとあわせて、登録した方に最初にお知らせします。</p></details>
+        <details><summary>いつ届きますか？</summary><p>発売の時期は、試作機での先行体験を終えてから決めます。</p></details>
+        <details><summary>LINE は使えますか？</summary><p>LINE の扱いは、発売前に決めてお知らせします。通知を絞った形で入れる方法を、開発の中で確かめています。</p></details>
+        <details><summary>今のスマホと、2台持ちになりますか？</summary><p>どちらにも対応します。Soto 1台で暮らすことも、スマホは家に置いておくこともできます。</p></details>
+        <details><summary>携帯会社や SIM は？</summary><p>今お使いの携帯会社の SIM を、そのまま入れて使えるようにします。</p></details>
+      </div>
+      <p style="margin-top:40px"><a class="btn btn-cta" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
+    </div>
+  </div>
+</section>
+
+<section class="close" data-tone="dark">
+  <img src="img/c-canyon.jpg" alt="グランドキャニオンの縁に座って、サンドイッチを食べる2人" loading="lazy">
+  <div class="txt reveal">
+    <h2 class="h2"><span class="nw">楽しさは、</span><span class="nw">画面の外に。</span></h2>
+    <p class="lead"><span class="ph">発売が決まったら、</span><span class="ph">いちばん先にお知らせします。</span></p>
+    <p style="margin-top:28px"><a class="btn btn-cta btn-cta-paper" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">完成品を最初に見る</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
+  </div>
+</section>
+</main>
+
+<p class="word" aria-hidden="true" id="word">soto</p>
+<footer class="foot">
+  <span>SNS もゲームもない携帯電話</span>
+  <nav><a href="/column/">コラム</a><a href="/contact">お問い合わせ</a><a href="/en">English</a></nav>
+  <span class="r">© 2026 Soto Phone ・ <a href="/privacy">プライバシー</a></span>
+</footer>
+<p class="credits">このページの写真と映像は、Soto Phone の世界観を伝えるためのイメージとして作成したものです。実在の人物や場所ではありません。携帯の画像は開発中のデザイン案です。</p>
+
+<script>
+(() => {
+  const story=document.getElementById('story'), stage=document.getElementById('stage');
+  const bgs=[...stage.querySelectorAll('.bg')], chs=[...stage.querySelectorAll('.ch')], cap=document.getElementById('cap'), nav=document.getElementById('nav');
+  const caps=['','','','',''];
+  let cur=-1;
+  document.addEventListener('visibilitychange',()=>motion(cur));
+  bgs.forEach(b=>{const im=b.querySelector('img'); if(im.decode) im.decode().catch(()=>{});});
+  const still=matchMedia('(prefers-reduced-motion:reduce)').matches, sm=innerWidth<820, portrait=matchMedia('(max-aspect-ratio:1/1)').matches;
+  function vid(b){ if(still||!b||!b.dataset.v||b._v) return; const v=document.createElement('video');
+    v.muted=true; v.loop=true; v.playsInline=true; v.preload='auto'; v.className='bgv'; v.setAttribute('aria-hidden','true');
+    const n='img/'+((portrait&&b.dataset.vp)?b.dataset.vp:b.dataset.v+(sm?'-s':'')); v.src=n+(v.canPlayType('video/mp4; codecs="avc1.4D401F"')?'.mp4':'.webm');
+    v.addEventListener('loadedmetadata',()=>{v.playbackRate=.7;}); v.addEventListener('playing',()=>b.classList.add('playing'),{once:true});
+    b.prepend(v); b._v=v; }
+  function motion(i){ vid(bgs[i]); vid(bgs[i+1]); bgs.forEach((b,k)=>{const v=b._v||b.querySelector('video'); if(!v) return; if(k===i&&!document.hidden) v.play().catch(()=>{}); else v.pause();}); }
+  const phoneEl=stage.querySelector('.phone'), ease=t=>1-Math.pow(1-t,3);
+  // the next scene opens out of the phone screen, tied to scroll
+  function reveal(x){
+    const W=innerWidth,H=innerHeight, r=phoneEl.getBoundingClientRect();
+    const sr={l:r.left+r.width*.07,t:r.top+r.height*.06,r:r.right-r.width*.07,b:r.bottom-r.height*.08};
+    for(let k=1;k<bgs.length;k++){
+      let t=Math.min(1,Math.max(0,(x-(k-.3))/.5)); if(still) t=x>=k?1:0;
+      const e=ease(t), b=bgs[k];
+      if(t>=1){b.style.clipPath='none';}
+      else if(t<=0){b.style.clipPath='inset(50% 50% 50% 50%)';}
+      else{const f=1-e; b.style.clipPath=`inset(${(sr.t*f).toFixed(1)}px ${((W-sr.r)*f).toFixed(1)}px ${((H-sr.b)*f).toFixed(1)}px ${(sr.l*f).toFixed(1)}px round ${(18*f).toFixed(1)}px)`;
+        const v=b._v; if(v&&v.paused&&!document.hidden) v.play().catch(()=>{});}
+      b.style.setProperty('--z',(1.14-.14*e).toFixed(4));
+    }
+  }
+  function tick(){
+    const r=story.getBoundingClientRect(), total=story.offsetHeight-innerHeight;
+    const p=Math.min(1,Math.max(0,-r.top/total));
+    const i=Math.min(4,Math.floor(p*5));
+    if(i!==cur){cur=i;stage.dataset.ch=i;bgs.forEach((b,k)=>b.classList.toggle('on',k===i));chs.forEach((c,k)=>c.classList.toggle('on',k===i));cap.textContent=caps[i];motion(i);}
+    const local=p*5-i; stage.style.setProperty('--gray', i===2? Math.min(1,local*2.2):0);
+    reveal(p*5);
+    chs.forEach((c,k)=>{c.style.opacity = (k===i && i<4) ? Math.max(0,1-Math.max(0,local-.68)/.2).toFixed(3) : '';});
+    if(i===0 && innerWidth>=820 && !portrait){const u=Math.min(1,Math.max(0,(local-.35)/.6)); stage.style.setProperty('--py',(52-102*ease(u)).toFixed(1)+'%');} else stage.style.removeProperty('--py');
+    let dark=false; document.querySelectorAll('[data-tone=dark]').forEach(el=>{const q=el.getBoundingClientRect(); if(q.top<=40&&q.bottom>40) dark=true;}); nav.classList.toggle('on-paper', !dark);
+    const w=document.getElementById('word'), wr=w.getBoundingClientRect(); const q=Math.min(1,Math.max(0,1-(wr.top-innerHeight*.3)/(innerHeight*.7)));
+    w.style.setProperty('--ws',(0.94+0.06*q).toFixed(3));
+  }
+  const fine=matchMedia('(hover:hover) and (pointer:fine)').matches && !matchMedia('(prefers-reduced-motion:reduce)').matches;
+  document.querySelectorAll('.btn-cta').forEach(b=>{
+    b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;b.style.setProperty('--mx',x+'px');b.style.setProperty('--my',y+'px');
+      if(fine){b.classList.add('is-magnet');b.style.setProperty('--tx',((x-r.width/2)*.12).toFixed(1)+'px');b.style.setProperty('--ty',((y-r.height/2)*.2).toFixed(1)+'px');}});
+    b.addEventListener('pointerleave',()=>{b.classList.remove('is-magnet');b.style.setProperty('--tx','0px');b.style.setProperty('--ty','0px');});
+  });
+  (function loop(){ const r=story.getBoundingClientRect(); if(r.bottom>-200&&r.top<innerHeight+200) tick(); requestAnimationFrame(loop); })();
+  addEventListener('scroll',tick,{passive:true}); addEventListener('resize',tick); tick();
+
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.18});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  let m=165; const out=document.getElementById('hours'), yr=document.getElementById('years'), rg=document.getElementById('range');
+  function show(){const h=Math.floor(m/60),mm=m%60; out.textContent=(h?h+'時間':'')+(mm?mm+'分':'');
+    const years=m/60*65/24; const y=Math.floor(years), mo=Math.round((years-y)*12); yr.textContent=(y?y+'年':'')+(mo?mo+'か月':(y?'':'0か月'));
+    const H=m/60*365, f=n=>Math.floor(n).toLocaleString('ja-JP');
+    document.getElementById('o-book').textContent=f(H/6); document.getElementById('o-fuji').textContent=f(H/10); document.getElementById('o-trip').textContent=f(H/224);
+    document.getElementById('outs').style.setProperty('--tg',Math.min(1,Math.max(0,(m-45)/(420-45))).toFixed(3));
+    rg.value=m;}
+  document.getElementById('minus').onclick=()=>{m=Math.max(15,m-15);show()}; document.getElementById('plus').onclick=()=>{m=Math.min(720,m+15);show()};
+  rg.addEventListener('input',()=>{m=+rg.value;show()}); show();
+
+})();
+</script>
+<script src="/new/new.js" defer></script>
+
+</body>
+</html>
