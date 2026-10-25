@@ -362,7 +362,9 @@ main > section,.foot,.word,.credits{position:relative;z-index:1}
 html,body{background:var(--paper)}
 .ch-last .ticket{max-width:300px}
 /* 道のり：カードは少し濃い紙、レシートは白。境目がはっきり見えるように */
-.slipwrap .wcard{background:rgba(226,220,206,.95);-webkit-backdrop-filter:none;backdrop-filter:none;max-width:1180px}
+.slipwrap .wcard{background:rgba(226,220,206,.62);-webkit-backdrop-filter:none;backdrop-filter:none;max-width:1180px}
+.slipwrap .wcard h2,.slipwrap .wcard .lead{text-shadow:0 0 18px rgba(244,242,236,.9)}
+.letter{background:rgba(255,253,248,.84)}
 .slipwrap .slip{background:#fffdf8;color:var(--ink);justify-self:end}
 .slipwrap .slip .r{color:var(--ink)}
 .slipwrap .slip .r i{opacity:.4}
@@ -418,7 +420,7 @@ html,body{background:var(--paper)}
   <div class="stage" id="stage" data-ch="0">
     <div class="bg on" data-k="ch1" data-v="s-hero" data-pstill><picture><source media="(max-aspect-ratio:1/1)" srcset="img/s-hero-p2.jpg"><img class="bgposter" src="img/s-hero.jpg" alt="海の見える崖の上で、水色のバンのまわりで笑っている友だち3人。屋根の上の1人は手を上げている" width="2560" height="1440" fetchpriority="high"></picture></div>
     <div class="bg" data-k="ch2"><picture><source media="(max-width:819px)" srcset="img/s-canyon-m.jpg"><img src="img/s-canyon.jpg" alt="夕方のグランドキャニオンの縁を、リュックを背負って歩く2人" width="2560" height="1440" decoding="async"></picture></div>
-    <div class="bg" data-k="ch3"><picture><source media="(max-width:819px)" srcset="img/s-festival-m.jpg"><img src="img/s-festival.jpg" alt="ちょうちんが並ぶ夏祭りの夜店の通りを、浴衣の女性と友だちが笑いながら歩いている" width="2560" height="1440" decoding="async"></picture></div>
+    <div class="bg" data-k="ch3"><picture><source media="(max-width:819px)" srcset="img/s-festival3-m.jpg"><img src="img/s-festival3.jpg" alt="ちょうちんが並ぶ夏祭りの夜店の通りを、浴衣の女性と友だちが笑いながら歩いている" width="2560" height="1440" decoding="async"></picture></div>
     <div class="bg" data-k="ch4"><picture><source media="(max-width:819px)" srcset="img/s-library-m.jpg"><img src="img/s-library.jpg" alt="図書館の窓辺の机で、ノートに向かって集中する学生" width="2560" height="1440" decoding="async"></picture></div>
     <div class="bg" data-k="ch5" data-v="s-aurora"><picture><source media="(max-width:819px)" srcset="img/s-aurora-m.jpg"><img class="bgposter" src="img/s-aurora.jpg" alt="夜の道に停めた車のそばで、オーロラを指さす2人" width="2560" height="1440" decoding="async"></picture></div>
     <div class="scrim"></div>
