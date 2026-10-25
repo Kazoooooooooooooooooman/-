@@ -1,6 +1,6 @@
 /* 新しいデザインの比較用ページ（/new/）の、登録と計測。
    送る中身は今のトップ（/script.js）と同じ形にして、同じ Apps Script・同じシートで比べられるようにする。
-   パターンは n（トップで新しいデザインに振り分けられた人）、URL で直接開いた人は n-url */
+   パターンは n（トップで新しいデザインに振り分けられた人）、URL で直接開いた人は n-url。英語版は n-en / n-en-url */
 (() => {
   const FORM_ENDPOINT = "https://script.google.com/macros/s/AKfycbwa7cTRb-GxlCZKVGaWIP2FuVBQFpsDR7FpMjVoYrGJ9G6EyfLiTS_iIfux6H1iVB0Y/exec";
   const POLICY_VERSION = "2026-10-24";
@@ -10,7 +10,24 @@
     set: (k, v) => { try { localStorage.setItem(k, v); } catch (_) { /* 覚えられなくても登録はできる */ } },
   };
   const OPENED_AT = Date.now();
-  const variant = store.get("soto-h") === "n" && !/[?&]h=n\b/.test(location.search) ? "n" : "n-url";
+  const EN = document.documentElement.lang === "en";
+  // 英語版（/new/en）は n-en。URL で直接開いた人は n-url / n-en-url
+  const variant = (EN ? "n-en" : "n") + (store.get("soto-h") === "n" && !/[?&]h=n\b/.test(location.search) ? "" : "-url");
+  const T = EN ? {
+    ok: (n) => (n ? "You're " + n : "You're in"),
+    sent: (m) => "We've emailed " + (m ? m : "you") + " a numbered invitation. If it doesn't arrive, please check your spam folder.",
+    bad: "Please check your email address (e.g. you@example.com).",
+    sending: "Signing you up…",
+    fail: "Something went wrong. Please try again in a moment.",
+    offline: "Couldn't sign you up. Please check your connection and try again.",
+  } : {
+    ok: (n) => (n ? n + " で受け付けました" : "受け付けました"),
+    sent: (m) => (m ? m + " に、" : "") + "番号つきの招待券をお送りしました。届かないときは、迷惑メールのフォルダもご確認ください。",
+    bad: "メールアドレスの形を確認してください（例：you@example.com）。",
+    sending: "登録しています…",
+    fail: "登録できませんでした。時間をおいて、もう一度お試しください。",
+    offline: "登録できませんでした。通信状態を確かめて、もう一度お試しください。",
+  };
 
   // どこから来たか（トップと同じ記録を使う。トップから振り分けられて来た人は、トップで記録した経路のまま）
   const params = new URLSearchParams(location.search);
@@ -134,8 +151,8 @@
       const box = document.createElement("div");
       box.className = "done";
       box.innerHTML = "<b></b><p></p>";
-      box.querySelector("b").textContent = num ? label(num) + " で受け付けました" : "受け付けました";
-      box.querySelector("p").textContent = (mail ? mask(mail) + " に、" : "") + "番号つきの招待券をお送りしました。届かないときは、迷惑メールのフォルダもご確認ください。";
+      box.querySelector("b").textContent = T.ok(num ? label(num) : "");
+      box.querySelector("p").textContent = T.sent(mail ? mask(mail) : "");
       msg.replaceWith(box);
     });
   }
@@ -147,26 +164,26 @@
     const email = form.querySelector("input[type=email]"), btn = form.querySelector("button[type=submit]");
     email.value = email.value.normalize("NFKC").replace(/[。．]/g, ".").replace(/\s+/g, "");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-      msg.textContent = "メールアドレスの形を確認してください（例：you@example.com）。";
+      msg.textContent = T.bad;
       email.focus();
       return;
     }
     const data = {
-      email: email.value.trim(), prefecture: "", lang: "ja", trial: false, source, variant,
+      email: email.value.trim(), prefecture: "", lang: EN ? "en" : "ja", trial: false, source, variant,
       device: Object.assign(deviceInfo(), { seconds: Math.round((Date.now() - OPENED_AT) / 1000) }),
       from: arrival.from || "", site: arrival.site || "",
       invitedBy: arrival.r && arrival.r !== store.get(CODE_KEY) ? arrival.r : "",
       code: myCode(), consent: "notice", policy: POLICY_VERSION, createdAt: new Date().toISOString(),
     };
     btn.disabled = true;
-    msg.textContent = "登録しています…";
+    msg.textContent = T.sending;
     try {
       const res = await fetch(FORM_ENDPOINT, { method: "POST", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(data) });
       const text = await res.text();
       let out = null;
       try { out = JSON.parse(text); } catch (_) { /* Apps Script のエラー画面 */ }
       if (!out || !out.ok) {
-        msg.textContent = out && out.error === "bad_email" ? "メールアドレスの形を確認してください（例：you@example.com）。" : "登録できませんでした。時間をおいて、もう一度お試しください。";
+        msg.textContent = out && out.error === "bad_email" ? T.bad : T.fail;
         btn.disabled = false;
         return;
       }
@@ -177,7 +194,7 @@
       document.dispatchEvent(new Event("soto:registered"));
       showDone();
     } catch (_) {
-      msg.textContent = "登録できませんでした。通信状態を確かめて、もう一度お試しください。";
+      msg.textContent = T.offline;
       btn.disabled = false;
     }
   }));
