@@ -320,6 +320,63 @@ header .btn-paper{transition:opacity .3s}
 @media (min-width:821px) and (max-aspect-ratio:1/1){
   .h0-act{left:var(--m);right:auto;width:min(560px,70vw)}
 }
+
+/* 物語のあとは、水彩の上に紙のカードをのせる（写真は物語の中だけ） */
+.wbg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.wl{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+.wl.on{opacity:1}
+.wm{position:absolute;inset:-5% -3%}
+.wm > img,.wm > .ov{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.wl.on .wm > img,.wl.on .wm > .ov{animation:wdrift 38s ease-in-out infinite alternate}
+@keyframes wdrift{from{transform:scale(1.02)}to{transform:scale(1.1) translate(-1.6%,-1%)}}
+.ov path,.ov ellipse,.ov circle{fill:none}
+.cl{fill:rgba(255,255,255,.42)!important;filter:blur(18px)}
+.c1{animation:wcloud 46s linear infinite}.c2{animation:wcloud 64s linear infinite reverse}
+@keyframes wcloud{from{transform:translateX(-160px)}50%{transform:translateX(160px)}to{transform:translateX(-160px)}}
+.fl{stroke:rgba(255,255,255,.6);stroke-width:7;stroke-linecap:round;stroke-dasharray:26 120;animation:wflow 5.5s linear infinite}
+.f2{stroke-dasharray:14 170;animation-duration:7s;animation-delay:-2s;stroke-width:5}
+.f3{stroke-dasharray:34 200;animation-duration:8.5s;animation-delay:-4s;stroke:rgba(255,255,255,.4)}
+@keyframes wflow{to{stroke-dashoffset:-292}}
+.st{stroke:rgba(60,56,50,.55);stroke-width:3;stroke-linecap:round;opacity:0;animation:wsteam 6s ease-in-out infinite}
+.s2{animation-delay:-2s}.s3{animation-delay:-4s}
+@keyframes wsteam{0%{opacity:0;transform:translateY(40px)}30%{opacity:1}100%{opacity:0;transform:translateY(-120px)}}
+.glow{fill:rgba(255,170,120,.32)!important;filter:blur(30px);animation:wglow 6s ease-in-out infinite alternate;transform-origin:962px 672px}
+@keyframes wglow{from{opacity:.5;transform:scale(.9)}to{opacity:1;transform:scale(1.08)}}
+.gl{stroke:rgba(255,236,200,.9);stroke-width:3;stroke-linecap:round;opacity:0;animation:wglint 4s ease-in-out infinite}
+.g2{animation-delay:-1s}.g3{animation-delay:-2.2s}.g4{animation-delay:-3.1s}
+@keyframes wglint{0%,100%{opacity:0}50%{opacity:1}}
+.bd{stroke:rgba(50,46,42,.75);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.b1{animation:wfly 34s linear infinite}.b2{animation:wfly 42s linear infinite;animation-delay:-18s}
+@keyframes wfly{from{transform:translate(-80px,320px)}to{transform:translate(2000px,200px)}}
+@media (prefers-reduced-motion:reduce){.wl .wm *{animation:none!important}}
+.story{position:relative;z-index:2}
+main > section,.foot,.word,.credits{position:relative;z-index:1}
+.time,.slipwrap,.page{background:transparent}
+.wcard{background:rgba(244,242,236,.88);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-radius:14px;box-shadow:0 20px 60px rgba(31,30,28,.10);padding:clamp(28px,4.5vw,64px)}
+.time .tw.wcard{max-width:1400px}
+.close{height:auto;min-height:0;padding:clamp(72px,10vw,140px) var(--m);color:var(--ink)}
+.close img{display:none}
+.close .txt{position:static;width:auto;max-width:640px;margin:0 auto;text-align:center}
+.close .txt .lead{color:var(--soft)}
+.foot{background:var(--paper)}.word,.credits{background:var(--paper)}
+.close .txt.wcard{background:rgba(244,242,236,.88);padding:clamp(28px,4.5vw,56px)}
+.close img{display:none!important}
+.word{display:none}
+@media (max-width:820px){
+  .close{padding:72px 16px}
+  .outs-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:8px;margin:0;padding:0}
+  .out{flex:none}
+  .out figcaption{padding:28px 8px 8px}
+  .out b{font-size:24px}
+  .out span{font-size:11px;line-height:1.4}
+  .slipwrap .wcard{padding:28px 16px}
+  .slip{padding-left:16px;padding-right:16px}
+  .slip .r{font-size:13px;gap:6px}
+  .slip .r span{white-space:nowrap}
+  .slip .r i{min-width:8px}
+  .slip .end{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;font-size:13px}
+  .time .wcard{padding:28px 18px}
+}
 </style>
 </head>
 <body>
@@ -340,6 +397,12 @@ header .btn-paper{transition:opacity .3s}
   </ul>
 </header>
 
+<!-- 物語のあとの背景：前のトップの水彩（川・温泉・夕日）。少しだけ動く。そのセクションが画面の真ん中に来たら出す -->
+<div class="wbg" aria-hidden="true">
+  <div class="wl" data-w="0"><div class="wm"><img data-src="/images/w4-river.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g><ellipse class="cl c1" cx="420" cy="150" rx="230" ry="38"/><ellipse class="cl c2" cx="1380" cy="220" rx="300" ry="44"/></g><g><path class="fl f1" d="M962 690C1000 760 1060 830 1110 900S1100 1030 1000 1080 760 1170 620 1200"/><path class="fl f2" d="M962 690C1000 760 1060 830 1110 900S1100 1030 1000 1080 760 1170 620 1200"/><path class="fl f3" d="M975 700C1015 770 1075 840 1122 905S1112 1040 1012 1092 772 1182 640 1210"/></g></svg></div></div>
+  <div class="wl" data-w="1"><div class="wm"><img data-src="/images/w3-onsen.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><g><path class="st s1" d="M800 600c-14-40 18-70 0-110s16-60 4-90"/><path class="st s2" d="M960 600c14-40-18-70 0-110s-16-60-4-90"/><path class="st s3" d="M1120 600c-14-40 18-70 0-110s16-60 4-90"/></g></svg></div></div>
+  <div class="wl" data-w="2"><div class="wm"><img data-src="/images/w6-sunset.jpg" alt="" /><svg class="ov" viewBox="0 0 1920 1200" preserveAspectRatio="xMidYMid slice"><circle class="glow" cx="962" cy="672" r="190"/><g><path class="gl g1" d="M690 812h70"/><path class="gl g2" d="M1180 848h60"/><path class="gl g3" d="M900 878h90"/><path class="gl g4" d="M1060 905h70"/></g><g><path class="bd b1" d="M0 0q8-9 16 0q8-9 16 0"/><path class="bd b2" d="M0 0q7-8 14 0q7-8 14 0"/></g></svg></div></div>
+</div>
 <main id="top">
 <div class="story" id="story" data-tone="dark">
   <div class="stage" id="stage" data-ch="0">
@@ -389,8 +452,8 @@ header .btn-paper{transition:opacity .3s}
   </div>
 </div>
 
-<section class="time" id="time">
-  <div class="tw">
+<section class="time" id="time" data-w="0">
+  <div class="tw wcard">
     <div class="tw-l">
       <h2 class="h2">How long were you<br>on your phone yesterday?</h2>
       <div class="dial"><button type="button" id="minus" aria-label="15 minutes less">−</button><output id="hours" for="range">2 h 45 min</output><button type="button" id="plus" aria-label="15 minutes more">＋</button></div>
@@ -411,8 +474,8 @@ header .btn-paper{transition:opacity .3s}
   <p class="tw-note">A lifetime here is the 65 years from age 15 to 80. The starting 165 minutes is close to the average for ages 15–69 in Tokyo. A book takes 6 hours, Mount Fuji 10 hours round trip, and a trip counts waking hours (16 a day).</p>
 </section>
 
-<section class="page slipwrap" id="road">
-  <div class="wrap split">
+<section class="page slipwrap" id="road" data-w="1">
+  <div class="wrap split wcard">
     <div class="reveal">
       <h2 class="h2">The road to your hands</h2>
       <p class="lead">We won’t rush to sell. A small group uses the prototype first, and we decide from there.</p>
@@ -429,7 +492,7 @@ header .btn-paper{transition:opacity .3s}
   </div>
 </section>
 
-<section class="page">
+<section class="page" data-w="1">
   <article class="letter reveal">
     <p>I’ve never built a phone before. But I know what it’s like to be run by one.</p>
     <p>I’d set screen time limits, then turn them off myself. So I’m building a phone that makes you want to head out, without relying on willpower.</p>
@@ -439,8 +502,8 @@ header .btn-paper{transition:opacity .3s}
   </article>
 </section>
 
-<section class="page faq" id="faq">
-  <div class="wrap" style="max-width:820px">
+<section class="page faq" id="faq" data-w="2">
+  <div class="wrap wcard" style="max-width:860px">
     <div class="reveal">
       <h2 class="h2">Questions</h2>
       <div style="margin-top:40px">
@@ -455,12 +518,12 @@ header .btn-paper{transition:opacity .3s}
   </div>
 </section>
 
-<section class="close" data-tone="dark">
+<section class="close" data-w="2">
   <img src="img/c-canyon.jpg" alt="Two people sitting on the rim of the Grand Canyon eating sandwiches" loading="lazy">
-  <div class="txt reveal">
+  <div class="txt wcard reveal">
     <h2 class="h2">Joy lives outside the screen.</h2>
     <p class="lead">When the launch is set, you’ll be the first to know.</p>
-    <p style="margin-top:28px"><a class="btn btn-cta btn-cta-paper" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
+    <p style="margin-top:28px"><a class="btn btn-cta" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
   </div>
 </section>
 </main>
@@ -538,6 +601,20 @@ header .btn-paper{transition:opacity .3s}
   document.getElementById('minus').onclick=()=>{m=Math.max(15,m-15);show()}; document.getElementById('plus').onclick=()=>{m=Math.min(720,m+15);show()};
   rg.addEventListener('input',()=>{m=+rg.value;show()}); show();
 
+})();
+</script>
+<script>
+/* 物語のあとの水彩：画面の真ん中にあるセクションの絵を出す。絵は使う直前に読み込む */
+(() => {
+  const ls=[...document.querySelectorAll('.wl')], ss=[...document.querySelectorAll('[data-w]')].filter(e=>!e.classList.contains('wl'));
+  let cur=-2;
+  function tick(){
+    const mid=innerHeight/2; let w=-1;
+    ss.forEach(s=>{const r=s.getBoundingClientRect(); if(r.top<=mid&&r.bottom>=mid) w=+s.dataset.w;});
+    ss.forEach(s=>{const r=s.getBoundingClientRect(); if(r.top<innerHeight*2.2){const l=ls[+s.dataset.w], im=l&&l.querySelector('img[data-src]'); if(im){im.src=im.dataset.src; im.removeAttribute('data-src');}}});
+    if(w!==cur){cur=w; ls.forEach((l,k)=>l.classList.toggle('on',k===w));}
+  }
+  addEventListener('scroll',tick,{passive:true}); addEventListener('resize',tick); tick();
 })();
 </script>
 <script src="/new/new.js?v=3" defer></script>
