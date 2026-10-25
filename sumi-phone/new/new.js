@@ -182,3 +182,34 @@
     }
   }));
 })();
+
+/* 「完成品を最初に見る」への行き方：物語の最後（登録の章）までスクロールする。
+   スマホでは、最初の画面を過ぎたら下に登録ボタンを出し、登録欄が見えているあいだと登録したあとは隠す */
+(() => {
+  const story = document.getElementById("story");
+  if (!story) return;
+  const toJoin = (e) => {
+    e.preventDefault();
+    const y = story.offsetTop + story.offsetHeight - innerHeight + 2;
+    scrollTo({ top: y, behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth" });
+    setTimeout(() => { const i = document.querySelector("#join input[type=email]"); if (i) i.focus({ preventScroll: true }); }, 900);
+  };
+  document.querySelectorAll('a[href="#join"]').forEach((a) => a.addEventListener("click", toJoin));
+  const bar = document.getElementById("sticky-cta");
+  if (!bar) return;
+  let registered = false;
+  document.addEventListener("soto:registered", () => { registered = true; tick(); });
+  try { registered = !!localStorage.getItem("soto-preorder"); } catch (_) { /* 読めなくてもよい */ }
+  const tick = () => {
+    const r = story.getBoundingClientRect();
+    const pastHero = -r.top > innerHeight * 0.6;
+    const atJoin = r.bottom < innerHeight * 1.15 && r.bottom > 0;
+    const show = pastHero && !atJoin && !registered;
+    bar.classList.toggle("show", show);
+    bar.setAttribute("aria-hidden", show ? "false" : "true");
+    bar.tabIndex = show ? 0 : -1;
+  };
+  addEventListener("scroll", tick, { passive: true });
+  addEventListener("resize", tick);
+  tick();
+})();
