@@ -420,11 +420,60 @@ html,body{background:var(--paper)}
   .slip .end{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;font-size:13px}
   .time .wcard{padding:28px 18px}
 }
+
+/* 物語のあとのセクション（.after は、物語と分けるための入れ物） */
+.after > section{position:relative;z-index:1}
+/* いまどの章か：右の点 */
+.dots{position:absolute;z-index:6;right:clamp(10px,1.6vw,26px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px;list-style:none;margin:0;padding:0}
+.dots button{display:block;width:10px;height:10px;padding:0;border:0;border-radius:999px;background:rgba(244,242,236,.38);cursor:pointer;transition:background-color .3s,height .3s}
+.dots button[aria-current="step"]{background:#f4f2ec;height:26px}
+.dots button::after{content:"";position:absolute;inset:-8px -10px} /* 指で押しやすく */
+.dots li{position:relative}
+.hint{position:absolute;z-index:6;left:50%;bottom:calc(10px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:11px;letter-spacing:.2em;opacity:.8;transition:opacity .4s;pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:2px}
+.hint svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;animation:hint 1.8s ease-in-out infinite}
+@keyframes hint{50%{transform:translateY(4px)}}
+.stage:not([data-ch="0"]) .hint{opacity:0}
+/* 右下：画面の中で失う時間（時間のセクションのつまみと同じ数字） */
+.lost{position:absolute;z-index:6;right:calc(var(--m) + 18px);bottom:clamp(56px,11svh,120px);text-align:right;text-decoration:none;color:#f4f2ec;line-height:1.35;text-shadow:0 1px 10px rgba(0,0,0,.45);transition:opacity .4s}
+.lost small{display:block;font-size:11.5px;letter-spacing:.06em;opacity:.85}
+.lost b{display:block;font-family:var(--serif);font-weight:500;font-size:clamp(22px,2vw,30px);letter-spacing:.04em;margin:2px 0}
+.lost u{text-decoration:none;border-bottom:1px solid rgba(244,242,236,.6)}
+.stage[data-ch="4"] .lost{opacity:0;pointer-events:none}
+/* キーボードが出たら、入力欄をキーボードの上に上げる */
+.ch{translate:0 calc(-1 * var(--kb,0px))}
+/* 入力欄：自動入力の色が角からはみ出さないように */
+.form input{border-radius:999px;height:46px}
+.form input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #f4f2ec inset;-webkit-text-fill-color:#1f1e1c;caret-color:#1f1e1c}
+.done{max-width:440px;padding:16px 18px}
+.done b{font-size:20px}
+.done p{font-size:14px;line-height:1.7;margin-top:4px}
+/* なぜ作るのか */
+.why .wcard{max-width:860px;margin:0 auto;background:rgba(255,253,248,.86)}
+.why .q{font-size:13px;letter-spacing:.2em;color:var(--soft);margin-bottom:10px}
+.why .body{margin-top:26px;font-size:16.5px;line-height:2}
+.why .body p+p{margin-top:1.1em}
+.why ol{list-style:none;margin:30px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.why ol li{border-top:1px solid rgba(31,30,28,.25);padding-top:14px;font-size:14.5px;line-height:1.8}
+.why ol b{display:block;font-family:var(--serif);font-weight:500;font-size:19px;margin-bottom:4px}
+.why .sign{margin-top:34px;font-family:var(--serif);font-size:20px}
+.why .role{font-size:13px;color:var(--soft)}
+@media (max-width:820px){
+  .dots{right:8px;gap:12px}
+  .dots button{width:7px;height:7px}
+  .dots button[aria-current="step"]{height:20px}
+  .lost{top:calc(72px + env(safe-area-inset-top,0px));bottom:auto;right:22px}
+  .lost small{font-size:10.5px}
+  .lost b{font-size:19px}
+  .why ol{grid-template-columns:1fr;gap:10px}
+  .why .body{font-size:15.5px}
+  .why .h2{font-size:24px}
+  .stage[data-ch="0"] .lost{opacity:0;pointer-events:none}
+}
 </style>
 </head>
 <body>
 
-<a class="sticky-cta" id="sticky-cta" href="#join" aria-hidden="true" tabindex="-1"><span class="btn-dot" aria-hidden="true"></span>See it first<small>Free</small></a>
+<a class="sticky-cta" id="sticky-cta" href="#join" aria-hidden="true" tabindex="-1"><span class="btn-dot" aria-hidden="true"></span>Get early access<small>Free</small></a>
 <header class="nav" id="nav">
   <a class="brand" href="#top" aria-label="Soto Phone">
     <svg class="mark" viewBox="-78 -327 1310 1490" aria-hidden="true"><path d="M1067.0 792.4L1067.0 988.0Q1067.0 1138.0 917.0 1138.0L97.0 1138.0Q-53.0 1138.0 -53.0 988.0L-53.0 -152.0Q-53.0 -302.0 97.0 -302.0L917.0 -302.0Q1067.0 -302.0 1067.0 -152.0L1067.0 490.0" fill="none" stroke="currentColor" stroke-width="50" stroke-linecap="round" stroke-linejoin="round"/><path d="M649.0 171.0V343.0Q597.0 284.0 561.0 204.0L548.0 211.0Q586.0 345.0 649.0 437.0V604.0Q648.0 694.0 645.0 749.5Q642.0 805.0 638.0 864.0Q638.0 872.0 646.0 878.0Q654.0 884.0 667.0 884.0Q693.0 884.0 718.0 872.5Q743.0 861.0 749.0 849.0Q745.0 777.0 742.0 647.0V543.0Q789.0477905273438 584.073486328125 848.3649291992188 615.1083984375L1104.0 755.0882568359375V755.1527709960938Q1123.350830078125 765.2035522460938 1144.0 774.1920166015625Q1152.0 739.1920166015625 1172.0 716.6920166015625Q1192.0 694.1920166015625 1220.0 687.1920166015625L1222.0 676.1920166015625Q1161.33349609375 660.5361328125 1105.933349609375 634.3485717773438L850.0 494.3609313964844V494.2386779785156Q849.103759765625 493.81134033203125 848.2086181640625 493.381103515625L848.0 493.2669982910156V493.2807922363281Q792.3226318359375 466.4952697753906 742.0 429.0V33.0L759.0 22.0Q767.0 16.0 767.0 13.0Q767.0 5.0 738.5 -5.5Q710.0 -16.0 636.0 -34.0Q649.0 45.0 649.0 171.0ZM58.0 515.0Q148.0 443.0 214.0 335.0Q240.0 367.0 260.0 403.0Q280.0 439.0 287.0 472.0Q305.0 486.0 324.0 486.0Q343.0 486.0 355.0 472.0Q367.0 458.0 367.0 436.0Q367.0 402.0 334.0 366.0Q301.0 330.0 232.0 306.0Q270.0 240.0 301.0 158.0H440.0Q407.0 394.0 314.5 577.0Q222.0 760.0 50.0 871.0L60.0 884.0Q213.0 814.0 310.0 706.0Q407.0 598.0 458.0 467.5Q509.0 337.0 536.0 175.0Q553.0 174.0 561.5 170.0Q570.0 166.0 576.0 159.0Q576.0 152.0 557.0 131.0Q538.0 110.0 516.5 91.0Q495.0 72.0 489.0 72.0Q483.0 72.0 473.0 84.0Q463.0 96.0 458.0 101.0L434.0 129.0H313.0Q336.0 60.0 347.0 17.0L365.0 9.0Q374.0 5.0 374.0 1.0Q374.0 -13.0 239.0 -47.0Q240.0 -7.0 229.0 59.5Q218.0 126.0 203.0 175.0Q173.0 271.0 132.5 356.0Q92.0 441.0 46.0 506.0Z" fill="currentColor"/></svg>
@@ -433,6 +482,7 @@ html,body{background:var(--paper)}
   <ul>
     <li><a href="#inside">Inside</a></li>
     <li><a href="#time">Time</a></li>
+    <li><a href="#why">Why</a></li>
     <li><a href="#road">Roadmap</a></li>
     <li><a href="#faq">FAQ</a></li>
     <li class="lang"><a href="/new/" hreflang="ja" lang="ja">JA</a></li>
@@ -449,7 +499,7 @@ html,body{background:var(--paper)}
 <main id="top">
 <div class="story" id="story" data-tone="dark">
   <div class="stage" id="stage" data-ch="0">
-    <div class="bg on" data-k="ch1" data-v="s-hero" data-pstill><picture><source media="(max-aspect-ratio:1/1)" srcset="img/s-hero-p2.jpg"><img class="bgposter" src="img/s-hero.jpg" alt="Three friends laughing around a light blue van on a cliff above the sea" width="2560" height="1440" fetchpriority="high"></picture></div>
+    <div class="bg on" data-k="ch1"><picture><source media="(max-aspect-ratio:1/1)" srcset="img/s-hero-p2.jpg"><img class="bgposter" src="img/s-hero.jpg" alt="Three friends laughing around a light blue van on a cliff above the sea" width="2560" height="1440" fetchpriority="high"></picture></div>
     <div class="bg" data-k="ch2"><picture><source media="(max-width:819px)" srcset="img/s-canyon-m.jpg"><img src="img/s-canyon.jpg" alt="Two people with backpacks walking along the rim of the Grand Canyon at dusk" width="2560" height="1440" decoding="async"></picture></div>
     <div class="bg" data-k="ch3"><picture><source media="(max-width:819px)" srcset="img/s-festival3-m.jpg"><img src="img/s-festival3.jpg" alt="A woman in a yukata laughing with friends at a summer festival lined with paper lanterns" width="2560" height="1440" decoding="async"></picture></div>
     <div class="bg" data-k="ch4"><picture><source media="(max-width:819px)" srcset="img/s-library-m.jpg"><img src="img/s-library.jpg" alt="A student focused on her notebook at a library desk by the window" width="2560" height="1440" decoding="async"></picture></div>
@@ -465,7 +515,7 @@ html,body{background:var(--paper)}
       </div>
       <div class="h0-act">
         <p class="lead l1" aria-hidden="true"><span class="ph">Calls, maps, transit, camera. That’s it.</span></p>
-        <form class="form" id="hero-form" action="#join" novalidate><label class="sr" for="m1">Email</label><input id="m1" type="email" inputmode="email" placeholder="Your email" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="hero-msg" role="status" aria-live="polite"></p>
+        <form class="form" id="hero-form" action="#join" novalidate><label class="sr" for="m1">Email</label><input id="m1" type="email" inputmode="email" placeholder="Your email" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Get early access</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="hero-msg" role="status" aria-live="polite"></p>
         <ul class="perks" aria-label="About the list"><li>Free</li><li>Email only</li><li>Unsubscribe anytime</li></ul>
         <p class="fine perk300">The first <b class="no300">300 people</b> can have their list number engraved on the phone.</p>
         <p class="fine">By joining, you agree to our <a class="pp" href="/privacy-en">privacy policy</a>.</p>
@@ -484,17 +534,20 @@ html,body{background:var(--paper)}
       <p class="lead">Choose “90 minutes, vocabulary” and press start. Nothing comes through until you’re done, and the time you finish is saved to your record.</p>
     </div>
     <div class="ch ch-last" data-i="4" id="join">
-      <h2 class="h2">See the finished<br>phone first.</h2>
+      <h2 class="h2">Be first<br>in line.</h2>
       <p class="lead">When the prototype is ready, you’ll hear first.</p>
-      <figure class="ticket"><img src="/images/mail/ticket-en.png" width="348" height="160" alt="The invitation you receive after joining: see the finished phone first."><figcaption><span>NO.</span><b>— — —</b><small>This ticket arrives by email when you join</small></figcaption></figure>
-      <form class="form" id="join-form" action="#join" novalidate><label class="sr" for="m2">Email</label><input id="m2" type="email" inputmode="email" placeholder="Your email" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="join-msg" role="status" aria-live="polite"></p>
+      <form class="form" id="join-form" action="#join" novalidate><label class="sr" for="m2">Email</label><input id="m2" type="email" inputmode="email" placeholder="Your email" autocomplete="email" required><button class="btn btn-cta" type="submit"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Get early access</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button></form><p class="msg" id="join-msg" role="status" aria-live="polite"></p>
       <ul class="perks" aria-label="About the list"><li>Free</li><li>Email only</li><li>Unsubscribe anytime</li></ul>
       <p class="fine">By joining, you agree to our <a class="pp" href="/privacy-en">privacy policy</a>.</p>
     </div>
 
+    <ol class="dots" aria-label="Pages"><li><button type="button" data-i="0" aria-label="Start"></button></li><li><button type="button" data-i="1" aria-label="Inside"></button></li><li><button type="button" data-i="2" aria-label="Black & white"></button></li><li><button type="button" data-i="3" aria-label="Focus"></button></li><li><button type="button" data-i="4" aria-label="Join"></button></li></ol>
+    <p class="hint" aria-hidden="true">Scroll<svg viewBox="0 0 16 16"><path d="M4 6l4 4 4-4"/></svg></p>
+    <a class="lost" href="#time"><small>At <span class="lost-h">2h 45m</span> a day, that’s</small><b class="lost-y">7 yrs 5 mo</b><small><u>of your life on a screen</u></small></a>
     <p class="cap" id="cap"></p>
   </div>
 </div>
+<div class="after">
 
 <section class="time" id="time" data-w="0">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="pencil-n" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="1" seed="4"/><feDisplacementMap in="SourceGraphic" scale="1.2"/></filter><filter id="wash-n"><feGaussianBlur stdDeviation="5"/></filter></svg>
@@ -514,7 +567,7 @@ html,body{background:var(--paper)}
         <figure class="out out-ic"><svg viewBox="0 0 160 110" aria-hidden="true"><path d="M8 58h144"/><path d="M92 58c6-11 19-13 29-4 6-4 13-3 17 4"/><path d="M22 68c6-3 12-3 18 0M58 72c6-3 12-3 18 0M104 68c6-3 12-3 18 0"/><path d="M38 30q5-5 10 0q5-5 10 0M62 22q4-4 8 0q4-4 8 0"/><path d="M8 82h144M8 92h144"/><path d="M24 82v14M60 82v14M96 82v14M132 82v14"/></svg><figcaption><b id="o-trip">4</b><span>two-week trips</span></figcaption></figure>
       </div>
     </div>
-    <div class="tw-cta"><p>Move that time outside, a little at a time.</p><a class="btn btn-cta btn-cta-paper" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+    <div class="tw-cta"><p>Move that time outside, a little at a time.</p><a class="btn btn-cta btn-cta-paper" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Get early access</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
     <p class="tw-note">Based on a lifetime from age 15 to 80, 6 hours per book and 10 hours per Fuji climb.</p>
   </div>
 </section>
@@ -537,13 +590,23 @@ html,body{background:var(--paper)}
   </div>
 </section>
 
-<section class="page" data-w="1">
-  <article class="letter reveal">
-    <p>I’d set screen time limits, then turn them off myself. I know what it’s like to be run by a phone.</p>
-    <p>So I’m building one that makes you want to head out, without relying on willpower.</p>
+<section class="page why" id="why" data-w="1">
+  <div class="wcard reveal">
+    <p class="q">Why we're building this</p>
+    <h2 class="h2">When you're out,<br>look at what's in front of you.</h2>
+    <div class="body">
+      <p>Smartphones are useful. But social feeds and video never end. There's always another post, another clip.</p>
+      <p>I know, because that was me. I'd set screen time limits, then turn them off myself. I know what it's like to be run by a phone.</p>
+      <p>I'm not asking anyone to quit their smartphone. I just think that when you head out, you should be able to carry only what you need outside. That's the phone I'm building.</p>
+    </div>
+    <ol>
+      <li><b>No willpower needed</b>If it isn't there, there's nothing to resist.</li>
+      <li><b>Works outside</b>Calls, maps, transit and a camera that just work.</li>
+      <li><b>Time, outside</b>Spend the time you get back on people, movement and new things.</li>
+    </ol>
     <p class="sign">Kazuma Sasaki</p>
     <p class="role">Founder, Soto Phone</p>
-  </article>
+  </div>
 </section>
 
 <section class="page faq" id="faq" data-w="2">
@@ -557,7 +620,7 @@ html,body{background:var(--paper)}
         <details><summary>Do I need to keep my smartphone too?</summary><p>Either way works. You can live with Soto alone, or leave your smartphone at home.</p></details>
         <details><summary>What about my carrier and SIM?</summary><p>We’re making it work with the SIM from your current carrier in Japan.</p></details>
       </div>
-      <p style="margin-top:40px"><a class="btn btn-cta" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
+      <p style="margin-top:40px"><a class="btn btn-cta" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Get early access</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
     </div>
   </div>
 </section>
@@ -567,9 +630,10 @@ html,body{background:var(--paper)}
   <div class="txt wcard reveal">
     <h2 class="h2">Joy lives outside the screen.</h2>
     <p class="lead">When the launch is set, you’ll be the first to know.</p>
-    <p style="margin-top:28px"><a class="btn btn-cta" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">See it first</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
+    <p style="margin-top:28px"><a class="btn btn-cta" href="#join"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Get early access</span><svg class="btn-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
   </div>
 </section>
+</div>
 </main>
 
 <p class="word" aria-hidden="true" id="word">soto</p>
@@ -610,11 +674,42 @@ html,body{background:var(--paper)}
       b.style.setProperty('--z',(1.14-.14*e).toFixed(4));
     }
   }
+  // 1章ずつ送る：強くスワイプしても、次の1章だけ進む。止まる点は、文字が出きったところ（登録は物語の終わり）
+  const XS=[0,1.35,2.35,3.35,5], dots=[...stage.querySelectorAll('.dots button')];
+  const yOf=i=>story.offsetTop+XS[i]/5*(story.offsetHeight-innerHeight);
+  let anim=null, quietUntil=0;
+  const near=()=>{let k=0,d=1e9; XS.forEach((_,i)=>{const e=Math.abs(scrollY-yOf(i)); if(e<d){d=e;k=i;}}); return k;};
+  function go(i){ i=Math.max(0,Math.min(4,i)); const y0=scrollY, y1=yOf(i); if(Math.abs(y1-y0)<2) return;
+    if(still){scrollTo(0,y1);return;} const t0=performance.now(), D=Math.min(900,Math.max(520,Math.abs(y1-y0)*.5));
+    anim={i}; (function step(t){ if(!anim) return; const u=Math.min(1,(t-t0)/D), e=u<.5?4*u*u*u:1-Math.pow(-2*u+2,3)/2; scrollTo(0,y0+(y1-y0)*e);
+      if(u<1) requestAnimationFrame(step); else {anim=null; quietUntil=performance.now()+180;} })(t0); }
+  dots.forEach((d,k)=>d.addEventListener('click',()=>go(k)));
+  const inZone=()=>scrollY<yOf(4)-2; // 物語の中（登録の章より上）
+  const lead=(dy)=>!typing()&&(inZone()||(Math.abs(scrollY-yOf(4))<=2&&dy<0)); // 登録の章から下へは、ふつうのスクロールに戻す
+  addEventListener('wheel',e=>{ if(e.ctrlKey||!lead(e.deltaY)) return; e.preventDefault();
+    if(anim||performance.now()<quietUntil){quietUntil=performance.now()+180; return;} // 慣性で続くホイールは、1回ぶんとして数える
+    if(Math.abs(e.deltaY)<4) return; const k=near(); go(e.deltaY>0?k+1:k-1); },{passive:false});
+  let ty=null, tk=0;
+  addEventListener('touchstart',e=>{ ty=(e.touches.length===1&&!typing())?e.touches[0].clientY:null; tk=near(); },{passive:true});
+  addEventListener('touchmove',e=>{ if(ty===null) return; const dy=ty-e.touches[0].clientY; if(lead(dy)||anim) e.preventDefault(); else ty=null; },{passive:false});
+  addEventListener('touchend',e=>{ if(ty===null) return; const dy=ty-(e.changedTouches[0]||{clientY:ty}).clientY; ty=null; if(Math.abs(dy)<36||anim) return; go(dy>0?tk+1:tk-1); },{passive:true});
+  // キーボードや、下から戻ってきたスクロールが途中で止まったら、近い章にそろえる
+  let st=0; addEventListener('scroll',()=>{ clearTimeout(st); st=setTimeout(()=>{ if(!anim&&!typing()&&inZone()&&ty===null){const k=near(); if(Math.abs(scrollY-yOf(k))>2) go(k);} },160); },{passive:true});
+  // 入力中は章を変えない（キーボードが出てページが動いても、入力欄が消えないように）。入力欄はキーボードの上に上げる
+  const typing=()=>{const a=document.activeElement; return a&&a.tagName==='INPUT'&&stage.contains(a);};
+  const vv=window.visualViewport;
+  function kb(){ chs.forEach(c=>c.style.removeProperty('--kb')); const a=document.activeElement; if(!vv||!typing()) return;
+    const ch=a.closest('.ch'), f=a.closest('form')||a, over=f.getBoundingClientRect().bottom+14-(vv.offsetTop+vv.height); if(ch&&over>0) ch.style.setProperty('--kb',over.toFixed(0)+'px'); }
+  if(vv){vv.addEventListener('resize',kb); vv.addEventListener('scroll',kb);}
+  let keepY=null;
+  document.addEventListener('focusin',()=>{ if(typing()){ keepY=scrollY; setTimeout(kb,350); } });
+  document.addEventListener('focusout',()=>{ setTimeout(()=>{ if(typing()) return; kb(); if(keepY!==null){ const y=keepY; keepY=null; if(Math.abs(scrollY-y)>2) scrollTo(0,y); } },60); });
   function tick(){
+    if(typing()) return;
     const r=story.getBoundingClientRect(), total=story.offsetHeight-innerHeight;
     const p=Math.min(1,Math.max(0,-r.top/total));
     const i=Math.min(4,Math.floor(p*5));
-    if(i!==cur){cur=i;stage.dataset.ch=i;bgs.forEach((b,k)=>b.classList.toggle('on',k===i));chs.forEach((c,k)=>c.classList.toggle('on',k===i));cap.textContent=caps[i];motion(i);}
+    if(i!==cur){cur=i;stage.dataset.ch=i;bgs.forEach((b,k)=>b.classList.toggle('on',k===i));chs.forEach((c,k)=>c.classList.toggle('on',k===i));cap.textContent=caps[i];motion(i);dots.forEach((d,k)=>{if(k===i)d.setAttribute('aria-current','step');else d.removeAttribute('aria-current');});}
     const local=p*5-i; stage.style.setProperty('--gray', i===2? Math.min(1,local*2.2):0);
     reveal(p*5);
     chs.forEach((c,k)=>{c.style.opacity = (k===i && i<4) ? Math.max(0,1-Math.max(0,local-.68)/.2).toFixed(3) : '';});
@@ -641,7 +736,7 @@ html,body{background:var(--paper)}
     const H=m/60*365, f=n=>Math.floor(n).toLocaleString('en-US');
     document.getElementById('o-book').textContent=f(H/6); document.getElementById('o-fuji').textContent=f(H/10); document.getElementById('o-trip').textContent=f(H/224);
     document.getElementById('outs').style.setProperty('--tg',Math.min(1,Math.max(0,(m-45)/(420-45))).toFixed(3));
-    rg.value=m;}
+    rg.value=m; document.querySelectorAll('.lost-h').forEach(e=>e.textContent=out.textContent); document.querySelectorAll('.lost-y').forEach(e=>e.textContent=yr.textContent);}
   document.getElementById('minus').onclick=()=>{m=Math.max(15,m-15);show()}; document.getElementById('plus').onclick=()=>{m=Math.min(720,m+15);show()};
   rg.addEventListener('input',()=>{m=+rg.value;show()}); show();
 

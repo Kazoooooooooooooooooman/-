@@ -15,14 +15,14 @@
   const variant = (EN ? "n-en" : "n") + (store.get("soto-h") === "n" && !/[?&]h=n\b/.test(location.search) ? "" : "-url");
   const T = EN ? {
     ok: (n) => (n ? "You're " + n : "You're in"),
-    sent: (m) => "We've emailed " + (m ? m : "you") + " a numbered invitation. If it doesn't arrive, please check your spam folder.",
+    sent: (m) => "We've emailed " + (m ? m : "you") + " your sign-up number. If it doesn't arrive, please check your spam folder.",
     bad: "Please check your email address (e.g. you@example.com).",
     sending: "Signing you up…",
     fail: "Something went wrong. Please try again in a moment.",
     offline: "Couldn't sign you up. Please check your connection and try again.",
   } : {
     ok: (n) => (n ? n + " で受け付けました" : "受け付けました"),
-    sent: (m) => (m ? m + " に、" : "") + "番号つきの招待券をお送りしました。届かないときは、迷惑メールのフォルダもご確認ください。",
+    sent: (m) => (m ? m + " に、" : "") + "登録番号をメールでお送りしました。届かないときは、迷惑メールのフォルダもご確認ください。",
     bad: "メールアドレスの形を確認してください（例：you@example.com）。",
     sending: "登録しています…",
     fail: "登録できませんでした。時間をおいて、もう一度お試しください。",
@@ -200,7 +200,7 @@
   }));
 })();
 
-/* 「完成品を最初に見る」への行き方：物語の最後（登録の章）までスクロールする。
+/* 「優先案内を受け取る」への行き方：物語の最後（登録の章）までスクロールする。
    スマホでは、物語を読み終えたあと、ほかの登録ボタンが見えていないときだけ下に登録ボタンを出す */
 (() => {
   const story = document.getElementById("story");
