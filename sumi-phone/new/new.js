@@ -184,7 +184,7 @@
 })();
 
 /* 「完成品を最初に見る」への行き方：物語の最後（登録の章）までスクロールする。
-   スマホでは、最初の画面を過ぎたら下に登録ボタンを出し、登録欄が見えているあいだと登録したあとは隠す */
+   スマホでは、物語を読み終えたあと、ほかの登録ボタンが見えていないときだけ下に登録ボタンを出す */
 (() => {
   const story = document.getElementById("story");
   if (!story) return;
@@ -197,16 +197,19 @@
   document.querySelectorAll('a[href="#join"]').forEach((a) => a.addEventListener("click", toJoin));
   const bar = document.getElementById("sticky-cta");
   if (!bar) return;
-  let registered = false;
+  let registered = false, others = 0;
   document.addEventListener("soto:registered", () => { registered = true; tick(); });
   try { registered = !!localStorage.getItem("soto-preorder"); } catch (_) { /* 読めなくてもよい */ }
+  // ほかの登録ボタン・登録欄が画面に見えているあいだは出さない（同じボタンを2つ並べない）
+  const seen = new Set();
+  const io = new IntersectionObserver((es) => { es.forEach((e) => (e.isIntersecting ? seen.add(e.target) : seen.delete(e.target))); others = seen.size; tick(); });
+  document.querySelectorAll(".btn-cta, form").forEach((el) => { if (!el.closest("#sticky-cta")) io.observe(el); });
+  // 物語の章は文章が画面の下にあるので、物語を読み終えてから出す
   const tick = () => {
     const r = story.getBoundingClientRect();
-    const pastHero = -r.top > innerHeight * 0.6;
-    const atJoin = r.bottom < innerHeight * 1.15 && r.bottom > 0;
-    const stg = document.getElementById("stage"), heroForm = stg && stg.dataset.ch === "0";
-    const show = pastHero && !atJoin && !heroForm && !registered;
+    const show = r.bottom < innerHeight * 0.4 && !others && !registered;
     bar.classList.toggle("show", show);
+    document.documentElement.classList.toggle("sticky-on", show); /* 同じボタンを2つ並べない */
     bar.setAttribute("aria-hidden", show ? "false" : "true");
     bar.tabIndex = show ? 0 : -1;
   };

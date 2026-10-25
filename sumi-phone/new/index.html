@@ -263,10 +263,9 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
   .reveal > *{opacity:1;transform:none}
 }
 @media (max-width:820px) and (max-aspect-ratio:1/1){
-  .stage[data-ch="0"]{--px:12%;--ps:.9}
-  .stage[data-ch="0"] .phone{--py:262%}
-  .stage[data-ch="0"][data-h0="b"]{--px:-50%;--ps:1.02}
-  .stage[data-ch="0"][data-h0="b"] .phone{--py:0%;rotate:-3deg}
+  .stage[data-ch="0"]{--px:32%;--ps:.48}
+  .stage[data-ch="0"] .phone{--py:62%;rotate:6deg}
+  .h0-head{padding-right:30vw}
 }
 
 /* 登録まわり：かかる手間・確かな特典・届くものを、押す前に見せる */
@@ -285,6 +284,8 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
 .tw-cta p{font-family:var(--serif);font-size:clamp(20px,1.8vw,26px)}
 .tw-cta .btn-cta-paper{background:var(--ink);color:var(--paper)}
 .sticky-cta{display:none;text-decoration:none}
+header .btn-paper{transition:opacity .3s}
+.sticky-on header .btn-paper{opacity:0;pointer-events:none}
 .ch .fine + .fine{margin-top:2px}
 .ticket figcaption b{white-space:nowrap}
 @media (max-width:820px){
@@ -302,8 +303,7 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
   .tw-cta{gap:12px}
 }
 
-/* スマホ・縦長タブレットの最初の画面：何だろう → いいな → 欲しい → 押す、の順に見せる。
-   はじめは見出しと写真だけ。少し進むと見出しが消え、携帯が空に大きく出て、下に登録欄が上がってくる */
+/* スマホ・縦長タブレットの最初の画面：上に見出しと携帯（何だろう → 答え）、真ん中に写真（いいな）、下に登録欄（押す）。1画面で完結させる */
 .h0-act .l1{display:none}
 @media (max-aspect-ratio:1/1){
   .ch[data-i="0"]{top:0;bottom:0;padding-top:calc(92px + env(safe-area-inset-top,0px))}
@@ -312,12 +312,9 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
   .h0-head{transition:opacity .6s var(--ease),transform .7s var(--ease)}
   .h0-act{position:absolute;left:0;right:0;bottom:calc(30px + env(safe-area-inset-bottom,0px));transition:opacity .6s var(--ease),transform .7s var(--ease)}
   .h0-act .l1{display:block;margin-bottom:14px;font-size:17px}
-  .stage:not([data-h0="b"]) .h0-act{opacity:0;transform:translateY(28px);pointer-events:none}
-  .stage[data-h0="b"] .h0-head{opacity:0;transform:translateY(-18px);pointer-events:none}
-  .stage[data-ch="0"][data-h0="b"] .scrim{background:linear-gradient(0deg,rgba(20,14,8,.8) 0%,rgba(20,14,8,.42) 34%,rgba(20,14,8,0) 56%)}
+  .stage[data-ch="0"] .scrim{background:linear-gradient(0deg,rgba(20,14,8,.8) 0%,rgba(20,14,8,.42) 34%,rgba(20,14,8,0) 56%)}
 }
 @media (min-width:821px) and (max-aspect-ratio:1/1){
-  .stage[data-ch="0"][data-h0="b"]{--px:-50%;--py:-112%;--ps:.78}
   .h0-act{left:var(--m);right:auto;width:min(560px,70vw)}
 }
 </style>
@@ -509,7 +506,6 @@ section.page{padding:clamp(120px,16vw,220px) var(--m)}
     if(i!==cur){cur=i;stage.dataset.ch=i;bgs.forEach((b,k)=>b.classList.toggle('on',k===i));chs.forEach((c,k)=>c.classList.toggle('on',k===i));cap.textContent=caps[i];motion(i);}
     const local=p*5-i; stage.style.setProperty('--gray', i===2? Math.min(1,local*2.2):0);
     reveal(p*5);
-    if(portrait){ const ph=(i===0&&local>.16)?'b':'a'; if(stage.dataset.h0!==ph) stage.dataset.h0=ph; } else if(stage.dataset.h0) delete stage.dataset.h0;
     chs.forEach((c,k)=>{c.style.opacity = (k===i && i<4) ? Math.max(0,1-Math.max(0,local-.68)/.2).toFixed(3) : '';});
     if(i===0 && innerWidth>=820 && !portrait){const u=Math.min(1,Math.max(0,(local-.35)/.6)); stage.style.setProperty('--py',(52-102*ease(u)).toFixed(1)+'%');} else stage.style.removeProperty('--py');
     let dark=false; document.querySelectorAll('[data-tone=dark]').forEach(el=>{const q=el.getBoundingClientRect(); if(q.top<=40&&q.bottom>40) dark=true;}); nav.classList.toggle('on-paper', !dark);
