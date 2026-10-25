@@ -510,3 +510,106 @@ function toHtml(lines, number, w) {
   const footHtml = foot.length ? '<div style="margin-top:36px;padding-top:14px;border-top:1px solid #e4e0d6;font-size:11px;line-height:1.8;color:#8a857b">' + foot.map(link).join("<br>") + "</div>" : "";
   return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;letter-spacing:.02em;color:#1f1e1c;max-width:480px">' + card + bodyHtml + footHtml + "</div>";
 }
+
+// ── 月に1回の手紙 ─────────────────────────────────────────────
+// シート「手紙」に1通ずつ書き、「状態」を「送る」にすると、毎朝の自動実行（setupLetterTrigger で登録）で
+// 確認メールが届いた人・配信を止めていない人・テストでない人に送る。1日の送信上限に近づいたら止めて、翌朝に続きを送る。
+// 英語の件名・本文が空なら、英語で登録した人には送らない（日本語の手紙を英語の人に送らない）。
+const LETTER_SHEET = "手紙";
+const LETTER_HEADERS = ["作成日", "件名", "本文", "件名（英語）", "本文（英語）", "状態", "送った数", "最後に送った日時"];
+function letterSheet() {
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = book.getSheetByName(LETTER_SHEET);
+  if (!sheet) {
+    sheet = book.insertSheet(LETTER_SHEET);
+    sheet.appendRow(LETTER_HEADERS);
+    sheet.setFrozenRows(1);
+    sheet.getRange(2, 6, 200, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(["下書き", "送る", "送信中", "送信済み"], true).build());
+  }
+  return sheet;
+}
+
+// 送る相手（verifiedCount と同じ条件。同じアドレスは1回だけ）
+function letterRecipients() {
+  const sheet = getSheet();
+  const last = sheet.getLastRow();
+  if (last < 2) return [];
+  const rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
+  const seen = {}, out = [];
+  rows.forEach((r) => {
+    const email = String(r[1] || "").trim().toLowerCase();
+    if (!email || seen[email] || !r[MAIL_COL - 1] || r[STOP_COL - 1] || String(r[9] || "") === "test") return;
+    seen[email] = true;
+    out.push({ email, lang: String(r[3] || "ja") === "en" ? "en" : "ja" });
+  });
+  return out;
+}
+
+function letterLines(body, link, en) {
+  const foot = en
+    ? ["--", "You're receiving this because this address was registered at " + SITE_URL + ".", "Unsubscribe or delete your data: " + link,
+       "Sender: Soto Phone (Kazuma Sasaki)", "Contact: " + CONTACT, "Privacy policy: " + SITE_URL + "privacy-en"]
+    : ["――", "このメールは、sotophone.jp で登録された方にお送りしています。", "配信の停止・登録情報の削除：" + link,
+       "送信者：" + SENDER_ORG, SENDER_ADDRESS ? "所在地：" + SENDER_ADDRESS : null, "お問い合わせ：" + CONTACT, "プライバシーポリシー：" + SITE_URL + "privacy"];
+  return String(body).replace(/\r/g, "").split("\n").concat([""], foot).filter((l) => l !== null);
+}
+
+function sendLetterTo(email, subject, body, en) {
+  const lines = letterLines(body, manageUrl(email, en ? "en" : "ja"), en);
+  const html = toHtml(lines, null, { en });
+  const opts = { htmlBody: html, name: SENDER_NAME };
+  if (FROM_ADDRESS) opts.from = FROM_ADDRESS;
+  if (REPLY_TO) opts.replyTo = REPLY_TO;
+  GmailApp.sendEmail(email, subject, lines.join("\n"), opts);
+}
+
+// 毎朝の自動実行から呼ばれる。「送る」か「送信中」のいちばん上の1通を、まだ送っていない人に送る
+function sendLetters() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return;
+  try {
+    const sheet = letterSheet();
+    const last = sheet.getLastRow();
+    if (last < 2) return;
+    const rows = sheet.getRange(2, 1, last - 1, LETTER_HEADERS.length).getValues();
+    const i = rows.findIndex((r) => r[5] === "送る" || r[5] === "送信中");
+    if (i < 0) return;
+    const r = rows[i], rowNo = i + 2;
+    const props = PropertiesService.getScriptProperties(), key = "letter-sent-" + rowNo + "-" + String(r[1]).slice(0, 20);
+    const done = JSON.parse(props.getProperty(key) || "{}");
+    sheet.getRange(rowNo, 6).setValue("送信中");
+    let n = Object.keys(done).length;
+    for (const p of letterRecipients()) {
+      if (done[p.email]) continue;
+      const en = p.lang === "en";
+      if (en && !String(r[3]).trim()) continue;
+      if (MailApp.getRemainingDailyQuota() < 10) break; // 確認メールの分を残して、続きは翌朝
+      try {
+        sendLetterTo(p.email, en ? r[3] : r[1], en ? r[4] : r[2], en);
+        done[p.email] = 1; n++;
+        props.setProperty(key, JSON.stringify(done));
+        Utilities.sleep(1200);
+      } catch (err) { console.error("letter failed", p.email, err); }
+    }
+    sheet.getRange(rowNo, 7).setValue(n);
+    sheet.getRange(rowNo, 8).setValue(new Date());
+    const left = letterRecipients().filter((p) => !done[p.email] && !(p.lang === "en" && !String(r[3]).trim())).length;
+    if (!left) { sheet.getRange(rowNo, 6).setValue("送信済み"); props.deleteProperty(key); }
+  } finally { lock.releaseLock(); }
+}
+
+// 送る前の確認用。いちばん下の手紙を、自分あてに1通だけ送る（状態は変えない）
+function testLetterToMe() {
+  const sheet = letterSheet();
+  const last = sheet.getLastRow();
+  if (last < 2) throw new Error("シート「手紙」に、まだ手紙がありません");
+  const r = sheet.getRange(last, 1, 1, LETTER_HEADERS.length).getValues()[0];
+  sendLetterTo(Session.getEffectiveUser().getEmail(), "【確認】" + r[1], r[2], false);
+}
+
+// 一度だけ実行する：毎朝9時ごろに sendLetters を動かす
+function setupLetterTrigger() {
+  ScriptApp.getProjectTriggers().filter((t) => t.getHandlerFunction() === "sendLetters").forEach((t) => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("sendLetters").timeBased().everyDays(1).atHour(9).inTimezone("Asia/Tokyo").create();
+  letterSheet();
+}
