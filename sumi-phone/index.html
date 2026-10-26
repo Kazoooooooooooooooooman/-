@@ -57,13 +57,13 @@
 .hn-phone{position:absolute;z-index:1;right:clamp(16px,3.5vw,64px);bottom:5svh;width:min(19vw,40svh);transform:rotate(4deg);filter:drop-shadow(0 28px 36px rgba(20,14,8,.45));pointer-events:none}
 .hn-phone img{width:100%;height:auto;display:block}
 @media (max-aspect-ratio:1/1){
-  .hn-bg{background-image:url(/new/img/s-hero-p2.jpg);background-position:50% 70%}
+  .hn-bg{background-position:74% 50%} /* パソコンと同じ写真（寄りの3人）を縦に切り取る */
   .hn-scrim{background:linear-gradient(180deg,rgba(24,19,14,.55) 0%,rgba(24,19,14,.18) 30%,rgba(24,19,14,0) 48%),linear-gradient(0deg,rgba(24,19,14,.78) 0%,rgba(24,19,14,.4) 32%,rgba(24,19,14,0) 52%)}
   .hn-in{max-width:none;justify-content:space-between;padding:calc(96px + env(safe-area-inset-top,0px)) 20px calc(28px + env(safe-area-inset-bottom,0px))}
   .hn-in h1{font-size:clamp(28px,7.6vw,44px)}
   .hn-lead{font-size:15px;margin-top:14px}
   .hn-slot{margin-top:0;width:100%}
-  .hn-phone{top:calc(236px + env(safe-area-inset-top,0px));bottom:auto;right:18px;width:min(32vw,20svh);transform:rotate(5deg)}
+  .hn-phone{top:27svh;bottom:auto;left:4vw;right:auto;width:min(24vw,17svh);transform:rotate(-5deg)}
   .hn-perks{font-size:12.5px;gap:4px 14px}
 }
 @media (max-width:560px){ .hero-n .hd-form .btn{padding:13px 16px;font-size:14px} .hero-n .hd-form input{font-size:16px;padding:0 10px 0 14px} }
