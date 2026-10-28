@@ -5,7 +5,7 @@
 <!-- 1枚目の見せ方を比べるためのパターン（a・b・c・d）。?h=b のように URL で選べる。選ばれていない人には a〜d のどれかを決めて覚えておく。
      検索エンジンも人と同じに扱う（ロボットだけ別の中身を見せると、Google の禁止する「クローキング」になる）。
      ?h= の付いた URL も canonical は https://sotophone.jp/ のまま。初めて来た人の半分は n（最初の1画面だけ写真の新しいデザイン。2画面目からは同じ）。/new/ の canonical はトップなので、検索にはトップだけが出る（Google の A/B テストの案内どおり）。o（最初の版）と p（お誘いの2行の版）は、URL で選んだときだけ出す -->
-<script>(function(){var d=document.documentElement,h="a",src="auto";try{var m=location.search.match(/[?&]h=([abcdnop])\b/);if(m){h=m[1];src=/[?&]from=[^&]*ad\b/.test(location.search)?"ad":"url"}else{h=localStorage.getItem("soto-h");if(!h){h=Math.random()<.5?"n":"abcd".charAt(Math.floor(Math.random()*4));localStorage.setItem("soto-h",h)}if("abcdn".indexOf(h)<0)h="a"}}catch(e){}d.setAttribute("data-h",h);d.setAttribute("data-hsrc",src)})();</script>
+<script>(function(){var d=document.documentElement,h="a",src="auto";try{var m=location.search.match(/[?&]h=([abcdnop])\b/);if(m){h=m[1];src=/[?&]from=[^&]*ad\b/.test(location.search)?"ad":"url"}else{h=localStorage.getItem("soto-h");if(!h||"abcd".indexOf(h)<0){h="abcd".charAt(Math.floor(Math.random()*4));localStorage.setItem("soto-h",h)}}}catch(e){}d.setAttribute("data-h",h);d.setAttribute("data-hsrc",src)})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Soto Phone（ソトフォン）｜SNSもゲームもない、日本で使えるミニマルフォン</title>
 <meta name="description" content="楽しさは、画面の外に。Soto Phone は、スマホから離れてできた時間を、大事な人やスポーツ、新しい挑戦に向けるための携帯電話です。電話・地図・カメラなど必要なものだけを入れ、外で過ごすほど携帯代が安くなります。先行予約は無料です。" />
@@ -56,6 +56,7 @@
 .hn-fine a{color:inherit;text-decoration:underline;text-underline-offset:2px}
 .hn-phone{position:absolute;z-index:1;right:clamp(16px,3.5vw,64px);bottom:5svh;width:min(19vw,40svh);transform:rotate(4deg);filter:drop-shadow(0 28px 36px rgba(20,14,8,.45));pointer-events:none}
 .hn-phone img{width:100%;height:auto;display:block}
+@media (max-width:820px){#signup .card{display:flex;flex-direction:column}#signup .letter-note{order:3}#signup .form-msg{order:2}} /* スマホは「最初に見る」で登録欄がすぐ見えるよう、代表の手紙を登録欄の下へ */
 @media (max-aspect-ratio:1/1){
   .hn-bg{background-position:74% 50%} /* パソコンと同じ写真（寄りの3人）を縦に切り取る */
   .hn-scrim{background:linear-gradient(180deg,rgba(24,19,14,.55) 0%,rgba(24,19,14,.18) 30%,rgba(24,19,14,0) 48%),linear-gradient(0deg,rgba(24,19,14,.78) 0%,rgba(24,19,14,.4) 32%,rgba(24,19,14,0) 52%)}
