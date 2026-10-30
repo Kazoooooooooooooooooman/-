@@ -53,7 +53,7 @@ def head(title, desc, url, extra_ld):
 <a class="skip" href="#main">本文へ移動</a>
 <header class="nav is-scrolled">
   <a class="logo" href="/" aria-label="Soto Phone トップへ">
-    {LOGO}<span class="logo-word">SOTO</span>
+    {LOGO}<span class="logo-word">SOTO PHONE</span>
   </a>
   <nav class="nav-links" id="site-menu" aria-label="メインメニュー">
     <div class="nav-main">

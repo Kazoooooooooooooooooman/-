@@ -1085,3 +1085,7 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 @media (max-width: 820px) {
   [data-h="a"] .hero-door .hd-copy { font-size: 26px; }
 }
+/* 「SOTO PHONE」が狭い画面で右のボタンに重ならないように */
+@media (max-width: 480px) {
+  .logo-word { letter-spacing: .16em; font-size: 13px; white-space: nowrap; }
+}
