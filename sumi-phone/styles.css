@@ -1068,3 +1068,6 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 @media (max-width: 760px) {
   .rental-hero { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* 1枚目の言葉を JS で消したときは、表示用の CSS より優先して隠す */
+.hero-door [hidden] { display: none !important; }

@@ -186,15 +186,14 @@
     </div>
   </section>
   <!-- パターンごとの言葉（a は上に書いたまま） -->
-  <script>(function(){var h=document.documentElement.getAttribute("data-h");if(h==="n"){var N=document.getElementById("top-n"),O=document.getElementById("top");if(N&&O){N.hidden=false;var im=N.querySelector("img[data-src]");im.src=im.getAttribute("data-src");var sl=N.querySelector(".hn-slot");sl.appendChild(document.getElementById("hero-form"));sl.appendChild(document.getElementById("hero-msg"));O.style.display="none";document.addEventListener("DOMContentLoaded",function(){var pr=document.querySelector(".ph-real");if(pr){pr.src=pr.getAttribute("data-src");pr.hidden=false;var pn=document.getElementById("ph-note");if(pn)pn.textContent="開発中のデザイン案";}});}return;}var hook="SNS もゲームも<br />アプリストアもない携帯を、<br />いまつくっています。";var T={
-    b:{copy:hook,sub:"",btn:"完成品を最初に見る"},
-    c:{copy:hook,sub:"",btn:"料金を最初に知る"},
+  <script>(function(){var h=document.documentElement.getAttribute("data-h");if(h==="n"){var N=document.getElementById("top-n"),O=document.getElementById("top");if(N&&O){N.hidden=false;var im=N.querySelector("img[data-src]");im.src=im.getAttribute("data-src");var sl=N.querySelector(".hn-slot");sl.appendChild(document.getElementById("hero-form"));sl.appendChild(document.getElementById("hero-msg"));O.style.display="none";document.addEventListener("DOMContentLoaded",function(){var pr=document.querySelector(".ph-real");if(pr){pr.src=pr.getAttribute("data-src");pr.hidden=false;var pn=document.getElementById("ph-note");if(pn)pn.textContent="開発中のデザイン案";}});}return;}var S={eyebrow:"",copy:"SNS もゲームも<br />アプリストアもない携帯電話。",sub:"",btn:"先行予約（無料）",nav:"先行予約",fine:'発売時に、優先してご案内します。<br /><a href="privacy">プライバシーポリシー</a>'};var T={
+    a:S,b:S,c:S,
     d:{copy:"SNS もゲームもない<br />携帯電話",sub:"電話・地図・乗換・カメラだけ。<br />楽しさは、画面の外に。",btn:"発売を知らせてもらう"},
     o:{eyebrow:"SNS もゲームもない、携帯電話",btn:"先行予約に登録",fine:'無料です。<br class="sp" /><a href="privacy">プライバシーポリシー</a>に同意のうえ、ご登録ください。',nav:"先行予約"},
     p:{eyebrow:"SNS もゲームもない、携帯電話",btn:"最初に見る",ph:"メールアドレス（送り先）",fine:'無料です。<br class="sp" />登録で<a href="privacy">プライバシーポリシー</a>に同意したものとします',nav:"先行予約"}}[h];
     if(h==="o"){var v=document.querySelector(".hd-video");if(v){v.poster="images/hero-road.jpg";v.preload="auto";v.play&&v.play().catch(function(){})}}
     if(!T)return;var q=function(s){return document.querySelector(s)};
-    if(T.copy)q(".hero-door .hd-copy").innerHTML=T.copy;if(T.sub!==undefined){var hs=q(".hd-sub");hs.innerHTML=T.sub;hs.hidden=!T.sub;}if(T.eyebrow)q(".hd-eyebrow").textContent=T.eyebrow;
+    if(T.copy)q(".hero-door .hd-copy").innerHTML=T.copy;if(T.sub!==undefined){var hs=q(".hd-sub");hs.innerHTML=T.sub;hs.hidden=!T.sub;}if(T.eyebrow!==undefined){var he=q(".hd-eyebrow");he.textContent=T.eyebrow;he.hidden=!T.eyebrow;}
     if(T.btn)q("#hero-form .btn-label").textContent=T.btn;if(T.ph)q("#hero-email").placeholder=T.ph;
     if(T.fine)q(".hero-door .hd-fine").innerHTML=T.fine;if(T.nav)q(".nav-cta").textContent=T.nav;})();</script>
 
