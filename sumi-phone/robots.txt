@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /tools/
+Disallow: /cdn-cgi/
+
+Sitemap: https://sotophone.jp/sitemap.xml
