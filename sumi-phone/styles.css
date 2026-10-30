@@ -1071,3 +1071,11 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 
 /* 1枚目の言葉を JS で消したときは、表示用の CSS より優先して隠す */
 .hero-door [hidden] { display: none !important; }
+/* 1枚目は全員 a の見せ方。ボタンと入力欄だけは b・c の太めの形にする */
+[data-h="a"] .hd-form { padding: 6px; }
+[data-h="a"] .hd-form input { font-size: 15px; }
+[data-h="a"] .hero-door .hd-form .btn { padding: 15px 26px; font-size: 15px; font-weight: 600; letter-spacing: .06em; }
+@media (max-width: 820px) {
+  [data-h="a"] .hd-form input { font-size: 16px; padding: 0 10px 0 14px; }
+  [data-h="a"] .hero-door .hd-form .btn { padding: 14px 15px; font-size: 14px; letter-spacing: .04em; }
+}
