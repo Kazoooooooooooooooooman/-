@@ -156,7 +156,7 @@
     <!-- 左半分は本物らしく、右半分は鉛筆の下書き：つくっている途中の Soto Phone。背景は白にしてあり、乗算で紙の色に溶かす。
          最初の版（o）だけは、前の水彩の動画を出す（動画は o のときだけ読み込む） -->
     <figure class="hd-media">
-      <picture class="hd-pic"><source srcset="images/hero-phone.webp" type="image/webp" /><img class="hd-img" src="images/hero-phone.jpg" width="1200" height="1200" alt="開発中の Soto Phone。左半分は完成に近い姿、右半分は鉛筆の下書き。画面には 10:24 と、電話・メッセージ・地図・乗換・カメラ・スタンプ・集中モード" fetchpriority="high" /></picture>
+      <picture class="hd-pic"><img class="hd-img" src="/new/img/phone-3d2.webp" width="1000" height="1180" alt="Soto Phone のデザイン案。正方形の白黒の画面に、時刻と、電話・地図・乗換・カメラのメニューが並ぶ" fetchpriority="high" /></picture><figcaption class="hd-note">開発中のデザイン案</figcaption>
       <video class="hd-video" muted loop playsinline preload="none" aria-hidden="true"><source src="images/hero-road.webm" type="video/webm" /><source src="images/hero-road.mp4" type="video/mp4" /></video>
     </figure>
     <div class="hd-text">
@@ -186,15 +186,15 @@
     </div>
   </section>
   <!-- パターンごとの言葉（a は上に書いたまま） -->
-  <script>(function(){var h=document.documentElement.getAttribute("data-h");if(h==="n"){var N=document.getElementById("top-n"),O=document.getElementById("top");if(N&&O){N.hidden=false;var im=N.querySelector("img[data-src]");im.src=im.getAttribute("data-src");var sl=N.querySelector(".hn-slot");sl.appendChild(document.getElementById("hero-form"));sl.appendChild(document.getElementById("hero-msg"));O.style.display="none";document.addEventListener("DOMContentLoaded",function(){var pr=document.querySelector(".ph-real");if(pr){pr.src=pr.getAttribute("data-src");pr.hidden=false;var pn=document.getElementById("ph-note");if(pn)pn.textContent="開発中のデザイン案";}});}return;}var hook="外で過ごすほど、<br />携帯代が安くなる。";var T={
-    b:{copy:hook,sub:"そんな携帯電話を、いまつくっています。",btn:"完成品を最初に見る"},
-    c:{copy:hook,sub:"そんな携帯電話を、いまつくっています。",btn:"料金を最初に知る"},
+  <script>(function(){var h=document.documentElement.getAttribute("data-h");if(h==="n"){var N=document.getElementById("top-n"),O=document.getElementById("top");if(N&&O){N.hidden=false;var im=N.querySelector("img[data-src]");im.src=im.getAttribute("data-src");var sl=N.querySelector(".hn-slot");sl.appendChild(document.getElementById("hero-form"));sl.appendChild(document.getElementById("hero-msg"));O.style.display="none";document.addEventListener("DOMContentLoaded",function(){var pr=document.querySelector(".ph-real");if(pr){pr.src=pr.getAttribute("data-src");pr.hidden=false;var pn=document.getElementById("ph-note");if(pn)pn.textContent="開発中のデザイン案";}});}return;}var hook="SNS もゲームも<br />アプリストアもない携帯を、<br />いまつくっています。";var T={
+    b:{copy:hook,sub:"",btn:"完成品を最初に見る"},
+    c:{copy:hook,sub:"",btn:"料金を最初に知る"},
     d:{copy:"SNS もゲームもない<br />携帯電話",sub:"電話・地図・乗換・カメラだけ。<br />楽しさは、画面の外に。",btn:"発売を知らせてもらう"},
     o:{eyebrow:"SNS もゲームもない、携帯電話",btn:"先行予約に登録",fine:'無料です。<br class="sp" /><a href="privacy">プライバシーポリシー</a>に同意のうえ、ご登録ください。',nav:"先行予約"},
     p:{eyebrow:"SNS もゲームもない、携帯電話",btn:"最初に見る",ph:"メールアドレス（送り先）",fine:'無料です。<br class="sp" />登録で<a href="privacy">プライバシーポリシー</a>に同意したものとします',nav:"先行予約"}}[h];
     if(h==="o"){var v=document.querySelector(".hd-video");if(v){v.poster="images/hero-road.jpg";v.preload="auto";v.play&&v.play().catch(function(){})}}
     if(!T)return;var q=function(s){return document.querySelector(s)};
-    if(T.copy)q(".hero-door .hd-copy").innerHTML=T.copy;if(T.sub)q(".hd-sub").innerHTML=T.sub;if(T.eyebrow)q(".hd-eyebrow").textContent=T.eyebrow;
+    if(T.copy)q(".hero-door .hd-copy").innerHTML=T.copy;if(T.sub!==undefined){var hs=q(".hd-sub");hs.innerHTML=T.sub;hs.hidden=!T.sub;}if(T.eyebrow)q(".hd-eyebrow").textContent=T.eyebrow;
     if(T.btn)q("#hero-form .btn-label").textContent=T.btn;if(T.ph)q("#hero-email").placeholder=T.ph;
     if(T.fine)q(".hero-door .hd-fine").innerHTML=T.fine;if(T.nav)q(".nav-cta").textContent=T.nav;})();</script>
 
