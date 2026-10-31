@@ -115,7 +115,8 @@
     }, { passive: true });
     document.addEventListener("focusin", (e) => { if (e.target && e.target.type === "email") touched = true; });
     document.addEventListener("submit", () => { pressed = true; }, true);
-    document.addEventListener("soto:registered", () => { done = true; });
+    // 「登録した」は、この訪問でボタンを押して登録できたときだけ。前に登録したブラウザで開き直しただけのときは数えない
+    document.addEventListener("soto:registered", () => { if (pressed) done = true; });
     const send = () => {
       if (since) { shown += Date.now() - since; since = 0; }
       const seconds = Math.round(shown / 1000);
