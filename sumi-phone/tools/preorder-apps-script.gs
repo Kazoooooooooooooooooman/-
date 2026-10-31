@@ -209,10 +209,16 @@ function handleStay(data) {
     sheet.setFrozenRows(1);
   }
   const yes = (x) => (x === true ? "はい" : "");
+  // この訪問で登録したら「はい」。前に登録した人が開き直したときは「登録済み・再訪◯回目」
+  const regText = (x) => {
+    if (x === true) return "はい";
+    const m = /^again:(\d{1,4})$/.exec(String(x || ""));
+    return m ? "登録済み・再訪" + m[1] + "回目" : "";
+  };
   const num = (x, max) => Math.max(0, Math.min(max, Math.round(Number(x) || 0)));
   const row = [new Date(), visit, v, String(data.from || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, 40),
     num(data.seconds, 86400), num(data.scroll, 100), String(data.deepest || "").slice(0, 12),
-    yes(data.touched), yes(data.pressed), yes(data.registered)].concat(devValues(data.device).slice(0, 10));
+    yes(data.touched), yes(data.pressed), regText(data.registered)].concat(devValues(data.device).slice(0, 10));
   const last = sheet.getLastRow();
   const from = Math.max(2, last - 300);
   if (last >= 2) {

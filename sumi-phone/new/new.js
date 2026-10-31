@@ -115,14 +115,26 @@
     }, { passive: true });
     document.addEventListener("focusin", (e) => { if (e.target && e.target.type === "email") touched = true; });
     document.addEventListener("submit", () => { pressed = true; }, true);
-    // 「登録した」は、この訪問でボタンを押して登録できたときだけ。前に登録したブラウザで開き直しただけのときは数えない
-    document.addEventListener("soto:registered", () => { if (pressed) done = true; });
+    // 「登録した」は、この訪問でボタンを押して登録できたときだけ「はい」。
+    // 前に登録したブラウザで開き直したときは "again:回数" を送り、シートには「登録済み・再訪◯回目」と出す（回数は2026年11月から数え始める）
+    let again = 0;
+    try {
+      if (localStorage.getItem("soto-preorder")) {
+        again = (Number(localStorage.getItem("soto-revisit")) || 0) + 1;
+        localStorage.setItem("soto-revisit", String(again));
+      }
+    } catch (_) { /* 覚えていなくても記録には関係ない */ }
+    document.addEventListener("soto:registered", () => {
+      if (!pressed) return;
+      done = true; again = 0;
+      try { localStorage.setItem("soto-revisit", "0"); } catch (_) { /* 同上 */ }
+    });
     const send = () => {
       if (since) { shown += Date.now() - since; since = 0; }
       const seconds = Math.round(shown / 1000);
       if (seconds === sent) return;
       sent = seconds;
-      const body = JSON.stringify({ type: "stay", variant, visit, seconds, scroll: maxPct, deepest: names[deepest] || deepest, touched, pressed, registered: done, from: arrival.from || "", device: deviceInfo() });
+      const body = JSON.stringify({ type: "stay", variant, visit, seconds, scroll: maxPct, deepest: names[deepest] || deepest, touched, pressed, registered: done || (again ? "again:" + again : false), from: arrival.from || "", device: deviceInfo() });
       try { navigator.sendBeacon(FORM_ENDPOINT, new Blob([body], { type: "text/plain;charset=utf-8" })); } catch (_) { /* 表示には関係ない */ }
     };
     document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") send(); else since = Date.now(); });
