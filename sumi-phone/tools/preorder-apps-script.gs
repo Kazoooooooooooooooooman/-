@@ -611,30 +611,57 @@ function refCard(code, en) {
     + "</td></tr></table>";
 }
 
-// 確認メールが届かなかったアドレスを見つける。存在しないアドレスに送ると、Gmail に「配信できませんでした」というメールが戻るので、
-// それを読んで「配信エラー」の列に日時を入れ、紹介の人数から外す。読んだメールにはラベルを付けて、2回は読まない。
-// 紹介の報告の前と、毎朝の手紙の自動実行のときに動く
+// 確認メールが届かなかったアドレス（存在しないアドレスなど）を、「先行予約」シートから「配信エラー」シートへ移す。
+// 存在しないアドレスに送ると、Gmail に「Address not found（配信できませんでした）」のメールが戻るので、それを読む。
+// 届かなかった宛先は、そのメールの X-Failed-Recipients という見出しから読む（本文の中のほかのアドレスは見ない）。
+// 読んだメールにはラベルを付けて、2回は読まない。10分ごとの自動実行（setupBounceTrigger で登録）と、紹介の報告の前に動く
+const BOUNCE_SHEET = "配信エラー";
 function checkBounces(sheet) {
   sheet = sheet || getSheet();
   const name = "soto-配信エラー確認済み";
   const label = GmailApp.getUserLabelByName(name) || GmailApp.createLabel(name);
   const threads = GmailApp.search('(from:mailer-daemon OR from:postmaster) newer_than:30d -label:"' + name + '"', 0, 50);
-  if (!threads.length) return;
-  const last = sheet.getLastRow();
-  const emails = last > 1 ? sheet.getRange(2, 2, last - 1, 1).getValues().flat().map((x) => String(x).trim().toLowerCase()) : [];
+  if (!threads.length) return 0;
+  const failed = {};
   threads.forEach((th) => {
     th.getMessages().forEach((m) => {
-      const found = (m.getPlainBody().match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g) || []).map((x) => x.toLowerCase());
-      found.forEach((addr) => {
-        const i = emails.indexOf(addr);
-        if (i < 0 || sheet.getRange(i + 2, BOUNCE_COL).getValue()) return;
-        sheet.getRange(i + 2, BOUNCE_COL).setValue(new Date());
-        const f = sheet.getRange(i + 2, FLAG_COL);
-        f.setValue([f.getValue(), "確認メールが届かないアドレス"].filter(Boolean).join("／"));
-      });
+      let list = String(m.getHeader("X-Failed-Recipients") || "");
+      if (!list) {
+        const hit = /(?:wasn't delivered to|was not delivered to|配信されませんでした[^@]*?)\s*([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/.exec(m.getPlainBody());
+        list = hit ? hit[1] : "";
+      }
+      list.split(/[,\s]+/).filter(Boolean).forEach((a) => { failed[a.trim().toLowerCase()] = new Date(m.getDate()); });
     });
     th.addLabel(label);
   });
+  const last = sheet.getLastRow();
+  if (last < 2) return 0;
+  const rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  let out = book.getSheetByName(BOUNCE_SHEET);
+  if (!out) { out = book.insertSheet(BOUNCE_SHEET); out.appendRow(["届かなかった日時"].concat(HEADERS)); out.setFrozenRows(1); }
+  let moved = 0;
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const email = String(rows[i][1] || "").trim().toLowerCase();
+    if (!email || !failed[email]) continue;
+    out.appendRow([failed[email]].concat(rows[i]));
+    sheet.deleteRow(i + 2);
+    moved++;
+  }
+  if (moved) CacheService.getScriptCache().remove("verifiedCount");
+  return moved;
+}
+
+// 10分ごとに、届かなかったアドレスを確かめる。Apps Script の画面でこの関数を選んで、一度だけ「実行」する
+function setupBounceTrigger() {
+  ScriptApp.getProjectTriggers().filter((t) => t.getHandlerFunction() === "checkBouncesJob").forEach((t) => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger("checkBouncesJob").timeBased().everyMinutes(10).create();
+  checkBouncesJob();
+}
+function checkBouncesJob() {
+  const lock = LockService.getScriptLock();
+  if (!lock.tryLock(10000)) return;
+  try { checkBounces(); } finally { lock.releaseLock(); }
 }
 
 // 確認メールに入れる「ご紹介のお願い」。ほかの段落と同じく、1行を短く区切る。
