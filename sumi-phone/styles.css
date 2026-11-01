@@ -1171,3 +1171,10 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 .dt-n small { display: inline; margin: 0; font-size: 12px; letter-spacing: .04em; color: var(--paper-dim); }
 .done-ask.is-en .dt-n small { display: inline; margin: 0 0 0 2px; font-size: 12px; }
 .dt-t { display: block; margin-top: 6px; }
+/* 御礼の表：枠全体と同じく中央そろえ。「10名のご紹介で」は小さな札にして、品物と分ける */
+.done-tiers { text-align: center; }
+.done-tiers li { display: block; padding: 14px 6px 13px; }
+.dt-n { display: inline-flex; align-items: baseline; justify-content: center; gap: 2px; padding: 5px 14px 4px; border: 1px solid rgba(169, 76, 47, .35); border-radius: 999px; background: rgba(255, 255, 255, .7); font-size: 17px; line-height: 1.1; }
+.dt-n small, .done-ask.is-en .dt-n small { display: inline; margin: 0 0 0 1px; font-size: 11.5px; color: var(--accent, #a94c2f); letter-spacing: .06em; }
+.dt-t { margin-top: 8px; font-size: 14.5px; }
+.dt-t small { margin-top: 1px; }
