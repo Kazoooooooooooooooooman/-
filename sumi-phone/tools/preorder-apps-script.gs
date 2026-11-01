@@ -528,52 +528,34 @@ function refText(lines, block, numLine) {
   return out.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
 }
 
-// HTML のメールに入れる「ご紹介のお願い」の枠。サイトの登録直後の画面（script.js の done-ask）と同じ見た目にする：
-// 白い枠・中央そろえ・言葉の切れ目で改行・御礼の表、その下に「LINE で送る」ボタン（送る文とリンクが入った状態で LINE が開く）
+// HTML のメールに入れる「ご紹介のお願い」。サイトの登録直後の画面（script.js の done-ask）と同じ見た目の画像を使う。
+// Gmail のアプリはダークモードでメールの色を反転させるが、画像は反転させない。画像にしておくと、
+// ダークモードでも白い枠がそのまま浮かんで目に入る。御礼の内容は全員同じなので、画像は1枚（images/mail/referral-ja.png）。
+// ボタンも画像にして、行き先（その人専用のリンク）だけを一人ずつ変える
 function refCard(code, en) {
   if (!code) return "";
-  const ent = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
+  const ent = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
+  const lang = en ? "en" : "ja";
   const url = SITE_URL + (en ? "en" : "") + "?r=" + code;
+  const share = SITE_URL + "share?c=" + code + (en ? "&l=en" : "");
   const msg = en
     ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you find yourself on your phone too much. It only takes your email."
     : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました。\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります。";
   const line = "https://line.me/R/share?text=" + encodeURIComponent(msg + "\n" + url);
-  const t = en
-    ? { h: "A small request", p: ["If someone close to you struggles", "with how much they use their phone,", "we'd be grateful if you shared Soto Phone", "with them using your own link."], th: "Our thanks for your referrals",
-        rows: [["1", "person", "Priority prototype invite", "When the prototype is ready"], ["10", "people", "A Soto aluminum bottle", "First 100 people"], ["30", "people", "A first-edition Soto T-shirt", "First 10 people"]],
-        n: ["We'll email you each time", "someone joins through your link."], b: "Send on LINE", b2: "Tell a friend", u: "Your link" }
-    : { h: "ご紹介のお願い", p: ["スマートフォンとの付き合い方に", "悩んでいる方が", "身近にいらっしゃいましたら、", "あなた専用のリンクから Soto Phone を", "ご紹介いただけますと幸いです。"], th: "ご紹介いただいた方への御礼",
-        rows: [["1", "名", "先行体験に優先ご招待", "試作機ができたときにご案内"], ["10", "名", "Soto アルミマイボトル", "先着100名様"], ["30", "名", "Soto 初代 限定Tシャツ", "先着10名様"]],
-        n: ["ご紹介の方がご登録されるたびに、", "メールでご報告いたします。"], b: "LINE で送る", b2: "友だちに教える", u: "あなた専用のリンク" };
+  // 画像が表示されないメールアプリのための代わりの文（画像の中身と同じ）
+  const alt = en
+    ? "A small request: if someone close to you struggles with how much they use their phone, we'd be grateful if you shared Soto Phone with them using your own link. Our thanks: 1 person - priority prototype invite; 10 people - a Soto aluminum bottle (first 100 people); 30 people - a first-edition Soto T-shirt (first 10 people). We'll email you each time someone joins through your link."
+    : "ご紹介のお願い：スマートフォンとの付き合い方に悩んでいる方が身近にいらっしゃいましたら、あなた専用のリンクから Soto Phone をご紹介いただけますと幸いです。ご紹介いただいた方への御礼：1名 先行体験に優先ご招待（試作機ができたときにご案内）、10名 Soto アルミマイボトル（先着100名様）、30名 Soto 初代 限定Tシャツ（先着10名様）。ご紹介の方がご登録されるたびに、メールでご報告いたします。";
+  const img = (f) => SITE_URL + "images/mail/" + f + "-" + lang + ".png";
   const sans = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif";
-  const serif = "'Hiragino Mincho ProN','Yu Mincho','YuMincho',Georgia,serif";
-  const dim = "#6b665d", line_ = "#e2ddd2";
-  const rows = t.rows.map(([n, u, x, sub]) => '<tr>'
-    + '<td width="70" style="width:70px;padding:12px 12px 12px 0;border-top:1px solid ' + line_ + ';white-space:nowrap;vertical-align:middle;text-align:right">'
-    + '<span style="font-family:' + serif + ';font-size:24px;font-weight:600;line-height:1;color:#a94c2f">' + n + '</span><span style="font-size:11px;color:' + dim + ';margin-left:2px">' + ent(u) + '</span></td>'
-    + '<td style="padding:12px 0;border-top:1px solid ' + line_ + ';vertical-align:middle;text-align:left">'
-    + '<div style="font-size:14px;line-height:1.45;color:#1f1e1c">' + ent(x) + '</div><div style="font-size:11.5px;line-height:1.5;color:' + dim + '">' + ent(sub) + "</div></td></tr>").join("");
   return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 26px"><tr><td align="center">'
-    // 白い枠
-    + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="max-width:420px;background:#ffffff;border:1px solid ' + line_ + ';border-radius:16px"><tr><td align="center" style="padding:22px 22px 18px;font-family:' + sans + ';text-align:center">'
-    + '<div style="font-family:' + serif + ';font-size:17px;letter-spacing:.12em;color:#1f1e1c">' + ent(t.h) + "</div>"
-    + '<div style="margin-top:10px;font-size:13px;line-height:1.9;letter-spacing:.02em;color:' + dim + '">' + t.p.map(ent).join("<br>") + "</div>"
-    + '<div style="margin-top:18px;font-size:11px;letter-spacing:.18em;color:#7a6f58">' + ent(t.th) + "</div>"
-    + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:8px;border-collapse:collapse;border-bottom:1px solid ' + line_ + '">' + rows + "</table>"
-    + '<div style="margin-top:14px;font-size:12px;line-height:1.8;color:' + dim + '">' + t.n.map(ent).join("<br>") + "</div>"
-    + "</td></tr></table>"
-    // その下に「LINE で送る」ボタン（サイトと同じ、黒い丸いボタンに赤い点）と、あなた専用のリンク
-    // 2つめの「友だちに教える」は、メールの中では共有画面を開けないので、共有するためのページ（share.html）を開く。
-    // そのページは ?c= を使うので、本人が開いても紹介には数えない
-    + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:18px auto 0"><tr>'
-    + '<td bgcolor="#1f1e1c" style="background:#1f1e1c;border-radius:999px">'
-    + '<a href="' + line + '" style="display:inline-block;padding:13px 24px;font-family:' + sans + ';font-size:14.5px;font-weight:600;letter-spacing:.08em;color:#ffffff;text-decoration:none;white-space:nowrap">'
-    + '<span style="color:#e0502e;font-size:11px;vertical-align:2px">&#9679;</span>&nbsp;&nbsp;' + ent(t.b) + "</a></td>"
+    + '<a href="' + share + '" style="text-decoration:none"><img src="' + img("referral") + '" width="420" alt="' + ent(alt) + '" style="display:block;width:100%;max-width:420px;height:auto;border:0;font-family:' + sans + ';font-size:13px;line-height:1.8;color:#1f1e1c"></a>'
+    + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:16px auto 0"><tr>'
+    + '<td><a href="' + line + '"><img src="' + img("btn-line") + '" width="200" height="51" alt="' + ent(en ? "Send on LINE" : "LINE で送る") + '" style="display:block;border:0;width:200px;height:51px"></a></td>'
     + '<td width="10" style="width:10px"></td>'
-    + '<td style="border:1px solid #1f1e1c;border-radius:999px">'
-    + '<a href="' + SITE_URL + "share?c=" + code + (en ? "&l=en" : "") + '" style="display:inline-block;padding:12px 22px;font-family:' + sans + ';font-size:14.5px;font-weight:600;letter-spacing:.08em;color:#1f1e1c;text-decoration:none;white-space:nowrap">' + ent(t.b2) + "</a></td>"
+    + '<td><a href="' + share + '"><img src="' + img("btn-share") + '" width="200" height="51" alt="' + ent(en ? "Tell a friend" : "友だちに教える") + '" style="display:block;border:0;width:200px;height:51px"></a></td>'
     + "</tr></table>"
-    + '<div style="margin-top:12px;font-family:' + sans + ';font-size:11.5px;color:' + dim + '">' + ent(t.u) + '：<a href="' + url + '" style="color:#1f1e1c">' + url + "</a></div>"
+    + '<div style="margin-top:12px;font-family:' + sans + ';font-size:11.5px;color:#6b665d">' + ent(en ? "Your link" : "あなた専用のリンク") + '：<a href="' + url + '" style="color:#1f1e1c">' + url + "</a></div>"
     + "</td></tr></table>";
 }
 
