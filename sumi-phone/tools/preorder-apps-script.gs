@@ -524,7 +524,7 @@ function refMailEn(n, tiers, next) {
 // 文字だけのメールでは、[[REF]] の行を「ご紹介のお願い」の文に置きかえる
 function refText(lines, block) {
   const out = [];
-  lines.forEach((l) => { if (l === "[[REF]]") out.push(...block.slice(0, -1)); else out.push(l); });
+  lines.forEach((l) => { if (l === "[[REF]]") out.push(...block.slice(0, -1)); else if (l !== "[[TICKET]]") out.push(l); });
   return out.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
 }
 
@@ -541,10 +541,10 @@ function refCard(code, en) {
   const t = en
     ? { h: "A small request", p: ["If someone close to you struggles", "with how much they use their phone,", "we'd be grateful if you shared Soto Phone", "with them using your own link."], th: "Our thanks for your referrals",
         rows: [["1", "person", "Priority prototype invite", "When the prototype is ready"], ["10", "people", "A Soto aluminum bottle", "First 100 people"], ["30", "people", "A first-edition Soto T-shirt", "First 10 people"]],
-        n: ["We'll email you each time", "someone joins through your link."], b: "Send on LINE", u: "Your link" }
+        n: ["We'll email you each time", "someone joins through your link."], b: "Send on LINE", b2: "Tell a friend", u: "Your link" }
     : { h: "ご紹介のお願い", p: ["スマートフォンとの付き合い方に", "悩んでいる方が", "身近にいらっしゃいましたら、", "あなた専用のリンクから Soto Phone を", "ご紹介いただけますと幸いです。"], th: "ご紹介いただいた方への御礼",
         rows: [["1", "名", "先行体験に優先ご招待", "試作機ができたときにご案内"], ["10", "名", "Soto アルミマイボトル", "先着100名様"], ["30", "名", "Soto 初代 限定Tシャツ", "先着10名様"]],
-        n: ["ご紹介の方がご登録されるたびに、", "メールでご報告いたします。"], b: "LINE で送る", u: "あなた専用のリンク" };
+        n: ["ご紹介の方がご登録されるたびに、", "メールでご報告いたします。"], b: "LINE で送る", b2: "友だちに教える", u: "あなた専用のリンク" };
   const sans = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif";
   const serif = "'Hiragino Mincho ProN','Yu Mincho','YuMincho',Georgia,serif";
   const dim = "#6b665d", line_ = "#e2ddd2";
@@ -563,9 +563,16 @@ function refCard(code, en) {
     + '<div style="margin-top:14px;font-size:12px;line-height:1.8;color:' + dim + '">' + t.n.map(ent).join("<br>") + "</div>"
     + "</td></tr></table>"
     // その下に「LINE で送る」ボタン（サイトと同じ、黒い丸いボタンに赤い点）と、あなた専用のリンク
-    + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:18px auto 0"><tr><td bgcolor="#1f1e1c" style="background:#1f1e1c;border-radius:999px">'
-    + '<a href="' + line + '" style="display:inline-block;padding:14px 30px;font-family:' + sans + ';font-size:15px;font-weight:600;letter-spacing:.1em;color:#ffffff;text-decoration:none">'
-    + '<span style="color:#e0502e;font-size:12px;vertical-align:2px">&#9679;</span>&nbsp;&nbsp;' + ent(t.b) + "</a></td></tr></table>"
+    // 2つめの「友だちに教える」は、メールの中では共有画面を開けないので、共有するためのページ（share.html）を開く。
+    // そのページは ?c= を使うので、本人が開いても紹介には数えない
+    + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:18px auto 0"><tr>'
+    + '<td bgcolor="#1f1e1c" style="background:#1f1e1c;border-radius:999px">'
+    + '<a href="' + line + '" style="display:inline-block;padding:13px 24px;font-family:' + sans + ';font-size:14.5px;font-weight:600;letter-spacing:.08em;color:#ffffff;text-decoration:none;white-space:nowrap">'
+    + '<span style="color:#e0502e;font-size:11px;vertical-align:2px">&#9679;</span>&nbsp;&nbsp;' + ent(t.b) + "</a></td>"
+    + '<td width="10" style="width:10px"></td>'
+    + '<td style="border:1px solid #1f1e1c;border-radius:999px">'
+    + '<a href="' + SITE_URL + "share?c=" + code + (en ? "&l=en" : "") + '" style="display:inline-block;padding:12px 22px;font-family:' + sans + ';font-size:14.5px;font-weight:600;letter-spacing:.08em;color:#1f1e1c;text-decoration:none;white-space:nowrap">' + ent(t.b2) + "</a></td>"
+    + "</tr></table>"
     + '<div style="margin-top:12px;font-family:' + sans + ';font-size:11.5px;color:' + dim + '">' + ent(t.u) + '：<a href="' + url + '" style="color:#1f1e1c">' + url + "</a></div>"
     + "</td></tr></table>";
 }
@@ -619,9 +626,18 @@ function mailJa(trial, link, number, variant, code) {
   const w = promiseJa(variant);
   // 短く、急かさない。伝えるのは「番号」「これから何が届くか」「刻印」の3つだけ
   const lines = [
-    "ご登録、ありがとうございます。",
+    // お礼は件名で伝わるので、ここは1行だけ。いちばん目に入る場所に「ご紹介のお願い」を置く
+    "このたびは、Soto Phone の",
+    "先行予約にご登録いただき、",
+    "誠にありがとうございます。",
+    "応援してくださる方がいることが、",
+    "私たちの何よりの励みです。",
     number ? "あなたの番号は " + numberLabel(number) + " です。" : null,
     "",
+    code ? "[[REF]]" : null,
+    code ? "" : null,
+    number ? "[[TICKET]]" : null,
+    number ? "" : null,
     "これから月に1回、開発の様子を",
     "短い手紙にしてお送りします。",
     trial ? "試作機を使ってもらう会を開くときも、" : null,
@@ -631,8 +647,6 @@ function mailJa(trial, link, number, variant, code) {
     number && number <= 300 ? "No.300 までの方は、" : null,
     number && number <= 300 ? "ご希望で本体に番号を刻めます。" : null,
     "",
-    code ? "[[REF]]" : null,
-    code ? "" : null,
     "楽しさは、画面の外に。",
     "佐々木 一真（Soto Phone）",
     "",
@@ -649,9 +663,16 @@ function mailJa(trial, link, number, variant, code) {
 
 function mailEn(trial, link, number, code) {
   const lines = [
-    "Thanks for signing up.",
+    "Thank you so much for joining",
+    "the Soto Phone pre-order list.",
+    "Knowing people are rooting for us",
+    "means more than we can say.",
     number ? "Your number is " + numberLabel(number) + "." : null,
     "",
+    code ? "[[REF]]" : null,
+    code ? "" : null,
+    number ? "[[TICKET]]" : null,
+    number ? "" : null,
     "Once a month, we'll send you a short letter",
     "about how the phone is coming along.",
     trial ? "We'll also write here when we invite" : null,
@@ -661,8 +682,6 @@ function mailEn(trial, link, number, code) {
     number && number <= 300 ? "Numbers up to No.300 can be engraved" : null,
     number && number <= 300 ? "on the phone if you'd like." : null,
     "",
-    code ? "[[REF]]" : null,
-    code ? "" : null,
     "Joy lives outside the screen.",
     "Kazuma Sasaki (Soto Phone)",
     "",
@@ -719,7 +738,8 @@ function toHtml(lines, number, w, refHtml) {
     return '<div style="margin:0 0 22px"><div style="font-size:12px;letter-spacing:.12em;color:#7a6f58;margin-bottom:6px">' + ent(esc(ls[0])) + '</div>'
       + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border-bottom:1px solid #e4e0d6;font-size:14px;line-height:1.6">' + rows + "</table></div>";
   };
-  const bodyHtml = paras.map((p) => (p === "[[REF]]" ? (refHtml || "") : null) || tierTable(p) || '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
+  const hasTicketSpot = paras.indexOf("[[TICKET]]") >= 0;
+  const bodyHtml = paras.map((p) => (p === "[[REF]]" ? (refHtml || "") : null) || (p === "[[TICKET]]" ? card : null) || tierTable(p) || '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
   const footHtml = foot.length ? '<div style="margin-top:36px;padding-top:14px;border-top:1px solid #e4e0d6;font-size:11px;line-height:1.8;color:#8a857b">' + foot.map(link).join("<br>") + "</div>" : "";
   // ダークモードの画面でも読めるように、明るい色で表示するよう指定し、白い紙の上に載せる
   // （背景を指定しないと、画面だけ黒くなって黒い文字が見えなくなるメールアプリがある）
@@ -727,7 +747,7 @@ function toHtml(lines, number, w, refHtml) {
     + '<style>:root{color-scheme:light only;supported-color-schemes:light only}</style>'
     + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f2ec" style="background:#f4f2ec"><tr><td align="center" style="padding:24px 12px">'
     + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="max-width:520px;background:#ffffff;border-radius:16px"><tr><td style="padding:28px 24px">'
-    + '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;letter-spacing:.02em;color:#1f1e1c;max-width:480px">' + card + bodyHtml + footHtml + "</div>"
+    + '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;letter-spacing:.02em;color:#1f1e1c;max-width:480px">' + (hasTicketSpot ? "" : card) + bodyHtml + footHtml + "</div>"
     + "</td></tr></table></td></tr></table>";
 }
 

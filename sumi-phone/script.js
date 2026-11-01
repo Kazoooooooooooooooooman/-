@@ -422,7 +422,11 @@
     const head = document.createElement("p");
     head.className = "done-head";
     head.innerHTML = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5"/></svg>';
-    head.append(EN ? "You’re in." : "受け付けました。");
+    // お礼は短くしすぎず、きちんと伝える（言葉のまとまりで折り返す）
+    const thanks = document.createElement("span");
+    thanks.className = "done-thanks";
+    thanks.innerHTML = EN ? "Thank you for signing up." : "<span class='ph'>ご登録いただき、</span><span class='ph'>ありがとうございます。</span>";
+    head.append(thanks);
     // 登録した順の番号。ある人にだけ、見出しのすぐ下に「先行予約券」のきっぷとして出す
     const num = Number(store_.get(NUM_KEY)) || 0;
     const badge = document.createElement("div");
@@ -511,9 +515,10 @@
       + "<ul class='done-tiers'>" + tiers.map(([n, t, sub]) => "<li><span class='dt-n'>" + n + "<small>" + (EN ? (n === "1" ? " person" : " people") : unit) + "</small></span><span class='dt-t'>" + t + "<small>" + sub + "</small></span></li>").join("") + "</ul>"
       + (EN ? "<p class='done-ask-note'>We’ll email you each time someone joins through your link.</p>"
             : "<p class='done-ask-note'>" + ph(["ご紹介の方がご登録されるたびに、", "メールでご報告いたします。"]) + "</p>");
-    card.append(head);
+    // お礼は見出しの1行で伝わるので、すぐ下に「ご紹介のお願い」と送るボタンを置く。きっぷと特典、メールの案内はその下
+    card.append(head, ask, row);
     if (num) card.append(badge, perk);
-    card.append(body, sub, ask, row);
+    card.append(body, sub);
     return card;
   }
 

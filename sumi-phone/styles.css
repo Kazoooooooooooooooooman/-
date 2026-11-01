@@ -1134,3 +1134,16 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 .done-copy { background: none; border: 0; padding: 0; font: inherit; font-size: 13px; cursor: pointer; }
 .ref-note { margin: 6px 0 12px; padding: 9px 14px; border-radius: 14px; text-wrap: pretty; background: rgba(255, 255, 255, .7); border: 1px solid var(--paper-line); font-size: 12.5px; line-height: 1.6; letter-spacing: .02em; color: var(--paper-ink); text-align: center; }
 .done-ask.is-en .dt-n small { display: block; margin: 4px 0 0; font-size: 10px; letter-spacing: .04em; }
+
+/* 確認メールの「友だちに教える」から開く、ご紹介のリンクを送るページ（share.html） */
+.share-page .sh-box { margin: 20px 0 0; padding: 16px; border-radius: 16px; background: #fff; border: 1px solid var(--paper-line); }
+.share-page textarea { width: 100%; border: 0; resize: vertical; font: inherit; font-size: 15px; line-height: 1.8; color: var(--paper-ink); background: transparent; }
+.share-page textarea:focus { outline: none; }
+.sh-url { margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--paper-line); font-size: 14px; word-break: break-all; color: var(--paper-dim); }
+.sh-btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+.legal .sh-btns .btn { text-decoration: none; }
+.sh-sub { background: transparent; border: 1px solid var(--paper-ink); color: var(--paper-ink); cursor: pointer; }
+.sh-msg { min-height: 1.6em; margin-top: 8px; font-size: 13px; color: var(--paper-dim); }
+.done-ask + .done-row { margin-bottom: 22px; }
+.done-thanks .ph { display: inline-block; }
+.sh-btns .btn { min-height: 52px; padding: 14px 24px; font-size: 15px; }
