@@ -43,7 +43,7 @@
     let first = null;
     try { first = JSON.parse(store.get(FROM_KEY) || "null"); } catch (_) { /* 壊れていたら上書きする */ }
     // チームの声かけのリンク（?from=kazuma など）は、前に別の経路で来ていても、こちらを優先して数える
-    const team = /^(kazuma|kanto|step)$/.test(from);
+    const team = /^(kazuma|kanto|step)(\.[0-9]{1,5})?$/.test(from); // kazuma.12 のように、声かけリストの行番号が付くこともある
     if (!first || team || (!first.from && !first.site && !first.r && (from || site || r))) {
       first = { from, site, r: r || (first && first.r) || "" };
       store.set(FROM_KEY, JSON.stringify(first));
