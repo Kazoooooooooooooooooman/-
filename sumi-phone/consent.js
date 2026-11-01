@@ -6,7 +6,7 @@
 // ・プライバシーポリシーの data-consent="reset" のボタンで、選び直せる
 (function () {
   var GA_ID = "G-BKQMGZTR46";
-  var CLARITY_ID = ""; // Microsoft Clarity のプロジェクト ID。入れると Clarity も読み込む
+  var CLARITY_ID = "z6p780jwuo"; // Microsoft Clarity のプロジェクト ID。入れると Clarity も読み込む
   var KEY = "soto-consent";
   var choice = null;
   try { choice = localStorage.getItem(KEY); } catch (_) { /* 読めなければ、まだ選んでいない扱い */ }
