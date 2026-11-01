@@ -1,5 +1,11 @@
 // Microsoft Clarity の数字（ページごとの訪問数、スクロールの深さ、滞在時間、デッドクリック・レイジクリックなど）を
 // 毎日このスプレッドシートの「Clarity（毎日）」タブに1日分ずつ足していく Google Apps Script。
+// Google アナリティクスの数字（ページごとの表示回数・ユーザー数など）も「GA（毎日）」タブに足す（GA_PROPERTY_ID を入れたときだけ）。
+// あわせて、Search Console のアドオンが毎日作る日付のタブと「Backup Log」を隠して、タブを見やすく保つ。
+//
+// Google アナリティクスも取り込むとき（任意）
+// a. Apps Script の左の「サービス」の＋から「Google Analytics Data API」を追加する
+// b. スクリプト プロパティに、名前 GA_PROPERTY_ID、値に GA4 のプロパティ ID（数字だけ。「管理」→「プロパティの詳細」にある）を入れる
 //
 // 使い方（最初に1回だけ）
 // 1. Clarity の「設定」→「データのエクスポート」で API トークンを作ってコピーする
@@ -38,13 +44,16 @@ const METRIC_JA = {
 
 function setup() {
   ScriptApp.getProjectTriggers()
-    .filter((t) => t.getHandlerFunction() === "importClarity")
+    .filter((t) => ["importClarity", "tidyTabs"].indexOf(t.getHandlerFunction()) >= 0)
     .forEach((t) => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger("importClarity").timeBased().everyDays(1).atHour(9).create();
+  ScriptApp.newTrigger("tidyTabs").timeBased().everyHours(1).create(); // アドオンが新しい日付のタブを作ったら、1時間以内に隠す
   importClarity();
 }
 
 function importClarity() {
+  try { importGa(); } catch (e) { console.warn("GA の取り込みに失敗：" + e); }
+  tidyTabs();
   const token = PropertiesService.getScriptProperties().getProperty("CLARITY_TOKEN");
   if (!token) throw new Error("スクリプト プロパティに CLARITY_TOKEN がありません");
   const res = UrlFetchApp.fetch(API + "?numOfDays=1&dimension1=URL", {
@@ -87,4 +96,38 @@ function importClarity() {
     });
   });
   if (rows.length) sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, HEADERS.length).setValues(rows);
+}
+
+// Google アナリティクス：前日のページごとの数字を「GA（毎日）」に足す
+function importGa() {
+  const id = PropertiesService.getScriptProperties().getProperty("GA_PROPERTY_ID");
+  if (!id) return;
+  const report = AnalyticsData.Properties.runReport({
+    dateRanges: [{ startDate: "yesterday", endDate: "yesterday" }],
+    dimensions: [{ name: "date" }, { name: "pagePath" }],
+    metrics: [{ name: "screenPageViews" }, { name: "activeUsers" }, { name: "sessions" }, { name: "userEngagementDuration" }],
+    limit: 1000
+  }, "properties/" + id);
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  let sheet = book.getSheetByName("GA（毎日）");
+  if (!sheet) {
+    sheet = book.insertSheet("GA（毎日）");
+    sheet.appendRow(["日付", "ページ", "表示回数", "ユーザー数", "セッション数", "操作していた時間の合計（秒）"]);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, 6).setFontWeight("bold");
+  }
+  const rows = (report.rows || []).map((r) => {
+    const d = r.dimensionValues[0].value;
+    return [d.slice(0, 4) + "-" + d.slice(4, 6) + "-" + d.slice(6, 8), r.dimensionValues[1].value]
+      .concat(r.metricValues.map((m) => Number(m.value)));
+  });
+  if (rows.length) sheet.getRange(sheet.getLastRow() + 1, 1, rows.length, 6).setValues(rows);
+}
+
+// Search Console のアドオンが作る日付のタブ（例：2026-10-30）と「Backup Log」を隠す。中身は消さない
+function tidyTabs() {
+  SpreadsheetApp.getActiveSpreadsheet().getSheets().forEach((sh) => {
+    const name = sh.getName();
+    if ((/^\d{4}-\d{2}-\d{2}$/.test(name) || name === "Backup Log") && !sh.isSheetHidden()) sh.hideSheet();
+  });
 }
