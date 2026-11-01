@@ -254,6 +254,13 @@ def build_sitemap(arts):
     rows += [f'  <url><loc>{SITE}/column/{a["slug"]}</loc><lastmod>{a.get("updated", a["published"])}</lastmod></url>' for a in arts]
     (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(rows) + "\n</urlset>\n")
 
+def build_llms(arts):
+    # AI（ChatGPT・Gemini・Perplexity・Claude など）が読む案内。固定の部分は tools/llms-head.md、記事の一覧は自動で足す
+    lines = [(ROOT / "tools" / "llms-head.md").read_text().rstrip(), "", "## 記事（データとコラム）"]
+    for a in sorted(arts, key=lambda a: a.get("updated", a["published"]), reverse=True):
+        lines.append(f'- [{a["title"]}]({SITE}/column/{a["slug"]})：{a["description"]}')
+    (ROOT / "llms.txt").write_text("\n".join(lines) + "\n")
+
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     arts = load()
@@ -262,4 +269,5 @@ if __name__ == "__main__":
         build_article(a, by)
     build_index(arts)
     build_sitemap(arts)
+    build_llms(arts)
     print(f"{len(arts)} 本の記事を作りました")
