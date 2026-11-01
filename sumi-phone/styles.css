@@ -1149,3 +1149,10 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 .sh-btns .btn { min-height: 52px; padding: 14px 24px; font-size: 15px; }
 .done-row + .tk-perk { margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--paper-line); }
 .done { scroll-margin-top: 96px; }
+/* 下のフォームの登録済みカード：枠の中の枠になるので、スマホでは外側の枠をなくして幅を広く使う */
+@media (max-width: 560px) {
+  .reserve-form + .done { padding: 0; border: 0; background: none; box-shadow: none; }
+  .reserve-form + .done .done-ask { padding: 18px 14px 14px; }
+  .reserve-form + .done .done-head { justify-content: center; }
+  .reserve-form + .done .done-row { justify-content: center; }
+}

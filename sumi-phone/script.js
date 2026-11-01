@@ -521,7 +521,7 @@
     const unit = EN ? "" : "名";
     ask.innerHTML = (EN
       ? "<p class='done-ask-h'>A small request</p><p class='done-ask-p'>If someone close to you struggles with how much they use their phone, we’d be grateful if you shared Soto Phone with them using your own link.</p><p class='done-ask-k'>Our thanks for your referrals</p>"
-      : "<p class='done-ask-h'>ご紹介のお願い</p><p class='done-ask-p'>" + ph(["スマートフォンとの付き合い方に", "悩んでいる方が", "身近にいらっしゃいましたら、", "あなた専用のリンクから Soto Phone を", "ご紹介いただけますと幸いです。"]) + "</p><p class='done-ask-k'>ご紹介いただいた方への御礼</p>")
+      : "<p class='done-ask-h'>ご紹介のお願い</p><p class='done-ask-p'>" + ph(["スマートフォンとの付き合い方に", "悩んでいる方が", "身近にいらっしゃいましたら、", "あなた専用のリンクから&nbsp;", "Soto Phone を", "ご紹介いただけますと幸いです。"]) + "</p><p class='done-ask-k'>ご紹介いただいた方への御礼</p>")
       + "<ul class='done-tiers'>" + tiers.map(([n, t, sub]) => "<li><span class='dt-n'>" + n + "<small>" + (EN ? (n === "1" ? " person" : " people") : unit) + "</small></span><span class='dt-t'>" + t + "<small>" + sub + "</small></span></li>").join("") + "</ul>"
       + (EN ? "<p class='done-ask-note'>We’ll email you each time someone joins through your link.</p>"
             : "<p class='done-ask-note'>" + ph(["ご紹介の方がご登録されるたびに、", "メールでご報告いたします。"]) + "</p>");
