@@ -576,6 +576,7 @@ function refText(lines, block, numLine) {
 // Gmail のアプリはダークモードでメールの色を反転させるが、画像は反転させない。画像にしておくと、
 // ダークモードでも白い枠がそのまま浮かんで目に入る。御礼の内容は全員同じなので、画像は1枚（images/mail/referral-ja.png）。
 // ボタンも画像にして、行き先（その人専用のリンク）だけを一人ずつ変える
+const MAIL_IMG_VER = "20261101c";
 function refCard(code, en) {
   if (!code) return "";
   const ent = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
@@ -590,7 +591,8 @@ function refCard(code, en) {
   const alt = en
     ? "A small request: if someone close to you struggles with how much they use their phone, we'd be grateful if you shared Soto Phone with them using your own link. Our thanks: 1 person - priority prototype invite; 10 people - a Soto aluminum bottle (first 100 people); 30 people - a first-edition Soto T-shirt (first 10 people). We'll email you each time someone joins through your link."
     : "ご紹介のお願い：スマートフォンとの付き合い方に悩んでいる方が身近にいらっしゃいましたら、あなた専用のリンクから Soto Phone をご紹介いただけますと幸いです。ご紹介いただいた方への御礼：1名 先行体験に優先ご招待（試作機ができたときにご案内）、10名 Soto アルミマイボトル（先着100名様）、30名 Soto 初代 限定Tシャツ（先着10名様）。ご紹介の方がご登録されるたびに、メールでご報告いたします。";
-  const img = (f) => SITE_URL + "images/mail/" + f + "-" + lang + ".png";
+  // 画像は7日間キャッシュされるので、作り直したら MAIL_IMG_VER を変えて、新しい画像が出るようにする
+  const img = (f) => SITE_URL + "images/mail/" + f + "-" + lang + ".png?v=" + MAIL_IMG_VER;
   const sans = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif";
   return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 26px"><tr><td align="center">'
     + '<a href="' + share + '" style="text-decoration:none"><img src="' + img("referral") + '" width="420" alt="' + ent(alt) + '" style="display:block;width:100%;max-width:420px;height:auto;border:0;font-family:' + sans + ';font-size:13px;line-height:1.8;color:#1f1e1c"></a>'
