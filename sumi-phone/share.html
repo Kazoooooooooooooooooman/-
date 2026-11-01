@@ -14,7 +14,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
 <link rel="stylesheet" href="/fonts/fonts.css" />
-<link rel="stylesheet" href="/styles.css?v=20261101u" />
+<link rel="stylesheet" href="/styles.css?v=20261101w" />
 <script src="/consent.js?v=2" defer></script>
 </head>
 <body class="legal-page">
@@ -39,19 +39,19 @@
 </header>
 <main id="main" class="legal share-page">
   <div class="wrap">
-    <h1 id="sh-h">ご紹介のリンクを送る</h1>
-    <p class="page-lead" id="sh-lead">Soto Phone をご紹介いただき、ありがとうございます。下の文とご紹介用のリンクを、そのままお送りいただけます。文は自由に書き直していただいて構いません。</p>
-    <div class="sh-box">
-      <textarea id="sh-text" rows="7" aria-label="送る文"></textarea>
+    <h1 id="sh-h">身近な方に送る</h1>
+    <p class="page-lead" id="sh-lead">下の文を、そのままお送りいただけます。</p>
+    <div class="sh-bubble" aria-live="polite">
+      <p id="sh-text"></p>
       <p class="sh-url" id="sh-url"></p>
     </div>
     <div class="sh-btns">
-      <a class="btn btn-cta" id="sh-line" href="#"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">LINE で送る</span></a>
+      <a class="btn btn-cta sh-main" id="sh-line" href="#"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">LINE で送る</span></a>
+      <button class="btn sh-sub" id="sh-copy" type="button"><span class="btn-label">文とリンクをコピーする</span></button>
       <button class="btn sh-sub" id="sh-share" type="button" hidden><span class="btn-label">ほかのアプリで送る</span></button>
-      <button class="btn sh-sub" id="sh-copy" type="button"><span class="btn-label">文とリンクをコピー</span></button>
     </div>
     <p class="sh-msg" id="sh-msg" role="status"></p>
-    <p class="small" id="sh-note">ご紹介いただいた方がご登録くださるたびに、メールでご報告いたします。御礼の内容は<a href="/referral">ご紹介のページ</a>をご覧ください。</p>
+    <p class="small sh-note" id="sh-note">ご紹介いただいた方がご登録くださるたびに、メールでご報告いたします。<a href="/referral">御礼の内容</a></p>
     <p class="small" id="sh-none" hidden>このリンクには、ご紹介のコードが含まれていません。確認メールのボタンから、もう一度お開きください。</p>
   </div>
 </main>
@@ -73,31 +73,31 @@
   const $ = (id) => document.getElementById(id);
   if (en) {
     document.documentElement.lang = "en";
-    $("sh-h").textContent = "Send your referral link";
-    $("sh-lead").textContent = "Thank you for telling others about Soto Phone. You can send the message below with your own link, and feel free to edit it.";
+    $("sh-h").textContent = "Send to someone close to you";
+    $("sh-lead").textContent = "You can send the message below as it is.";
     $("sh-line").querySelector(".btn-label").textContent = "Send on LINE";
     $("sh-share").querySelector(".btn-label").textContent = "Send with another app";
-    $("sh-copy").querySelector(".btn-label").textContent = "Copy message and link";
-    $("sh-note").innerHTML = "We'll email you each time someone joins through your link. See <a href=\"/referral-en\">referrals</a> for our thanks.";
+    $("sh-copy").querySelector(".btn-label").textContent = "Copy the message and link";
+    $("sh-note").innerHTML = "We'll email you each time someone joins through your link. <a href=\"/referral-en\">Our thanks</a>";
     $("sh-none").textContent = "This link doesn't include your referral code. Please open it again from the button in your confirmation email.";
   }
-  if (!code) { $("sh-none").hidden = false; document.querySelector(".sh-box").hidden = true; document.querySelector(".sh-btns").hidden = true; return; }
+  if (!code) { $("sh-none").hidden = false; document.querySelector(".sh-bubble").hidden = true; document.querySelector(".sh-btns").hidden = true; return; }
   const url = "https://sotophone.jp/" + (en ? "en" : "") + "?r=" + code;
-  const text = $("sh-text");
+  const text = { value: "" };
   text.value = en
     ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you find yourself on your phone too much. It only takes your email."
     : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました。\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります。";
+  $("sh-text").textContent = text.value;
   $("sh-url").textContent = url;
   const msg = (t) => { $("sh-msg").textContent = t; setTimeout(() => { $("sh-msg").textContent = ""; }, 2500); };
   const lineUrl = () => "https://line.me/R/share?text=" + encodeURIComponent(text.value + "\n" + url);
   $("sh-line").href = lineUrl();
-  text.addEventListener("input", () => { $("sh-line").href = lineUrl(); });
   if (navigator.share) {
     $("sh-share").hidden = false;
     $("sh-share").addEventListener("click", () => navigator.share({ title: "Soto Phone", text: text.value, url }).catch(() => {}));
   }
   $("sh-copy").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(text.value + "\n" + url); msg(en ? "Copied." : "コピーしました。"); }
+    try { await navigator.clipboard.writeText(text.value + "\n" + url); msg(en ? "Copied. Paste it into any app." : "コピーしました。好きなアプリに貼り付けて送れます。"); }
     catch (_) { window.prompt(en ? "Copy this" : "こちらをコピーしてください", text.value + "\n" + url); }
   });
 })();

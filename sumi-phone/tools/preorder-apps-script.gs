@@ -576,7 +576,7 @@ function refText(lines, block, numLine) {
 // Gmail のアプリはダークモードでメールの色を反転させるが、画像は反転させない。画像にしておくと、
 // ダークモードでも白い枠がそのまま浮かんで目に入る。御礼の内容は全員同じなので、画像は1枚（images/mail/referral-ja.png）。
 // ボタンも画像にして、行き先（その人専用のリンク）だけを一人ずつ変える
-const MAIL_IMG_VER = "20261101e";
+const MAIL_IMG_VER = "20261101f";
 function refCard(code, en) {
   if (!code) return "";
   const ent = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
@@ -600,9 +600,14 @@ function refCard(code, en) {
     + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:420px;margin:16px auto 0;table-layout:fixed"><tr>'
     + '<td width="49%" style="width:49%"><a href="' + line + '"><img src="' + img("btn-line") + '" width="200" alt="' + ent(en ? "Send on LINE" : "LINE で送る") + '" style="display:block;border:0;width:100%;max-width:200px;height:auto;margin:0 auto"></a></td>'
     + '<td width="2%" style="width:2%"></td>'
-    + '<td width="49%" style="width:49%"><a href="' + share + '"><img src="' + img("btn-share") + '" width="200" alt="' + ent(en ? "Tell a friend" : "友だちに教える") + '" style="display:block;border:0;width:100%;max-width:200px;height:auto;margin:0 auto"></a></td>'
+    + '<td width="49%" style="width:49%"><a href="' + share + '"><img src="' + img("btn-share") + '" width="200" alt="' + ent(en ? "Other ways to send" : "ほかの方法で送る") + '" style="display:block;border:0;width:100%;max-width:200px;height:auto;margin:0 auto"></a></td>'
     + "</tr></table>"
-    + '<div style="margin-top:12px;font-family:' + sans + ';font-size:11.5px;color:#6b665d">' + ent(en ? "Your referral link" : "ご紹介用のリンク") + '：<a href="' + url + '" style="color:#1f1e1c">' + url + "</a></div>"
+    // メールの中ではコピーのボタンを作れない（プログラムを動かせない）ので、リンクを大きな枠で見せ、長押しでコピーできると添える
+    + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:420px;margin:16px auto 0"><tr><td bgcolor="#ffffff" style="background:#ffffff;border:1px dashed #b9ae95;border-radius:12px;padding:12px 14px;text-align:center;font-family:' + sans + '">'
+    + '<div style="font-size:11px;letter-spacing:.12em;color:#7a6f58">' + ent(en ? "YOUR REFERRAL LINK" : "ご紹介用のリンク") + "</div>"
+    + '<div style="margin-top:4px;font-size:16px;font-weight:600;letter-spacing:.02em"><a href="' + url + '" style="color:#1f1e1c;text-decoration:none">' + url.replace("https://", "") + "</a></div>"
+    + '<div style="margin-top:4px;font-size:11px;color:#6b665d">' + ent(en ? "Press and hold to copy, then paste it anywhere" : "長押しでコピーして、好きなアプリに貼れます") + "</div>"
+    + "</td></tr></table>"
     + "</td></tr></table>";
 }
 
