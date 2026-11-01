@@ -584,8 +584,8 @@ function refCard(code, en) {
   const url = SITE_URL + (en ? "en" : "") + "?r=" + code;
   const share = SITE_URL + "share?c=" + code + (en ? "&l=en" : "");
   const msg = en
-    ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you find yourself on your phone too much. It only takes your email."
-    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました。\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります。";
+    ? "I've joined the pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you'd like to spend less time on your phone.\nThe pre-order is free and only takes your email."
+    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約に登録しました。\nスマホを触りすぎてしまうのが気になっている方には、合うかもしれません。\n先行予約は無料で、メールアドレスだけで登録できます。";
   const line = "https://line.me/R/share?text=" + encodeURIComponent(msg + "\n" + url);
   // 画像が表示されないメールアプリのための代わりの文（画像の中身と同じ）
   const alt = en
