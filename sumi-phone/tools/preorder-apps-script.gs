@@ -576,7 +576,7 @@ function refText(lines, block, numLine) {
 // Gmail のアプリはダークモードでメールの色を反転させるが、画像は反転させない。画像にしておくと、
 // ダークモードでも白い枠がそのまま浮かんで目に入る。御礼の内容は全員同じなので、画像は1枚（images/mail/referral-ja.png）。
 // ボタンも画像にして、行き先（その人専用のリンク）だけを一人ずつ変える
-const MAIL_IMG_VER = "20261101d";
+const MAIL_IMG_VER = "20261101e";
 function refCard(code, en) {
   if (!code) return "";
   const ent = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
@@ -590,7 +590,7 @@ function refCard(code, en) {
   // 画像が表示されないメールアプリのための代わりの文（画像の中身と同じ）
   const alt = en
     ? "A small request: if someone close to you struggles with how much they use their phone, we'd be grateful if you shared Soto Phone with them using your own link. Our thanks: 1 person - priority prototype invite; 10 people - a Soto aluminum bottle (first 100 people); 30 people - a first-edition Soto T-shirt (first 10 people). We'll email you each time someone joins through your link."
-    : "ご紹介のお願い：スマートフォンとの付き合い方に悩んでいる方が身近にいらっしゃいましたら、ご紹介用のリンクから Soto Phone をご紹介いただけますと幸いです。ご紹介いただいた方への御礼：1名 先行体験に優先ご招待（試作機ができたときにご案内）、10名 Soto アルミマイボトル（先着100名様）、30名 Soto 初代 限定Tシャツ（先着10名様）。ご紹介の方がご登録されるたびに、メールでご報告いたします。";
+    : "ご紹介のお願い：スマートフォンとの付き合い方に悩んでいる方が身近にいらっしゃいましたら、ご紹介用のリンクから Soto Phone をお伝えいただけますと幸いです。ご紹介いただいた方への御礼：1名 先行体験に優先ご招待（試作機ができたときにご案内）、10名 Soto アルミマイボトル（先着100名様）、30名 Soto 初代 限定Tシャツ（先着10名様）。ご紹介の方がご登録されるたびに、メールでご報告いたします。";
   // 画像は7日間キャッシュされるので、作り直したら MAIL_IMG_VER を変えて、新しい画像が出るようにする
   const img = (f) => SITE_URL + "images/mail/" + f + "-" + lang + ".png?v=" + MAIL_IMG_VER;
   const sans = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif";
@@ -637,7 +637,7 @@ function checkBounces(sheet) {
 function refBlockJa(code) {
   if (!code) return [];
   return ["ご友人やご家族に、", "スマートフォンとの付き合い方に", "悩んでいる方がいらっしゃいましたら、",
-    "下記のご紹介用リンクから、", "Soto Phone をご紹介いただけますと幸いです。",
+    "下記のご紹介用リンクから、", "Soto Phone をお伝えいただけますと幸いです。",
     SITE_URL + "?r=" + code, "",
     "ご紹介いただいた人数に応じた御礼",
     "1名のご紹介で　試作機の先行体験に、優先してご招待",
