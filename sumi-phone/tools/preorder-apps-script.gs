@@ -621,7 +621,9 @@ function checkBounces(sheet) {
   const name = "soto-配信エラー確認済み";
   const label = GmailApp.getUserLabelByName(name) || GmailApp.createLabel(name);
   // 前の版が読んで印を付けたメールも、もう一度読む（シートから外したアドレスはもう載っていないので、何度読んでも同じ結果になる）
-  const threads = GmailApp.search('(from:mailer-daemon OR from:postmaster) newer_than:30d', 0, 100);
+  // 「送信済み」のスレッドの中に戻ってくることもあるので、どこにあっても探す
+  const threads = GmailApp.search('in:anywhere newer_than:30d (from:mailer-daemon OR from:postmaster OR "Address not found" OR "Delivery Status Notification" OR "配信できませんでした")', 0, 100);
+  console.log("配信エラーらしいメール：" + threads.length + "件");
   if (!threads.length) return 0;
   const failed = {};
   threads.forEach((th) => {
@@ -631,10 +633,13 @@ function checkBounces(sheet) {
         const hit = /(?:wasn't delivered to|was not delivered to|配信されませんでした[^@]*?)\s*([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})/.exec(m.getPlainBody());
         list = hit ? hit[1] : "";
       }
+      // 自分たちが送ったメールそのもの（送信済み）は飛ばす。届かなかったという通知のメールだけを見る
+      if (!/mailer-daemon|postmaster|mail delivery/i.test(m.getFrom())) return;
       list.split(/[,\s]+/).filter(Boolean).forEach((a) => { failed[a.trim().toLowerCase()] = new Date(m.getDate()); });
     });
     th.addLabel(label);
   });
+  console.log("届かなかった宛先：" + (Object.keys(failed).join(", ") || "なし"));
   const last = sheet.getLastRow();
   if (last < 2) return 0;
   const rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
