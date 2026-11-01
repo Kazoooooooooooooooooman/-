@@ -521,28 +521,28 @@ function refMailEn(n, tiers, next) {
   return { subject: "Soto Phone | Someone you referred has joined", text: lines.join("\n"), html: toHtml(lines, 0, { en: true }) };
 }
 
-// 確認メールに入れる「ご紹介のお願い」
+// 確認メールに入れる「ご紹介のお願い」。ほかの段落と同じく、1行を短く区切る。
+// 御礼の3行（「1名　〜」のように全角の空白で区切った行）は、HTML のメールでは表にする（toHtml）
 function refBlockJa(code) {
   if (!code) return [];
-  return ["ご友人やご家族に、スマートフォンとの付き合い方に悩んでいる方がいらっしゃいましたら、",
-    "下記のあなた専用のリンクから、Soto Phone をご紹介いただけますと幸いです。",
+  return ["ご友人やご家族に、", "スマートフォンとの付き合い方に", "悩んでいる方がいらっしゃいましたら、",
+    "あなた専用の下記リンクから、", "Soto Phone をご紹介いただけますと幸いです。",
     SITE_URL + "?r=" + code, "",
-    "ご紹介いただいた方へ、感謝の気持ちとして次のものをお贈りいたします。",
-    "・1名：試作機の先行体験に、優先してご招待",
-    "・10名：Soto オリジナル アルミマイボトル（先着100名様）",
-    "・30名：Soto 初代 限定Tシャツ（先着10名様）",
-    "ご紹介いただいた方がご登録くださるたびに、このメールアドレスへご報告いたします。", ""];
+    "ご紹介いただいた方への御礼",
+    "1名　試作機の先行体験に、優先してご招待",
+    "10名　Soto アルミマイボトル（先着100名様）",
+    "30名　Soto 初代 限定Tシャツ（先着10名様）", "",
+    "ご紹介の方がご登録されるたびに、", "このメールアドレスへご報告いたします。", ""];
 }
 function refBlockEn(code) {
   if (!code) return [];
-  return ["If you know someone who struggles with how much they use their phone,",
-    "we'd be grateful if you shared Soto Phone with them using your own link:",
-    SITE_URL + "en?r=" + code, "",
-    "As a thank-you for your referrals:",
-    "- 1 person: priority invitation to try a prototype",
-    "- 10 people: a Soto aluminum bottle (first 100 people)",
-    "- 30 people: a first-edition Soto T-shirt (first 10 people)",
-    "We'll email you each time someone joins through your link.", ""];
+  return ["If someone close to you struggles", "with how much they use their phone,", "we'd be grateful if you shared Soto Phone",
+    "with them using your own link:", SITE_URL + "en?r=" + code, "",
+    "Our thanks for your referrals",
+    "1 person　Priority invitation to try a prototype",
+    "10 people　A Soto aluminum bottle (first 100 people)",
+    "30 people　A first-edition Soto T-shirt (first 10 people)", "",
+    "We'll email you each time", "someone joins through your link.", ""];
 }
 
 // 1分あたりの上限と、Gmail の1日の送信上限の両方を見る
@@ -656,7 +656,19 @@ function toHtml(lines, number, w) {
   const cut = lines.findIndex((l) => l === "――" || l === "--");
   const main = cut >= 0 ? lines.slice(0, cut) : lines, foot = cut >= 0 ? lines.slice(cut + 1) : [];
   const paras = main.join("\n").split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
-  const bodyHtml = paras.map((p) => '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
+  const tierRe = /^(\d+(?:名| people| person))\u3000(.+)$/;
+  const tierTable = (p) => {
+    const ls = p.split("\n");
+    if (ls.length < 2 || !ls.slice(1).every((l) => tierRe.test(l))) return null;
+    const rows = ls.slice(1).map((l) => {
+      const m = tierRe.exec(l);
+      return '<tr><td style="padding:10px 14px 10px 0;border-top:1px solid #e4e0d6;white-space:nowrap;vertical-align:top;font-family:Georgia,serif;font-size:17px;font-weight:600;color:#a94c2f">' + ent(esc(m[1]))
+        + '</td><td style="padding:10px 0;border-top:1px solid #e4e0d6;vertical-align:top">' + ent(esc(m[2])) + "</td></tr>";
+    }).join("");
+    return '<div style="margin:0 0 22px"><div style="font-size:12px;letter-spacing:.12em;color:#7a6f58;margin-bottom:6px">' + ent(esc(ls[0])) + '</div>'
+      + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border-bottom:1px solid #e4e0d6;font-size:14px;line-height:1.6">' + rows + "</table></div>";
+  };
+  const bodyHtml = paras.map((p) => tierTable(p) || '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
   const footHtml = foot.length ? '<div style="margin-top:36px;padding-top:14px;border-top:1px solid #e4e0d6;font-size:11px;line-height:1.8;color:#8a857b">' + foot.map(link).join("<br>") + "</div>" : "";
   return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;letter-spacing:.02em;color:#1f1e1c;max-width:480px">' + card + bodyHtml + footHtml + "</div>";
 }
