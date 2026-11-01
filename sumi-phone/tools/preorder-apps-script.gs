@@ -670,7 +670,14 @@ function toHtml(lines, number, w) {
   };
   const bodyHtml = paras.map((p) => tierTable(p) || '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
   const footHtml = foot.length ? '<div style="margin-top:36px;padding-top:14px;border-top:1px solid #e4e0d6;font-size:11px;line-height:1.8;color:#8a857b">' + foot.map(link).join("<br>") + "</div>" : "";
-  return '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;letter-spacing:.02em;color:#1f1e1c;max-width:480px">' + card + bodyHtml + footHtml + "</div>";
+  // ダークモードの画面でも読めるように、明るい色で表示するよう指定し、白い紙の上に載せる
+  // （背景を指定しないと、画面だけ黒くなって黒い文字が見えなくなるメールアプリがある）
+  return '<meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">'
+    + '<style>:root{color-scheme:light only;supported-color-schemes:light only}</style>'
+    + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f2ec" style="background:#f4f2ec"><tr><td align="center" style="padding:24px 12px">'
+    + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="max-width:520px;background:#ffffff;border-radius:16px"><tr><td style="padding:28px 24px">'
+    + '<div style="font-family:\'Hiragino Sans\',\'Yu Gothic\',sans-serif;font-size:15px;line-height:1.9;letter-spacing:.02em;color:#1f1e1c;max-width:480px">' + card + bodyHtml + footHtml + "</div>"
+    + "</td></tr></table></td></tr></table>";
 }
 
 // ── 月に1回の手紙 ─────────────────────────────────────────────
