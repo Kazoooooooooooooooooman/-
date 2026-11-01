@@ -181,8 +181,10 @@
     } catch (_) { /* 読めない参照元は空のままでよい */ }
     let first = null;
     try { first = JSON.parse(store_.get(FROM_KEY) || "null"); } catch (_) { /* 壊れていたら上書きする */ }
-    if (!first || (!first.from && !first.site && !first.r && (from || site || r))) {
-      first = { from, site, r };
+    // チームの声かけのリンク（?from=kazuma など）は、前に別の経路で来ていても、こちらを優先して数える
+    const team = /^(kazuma|kanto|step)$/.test(from);
+    if (!first || team || (!first.from && !first.site && !first.r && (from || site || r))) {
+      first = { from, site, r: r || (first && first.r) || "" };
       store_.set(FROM_KEY, JSON.stringify(first));
     } else if (r && !first.r) {
       // 前に検索などで一度来ていた人が、あとから紹介のリンクで来たときも、紹介は記録する（経路は最初のまま）

@@ -42,8 +42,10 @@
     } catch (_) { /* 読めない参照元は空のままでよい */ }
     let first = null;
     try { first = JSON.parse(store.get(FROM_KEY) || "null"); } catch (_) { /* 壊れていたら上書きする */ }
-    if (!first || (!first.from && !first.site && !first.r && (from || site || r))) {
-      first = { from, site, r };
+    // チームの声かけのリンク（?from=kazuma など）は、前に別の経路で来ていても、こちらを優先して数える
+    const team = /^(kazuma|kanto|step)$/.test(from);
+    if (!first || team || (!first.from && !first.site && !first.r && (from || site || r))) {
+      first = { from, site, r: r || (first && first.r) || "" };
       store.set(FROM_KEY, JSON.stringify(first));
     } else if (r && !first.r) {
       first.r = r;
