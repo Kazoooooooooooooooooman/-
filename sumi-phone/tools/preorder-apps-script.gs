@@ -125,8 +125,13 @@ function doPost(e) {
     // 確認メールは、まだ送っていない人にだけ送る
     const sentAt = sheet.getRange(rowIndex, MAIL_COL).getValue();
     if (!sentAt && canSendNow()) {
-      sendConfirmation(email, lang, trial, number, variantTag(data.variant));
+      sendConfirmation(email, lang, trial, number, variantTag(data.variant), code);
       sheet.getRange(rowIndex, MAIL_COL).setValue(new Date());
+      // 紹介リンクから来た人なら、紹介した人に「1名ご登録くださいました」と報告する（初めての登録のときだけ）
+      const by = prev[4] || (invitedBy !== code ? invitedBy : "");
+      if (by && String(prev[1] || tag(data.from, 40)) !== "test") {
+        try { notifyReferrer(sheet, by); } catch (err) { console.error("紹介の報告に失敗：" + err); }
+      }
     }
     return reply({ ok: true, code: code, number: number });
   } catch (err) {
@@ -379,21 +384,25 @@ function sendPendingConfirmations() {
     if (!email || sentAt || stopped || !canSendNow()) return;
     let number = Number(r[NUM_COL - 1]) || 0;
     if (!number) { number = nextNumber(sheet); sheet.getRange(i + 2, NUM_COL).setValue(number); }
-    sendConfirmation(email, lang, trial, number, String(r[FORM_COL - 1] || "").split("・")[1] || "");
+    sendConfirmation(email, lang, trial, number, String(r[FORM_COL - 1] || "").split("・")[1] || "", String(r[FORM_COL + 2] || ""));
     sheet.getRange(i + 2, MAIL_COL).setValue(new Date());
   });
 }
 
 // 届くメールを自分で確かめる用。Apps Script の画面でこの関数を選んで「実行」すると、自分あてに日本語版が届く。
 function testSendToMe() {
-  sendConfirmation(Session.getEffectiveUser().getEmail(), "ja", true, 7);
+  sendConfirmation(Session.getEffectiveUser().getEmail(), "ja", true, 7, "", "abc123");
 }
 
-function sendConfirmation(email, lang, trial, number, variant) {
+function sendConfirmation(email, lang, trial, number, variant, code) {
   const link = manageUrl(email, lang);
-  const m = lang === "en" ? mailEn(trial, link, number) : mailJa(trial, link, number, variant);
+  const m = lang === "en" ? mailEn(trial, link, number, code) : mailJa(trial, link, number, variant, code);
+  sendMail(email, m);
+}
+
+// 送る仕組みを1か所にまとめる（エイリアスから送れるのは GmailApp だけ。MailApp は自分のアドレスからしか送れない）
+function sendMail(email, m) {
   if (FROM_ADDRESS) {
-    // エイリアスから送れるのは GmailApp だけ（MailApp は自分のアドレスからしか送れない）
     const opts = { htmlBody: m.html, name: SENDER_NAME, from: FROM_ADDRESS };
     if (REPLY_TO) opts.replyTo = REPLY_TO;
     GmailApp.sendEmail(email, m.subject, m.text, opts);
@@ -402,6 +411,134 @@ function sendConfirmation(email, lang, trial, number, variant) {
   const options = { to: email, subject: m.subject, body: m.text, htmlBody: m.html, name: SENDER_NAME };
   if (REPLY_TO) options.replyTo = REPLY_TO;
   MailApp.sendEmail(options);
+}
+
+// ── 紹介 ─────────────────────────────────────────────
+// 御礼：1名で試作機の先行体験に優先して招待、10名でアルミマイボトル（先着100名様）、30名で初代 限定Tシャツ（先着10名様）。
+// 数えるのは verifiedCount と同じ条件（確認メールが届いた・配信を止めていない・テストでない・同じアドレスは1人）の登録だけ。
+const REF_TIERS = [
+  { n: 10, cap: 100, ja: "Soto オリジナル アルミマイボトル", en: "a Soto aluminum bottle" },
+  { n: 30, cap: 10, ja: "Soto 初代 限定Tシャツ", en: "a first-edition Soto T-shirt" },
+];
+function referralCounts(sheet) {
+  const last = sheet.getLastRow();
+  const counts = {}, owner = {};
+  if (last < 2) return { counts, owner };
+  const rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
+  const seen = {};
+  rows.forEach((r) => {
+    const email = String(r[1] || "").trim().toLowerCase();
+    const ok = email && r[MAIL_COL - 1] && !r[STOP_COL - 1] && String(r[FORM_COL] || "") !== "test";
+    const code = String(r[FORM_COL + 2] || ""), by = String(r[FORM_COL + 3] || "");
+    if (ok && code && !owner[code]) owner[code] = { email, lang: String(r[3] || "ja") === "en" ? "en" : "ja" };
+    if (!ok || seen[email]) return;
+    seen[email] = true;
+    if (by) counts[by] = (counts[by] || 0) + 1;
+  });
+  return { counts, owner };
+}
+
+function notifyReferrer(sheet, by) {
+  const { counts, owner } = referralCounts(sheet);
+  const who = owner[by];
+  const n = counts[by] || 0;
+  if (!who || !n || !canSendNow()) return;
+  // 先着の枠：この段に届いた人を数え、届いた順（いまの人がちょうど届いたかどうか）で判断する
+  const reached = (t) => Object.keys(counts).filter((c) => counts[c] >= t.n).length;
+  const tiers = REF_TIERS.map((t) => ({ t, hit: n === t.n, full: reached(t) > t.cap }));
+  const next = REF_TIERS.find((t) => n < t.n && reached(t) < t.cap);
+  sendMail(who.email, who.lang === "en" ? refMailEn(n, tiers, next) : refMailJa(n, tiers, next));
+  // 品物を送る段に届いたら、運営にも知らせる（送り先をうかがう連絡は、運営から手で送る）
+  tiers.filter((x) => x.hit && !x.full).forEach((x) => {
+    MailApp.sendEmail(Session.getEffectiveUser().getEmail(), "【Soto Phone 紹介】" + x.t.ja + " の対象になりました",
+      who.email + " さんのご紹介が " + n + "名 になりました。" + x.t.ja + "（先着" + x.t.cap + "名様）の対象です。\nお届け先をおうかがいするご連絡を送ってください。");
+  });
+}
+
+function refMailJa(n, tiers, next) {
+  const hit = tiers.find((x) => x.hit);
+  const lines = [
+    "いつも Soto Phone を応援いただき、誠にありがとうございます。",
+    "",
+    "あなたがご紹介くださったリンクから、",
+    "お一人の方が先行予約にご登録くださいました。",
+    "これまでにご紹介いただいた方は、合わせて " + n + "名 です。",
+    "",
+    n === 1 ? "御礼として、試作機の先行体験に優先してご招待いたします。" : null,
+    n === 1 ? "開催が決まりましたら、このメールアドレスにご案内をお送りします。" : null,
+    hit && !hit.full ? "御礼として、" + hit.t.ja + "をお贈りいたします。" : null,
+    hit && !hit.full ? "お届け先をおうかがいするご連絡を、改めてお送りいたします。" : null,
+    hit && hit.full ? hit.t.ja + "は、先着" + hit.t.cap + "名様の枠が埋まってしまいました。申し訳ございません。" : null,
+    next && (n === 1 || hit) ? "" : null,
+    next ? next.ja + "のお届けまで、あと " + (next.n - n) + "名 です。" : null,
+    "",
+    "「欲しいと思ってくださる方がいる」という数字は、",
+    "私たちが開発を進めるうえで、何よりの力になります。",
+    "心より御礼申し上げます。",
+    "",
+    "次にご登録があった際も、このメールでご報告いたします。",
+    "",
+    "Soto Phone 代表　佐々木 一真",
+    "",
+    "――",
+    "このメールは、sotophone.jp で先行予約にご登録いただいた方にお送りしています。",
+    "お問い合わせ：" + CONTACT,
+  ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
+  return { subject: "Soto Phone | ご紹介いただいた方が、先行予約にご登録くださいました", text: lines.join("\n"), html: toHtml(lines, 0, { en: false }) };
+}
+
+function refMailEn(n, tiers, next) {
+  const hit = tiers.find((x) => x.hit);
+  const lines = [
+    "Thank you for supporting Soto Phone.",
+    "",
+    "Someone you referred has just joined the pre-order list.",
+    "You have now referred " + n + (n === 1 ? " person." : " people."),
+    "",
+    n === 1 ? "As a thank-you, we'll invite you first to try a prototype." : null,
+    n === 1 ? "We'll write to this address once the date is set." : null,
+    hit && !hit.full ? "As a thank-you, we'll send you " + hit.t.en + "." : null,
+    hit && !hit.full ? "We'll email you separately to ask for your shipping address." : null,
+    hit && hit.full ? "We're sorry: the first " + hit.t.cap + " spots for " + hit.t.en + " have been taken." : null,
+    next && (n === 1 || hit) ? "" : null,
+    next ? (next.n - n) + " more to go until " + next.en + "." : null,
+    "",
+    "Every person who wants this phone helps us keep building it.",
+    "Thank you, truly.",
+    "",
+    "We'll let you know here each time someone else joins through your link.",
+    "",
+    "Kazuma Sasaki, Founder, Soto Phone",
+    "",
+    "--",
+    "You're receiving this because you joined the pre-order list at " + SITE_URL + ".",
+    "Contact: " + CONTACT,
+  ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
+  return { subject: "Soto Phone | Someone you referred has joined", text: lines.join("\n"), html: toHtml(lines, 0, { en: true }) };
+}
+
+// 確認メールに入れる「ご紹介のお願い」
+function refBlockJa(code) {
+  if (!code) return [];
+  return ["ご友人やご家族に、スマートフォンとの付き合い方に悩んでいる方がいらっしゃいましたら、",
+    "下記のあなた専用のリンクから、Soto Phone をご紹介いただけますと幸いです。",
+    SITE_URL + "?r=" + code, "",
+    "ご紹介いただいた方へ、感謝の気持ちとして次のものをお贈りいたします。",
+    "・1名：試作機の先行体験に、優先してご招待",
+    "・10名：Soto オリジナル アルミマイボトル（先着100名様）",
+    "・30名：Soto 初代 限定Tシャツ（先着10名様）",
+    "ご紹介いただいた方がご登録くださるたびに、このメールアドレスへご報告いたします。", ""];
+}
+function refBlockEn(code) {
+  if (!code) return [];
+  return ["If you know someone who struggles with how much they use their phone,",
+    "we'd be grateful if you shared Soto Phone with them using your own link:",
+    SITE_URL + "en?r=" + code, "",
+    "As a thank-you for your referrals:",
+    "- 1 person: priority invitation to try a prototype",
+    "- 10 people: a Soto aluminum bottle (first 100 people)",
+    "- 30 people: a first-edition Soto T-shirt (first 10 people)",
+    "We'll email you each time someone joins through your link.", ""];
 }
 
 // 1分あたりの上限と、Gmail の1日の送信上限の両方を見る
@@ -425,7 +562,7 @@ function promiseJa(variant) {
   return { img: "kansei", title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone", line: "完成したら、いちばん先にお見せします。" };
 }
 
-function mailJa(trial, link, number, variant) {
+function mailJa(trial, link, number, variant, code) {
   const w = promiseJa(variant);
   // 短く、急かさない。伝えるのは「番号」「これから何が届くか」「刻印」の3つだけ
   const lines = [
@@ -441,6 +578,7 @@ function mailJa(trial, link, number, variant) {
     number && number <= 300 ? "No.300 までの方は、" : null,
     number && number <= 300 ? "ご希望で本体に番号を刻めます。" : null,
     "",
+    ...refBlockJa(code),
     "楽しさは、画面の外に。",
     "佐々木 一真（Soto Phone）",
     "",
@@ -455,7 +593,7 @@ function mailJa(trial, link, number, variant) {
   return { subject: number ? "Soto Phone | " + numberLabel(number) + " で受け付けました" : "Soto Phone | 受け付けました", text: lines.join("\n"), html: toHtml(lines, number, w) };
 }
 
-function mailEn(trial, link, number) {
+function mailEn(trial, link, number, code) {
   const lines = [
     "Thanks for signing up.",
     number ? "Your number is " + numberLabel(number) + "." : null,
@@ -469,6 +607,7 @@ function mailEn(trial, link, number) {
     number && number <= 300 ? "Numbers up to No.300 can be engraved" : null,
     number && number <= 300 ? "on the phone if you'd like." : null,
     "",
+    ...refBlockEn(code),
     "Joy lives outside the screen.",
     "Kazuma Sasaki (Soto Phone)",
     "",

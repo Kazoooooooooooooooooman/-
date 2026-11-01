@@ -193,6 +193,18 @@
     }
     return first;
   })();
+  // 紹介リンク（?r=）で来た人には、知らない宣伝ページと思われないよう、1枚目のフォームの上に一言出す
+  (() => {
+    if (!clean(params.get("r"), 12) || store_.get("soto-preorder")) return;
+    const form = document.getElementById("hero-form");
+    if (!form) return;
+    const note = document.createElement("p");
+    note.className = "ref-note";
+    note.textContent = EN
+      ? "🎟 You’re here through an invitation from a friend. Pre-ordering is free and only takes your email."
+      : "🎟 ご友人からの招待リンクでお越しいただきました。先行予約は無料で、メールアドレスだけでご登録いただけます。";
+    form.parentNode.insertBefore(note, form);
+  })();
   // きっぷの言葉は、押したボタンの約束に合わせる（「先行予約」と書いてあるのは、最初の版 o だけ）
   function ticketWords() {
     const h = (heroVariant() || "a").split("-")[0];
@@ -393,7 +405,9 @@
   // 友だちに送るリンクには紹介コードが付き、そこから登録した人の行に「紹介」として残る
   function doneCard(data) {
     const url = "https://sotophone.jp/" + (EN ? "en" : "") + "?r=" + myCode();
-    const text = EN ? "A phone that makes you want to go outside. Soto Phone is taking pre-orders." : "スマホを置いて、外に出たくなる携帯。Soto Phone の先行予約が始まっています。";
+    const text = EN
+      ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games 📱\nMight suit you if you find yourself on your phone too much. It only takes your email 👇"
+      : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました📱\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります👇";
     const card = document.createElement("div");
     card.className = "done";
     card.setAttribute("role", "status");
@@ -461,10 +475,24 @@
     line.target = "_blank";
     line.rel = "noopener";
     line.textContent = EN ? "Send on LINE" : "LINE で送る";
-    row.append(share, line);
+    // 日本では LINE で送る人が多いので、LINE を目立つボタンに、ほかの共有（コピー）を文字のボタンにする
+    if (!EN) {
+      line.className = "btn btn-cta done-share";
+      line.innerHTML = '<span class="btn-dot" aria-hidden="true"></span><span class="btn-label">LINE で送る</span>';
+      share.className = "done-line done-copy";
+      share.innerHTML = '<span class="btn-label"></span>';
+      share.querySelector(".btn-label").textContent = label;
+      row.append(line, share);
+    } else row.append(share, line);
+    // ご紹介のお願いと御礼。紹介してもらった人が登録するたびに、メールで報告する
+    const ask = document.createElement("div");
+    ask.className = "done-ask";
+    ask.innerHTML = EN
+      ? "<p class='done-ask-h'>One more small request</p><p>If you know someone who struggles with how much they use their phone, we’d be grateful if you shared Soto Phone with them using your own link below.</p><ul><li>1 person: priority invitation to try a prototype</li><li>10 people: a Soto aluminum bottle (first 100 people)</li><li>30 people: a first-edition Soto T-shirt (first 10 people)</li></ul><p class='done-ask-note'>We’ll email you each time someone joins through your link.</p>"
+      : "<p class='done-ask-h'>最後に、ひとつお願いがございます。</p><p>身近にスマートフォンとの付き合い方に悩んでいる方がいらっしゃいましたら、下のあなた専用のリンクから Soto Phone をご紹介いただけますと幸いです。ご紹介いただいた方へ、感謝の気持ちとして次のものをお贈りいたします。</p><ul><li>1名：試作機の先行体験に、優先してご招待</li><li>10名：Soto オリジナル アルミマイボトル（先着100名様）</li><li>30名：Soto 初代 限定Tシャツ（先着10名様）</li></ul><p class='done-ask-note'>ご紹介いただいた方がご登録くださるたびに、メールでご報告いたします。</p>";
     card.append(head);
     if (num) card.append(badge, perk);
-    card.append(body, sub, row);
+    card.append(body, sub, ask, row);
     return card;
   }
 
