@@ -486,10 +486,19 @@
     } else row.append(share, line);
     // ご紹介のお願いと御礼。紹介してもらった人が登録するたびに、メールで報告する
     const ask = document.createElement("div");
-    ask.className = "done-ask";
-    ask.innerHTML = EN
-      ? "<p class='done-ask-h'>One more small request</p><p>If you know someone who struggles with how much they use their phone, we’d be grateful if you shared Soto Phone with them using your own link below.</p><ul><li>1 person: priority invitation to try a prototype</li><li>10 people: a Soto aluminum bottle (first 100 people)</li><li>30 people: a first-edition Soto T-shirt (first 10 people)</li></ul><p class='done-ask-note'>We’ll email you each time someone joins through your link.</p>"
-      : "<p class='done-ask-h'>最後に、ひとつお願いがございます。</p><p>身近にスマートフォンとの付き合い方に悩んでいる方がいらっしゃいましたら、下のあなた専用のリンクから Soto Phone をご紹介いただけますと幸いです。ご紹介いただいた方へ、感謝の気持ちとして次のものをお贈りいたします。</p><ul><li>1名：試作機の先行体験に、優先してご招待</li><li>10名：Soto オリジナル アルミマイボトル（先着100名様）</li><li>30名：Soto 初代 限定Tシャツ（先着10名様）</li></ul><p class='done-ask-note'>ご紹介いただいた方がご登録くださるたびに、メールでご報告いたします。</p>";
+    ask.className = "done-ask" + (EN ? " is-en" : "");
+    // 日本語は、言葉のまとまりごとに折り返す（文の途中の変なところで改行しない）
+    const ph = (a) => a.map((t) => "<span class='ph'>" + t + "</span>").join("");
+    const tiers = EN
+      ? [["1", "Priority prototype invite", "When the prototype is ready"], ["10", "A Soto aluminum bottle", "First 100 people"], ["30", "A first-edition Soto T-shirt", "First 10 people"]]
+      : [["1", "先行体験に優先ご招待", "試作機ができたときにご案内"], ["10", "Soto アルミマイボトル", "先着100名様"], ["30", "Soto 初代 限定Tシャツ", "先着10名様"]];
+    const unit = EN ? "" : "名";
+    ask.innerHTML = (EN
+      ? "<p class='done-ask-h'>A small request</p><p class='done-ask-p'>If someone close to you struggles with how much they use their phone, we’d be grateful if you shared Soto Phone with them using your own link.</p><p class='done-ask-k'>Our thanks for your referrals</p>"
+      : "<p class='done-ask-h'>ご紹介のお願い</p><p class='done-ask-p'>" + ph(["スマートフォンとの付き合い方に", "悩んでいる方が", "身近にいらっしゃいましたら、", "あなた専用のリンクから Soto Phone を", "ご紹介いただけますと幸いです。"]) + "</p><p class='done-ask-k'>ご紹介いただいた方への御礼</p>")
+      + "<ul class='done-tiers'>" + tiers.map(([n, t, sub]) => "<li><span class='dt-n'>" + n + "<small>" + (EN ? (n === "1" ? " person" : " people") : unit) + "</small></span><span class='dt-t'>" + t + "<small>" + sub + "</small></span></li>").join("") + "</ul>"
+      + (EN ? "<p class='done-ask-note'>We’ll email you each time someone joins through your link.</p>"
+            : "<p class='done-ask-note'>" + ph(["ご紹介の方がご登録されるたびに、", "メールでご報告いたします。"]) + "</p>");
     card.append(head);
     if (num) card.append(badge, perk);
     card.append(body, sub, ask, row);

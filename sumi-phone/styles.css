@@ -1118,12 +1118,19 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 @media (prefers-reduced-motion: reduce) { .col-bar { transition: opacity .2s; } }
 
 /* 登録直後の「ご紹介のお願い」と、紹介リンクから来た人への一言 */
-.done-ask { max-width: 400px; margin: 18px auto 0; padding: 16px 18px; border-radius: 14px; background: rgba(255, 255, 255, .55); border: 1px solid var(--paper-line); text-align: left; font-size: 12.5px; line-height: 1.85; letter-spacing: .02em; color: var(--paper-dim); }
+.done-ask { max-width: 400px; margin: 20px auto 0; padding: 18px 20px 16px; border-radius: 16px; background: rgba(255, 255, 255, .6); border: 1px solid var(--paper-line); text-align: center; color: var(--paper-dim); }
 .reserve-form + .done .done-ask { margin-left: 0; }
-.done-ask-h { text-wrap: balance; font-family: var(--serif); font-size: 14.5px; letter-spacing: .04em; color: var(--paper-ink); margin-bottom: 6px; }
-.done-ask ul { margin: 8px 0 0; padding: 0; list-style: none; }
-.done-ask li { padding-left: 1em; text-indent: -1em; color: var(--paper-ink); }
-.done-ask li::before { content: "・"; }
-.done-ask-note { margin-top: 8px; font-size: 11.5px; }
+.done-ask .ph { display: inline-block; }
+.done-ask-h { font-family: var(--serif); font-size: 16px; letter-spacing: .12em; color: var(--paper-ink); }
+.done-ask-p { margin-top: 8px; font-size: 12.5px; line-height: 1.85; letter-spacing: .02em; }
+.done-ask-k { margin-top: 16px; font-size: 10.5px; letter-spacing: .18em; color: var(--tk-ink, #7a6f58); }
+.done-tiers { margin: 6px 0 0; padding: 0; list-style: none; text-align: left; border-top: 1px solid var(--paper-line); }
+.done-tiers li { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 12px; padding: 10px 2px; border-bottom: 1px solid var(--paper-line); }
+.dt-n { font-family: var(--serif); font-size: 22px; font-weight: 600; line-height: 1; color: var(--accent, #a94c2f); text-align: right; white-space: nowrap; }
+.dt-n small { font-family: var(--sans); font-size: 11px; font-weight: 500; margin-left: 2px; color: var(--paper-dim); }
+.dt-t { font-size: 13px; line-height: 1.45; letter-spacing: .02em; color: var(--paper-ink); }
+.dt-t small { display: block; font-size: 11px; color: var(--paper-dim); letter-spacing: .04em; }
+.done-ask-note { margin-top: 12px; font-size: 11.5px; line-height: 1.8; }
 .done-copy { background: none; border: 0; padding: 0; font: inherit; font-size: 13px; cursor: pointer; }
 .ref-note { margin: 6px 0 12px; padding: 9px 14px; border-radius: 14px; text-wrap: pretty; background: rgba(255, 255, 255, .7); border: 1px solid var(--paper-line); font-size: 12.5px; line-height: 1.6; letter-spacing: .02em; color: var(--paper-ink); text-align: center; }
+.done-ask.is-en .dt-n small { display: block; margin: 4px 0 0; font-size: 10px; letter-spacing: .04em; }
