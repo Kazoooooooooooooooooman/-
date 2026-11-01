@@ -2,6 +2,8 @@
 // 毎日このスプレッドシートの「Clarity（毎日）」タブに1日分ずつ足していく Google Apps Script。
 // Google アナリティクスの数字（ページごとの表示回数・ユーザー数など）も「GA（毎日）」タブに足す（GA_PROPERTY_ID を入れたときだけ）。
 // あわせて、Search Console のアドオンが毎日作る日付のタブと「Backup Log」を隠して、タブを見やすく保つ。
+// note の記事も、1時間ごとに note の RSS を読んで、新しく公開した記事を「note（記事ごと）」タブに自動で足す
+// （タブの C3 に note の ID を入れておく。ID は note のページの URL「note.com/〇〇」の〇〇の部分）。
 //
 // Google アナリティクスも取り込むとき（任意）
 // a. Apps Script の左の「サービス」の＋から「Google Analytics Data API」を追加する
@@ -129,5 +131,39 @@ function tidyTabs() {
   SpreadsheetApp.getActiveSpreadsheet().getSheets().forEach((sh) => {
     const name = sh.getName();
     if ((/^\d{4}-\d{2}-\d{2}$/.test(name) || name === "Backup Log") && !sh.isSheetHidden()) sh.hideSheet();
+  });
+  try { importNote(); } catch (e) { console.log("note の取り込みに失敗：" + e); }
+}
+
+// note の RSS を読んで、まだ表にない記事を、公開した順に上から空いている行へ足す。
+// 行の番号が「回」になり、記事の中のリンクは ?from=note01、note02… を使う（C列に出ている印）。
+const NOTE_SHEET = "note（記事ごと）";
+const NOTE_FIRST_ROW = 5, NOTE_ROWS = 50; // 5〜54行目に、第1回〜第50回
+function importNote() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(NOTE_SHEET);
+  if (!sheet) return;
+  const raw = String(sheet.getRange("C3").getValue() || "").trim();
+  const id = (raw.match(/note\.com\/([^\/?#\s]+)/) || [null, raw])[1].replace(/^@/, "");
+  if (!id) return;
+  const res = UrlFetchApp.fetch("https://note.com/" + encodeURIComponent(id) + "/rss", { muteHttpExceptions: true });
+  if (res.getResponseCode() !== 200) { console.log("note の RSS が読めません：" + res.getResponseCode()); return; }
+  const channel = XmlService.parse(res.getContentText()).getRootElement().getChild("channel");
+  const items = channel.getChildren("item").map((it) => ({
+    title: it.getChildText("title"),
+    link: String(it.getChildText("link") || "").split("?")[0],
+    date: new Date(it.getChildText("pubDate"))
+  })).filter((it) => it.link).sort((a, b) => a.date - b.date);
+  const range = sheet.getRange(NOTE_FIRST_ROW, 1, NOTE_ROWS, 12);
+  const rows = range.getValues();
+  const known = rows.map((r) => String(r[11] || "").split("?")[0]);
+  items.forEach((it) => {
+    if (known.indexOf(it.link) >= 0) return;
+    const i = known.findIndex((u) => !u);
+    if (i < 0) { console.log("表がいっぱいです（50本）"); return; }
+    known[i] = it.link;
+    const r = NOTE_FIRST_ROW + i;
+    sheet.getRange(r, 2).setValue(it.title);
+    sheet.getRange(r, 4).setValue(it.date);
+    sheet.getRange(r, 12).setValue(it.link);
   });
 }
