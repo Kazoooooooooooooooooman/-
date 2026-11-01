@@ -98,6 +98,7 @@ function doPost(e) {
       sheet.appendRow(row);
       rowIndex = sheet.getLastRow();
     }
+    emailChip(sheet, rowIndex, email);
     sheet.getRange(rowIndex, CONSENT_COL).setValue(consent);
     // 経路と紹介。登録し直した人は、前の経路と紹介コードをそのまま残す（最初に来た経路のほうが大事なため）
     const tag = (v, n) => String(v || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, n);
@@ -618,4 +619,19 @@ function setupLetterTrigger() {
   ScriptApp.getProjectTriggers().filter((t) => t.getHandlerFunction() === "sendLetters").forEach((t) => ScriptApp.deleteTrigger(t));
   ScriptApp.newTrigger("sendLetters").timeBased().everyDays(1).atHour(9).inTimezone("Asia/Tokyo").create();
   letterSheet();
+}
+
+// メールアドレスの欄を、ほかの行と同じ「人のチップ」（丸い枠の表示）にする。
+// Apps Script の「サービス」に「Google Sheets API」（名前 Sheets）を追加したときだけ動く。追加していなければ、ふつうの文字のまま
+function emailChip(sheet, rowIndex, email) {
+  if (typeof Sheets === "undefined") return;
+  try {
+    Sheets.Spreadsheets.batchUpdate({ requests: [{ updateCells: {
+      range: { sheetId: sheet.getSheetId(), startRowIndex: rowIndex - 1, endRowIndex: rowIndex, startColumnIndex: 1, endColumnIndex: 2 },
+      rows: [{ values: [{ userEnteredValue: { stringValue: "@" }, chipRuns: [{ chip: { personProperties: { email: email, displayFormat: "EMAIL" } } }] }] }],
+      fields: "userEnteredValue,chipRuns"
+    } }] }, sheet.getParent().getId());
+  } catch (e) {
+    console.warn("チップにできませんでした：" + e); // 登録そのものは済んでいるので、ここで止めない
+  }
 }
