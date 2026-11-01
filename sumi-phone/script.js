@@ -390,6 +390,16 @@
       if (!(form.nextElementSibling && form.nextElementSibling.classList.contains("done"))) form.after(doneCard(data));
     });
     document.dispatchEvent(new Event("soto:registered"));
+    // お礼の見出しが、上に固定したメニューの裏に隠れていたら、見える位置まで動かす
+    setTimeout(() => {
+      const cards = Array.from(document.querySelectorAll(".done")).filter((c) => c.offsetParent);
+      const nav = document.querySelector(".nav");
+      const navH = nav ? nav.getBoundingClientRect().bottom : 0;
+      const c = cards.find((x) => { const r = x.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; });
+      if (!c) return;
+      const top = c.getBoundingClientRect().top;
+      if (top < navH + 12) scrollTo({ top: scrollY + top - navH - 16, behavior: "auto" });
+    }, 350);
     document.querySelectorAll(".hd-fine").forEach((el) => { el.hidden = true; });
   }
 

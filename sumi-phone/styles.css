@@ -1148,3 +1148,4 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 .done-thanks .ph { display: inline-block; }
 .sh-btns .btn { min-height: 52px; padding: 14px 24px; font-size: 15px; }
 .done-row + .tk-perk { margin-top: 4px; padding-top: 16px; border-top: 1px solid var(--paper-line); }
+.done { scroll-margin-top: 96px; }
