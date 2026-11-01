@@ -1207,5 +1207,13 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 .share-page .done-ask .dt-t small { font-size: 11.5px; }
 .share-page .sh-note { font-size: 12.5px; line-height: 1.8; color: var(--paper-dim); word-break: normal; }
 .share-page .sh-note .u { white-space: nowrap; color: var(--paper-ink); }
-/* 登録済みのカードは、ページを横切る道（.road, z-index 1）より前に出す（道に隠れて読めなくなるため） */
-.done { position: relative; z-index: 3; }
+/* 登録済みカード：下のフォームでも、上と同じく真ん中にそろえる（左寄せでずれて見えたため） */
+.reserve-form + .done { text-align: center; margin-left: auto; margin-right: auto; }
+.reserve-form + .done .ticket, .reserve-form + .done .done-ask, .reserve-form + .done .tk-perk { margin-left: auto; margin-right: auto; }
+.reserve-form + .done .done-head, .reserve-form + .done .done-row, .reserve-form + .done .done-sub { justify-content: center; }
+.done-row + .tk-perk { max-width: 400px; }
+/* 送るボタン：LINE（黒）とリンクをコピー（白）を同じ大きさで並べる */
+.done-row .btn { min-width: 168px; justify-content: center; }
+.done-sub { background: #fff; border: 1px solid var(--paper-ink); color: var(--paper-ink); cursor: pointer; }
+.done-row .done-copy { flex-basis: 100%; justify-content: center; }
+.done-row .btn { font-size: 14px; letter-spacing: .08em; min-height: 46px; }

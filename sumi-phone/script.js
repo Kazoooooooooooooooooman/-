@@ -478,38 +478,38 @@
     const row = document.createElement("div");
     row.className = "done-row";
     // 1つめ：共有の画面が出せる端末ではそれを、出せない端末ではリンクをコピーする
-    const share = document.createElement("button");
-    share.type = "button";
-    share.className = "btn btn-cta done-share";
-    const label = EN ? "Tell a friend" : "友だちに教える";
-    share.innerHTML = '<span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span>';
-    share.querySelector(".btn-label").textContent = label;
+    // 送るボタン：① LINE で送る（目立つボタン）② リンクをコピー ③ ほかのアプリで送る（共有画面が出せる端末だけ）
     const told = (k) => document.dispatchEvent(new CustomEvent("soto:shared", { detail: k }));
-    share.addEventListener("click", async () => {
-      // スマホの共有画面（LINE・メッセージ・Instagram・AirDrop など）を開く。開けない端末では、文とリンクをまとめてコピーする
-      if (navigator.share) { told("sheet"); navigator.share({ title: "Soto Phone", text, url }).catch(() => {}); return; }
-      told("copy");
-      try { await navigator.clipboard.writeText(text + "\n" + url); } catch (_) { window.prompt(EN ? "Copy this link" : "このリンクをコピーしてください", url); return; }
-      share.querySelector(".btn-label").textContent = EN ? "Link copied" : "リンクをコピーしました";
-      setTimeout(() => { share.querySelector(".btn-label").textContent = label; }, 2200);
-    });
-    // 2つめ：日本では LINE で送る人がいちばん多い
     const line = document.createElement("a");
-    line.className = "done-line";
+    line.className = "btn btn-cta done-share";
     line.href = "https://line.me/R/share?text=" + encodeURIComponent(text + "\n" + url);
     // スマホでは同じ画面から LINE アプリに移る（新しいタブを開くと、空のタブが残るため）。パソコンでは新しいタブで開く
     if (!matchMedia("(pointer: coarse)").matches) { line.target = "_blank"; line.rel = "noopener"; }
     line.addEventListener("click", () => told("line"));
-    line.textContent = EN ? "Send on LINE" : "LINE で送る";
-    // 日本では LINE で送る人が多いので、LINE を目立つボタンに、ほかの共有（コピー）を文字のボタンにする
-    if (!EN) {
-      line.className = "btn btn-cta done-share";
-      line.innerHTML = '<span class="btn-dot" aria-hidden="true"></span><span class="btn-label">LINE で送る</span>';
+    line.innerHTML = '<span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span>';
+    line.querySelector(".btn-label").textContent = EN ? "Send on LINE" : "LINE で送る";
+    const copy = document.createElement("button");
+    copy.type = "button";
+    copy.className = "btn done-sub";
+    const copyLabel = EN ? "Copy link" : "リンクをコピー";
+    copy.innerHTML = '<span class="btn-label"></span>';
+    copy.querySelector(".btn-label").textContent = copyLabel;
+    copy.addEventListener("click", async () => {
+      told("copy");
+      try { await navigator.clipboard.writeText(text + "\n" + url); } catch (_) { window.prompt(EN ? "Copy this link" : "このリンクをコピーしてください", url); return; }
+      copy.querySelector(".btn-label").textContent = EN ? "Copied" : "コピーしました";
+      setTimeout(() => { copy.querySelector(".btn-label").textContent = copyLabel; }, 2200);
+    });
+    row.append(line, copy);
+    if (navigator.share) {
+      const share = document.createElement("button");
+      share.type = "button";
       share.className = "done-line done-copy";
       share.innerHTML = '<span class="btn-label"></span>';
-      share.querySelector(".btn-label").textContent = label;
-      row.append(line, share);
-    } else row.append(share, line);
+      share.querySelector(".btn-label").textContent = EN ? "Other apps" : "ほかのアプリで送る";
+      share.addEventListener("click", () => { told("sheet"); navigator.share({ title: "Soto Phone", text, url }).catch(() => {}); });
+      row.append(share);
+    }
     // ご紹介のお願いと御礼。紹介してもらった人が登録するたびに、メールで報告する
     const ask = document.createElement("div");
     ask.className = "done-ask" + (EN ? " is-en" : "");
