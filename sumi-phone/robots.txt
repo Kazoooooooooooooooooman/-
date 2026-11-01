@@ -1,4 +1,21 @@
+# どの検索エンジン・AI のロボットにも、サイト全体を読んでもらってよい（作業用のフォルダだけ除く）
 User-agent: *
+Allow: /
+Disallow: /tools/
+Disallow: /cdn-cgi/
+
+# AI の検索・回答のためのロボット（明示的に許可）
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bingbot
 Allow: /
 Disallow: /tools/
 Disallow: /cdn-cgi/

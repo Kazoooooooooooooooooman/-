@@ -185,6 +185,17 @@ def build_article(a, by_slug):
             {"@type": "ListItem", "position": 1, "name": "Soto Phone", "item": SITE + "/"},
             {"@type": "ListItem", "position": 2, "name": "コラム", "item": SITE + "/column/"},
             {"@type": "ListItem", "position": 3, "name": a.get("h1") or a["title"], "item": url}]}]}
+    # 「よくある質問」の h3 と、その下の段落を FAQPage として AI・検索エンジンに渡す
+    fm = re.search(r'<h2[^>]*>よくある質問</h2>(.*?)(?=<h2|$)', body, flags=re.S)
+    if fm:
+        qa = []
+        for q, ans in re.findall(r'<h3[^>]*>(.*?)</h3>(.*?)(?=<h3|$)', fm.group(1), flags=re.S):
+            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", ans)).strip()
+            if text:
+                qa.append({"@type": "Question", "name": re.sub(r"<[^>]+>", "", q).strip(),
+                           "acceptedAnswer": {"@type": "Answer", "text": text}})
+        if qa:
+            ld["@graph"].append({"@type": "FAQPage", "mainEntity": qa})
     upd = a.get("updated", a["published"])
     dates = f'<time datetime="{a["published"]}">{jdate(a["published"])}</time>' + (f'（更新：<time datetime="{upd}">{jdate(upd)}</time>）' if upd != a["published"] else "")
     cta_from = "col-" + a["slug"]

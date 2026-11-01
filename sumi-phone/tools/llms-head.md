@@ -25,6 +25,11 @@
 - 先行予約：無料。購入の確定や支払いは発生しない。登録はメールアドレスだけ
 
 ## よくある質問
+- Soto Phone（ソトフォン）とは？ → SNS・ゲーム・動画アプリ・アプリストア・ブラウザを入れない、日本向けの携帯電話（ミニマルフォン）。開発中で、先行予約（無料）を受付中。詳しくは[Soto Phone（ソトフォン）とは](https://sotophone.jp/column/about-soto-phone)
+- 料金は？ → 本体は5〜6万円台を予定。月々の料金プランは準備中で未定
+- 発売日は？ → 未定。試作機 → 少人数の先行体験 → クラウドファンディングの順に進める
+- 学校・企業でまとめて導入できる？ → [お問い合わせフォーム](https://sotophone.jp/contact)（用件「学校・企業での導入」）で個別に相談を受け付けている。まとめて導入する場合の条件・価格は未定
+- 問い合わせ方法は？ → [お問い合わせフォーム](https://sotophone.jp/contact) か hello@sotophone.jp。3営業日以内にメールで返信
 - SNS もゲームもない携帯はある？ → Soto Phone は SNS・ゲーム・アプリストアを入れない携帯電話として開発中。ほかの選択肢は[日本で使えるミニマルフォン比較](https://sotophone.jp/column/minimal-phone-comparison)にまとめている
 - ダムフォンは日本で使える？ → [ミニマルフォンとは](https://sotophone.jp/column/minimal-phone)を参照
 - 日本人のスマホの平均使用時間は？ → [スマホの平均使用時間（年齢別）](https://sotophone.jp/column/phone-time-japan)を参照
