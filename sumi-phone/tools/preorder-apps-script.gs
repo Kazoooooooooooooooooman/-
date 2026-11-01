@@ -614,13 +614,14 @@ function refCard(code, en) {
 // 確認メールが届かなかったアドレス（存在しないアドレスなど）を、「先行予約」シートから「配信エラー」シートへ移す。
 // 存在しないアドレスに送ると、Gmail に「Address not found（配信できませんでした）」のメールが戻るので、それを読む。
 // 届かなかった宛先は、そのメールの X-Failed-Recipients という見出しから読む（本文の中のほかのアドレスは見ない）。
-// 読んだメールにはラベルを付けて、2回は読まない。10分ごとの自動実行（setupBounceTrigger で登録）と、紹介の報告の前に動く
+// 読んだメールにはラベルを付ける（目印のため）。10分ごとの自動実行（setupBounceTrigger で登録）と、紹介の報告の前に動く
 const BOUNCE_SHEET = "配信エラー";
 function checkBounces(sheet) {
   sheet = sheet || getSheet();
   const name = "soto-配信エラー確認済み";
   const label = GmailApp.getUserLabelByName(name) || GmailApp.createLabel(name);
-  const threads = GmailApp.search('(from:mailer-daemon OR from:postmaster) newer_than:30d -label:"' + name + '"', 0, 50);
+  // 前の版が読んで印を付けたメールも、もう一度読む（シートから外したアドレスはもう載っていないので、何度読んでも同じ結果になる）
+  const threads = GmailApp.search('(from:mailer-daemon OR from:postmaster) newer_than:30d', 0, 100);
   if (!threads.length) return 0;
   const failed = {};
   threads.forEach((th) => {
