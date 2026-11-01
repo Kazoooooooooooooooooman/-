@@ -214,7 +214,7 @@ def build_article(a, by_slug):
       <p>電話・地図・乗換・カメラなど、外で使う道具だけを入れています。集中したいときは通知が止まります。発売が決まったら、先行予約に登録した方に最初にお知らせします。</p>
       <a class="btn btn-cta" href="/?from={cta_from}#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">先行予約に登録する（無料）</span></a>
     </aside>
-    <div class="col-bar" id="col-bar" hidden aria-hidden="true"><a class="col-bar-link" href="/?from={cta_from}-bar#signup"><span class="col-bar-text">SNSもゲームもない携帯<span class="col-bar-more">を開発中</span></span><span class="col-bar-cta">先行予約（無料）→</span></a><button class="col-bar-x" type="button" aria-label="閉じる">×</button></div>
+    <div class="col-bar" id="col-bar" hidden aria-hidden="true"><a class="col-bar-link" href="/?from={cta_from}-bar#signup"><span class="col-bar-text">SNSもゲームもない携帯<span class="col-bar-more">を開発中</span></span><span class="col-bar-cta">先行予約（無料）</span></a><button class="col-bar-x" type="button" aria-label="閉じる">×</button></div>
     <script src="/column-bar.js?v=1" defer></script>
     {rel_html}
   </div>

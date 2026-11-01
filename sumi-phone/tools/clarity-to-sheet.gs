@@ -3,7 +3,7 @@
 // Google アナリティクスの数字（ページごとの表示回数・ユーザー数など）も「GA（毎日）」タブに足す（GA_PROPERTY_ID を入れたときだけ）。
 // あわせて、Search Console のアドオンが毎日作る日付のタブと「Backup Log」を隠して、タブを見やすく保つ。
 // note の記事も、1時間ごとに note の RSS を読んで、新しく公開した記事を「note（記事ごと）」タブに自動で足す
-// （タブの C3 に note の ID を入れておく。ID は note のページの URL「note.com/〇〇」の〇〇の部分）。
+// （タブの C3 に note の ID を入れておく。ID は note のページの URL「note.com/〇〇」の〇〇の部分）。スキの数も1時間ごとに更新する。
 //
 // Google アナリティクスも取り込むとき（任意）
 // a. Apps Script の左の「サービス」の＋から「Google Analytics Data API」を追加する
@@ -166,4 +166,23 @@ function importNote() {
     sheet.getRange(r, 4).setValue(it.date);
     sheet.getRange(r, 12).setValue(it.link);
   });
+  updateNoteLikes(sheet, id, known);
+}
+
+// スキの数を note の公開データから読んで、F列に入れる（note の仕様が変わって読めなくなったら、何もしない）
+function updateNoteLikes(sheet, id, links) {
+  const likes = {};
+  for (let page = 1; page <= 20; page++) {
+    const res = UrlFetchApp.fetch("https://note.com/api/v2/creators/" + encodeURIComponent(id) + "/contents?kind=note&page=" + page, { muteHttpExceptions: true });
+    if (res.getResponseCode() !== 200) break;
+    const data = (JSON.parse(res.getContentText()) || {}).data || {};
+    (data.contents || []).forEach((c) => { if (c.key) likes[c.key] = c.likeCount || 0; });
+    if (data.isLastPage !== false) break;
+  }
+  if (!Object.keys(likes).length) return;
+  const out = links.map((u) => {
+    const key = (String(u || "").match(/\/n\/(n[0-9a-z]+)/) || [])[1];
+    return [key && key in likes ? likes[key] : ""];
+  });
+  sheet.getRange(NOTE_FIRST_ROW, 6, out.length, 1).setValues(out);
 }
