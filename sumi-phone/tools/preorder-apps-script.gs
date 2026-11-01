@@ -569,7 +569,7 @@ function refText(lines, block, numLine) {
     else if (l === "[[TICKET]]") { if (numLine) out.push(numLine); }
     else out.push(l);
   });
-  return out.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
+  return out.map((l) => l.replace(/^\[\[C\]\]/, "")).filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
 }
 
 // HTML のメールに入れる「ご紹介のお願い」。サイトの登録直後の画面（script.js の done-ask）と同じ見た目の画像を使う。
@@ -595,11 +595,12 @@ function refCard(code, en) {
   const img = (f) => SITE_URL + "images/mail/" + f + "-" + lang + ".png?v=" + MAIL_IMG_VER;
   const sans = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif";
   return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:6px 0 26px"><tr><td align="center">'
-    + '<a href="' + share + '" style="text-decoration:none"><img src="' + img("referral") + '" width="420" alt="' + ent(alt) + '" style="display:block;width:100%;max-width:420px;height:auto;border:0;font-family:' + sans + ';font-size:13px;line-height:1.8;color:#1f1e1c"></a>'
-    + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:16px auto 0"><tr>'
-    + '<td><a href="' + line + '"><img src="' + img("btn-line") + '" width="200" height="51" alt="' + ent(en ? "Send on LINE" : "LINE で送る") + '" style="display:block;border:0;width:200px;height:51px"></a></td>'
-    + '<td width="10" style="width:10px"></td>'
-    + '<td><a href="' + share + '"><img src="' + img("btn-share") + '" width="200" height="51" alt="' + ent(en ? "Tell a friend" : "友だちに教える") + '" style="display:block;border:0;width:200px;height:51px"></a></td>'
+    + '<a href="' + share + '" style="display:block;text-decoration:none;max-width:420px;margin:0 auto"><img src="' + img("referral") + '" width="100%" alt="' + ent(alt) + '" style="display:block;width:100%;max-width:420px;height:auto;border:0;font-family:' + sans + ';font-size:13px;line-height:1.8;color:#1f1e1c"></a>'
+    // ボタンは画面が狭いときに縮むように（固定の幅にすると、スマホでメール全体がはみ出す）
+    + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:420px;margin:16px auto 0;table-layout:fixed"><tr>'
+    + '<td width="49%" style="width:49%"><a href="' + line + '"><img src="' + img("btn-line") + '" width="200" alt="' + ent(en ? "Send on LINE" : "LINE で送る") + '" style="display:block;border:0;width:100%;max-width:200px;height:auto;margin:0 auto"></a></td>'
+    + '<td width="2%" style="width:2%"></td>'
+    + '<td width="49%" style="width:49%"><a href="' + share + '"><img src="' + img("btn-share") + '" width="200" alt="' + ent(en ? "Tell a friend" : "友だちに教える") + '" style="display:block;border:0;width:100%;max-width:200px;height:auto;margin:0 auto"></a></td>'
     + "</tr></table>"
     + '<div style="margin-top:12px;font-family:' + sans + ';font-size:11.5px;color:#6b665d">' + ent(en ? "Your link" : "あなた専用のリンク") + '：<a href="' + url + '" style="color:#1f1e1c">' + url + "</a></div>"
     + "</td></tr></table>";
@@ -684,9 +685,10 @@ function mailJa(trial, link, number, variant, code) {
     // 招待券（番号）がいちばん上。お礼 →「ご紹介のお願い」（Gmail を開いて最初に見える範囲に入れる）→ これから届くもの（開発レター・先行体験・完成品・刻印）→ 署名
     number ? "[[TICKET]]" : null,
     number ? "" : null,
-    "このたびはご登録いただき、",
+    "[[C]]このたびはご登録いただき、",
     "誠にありがとうございます。",
-    "応援してくださる方がいることが、",
+    "",
+    "[[C]]応援してくださる方がいることが、",
     "私たちの何よりの励みです。",
     "",
     code ? "[[REF]]" : null,
@@ -718,9 +720,10 @@ function mailEn(trial, link, number, code) {
   const lines = [
     number ? "[[TICKET]]" : null,
     number ? "" : null,
-    "Thank you so much for joining",
+    "[[C]]Thank you so much for joining",
     "the Soto Phone pre-order list.",
-    "Knowing people are rooting for us",
+    "",
+    "[[C]]Knowing people are rooting for us",
     "means more than we can say.",
     "",
     code ? "[[REF]]" : null,
@@ -763,7 +766,7 @@ function toHtml(lines, number, w, refHtml) {
   const day = d.getFullYear() + "." + String(d.getMonth() + 1).padStart(2, "0") + "." + String(d.getDate()).padStart(2, "0");
   const ink = "#7a6f58";
   const card = number
-    ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:440px;margin:0 0 24px;border-collapse:separate;border-radius:14px;background:#f3ecdc"><tr>'
+    ? '<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:440px;margin:0 auto 24px;border-collapse:separate;border-radius:14px;background:#f3ecdc"><tr>'
       // 左半分は、水彩の絵と文字をいっしょに焼き込んだ画像（images/mail/ticket-*.png）。
       // 黒い画面（ダークモード）でも、画像の中の文字は色が変わらないので読める。日付と番号は、右の半券に文字で入れる
       + '<td width="79%" style="width:79%;padding:0;border-right:2px dashed #cbbf9f;vertical-align:top;line-height:0">'
@@ -791,7 +794,9 @@ function toHtml(lines, number, w, refHtml) {
       + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border-bottom:1px solid #e4e0d6;font-size:14px;line-height:1.6">' + rows + "</table></div>";
   };
   const hasTicketSpot = paras.indexOf("[[TICKET]]") >= 0;
-  const bodyHtml = paras.map((p) => (p === "[[REF]]" ? (refHtml || "") : null) || (p === "[[TICKET]]" ? card : null) || tierTable(p) || '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
+  const bodyHtml = paras.map((p) => (p === "[[REF]]" ? (refHtml || "") : null) || (p === "[[TICKET]]" ? card : null) || tierTable(p) || (p.indexOf("[[C]]") === 0
+    ? '<p style="margin:0 0 16px;text-align:center;font-size:15.5px;line-height:1.9;letter-spacing:.04em">' + p.slice(5).split("\n").map(link).join("<br>") + "</p>"
+    : '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>")).join("");
   const footHtml = foot.length ? '<div style="margin-top:36px;padding-top:14px;border-top:1px solid #e4e0d6;font-size:11px;line-height:1.8;color:#8a857b">' + foot.map(link).join("<br>") + "</div>" : "";
   // ダークモードの画面でも読めるように、明るい色で表示するよう指定し、白い紙の上に載せる
   // （背景を指定しないと、画面だけ黒くなって黒い文字が見えなくなるメールアプリがある）
