@@ -516,13 +516,13 @@
     // 日本語は、言葉のまとまりごとに折り返す（文の途中の変なところで改行しない）
     const ph = (a) => a.map((t) => "<span class='ph'>" + t + "</span>").join("");
     const tiers = EN
-      ? [["1", "Priority prototype invite", "When the prototype is ready"], ["10", "A Soto aluminum bottle", "First 100 people"], ["30", "A first-edition Soto T-shirt", "First 10 people"]]
-      : [["1", "先行体験に優先ご招待", "試作機ができたときにご案内"], ["10", "Soto アルミマイボトル", "先着100名様"], ["30", "Soto 初代 限定Tシャツ", "先着10名様"]];
-    const unit = EN ? "" : "名";
+      ? [["1", "Priority prototype invite", "When the prototype is ready"], ["10", "A Soto aluminum bottle", "For the first 100 people to get there"], ["30", "A first-edition Soto T-shirt", "For the first 10 people to get there"]]
+      : [["1", "先行体験に優先ご招待", "試作機ができたときにご案内"], ["10", "Soto アルミマイボトル", "先着100名様にお贈りします"], ["30", "Soto 初代 限定Tシャツ", "先着10名様にお贈りします"]];
+    const unit = EN ? "" : "名のご紹介で";
     ask.innerHTML = (EN
-      ? "<p class='done-ask-h'>A small request</p><p class='done-ask-p'>If someone close to you struggles with how much they use their phone, we’d be grateful if you shared Soto Phone with them using your own link.</p><p class='done-ask-k'>Our thanks for your referrals</p>"
-      : "<p class='done-ask-h'>ご紹介のお願い</p><p class='done-ask-p'>" + ph(["スマートフォンとの付き合い方に", "悩んでいる方が", "身近にいらっしゃいましたら、", "あなた専用のリンクから&nbsp;", "Soto Phone を", "ご紹介いただけますと幸いです。"]) + "</p><p class='done-ask-k'>ご紹介いただいた方への御礼</p>")
-      + "<ul class='done-tiers'>" + tiers.map(([n, t, sub]) => "<li><span class='dt-n'>" + n + "<small>" + (EN ? (n === "1" ? " person" : " people") : unit) + "</small></span><span class='dt-t'>" + t + "<small>" + sub + "</small></span></li>").join("") + "</ul>"
+      ? "<p class='done-ask-h'>A small request</p><p class='done-ask-p'>If someone close to you struggles with how much they use their phone, we’d be grateful if you shared Soto Phone with them using your own link.</p><p class='done-ask-k'>Our thanks, by number of referrals</p>"
+      : "<p class='done-ask-h'>ご紹介のお願い</p><p class='done-ask-p'>" + ph(["スマートフォンとの付き合い方に", "悩んでいる方が", "身近にいらっしゃいましたら、", "あなた専用のリンクから&nbsp;", "Soto Phone を", "ご紹介いただけますと幸いです。"]) + "</p><p class='done-ask-k'>ご紹介いただいた人数に応じた御礼</p>")
+      + "<ul class='done-tiers'>" + tiers.map(([n, t, sub]) => "<li><span class='dt-n'>" + n + "<small>" + (EN ? (n === "1" ? " referral" : " referrals") : unit) + "</small></span><span class='dt-t'>" + t + "<small>" + sub + "</small></span></li>").join("") + "</ul>"
       + (EN ? "<p class='done-ask-note'>We’ll email you each time someone joins through your link.</p>"
             : "<p class='done-ask-note'>" + ph(["ご紹介の方がご登録されるたびに、", "メールでご報告いたします。"]) + "</p>");
     // お礼は見出しの1行で伝わるので、すぐ下に「ご紹介のお願い」と送るボタンを置く。きっぷと特典、メールの案内はその下

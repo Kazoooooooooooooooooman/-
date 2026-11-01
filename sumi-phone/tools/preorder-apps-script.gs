@@ -566,20 +566,20 @@ function refBlockJa(code) {
   return ["ご友人やご家族に、", "スマートフォンとの付き合い方に", "悩んでいる方がいらっしゃいましたら、",
     "あなた専用の下記リンクから、", "Soto Phone をご紹介いただけますと幸いです。",
     SITE_URL + "?r=" + code, "",
-    "ご紹介いただいた方への御礼",
-    "1名　試作機の先行体験に、優先してご招待",
-    "10名　Soto アルミマイボトル（先着100名様）",
-    "30名　Soto 初代 限定Tシャツ（先着10名様）", "",
+    "ご紹介いただいた人数に応じた御礼",
+    "1名のご紹介で　試作機の先行体験に、優先してご招待",
+    "10名のご紹介で　Soto アルミマイボトル（先着100名様にお贈りします）",
+    "30名のご紹介で　Soto 初代 限定Tシャツ（先着10名様にお贈りします）", "",
     "ご紹介の方がご登録されるたびに、", "このメールアドレスへご報告いたします。", ""];
 }
 function refBlockEn(code) {
   if (!code) return [];
   return ["If someone close to you struggles", "with how much they use their phone,", "we'd be grateful if you shared Soto Phone",
     "with them using your own link:", SITE_URL + "en?r=" + code, "",
-    "Our thanks for your referrals",
-    "1 person　Priority invitation to try a prototype",
-    "10 people　A Soto aluminum bottle (first 100 people)",
-    "30 people　A first-edition Soto T-shirt (first 10 people)", "",
+    "Our thanks, by number of referrals",
+    "1 referral　Priority invitation to try a prototype",
+    "10 referrals　A Soto aluminum bottle (for the first 100 people to get there)",
+    "30 referrals　A first-edition Soto T-shirt (for the first 10 people to get there)", "",
     "We'll email you each time", "someone joins through your link.", ""];
 }
 
