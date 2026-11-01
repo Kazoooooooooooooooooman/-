@@ -48,6 +48,7 @@ def head(title, desc, url, extra_ld):
 <link rel="stylesheet" href="/fonts/fonts.css" />
 <link rel="stylesheet" href="/styles.css?v={CSS_VER}" />
 <script type="application/ld+json">{json.dumps(extra_ld, ensure_ascii=False)}</script>
+<script src="/consent.js?v=1" defer></script>
 </head>
 <body class="legal-page column-page">
 <a class="skip" href="#main">本文へ移動</a>
