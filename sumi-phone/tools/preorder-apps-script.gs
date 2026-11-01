@@ -627,7 +627,7 @@ function mailJa(trial, link, number, variant, code) {
   // 短く、急かさない。伝えるのは「番号」「これから何が届くか」「刻印」の3つだけ
   const lines = [
     // お礼は件名で伝わるので、ここは1行だけ。いちばん目に入る場所に「ご紹介のお願い」を置く
-    // 招待券（番号）がいちばん上。その下にお礼を短く2段落、そのあとに「ご紹介のお願い」
+    // 招待券（番号）がいちばん上。お礼 → これから届くもの（開発レター・先行体験・完成品・刻印）→「ご紹介のお願い」→ 署名
     number ? "[[TICKET]]" : null,
     number ? "" : null,
     "このたびはご登録いただき、",
@@ -636,8 +636,6 @@ function mailJa(trial, link, number, variant, code) {
     "応援してくださる方がいることが、",
     "私たちの何よりの励みです。",
     "",
-    code ? "[[REF]]" : null,
-    code ? "" : null,
     "これから月に1回、開発の様子を",
     "短い手紙にしてお送りします。",
     trial ? "試作機を使ってもらう会を開くときも、" : null,
@@ -647,6 +645,8 @@ function mailJa(trial, link, number, variant, code) {
     number && number <= 300 ? "No.300 までの方は、" : null,
     number && number <= 300 ? "ご希望で本体に番号を刻めます。" : null,
     "",
+    code ? "[[REF]]" : null,
+    code ? "" : null,
     "楽しさは、画面の外に。",
     "佐々木 一真（Soto Phone）",
     "",
@@ -671,8 +671,6 @@ function mailEn(trial, link, number, code) {
     "Knowing people are rooting for us",
     "means more than we can say.",
     "",
-    code ? "[[REF]]" : null,
-    code ? "" : null,
     "Once a month, we'll send you a short letter",
     "about how the phone is coming along.",
     trial ? "We'll also write here when we invite" : null,
@@ -682,6 +680,8 @@ function mailEn(trial, link, number, code) {
     number && number <= 300 ? "Numbers up to No.300 can be engraved" : null,
     number && number <= 300 ? "on the phone if you'd like." : null,
     "",
+    code ? "[[REF]]" : null,
+    code ? "" : null,
     "Joy lives outside the screen.",
     "Kazuma Sasaki (Soto Phone)",
     "",
