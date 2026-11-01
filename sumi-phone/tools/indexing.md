@@ -33,3 +33,7 @@
 - https://sotophone.jp/
 - https://sotophone.jp/column/
 - コラム9本：about-soto-phone、study-phone、screen-time、phone-time-japan、digital-detox、garakei-2026、short-video、phone-addiction-check、kids-smartphone-age
+
+## IndexNow（Bing・Copilot などへの更新のお知らせ）
+- 鍵のファイル：/9533acaf0bf1ebb524dcf93d0bc6fcd5.txt（中身は鍵そのもの。消さない）
+- 記事を出したり直したりしたら、python3 tools/indexnow.py を実行すると、サイトマップの URL をまとめて Bing などに知らせる
