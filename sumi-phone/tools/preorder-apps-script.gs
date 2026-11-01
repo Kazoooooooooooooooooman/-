@@ -202,7 +202,7 @@ function handleView(data) {
 // 1回の訪問で、どれだけ見てもらえたか。シート「滞在ログ」に、訪問ごとに1行（同じ訪問の続きが届いたら、その行を新しい値に直す）
 const STAY_SHEET = "滞在ログ";
 const STAY_HEADERS = ["日時", "訪問", "パターン", "経路", "見ていた秒数", "スクロール（％）", "いちばん奥の節", "登録欄に触れた", "ボタンを押した", "登録した",
-  "端末", "OS", "ブラウザ", "アプリ内", "画面", "表示域", "端末の言語", "時間帯", "表示モード", "時刻"];
+  "端末", "OS", "ブラウザ", "アプリ内", "画面", "表示域", "端末の言語", "時間帯", "表示モード", "時刻", "紹介の共有"];
 function handleStay(data) {
   const v = variantTag(data.variant);
   const visit = String(data.visit || "").replace(/[^0-9a-f]/g, "").slice(0, 16);
@@ -225,6 +225,10 @@ function handleStay(data) {
   const row = [new Date(), visit, v, String(data.from || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, 40),
     num(data.seconds, 86400), num(data.scroll, 100), String(data.deepest || "").slice(0, 12),
     yes(data.touched), yes(data.pressed), regText(data.registered)].concat(devValues(data.device).slice(0, 10));
+  // 登録後に押した共有のボタン：LINE（LINE で送る）・共有画面（友だちに教える）・コピー（共有画面が出ない端末）
+  const SHARE_JA = { line: "LINE", sheet: "共有画面", copy: "コピー" };
+  row.push(String(data.shared || "").split(",").map((k) => SHARE_JA[k]).filter(Boolean).join("・"));
+  if (sheet.getRange(1, STAY_HEADERS.length).getValue() === "") sheet.getRange(1, STAY_HEADERS.length).setValue(STAY_HEADERS[STAY_HEADERS.length - 1]);
   const last = sheet.getLastRow();
   const from = Math.max(2, last - 300);
   if (last >= 2) {

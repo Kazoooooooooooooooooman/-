@@ -307,6 +307,14 @@
         localStorage.setItem("soto-revisit", String(again));
       }
     } catch (_) { /* 覚えていなくても記録には関係ない */ }
+    // 登録後に「LINE で送る」「友だちに教える」を押したかを記録する。押したあとすぐ LINE に移るので、その場で送る
+    const shared = [];
+    document.addEventListener("soto:shared", (e) => {
+      const k = e.detail;
+      if (shared.indexOf(k) < 0) shared.push(k);
+      sent = -1;
+      send();
+    });
     document.addEventListener("soto:registered", () => {
       if (!pressed) return;
       done = true; again = 0;
@@ -318,7 +326,7 @@
       if (seconds === sent) return; // 前に送った分から変わっていなければ送らない
       sent = seconds;
       const body = JSON.stringify({ type: "stay", variant: v, visit, seconds, scroll: maxPct, deepest: names[deepest] || deepest,
-        touched, pressed, registered: done || (again ? "again:" + again : false), from: arrival.from || "", device: deviceInfo() });
+        touched, pressed, registered: done || (again ? "again:" + again : false), shared: shared.join(","), from: arrival.from || "", device: deviceInfo() });
       try { navigator.sendBeacon(FORM_ENDPOINT, new Blob([body], { type: "text/plain;charset=utf-8" })); } catch (_) { /* 送れなくても表示には関係ない */ }
     };
     document.addEventListener("visibilitychange", () => {
@@ -462,9 +470,12 @@
     const label = EN ? "Tell a friend" : "友だちに教える";
     share.innerHTML = '<span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span>';
     share.querySelector(".btn-label").textContent = label;
+    const told = (k) => document.dispatchEvent(new CustomEvent("soto:shared", { detail: k }));
     share.addEventListener("click", async () => {
-      if (navigator.share) { navigator.share({ title: "Soto Phone", text, url }).catch(() => {}); return; }
-      try { await navigator.clipboard.writeText(url); } catch (_) { window.prompt(EN ? "Copy this link" : "このリンクをコピーしてください", url); return; }
+      // スマホの共有画面（LINE・メッセージ・Instagram・AirDrop など）を開く。開けない端末では、文とリンクをまとめてコピーする
+      if (navigator.share) { told("sheet"); navigator.share({ title: "Soto Phone", text, url }).catch(() => {}); return; }
+      told("copy");
+      try { await navigator.clipboard.writeText(text + "\n" + url); } catch (_) { window.prompt(EN ? "Copy this link" : "このリンクをコピーしてください", url); return; }
       share.querySelector(".btn-label").textContent = EN ? "Link copied" : "リンクをコピーしました";
       setTimeout(() => { share.querySelector(".btn-label").textContent = label; }, 2200);
     });
@@ -472,8 +483,9 @@
     const line = document.createElement("a");
     line.className = "done-line";
     line.href = "https://line.me/R/share?text=" + encodeURIComponent(text + "\n" + url);
-    line.target = "_blank";
-    line.rel = "noopener";
+    // スマホでは同じ画面から LINE アプリに移る（新しいタブを開くと、空のタブが残るため）。パソコンでは新しいタブで開く
+    if (!matchMedia("(pointer: coarse)").matches) { line.target = "_blank"; line.rel = "noopener"; }
+    line.addEventListener("click", () => told("line"));
     line.textContent = EN ? "Send on LINE" : "LINE で送る";
     // 日本では LINE で送る人が多いので、LINE を目立つボタンに、ほかの共有（コピー）を文字のボタンにする
     if (!EN) {
