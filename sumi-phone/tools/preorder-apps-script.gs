@@ -8,7 +8,11 @@
 
 const SHEET_NAME = "先行予約";
 const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止", "フォーム", "経路", "参照元", "紹介コード", "紹介した人", "番号",
-  "端末", "OS", "ブラウザ", "アプリ内", "画面", "表示域", "端末の言語", "時間帯", "表示モード", "登録した時刻", "登録までの秒数", "utm"];
+  "端末", "OS", "ブラウザ", "アプリ内", "画面", "表示域", "端末の言語", "時間帯", "表示モード", "登録した時刻", "登録までの秒数", "utm",
+  "メールの確認", "紹介の要確認"];
+// 「メールの確認」：確認メールの「ご登録を確かめる」を押した日時。紹介の人数は、ここに日時がある登録だけを数える
+// 「紹介の要確認」：紹介した人と同じ端末らしい・同じアドレスらしい、など。御礼を送る前に人の目で確かめる
+const VERIFY_COL = 27, FLAG_COL = 28;
 const MAIL_COL = 6; // 「確認メール」の列（送った日時が入る）
 const CONSENT_COL = 7; // 「同意」の列（どの方法で、どの版のプライバシーポリシーに同意したか）
 const STOP_COL = 8; // 「配信停止」の列（停止した日時が入る。入っている人には、お知らせを送らない）
@@ -125,13 +129,8 @@ function doPost(e) {
     // 確認メールは、まだ送っていない人にだけ送る
     const sentAt = sheet.getRange(rowIndex, MAIL_COL).getValue();
     if (!sentAt && canSendNow()) {
-      sendConfirmation(email, lang, trial, number, variantTag(data.variant), code);
+      sendConfirmation(email, lang, trial, number, variantTag(data.variant), code, !!(prev[4] || (invitedBy !== code ? invitedBy : "")));
       sheet.getRange(rowIndex, MAIL_COL).setValue(new Date());
-      // 紹介リンクから来た人なら、紹介した人に「1名ご登録くださいました」と報告する（初めての登録のときだけ）
-      const by = prev[4] || (invitedBy !== code ? invitedBy : "");
-      if (by && String(prev[1] || tag(data.from, 40)) !== "test") {
-        try { notifyReferrer(sheet, by); } catch (err) { console.error("紹介の報告に失敗：" + err); }
-      }
     }
     return reply({ ok: true, code: code, number: number });
   } catch (err) {
@@ -301,6 +300,29 @@ function doGet(e) {
   const en = p.l === "en";
   if (p.t !== tokenFor(email)) return page(en ? "This link is not valid." : "このリンクは使えません。", en ? "Please contact " + CONTACT + "." : CONTACT + " までご連絡ください。", en);
   const base = WEB_APP_URL + "?e=" + encodeURIComponent(email) + "&t=" + p.t + (en ? "&l=en" : "");
+  // 確認メールの「ご登録を確かめる」。存在しないアドレスや使い捨てでないことを確かめるため、押した日時を残す。
+  // （メールのリンクを自動で開くセキュリティ機能が先に開くこともあるが、それは受信できるアドレスだという意味なので、確認済みとしてよい）
+  if (p.do === "verify") {
+    const lock = LockService.getScriptLock();
+    lock.waitLock(10000);
+    try {
+      const sheet = getSheet();
+      const last = sheet.getLastRow();
+      const emails = last > 1 ? sheet.getRange(2, 2, last - 1, 1).getValues().flat().map((x) => String(x).trim().toLowerCase()) : [];
+      const found = emails.indexOf(email);
+      if (found >= 0 && !sheet.getRange(found + 2, VERIFY_COL).getValue()) {
+        sheet.getRange(found + 2, VERIFY_COL).setValue(new Date());
+        const by = String(sheet.getRange(found + 2, FORM_COL + 4).getValue() || "");
+        if (by && String(sheet.getRange(found + 2, FORM_COL + 1).getValue() || "") !== "test") {
+          try { flagReferral(sheet, found + 2, by); notifyReferrer(sheet, by); } catch (err) { console.error("紹介の報告に失敗：" + err); }
+        }
+      }
+    } finally {
+      lock.releaseLock();
+    }
+    return page(en ? "Thank you. Your email is confirmed." : "ご登録を確かめました。ありがとうございます。",
+      en ? "We'll send the development letter and launch news to this address." : "開発レターと発売のお知らせを、このメールアドレスにお届けします。", en, [[SITE_URL + (en ? "en" : ""), en ? "Back to Soto Phone" : "Soto Phone のサイトへ"]]);
+  }
   // メールのリンクを自動で開くセキュリティ機能があるので、リンクを開いただけでは何もせず、ボタンを押したときだけ実行する
   if (p.do === "stop" || p.do === "delete") {
     const lock = LockService.getScriptLock();
@@ -388,7 +410,7 @@ function sendPendingConfirmations() {
     if (!email || sentAt || stopped || !canSendNow()) return;
     let number = Number(r[NUM_COL - 1]) || 0;
     if (!number) { number = nextNumber(sheet); sheet.getRange(i + 2, NUM_COL).setValue(number); }
-    sendConfirmation(email, lang, trial, number, String(r[FORM_COL - 1] || "").split("・")[1] || "", String(r[FORM_COL + 2] || ""));
+    sendConfirmation(email, lang, trial, number, String(r[FORM_COL - 1] || "").split("・")[1] || "", String(r[FORM_COL + 2] || ""), !!r[FORM_COL + 3]);
     sheet.getRange(i + 2, MAIL_COL).setValue(new Date());
   });
 }
@@ -398,9 +420,10 @@ function testSendToMe() {
   sendConfirmation(Session.getEffectiveUser().getEmail(), "ja", true, 7, "", "abc123");
 }
 
-function sendConfirmation(email, lang, trial, number, variant, code) {
+function sendConfirmation(email, lang, trial, number, variant, code, referred) {
   const link = manageUrl(email, lang);
-  const m = lang === "en" ? mailEn(trial, link, number, code) : mailJa(trial, link, number, variant, code);
+  const verify = link + "&do=verify";
+  const m = lang === "en" ? mailEn(trial, link, number, code, verify, referred) : mailJa(trial, link, number, variant, code, verify, referred);
   sendMail(email, m);
 }
 
@@ -435,11 +458,42 @@ function referralCounts(sheet) {
     const ok = email && r[MAIL_COL - 1] && !r[STOP_COL - 1] && String(r[FORM_COL] || "") !== "test";
     const code = String(r[FORM_COL + 2] || ""), by = String(r[FORM_COL + 3] || "");
     if (ok && code && !owner[code]) owner[code] = { email, lang: String(r[3] || "ja") === "en" ? "en" : "ja" };
-    if (!ok || seen[email]) return;
-    seen[email] = true;
+    // 紹介に数えるのは、確認メールの「ご登録を確かめる」を押した登録だけ。書き方を変えた同じ Gmail は1人
+    const same = sameMailbox(email);
+    if (!ok || !r[VERIFY_COL - 1] || seen[same]) return;
+    seen[same] = true;
     if (by) counts[by] = (counts[by] || 0) + 1;
   });
   return { counts, owner };
+}
+
+// 同じ受信箱に届くアドレスを、同じ形にそろえる。Gmail は「.」と「+」以降を無視する。ほかのサービスも「+」以降は同じ受信箱
+function sameMailbox(email) {
+  const m = /^([^@]+)@(.+)$/.exec(String(email || "").trim().toLowerCase());
+  if (!m) return String(email || "");
+  let [, user, domain] = m;
+  user = user.split("+")[0];
+  if (domain === "googlemail.com") domain = "gmail.com";
+  if (domain === "gmail.com") user = user.replace(/\./g, "");
+  return user + "@" + domain;
+}
+
+// 紹介した人と、同じ端末・同じ受信箱らしい登録に印を付ける（自動では外さない。御礼を送る前に人の目で確かめる材料）
+function flagReferral(sheet, rowIndex, by) {
+  const last = sheet.getLastRow();
+  const rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
+  const me = rows[rowIndex - 2];
+  const ref = rows.find((r) => String(r[FORM_COL + 2] || "") === by);
+  const notes = [];
+  // 端末・OS・ブラウザ・画面・時間帯（プライベートモードでも変わらない）
+  const dev = (r) => [r[DEVICE_COL - 1], r[DEVICE_COL], r[DEVICE_COL + 1], r[DEVICE_COL + 3], r[DEVICE_COL + 6]].join("|");
+  if (ref && sameMailbox(ref[1]) === sameMailbox(me[1])) notes.push("紹介した人と同じ受信箱");
+  if (ref && dev(ref) === dev(me) && dev(me).replace(/\|/g, "")) notes.push("紹介した人と同じ端末の可能性");
+  // 同じ紹介コードで、同じ端末から1時間以内に続けて登録
+  const t = new Date(me[0]).getTime();
+  const burst = rows.filter((r) => r !== me && String(r[FORM_COL + 3] || "") === by && dev(r) === dev(me) && Math.abs(new Date(r[0]).getTime() - t) < 3600000).length;
+  if (burst) notes.push("同じ端末から1時間以内に" + (burst + 1) + "件");
+  if (notes.length) sheet.getRange(rowIndex, FLAG_COL).setValue(notes.join("／"));
 }
 
 function notifyReferrer(sheet, by) {
@@ -454,8 +508,12 @@ function notifyReferrer(sheet, by) {
   sendMail(who.email, who.lang === "en" ? refMailEn(n, tiers, next) : refMailJa(n, tiers, next));
   // 品物を送る段に届いたら、運営にも知らせる（送り先をうかがう連絡は、運営から手で送る）
   tiers.filter((x) => x.hit && !x.full).forEach((x) => {
+    const last = sheet.getLastRow();
+    const flagged = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues().filter((r) => String(r[FORM_COL + 3] || "") === by && r[FLAG_COL - 1]).length;
     MailApp.sendEmail(Session.getEffectiveUser().getEmail(), "【Soto Phone 紹介】" + x.t.ja + " の対象になりました",
-      who.email + " さんのご紹介が " + n + "名 になりました。" + x.t.ja + "（先着" + x.t.cap + "名様）の対象です。\nお届け先をおうかがいするご連絡を送ってください。");
+      who.email + " さんのご紹介が " + n + "名 になりました（メールの確認が済んだ登録のみ）。" + x.t.ja + "（先着" + x.t.cap + "名様）の対象です。\n"
+      + (flagged ? "うち " + flagged + "件 に「紹介の要確認」の印があります。シートの「紹介の要確認」の列を見てから判断してください。\n" : "")
+      + "問題がなければ、お届け先をおうかがいするご連絡を送ってください。");
   });
 }
 
@@ -522,9 +580,14 @@ function refMailEn(n, tiers, next) {
 }
 
 // 文字だけのメールでは、[[REF]] の行を「ご紹介のお願い」の文に置きかえる
-function refText(lines, block, numLine) {
+function refText(lines, block, numLine, verifyLines) {
   const out = [];
-  lines.forEach((l) => { if (l === "[[REF]]") out.push(...block.slice(0, -1)); else if (l === "[[TICKET]]") { if (numLine) out.push(numLine); } else out.push(l); });
+  lines.forEach((l) => {
+    if (l === "[[REF]]") out.push(...block.slice(0, -1));
+    else if (l === "[[TICKET]]") { if (numLine) out.push(numLine); }
+    else if (l === "[[VERIFY]]") out.push(...(verifyLines || []));
+    else out.push(l);
+  });
   return out.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
 }
 
@@ -559,6 +622,26 @@ function refCard(code, en) {
     + "</td></tr></table>";
 }
 
+// 確認メールの「ご登録を確かめる」。押すと、存在するアドレスだと分かる（紹介の人数は、押した登録だけを数える）
+function verifyText(url, referred, en) {
+  if (!url) return [];
+  return en
+    ? ["Could you take a moment to confirm your email address?", "It helps us make sure our news reaches you.", referred ? "It also counts toward the thanks for the friend who referred you." : null, url].filter(Boolean)
+    : ["お手数ですが、下のリンクからメールアドレスをお確かめください。", "発売のお知らせを、確実にお届けするためです。", referred ? "ご紹介くださった方への御礼にもつながります。" : null, url].filter(Boolean);
+}
+function verifyCard(url, referred, en) {
+  if (!url) return "";
+  const ent = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
+  const sans = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif";
+  const t = en
+    ? ["Could you take a moment to confirm", "your email address?", "It helps us make sure our news reaches you."].concat(referred ? ["It also counts toward the thanks", "for the friend who referred you."] : [])
+    : ["お手数ですが、下のボタンから", "メールアドレスをお確かめください。", "発売のお知らせを、確実にお届けするためです。"].concat(referred ? ["ご紹介くださった方への御礼にもつながります。"] : []);
+  return '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 26px"><tr><td align="center" style="font-family:' + sans + ';text-align:center">'
+    + '<div style="font-size:14px;line-height:1.9;color:#1f1e1c">' + t.map(ent).join("<br>") + "</div>"
+    + '<a href="' + ent(url) + '" style="display:inline-block;margin-top:14px"><img src="' + SITE_URL + "images/mail/btn-verify-" + (en ? "en" : "ja") + '.png" width="240" height="51" alt="' + ent(en ? "Confirm my email" : "ご登録を確かめる") + '" style="display:block;border:0;width:240px;height:51px"></a>'
+    + "</td></tr></table>";
+}
+
 // 確認メールに入れる「ご紹介のお願い」。ほかの段落と同じく、1行を短く区切る。
 // 御礼の3行（「1名　〜」のように全角の空白で区切った行）は、HTML のメールでは表にする（toHtml）
 function refBlockJa(code) {
@@ -570,7 +653,7 @@ function refBlockJa(code) {
     "1名のご紹介で　試作機の先行体験に、優先してご招待",
     "10名のご紹介で　Soto アルミマイボトル（先着100名様にお贈りします）",
     "30名のご紹介で　Soto 初代 限定Tシャツ（先着10名様にお贈りします）", "",
-    "ご紹介の方がご登録されるたびに、", "このメールアドレスへご報告いたします。", ""];
+    "ご紹介の方のご登録が確かめられるたびに、", "このメールアドレスへご報告いたします。", ""];
 }
 function refBlockEn(code) {
   if (!code) return [];
@@ -604,7 +687,7 @@ function promiseJa(variant) {
   return { img: "kansei", title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone", line: "完成したら、いちばん先にお見せします。" };
 }
 
-function mailJa(trial, link, number, variant, code) {
+function mailJa(trial, link, number, variant, code, verify, referred) {
   const w = promiseJa(variant);
   // 短く、急かさない。伝えるのは「番号」「これから何が届くか」「刻印」の3つだけ
   const lines = [
@@ -618,6 +701,8 @@ function mailJa(trial, link, number, variant, code) {
     "応援してくださる方がいることが、",
     "私たちの何よりの励みです。",
     "",
+    verify ? "[[VERIFY]]" : null,
+    verify ? "" : null,
     "これから月に1回、開発の様子を",
     "短い手紙にしてお送りします。",
     trial ? "試作機を使ってもらう会を開くときも、" : null,
@@ -640,10 +725,10 @@ function mailJa(trial, link, number, variant, code) {
     "お問い合わせ：" + CONTACT,
     "プライバシーポリシー：" + SITE_URL + "privacy",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: number ? "Soto Phone | " + numberLabel(number) + " で受け付けました" : "Soto Phone | 受け付けました", text: refText(lines, refBlockJa(code), number ? "あなたの番号は " + numberLabel(number) + " です。" : ""), html: toHtml(lines, number, w, refCard(code, false)) };
+  return { subject: number ? "Soto Phone | " + numberLabel(number) + " で受け付けました" : "Soto Phone | 受け付けました", text: refText(lines, refBlockJa(code), number ? "あなたの番号は " + numberLabel(number) + " です。" : "", verifyText(verify, referred, false)), html: toHtml(lines, number, w, refCard(code, false), verifyCard(verify, referred, false)) };
 }
 
-function mailEn(trial, link, number, code) {
+function mailEn(trial, link, number, code, verify, referred) {
   const lines = [
     number ? "[[TICKET]]" : null,
     number ? "" : null,
@@ -653,6 +738,8 @@ function mailEn(trial, link, number, code) {
     "Knowing people are rooting for us",
     "means more than we can say.",
     "",
+    verify ? "[[VERIFY]]" : null,
+    verify ? "" : null,
     "Once a month, we'll send you a short letter",
     "about how the phone is coming along.",
     trial ? "We'll also write here when we invite" : null,
@@ -675,13 +762,13 @@ function mailEn(trial, link, number, code) {
     "Contact: " + CONTACT,
     "Privacy policy: " + SITE_URL + "privacy-en",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: refText(lines, refBlockEn(code), number ? "Your number is " + numberLabel(number) + "." : ""), html: toHtml(lines, number, { img: "en", title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone", en: true }, refCard(code, true)) };
+  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: refText(lines, refBlockEn(code), number ? "Your number is " + numberLabel(number) + "." : "", verifyText(verify, referred, true)), html: toHtml(lines, number, { img: "en", title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone", en: true }, refCard(code, true), verifyCard(verify, referred, true)) };
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする
 // 番号があるときは、本文の上に「先行予約券」のきっぷを置く（サイトの登録済みカードと同じ見た目）。
 // メールの画面では細かい CSS が効かないことが多いので、表（table）で組み、背景の絵は紙の色に混ぜ済みの画像を使う
-function toHtml(lines, number, w, refHtml) {
+function toHtml(lines, number, w, refHtml, verifyHtml) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   // 長い URL は、押せるリンクにする
   const link = (s) => ent(esc(s)).replace(/https?:\/\/[^\s<]+/g, (u) => '<a href="' + u + '" style="color:#1f1e1c">' + u + "</a>");
@@ -721,7 +808,7 @@ function toHtml(lines, number, w, refHtml) {
       + '<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;border-bottom:1px solid #e4e0d6;font-size:14px;line-height:1.6">' + rows + "</table></div>";
   };
   const hasTicketSpot = paras.indexOf("[[TICKET]]") >= 0;
-  const bodyHtml = paras.map((p) => (p === "[[REF]]" ? (refHtml || "") : null) || (p === "[[TICKET]]" ? card : null) || tierTable(p) || '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
+  const bodyHtml = paras.map((p) => (p === "[[REF]]" ? (refHtml || "") : null) || (p === "[[TICKET]]" ? card : null) || (p === "[[VERIFY]]" ? (verifyHtml || "") : null) || tierTable(p) || '<p style="margin:0 0 22px">' + p.split("\n").map(link).join("<br>") + "</p>").join("");
   const footHtml = foot.length ? '<div style="margin-top:36px;padding-top:14px;border-top:1px solid #e4e0d6;font-size:11px;line-height:1.8;color:#8a857b">' + foot.map(link).join("<br>") + "</div>" : "";
   // ダークモードの画面でも読めるように、明るい色で表示するよう指定し、白い紙の上に載せる
   // （背景を指定しないと、画面だけ黒くなって黒い文字が見えなくなるメールアプリがある）
