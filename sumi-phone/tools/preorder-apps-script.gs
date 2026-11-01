@@ -602,11 +602,11 @@ function refCard(code, en) {
     + '<td width="2%" style="width:2%"></td>'
     + '<td width="49%" style="width:49%"><a href="' + share + '"><img src="' + img("btn-share") + '" width="200" alt="' + ent(en ? "Other ways to send" : "ほかの方法で送る") + '" style="display:block;border:0;width:100%;max-width:200px;height:auto;margin:0 auto"></a></td>'
     + "</tr></table>"
-    // メールの中ではコピーのボタンを作れない（プログラムを動かせない）ので、リンクを大きな枠で見せ、長押しでコピーできると添える
+    // メールの中ではコピーのボタンを作れない（プログラムを動かせない）ので、リンクを大きな枠で見せ、コピーのしかた（スマホは長押し、パソコンは右クリック）を添える
     + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:420px;margin:16px auto 0"><tr><td bgcolor="#ffffff" style="background:#ffffff;border:1px dashed #b9ae95;border-radius:12px;padding:12px 14px;text-align:center;font-family:' + sans + '">'
     + '<div style="font-size:11px;letter-spacing:.12em;color:#7a6f58">' + ent(en ? "YOUR REFERRAL LINK" : "ご紹介用のリンク") + "</div>"
     + '<div style="margin-top:4px;font-size:16px;font-weight:600;letter-spacing:.02em"><a href="' + url + '" style="color:#1f1e1c;text-decoration:none">' + url.replace("https://", "") + "</a></div>"
-    + '<div style="margin-top:4px;font-size:11px;color:#6b665d">' + ent(en ? "Press and hold to copy, then paste it anywhere" : "長押しでコピーして、好きなアプリに貼れます") + "</div>"
+    + '<div style="margin-top:4px;font-size:11px;color:#6b665d">' + ent(en ? "To copy: press and hold on a phone, or right-click on a computer" : "スマホは長押し、パソコンは右クリックでコピーできます") + "</div>"
     + "</td></tr></table>"
     + "</td></tr></table>";
 }
