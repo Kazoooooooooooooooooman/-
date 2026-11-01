@@ -201,8 +201,8 @@
     const note = document.createElement("p");
     note.className = "ref-note";
     note.textContent = EN
-      ? "🎟 You’re here through an invitation from a friend. Pre-ordering is free and only takes your email."
-      : "🎟 ご友人からの招待リンクでお越しいただきました。先行予約は無料で、メールアドレスだけでご登録いただけます。";
+      ? "You’re here through an invitation from a friend. Pre-ordering is free and only takes your email."
+      : "ご友人からの招待リンクでお越しいただきました。先行予約は無料で、メールアドレスだけでご登録いただけます。";
     form.parentNode.insertBefore(note, form);
   })();
   // きっぷの言葉は、押したボタンの約束に合わせる（「先行予約」と書いてあるのは、最初の版 o だけ）
@@ -414,8 +414,8 @@
   function doneCard(data) {
     const url = "https://sotophone.jp/" + (EN ? "en" : "") + "?r=" + myCode();
     const text = EN
-      ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games 📱\nMight suit you if you find yourself on your phone too much. It only takes your email 👇"
-      : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました📱\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります👇";
+      ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you find yourself on your phone too much. It only takes your email."
+      : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました。\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります。";
     const card = document.createElement("div");
     card.className = "done";
     card.setAttribute("role", "status");
@@ -516,8 +516,11 @@
       + (EN ? "<p class='done-ask-note'>We’ll email you each time someone joins through your link.</p>"
             : "<p class='done-ask-note'>" + ph(["ご紹介の方がご登録されるたびに、", "メールでご報告いたします。"]) + "</p>");
     // お礼は見出しの1行で伝わるので、すぐ下に「ご紹介のお願い」と送るボタンを置く。きっぷと特典、メールの案内はその下
-    card.append(head, ask, row);
-    if (num) card.append(badge, perk);
+    // 見出しのお礼 → 招待券 → ご紹介のお願いと送るボタン → 特典とメールの案内
+    card.append(head);
+    if (num) card.append(badge);
+    card.append(ask, row);
+    if (num) card.append(perk);
     card.append(body, sub);
     return card;
   }

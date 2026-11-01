@@ -522,9 +522,9 @@ function refMailEn(n, tiers, next) {
 }
 
 // 文字だけのメールでは、[[REF]] の行を「ご紹介のお願い」の文に置きかえる
-function refText(lines, block) {
+function refText(lines, block, numLine) {
   const out = [];
-  lines.forEach((l) => { if (l === "[[REF]]") out.push(...block.slice(0, -1)); else if (l !== "[[TICKET]]") out.push(l); });
+  lines.forEach((l) => { if (l === "[[REF]]") out.push(...block.slice(0, -1)); else if (l === "[[TICKET]]") { if (numLine) out.push(numLine); } else out.push(l); });
   return out.filter((l, i, a) => !(l === "" && a[i - 1] === "")).join("\n");
 }
 
@@ -535,8 +535,8 @@ function refCard(code, en) {
   const ent = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
   const url = SITE_URL + (en ? "en" : "") + "?r=" + code;
   const msg = en
-    ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games 📱\nMight suit you if you find yourself on your phone too much. It only takes your email 👇"
-    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました📱\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります👇";
+    ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you find yourself on your phone too much. It only takes your email."
+    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました。\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります。";
   const line = "https://line.me/R/share?text=" + encodeURIComponent(msg + "\n" + url);
   const t = en
     ? { h: "A small request", p: ["If someone close to you struggles", "with how much they use their phone,", "we'd be grateful if you shared Soto Phone", "with them using your own link."], th: "Our thanks for your referrals",
@@ -627,17 +627,17 @@ function mailJa(trial, link, number, variant, code) {
   // 短く、急かさない。伝えるのは「番号」「これから何が届くか」「刻印」の3つだけ
   const lines = [
     // お礼は件名で伝わるので、ここは1行だけ。いちばん目に入る場所に「ご紹介のお願い」を置く
-    "このたびは、Soto Phone の",
-    "先行予約にご登録いただき、",
+    // 招待券（番号）がいちばん上。その下にお礼を短く2段落、そのあとに「ご紹介のお願い」
+    number ? "[[TICKET]]" : null,
+    number ? "" : null,
+    "このたびはご登録いただき、",
     "誠にありがとうございます。",
+    "",
     "応援してくださる方がいることが、",
     "私たちの何よりの励みです。",
-    number ? "あなたの番号は " + numberLabel(number) + " です。" : null,
     "",
     code ? "[[REF]]" : null,
     code ? "" : null,
-    number ? "[[TICKET]]" : null,
-    number ? "" : null,
     "これから月に1回、開発の様子を",
     "短い手紙にしてお送りします。",
     trial ? "試作機を使ってもらう会を開くときも、" : null,
@@ -658,21 +658,21 @@ function mailJa(trial, link, number, variant, code) {
     "お問い合わせ：" + CONTACT,
     "プライバシーポリシー：" + SITE_URL + "privacy",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: number ? "Soto Phone | " + numberLabel(number) + " で受け付けました" : "Soto Phone | 受け付けました", text: refText(lines, refBlockJa(code)), html: toHtml(lines, number, w, refCard(code, false)) };
+  return { subject: number ? "Soto Phone | " + numberLabel(number) + " で受け付けました" : "Soto Phone | 受け付けました", text: refText(lines, refBlockJa(code), number ? "あなたの番号は " + numberLabel(number) + " です。" : ""), html: toHtml(lines, number, w, refCard(code, false)) };
 }
 
 function mailEn(trial, link, number, code) {
   const lines = [
+    number ? "[[TICKET]]" : null,
+    number ? "" : null,
     "Thank you so much for joining",
     "the Soto Phone pre-order list.",
+    "",
     "Knowing people are rooting for us",
     "means more than we can say.",
-    number ? "Your number is " + numberLabel(number) + "." : null,
     "",
     code ? "[[REF]]" : null,
     code ? "" : null,
-    number ? "[[TICKET]]" : null,
-    number ? "" : null,
     "Once a month, we'll send you a short letter",
     "about how the phone is coming along.",
     trial ? "We'll also write here when we invite" : null,
@@ -693,7 +693,7 @@ function mailEn(trial, link, number, code) {
     "Contact: " + CONTACT,
     "Privacy policy: " + SITE_URL + "privacy-en",
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: refText(lines, refBlockEn(code)), html: toHtml(lines, number, { img: "en", title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone", en: true }, refCard(code, true)) };
+  return { subject: number ? "Soto Phone | You're " + numberLabel(number) : "Soto Phone | You're in", text: refText(lines, refBlockEn(code), number ? "Your number is " + numberLabel(number) + "." : ""), html: toHtml(lines, number, { img: "en", title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone", en: true }, refCard(code, true)) };
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする

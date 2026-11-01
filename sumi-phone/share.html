@@ -14,7 +14,7 @@
 <link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
 <link rel="stylesheet" href="/fonts/fonts.css" />
-<link rel="stylesheet" href="/styles.css?v=20261101k" />
+<link rel="stylesheet" href="/styles.css?v=20261101l" />
 <script src="/consent.js?v=2" defer></script>
 </head>
 <body class="legal-page">
@@ -85,8 +85,8 @@
   const url = "https://sotophone.jp/" + (en ? "en" : "") + "?r=" + code;
   const text = $("sh-text");
   text.value = en
-    ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games 📱\nMight suit you if you find yourself on your phone too much. It only takes your email 👇"
-    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました📱\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります👇";
+    ? "I just joined the free pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you find yourself on your phone too much. It only takes your email."
+    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約（無料）に登録しました。\nスマホをつい触りすぎてしまう方に、合うかもしれません。\n登録はメールアドレスだけで、1分ほどで終わります。";
   $("sh-url").textContent = url;
   const msg = (t) => { $("sh-msg").textContent = t; setTimeout(() => { $("sh-msg").textContent = ""; }, 2500); };
   const lineUrl = () => "https://line.me/R/share?text=" + encodeURIComponent(text.value + "\n" + url);
