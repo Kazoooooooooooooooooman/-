@@ -873,17 +873,29 @@
       const last = blocks[blocks.length - 1];
       if (last && a - last[1] < MIN_GAP) last[1] = Math.max(last[1], b); else blocks.push([a, b]);
     });
+    // 左右を渡るところは、縦に画面幅の9割ほどの長さをとって、ゆるい斜めにする（短いと段差のようにカクカクして見えるため）。
+    // 余白が足りないときは、前後の文字のある高さに少し入って渡る
+    const span = Math.max(260, (R - L) * 0.95);
     const pts = [[W * 0.5, hero.b - 6]];
-    let x = L;
+    let x = L, prevY = hero.b - 6, prevStart = hero.b - 6;
     blocks.forEach(([a, b], i) => {
-      const prevEnd = i ? blocks[i - 1][1] : hero.b;
-      const gap = a - prevEnd;
       if (i) x = x === L ? R : L;                                   // 余白ごとに、反対側へ
-      pts.push([x, a - Math.min(40, gap * 0.2)]);
-      if (b - a > 260) pts.push([x + (x === L ? 3 : -3), (a + b) / 2]);
-      pts.push([x, b + Math.min(40, gap * 0.2)]);
+      const gap = a - prevY;
+      let y1 = prevY, y2 = a - Math.min(40, gap * 0.2);
+      if (y2 - y1 < span) {
+        const mid = (y1 + y2) / 2;
+        y1 = Math.max(prevStart + 40, mid - span / 2); y2 = Math.max(y1 + span, y2);
+        if (i) pts[pts.length - 1][1] = y1; else pts[0][1] = Math.min(pts[0][1], y1);
+      }
+      const yEnd = Math.max(b + Math.min(40, gap * 0.2), y2 + 80);
+      pts.push([x, y2]);
+      if (yEnd - y2 > 260) pts.push([x + (x === L ? 3 : -3), (y2 + yEnd) / 2]);
+      pts.push([x, yEnd]);
+      prevY = yEnd; prevStart = y2;
     });
-    pts.push([W * 0.5, about.t + 60]);
+    const endY = about.t + 60;
+    if (endY - prevY < span / 2) pts[pts.length - 1][1] = Math.max(prevStart + 40, endY - span / 2);
+    pts.push([W * 0.5, endY]);
     return pts;
   };
 
