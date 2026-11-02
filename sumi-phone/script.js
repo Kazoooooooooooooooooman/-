@@ -210,6 +210,7 @@
     const h = (heroVariant() || "a").split("-")[0];
     if (EN) return { title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone" };
     if (h === "o") return { title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約" };
+    if (h === "t") return { title: "先行体験の招待券", sub: "試作機を、いちばん先に。", stub: "先行体験" };
     if (h === "c") return { title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone" };
     if (h === "d") return { title: "招待券", sub: "発売のお知らせを、いちばん先に。", stub: "Soto Phone" };
     return { title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone" };
@@ -627,7 +628,7 @@
       email: email.value.trim(),
       prefecture: prefEl ? prefEl.value.trim() : "",
       lang: EN ? "en" : "ja",
-      trial: trialEl ? trialEl.checked : false,
+      trial: trialEl ? trialEl.checked : (heroVariant() || "").startsWith("t"), // 先行体験の版（?h=t）の1枚目から登録した人は、先行体験を希望したものとして記録する
       source: form.id === "hero-form" ? "hero" : "bottom",
       // 1枚目のどのパターンを見て登録したか（URL の ?h= で選んで見た人は、末尾に -url を付けて、自然に来た人と分ける）
       variant: heroVariant(),

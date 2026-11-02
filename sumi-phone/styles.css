@@ -1071,19 +1071,19 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 
 /* 1枚目の言葉を JS で消したときは、表示用の CSS より優先して隠す */
 .hero-door [hidden] { display: none !important; }
-/* 1枚目は全員 a の見せ方。ボタンと入力欄だけは b・c の太めの形にする */
-[data-h="a"] .hd-form { padding: 6px; }
-[data-h="a"] .hd-form input { font-size: 15px; }
-[data-h="a"] .hero-door .hd-form .btn { padding: 15px 26px; font-size: 15px; font-weight: 600; letter-spacing: .06em; }
+/* 1枚目は全員 a の見せ方（t＝先行体験の版も、ボタンの言葉以外は a と同じ）。ボタンと入力欄だけは b・c の太めの形にする */
+[data-h="a"] .hd-form, [data-h="t"] .hd-form { padding: 6px; }
+[data-h="a"] .hd-form input, [data-h="t"] .hd-form input { font-size: 15px; }
+[data-h="a"] .hero-door .hd-form .btn, [data-h="t"] .hero-door .hd-form .btn { padding: 15px 26px; font-size: 15px; font-weight: 600; letter-spacing: .06em; }
 @media (max-width: 820px) {
-  [data-h="a"] .hd-form input { font-size: 16px; padding: 0 10px 0 14px; }
-  [data-h="a"] .hero-door .hd-form .btn { padding: 14px 15px; font-size: 14px; letter-spacing: .04em; }
+  [data-h="a"] .hd-form input, [data-h="t"] .hd-form input { font-size: 16px; padding: 0 10px 0 14px; }
+  [data-h="a"] .hero-door .hd-form .btn, [data-h="t"] .hero-door .hd-form .btn { padding: 14px 15px; font-size: 14px; letter-spacing: .04em; }
 }
 /* ロゴの文字はヘッダーにあるので、ヒーローでは一言を主役にする */
-[data-h="a"] .hero-door .hd-mark { display: none; }
-[data-h="a"] .hero-door .hd-copy { font-size: clamp(30px, 2.6vw, 40px); line-height: 1.5; letter-spacing: .04em; color: var(--ink, #1f1e1c); }
+[data-h="a"] .hero-door .hd-mark, [data-h="t"] .hero-door .hd-mark { display: none; }
+[data-h="a"] .hero-door .hd-copy, [data-h="t"] .hero-door .hd-copy { font-size: clamp(30px, 2.6vw, 40px); line-height: 1.5; letter-spacing: .04em; color: var(--ink, #1f1e1c); }
 @media (max-width: 820px) {
-  [data-h="a"] .hero-door .hd-copy { font-size: 26px; }
+  [data-h="a"] .hero-door .hd-copy, [data-h="t"] .hero-door .hd-copy { font-size: 26px; }
 }
 /* 「SOTO PHONE」が狭い画面で右のボタンに重ならないように */
 @media (max-width: 480px) {
