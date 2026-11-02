@@ -382,6 +382,23 @@
     return store;
   })().catch(() => null);
 
+  // 先行予約が1件できたことを、Google（アナリティクスと広告）に知らせる。
+  // 広告は「登録が終わった人だけが開くページ」で数えるので、見えない小さな枠で /thanks を開く（画面は変わらない）。
+  // 開き直したときや、すでに登録している人が来たときは送らない（ここは登録ボタンで新しく登録できたときだけ呼ぶ）
+  function converted() {
+    try { if (window.gtag) window.gtag("event", "sign_up", { method: "preorder" }); } catch (_) { /* 送れなくても登録には関係ない */ }
+    try {
+      const f = document.createElement("iframe");
+      f.src = "/thanks" + (EN ? "?l=en" : "");
+      f.title = "";
+      f.setAttribute("aria-hidden", "true");
+      f.tabIndex = -1;
+      f.style.cssText = "position:absolute;width:1px;height:1px;border:0;left:-9999px;top:0";
+      document.body.appendChild(f);
+      setTimeout(() => f.remove(), 15000);
+    } catch (_) { /* 同上 */ }
+  }
+
   // どちらかで登録できたら、両方のフォームを「登録済み」にする
   function showDone(data) {
     forms.forEach(({ form, msg }) => {
@@ -663,6 +680,7 @@
         store_.set(SENT_KEY, "1");
         store_.set(MAIL_KEY, data.email);
         showDone(data);
+        converted();
       } catch (err) {
         // 公開の設定が「全員」でないと、Google のログイン画面に飛ばされてここに来る
         console.error("Pre-order request failed:", err);
