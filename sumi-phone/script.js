@@ -922,11 +922,20 @@
     ] : narrowRoute(W, L, R, hero, about, mainTop);
     // 登録したあと：広い画面でも、道が「ご紹介のお願い」（10名のあたり）の上を斜めに横切るようにする。
     // 重なると目が止まり、もう一度見てもらえるため（狭い画面は、もともとカードの上を通る）
+    let routeFade = 90;
     const ask = wide && document.querySelector(".hero-door .done .done-ask");
     if (ask && ask.offsetParent) {
       const r = ask.getBoundingClientRect(), at = r.top + scrollY - mainTop;
       // 右から、10名のあたりの高さでカードに入り、左下へ斜めに抜けて、もとの道に戻る
-      pts.splice(1, 0, [r.right + 60, at + r.height * 0.5], [r.left - 30, at + r.height * 0.82]);
+      // （もとの「画面の真ん中へ戻る」点は外して、輪にならず、まっすぐ斜めに下りていくようにする）
+      // 右上（携帯の絵の「電話」のあたり）から、まっすぐ斜めに下りてカードを横切り、左の余白へ抜ける
+      const ax = r.right + Math.min(520, W * 0.32), ay = at + r.height * 0.18;
+      const bx = r.left - 60, by = at + r.height * 0.74;
+      const k = (by - ay) / (bx - ax);
+      const sx = ax + 260, sy = ay + k * 260;                // 出だしは右上の先から、だんだん見えてくるように
+      // 左の余白に入ったら、大きな弧でゆるく下へ向きを変える（急に曲がると、折れたように見えるため）
+      pts.splice(0, 2, [sx, sy], [ax, ay], [bx, by], [L + wob, by + Math.max(320, (bx - L) * 2.2)]);
+      routeFade = 260;
     }
     const d = wide ? smooth(pts) : sCurve(pts);
     endY = about.t + 60;
@@ -939,7 +948,7 @@
     // 出だしは動画のぼかしから、終わりは景色の中へ、どちらも少しずつ消す
     const y0 = Math.min(...pts.map((q) => q[1])) - 30; // 登録後にカードの上へ戻る道も、消えないように
     grad.setAttribute("y1", y0); grad.setAttribute("y2", endY);
-    grad.querySelector(".road-in").setAttribute("offset", Math.min(0.2, 90 / (endY - y0)));
+    grad.querySelector(".road-in").setAttribute("offset", Math.min(0.2, routeFade / (endY - y0)));
     len = reveal.getTotalLength();
     reveal.style.strokeDasharray = `${len} ${len}`;
     top0 = mainTop;
