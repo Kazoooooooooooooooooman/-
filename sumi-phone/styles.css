@@ -1217,3 +1217,8 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 .done-sub { background: #fff; border: 1px solid var(--paper-ink); color: var(--paper-ink); cursor: pointer; }
 .done-row .done-copy { flex-basis: 100%; justify-content: center; }
 .done-row .btn { font-size: 14px; letter-spacing: .08em; min-height: 46px; }
+
+/* トップの一番大きな見出し（h1）に名前を入れる：検索で「Soto Phone」と結びつけるため。見た目は小さく */
+.hd-h1 { margin: 0; font: inherit; }
+.hero-door .hd-h1 .hd-copy { display: block; }
+.hd-brand { display: block; font-family: var(--latin); font-size: 11px; font-weight: 500; letter-spacing: .32em; text-transform: uppercase; color: var(--paper-dim); margin: 0 0 10px; }
