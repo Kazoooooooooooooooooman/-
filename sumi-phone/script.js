@@ -920,6 +920,14 @@
       [R - wob, ink.t + 300], [R, ink.b - 200],
       [W * 0.6, about.t - 30], [W * 0.5, about.t + 60],
     ] : narrowRoute(W, L, R, hero, about, mainTop);
+    // 登録したあと：広い画面でも、道が「ご紹介のお願い」（10名のあたり）の上を斜めに横切るようにする。
+    // 重なると目が止まり、もう一度見てもらえるため（狭い画面は、もともとカードの上を通る）
+    const ask = wide && document.querySelector(".hero-door .done .done-ask");
+    if (ask && ask.offsetParent) {
+      const r = ask.getBoundingClientRect(), at = r.top + scrollY - mainTop;
+      // 右から、10名のあたりの高さでカードに入り、左下へ斜めに抜けて、もとの道に戻る
+      pts.splice(1, 0, [r.right + 60, at + r.height * 0.5], [r.left - 30, at + r.height * 0.82]);
+    }
     const d = wide ? smooth(pts) : sCurve(pts);
     endY = about.t + 60;
     svg.setAttribute("viewBox", `0 0 ${W} ${endY + 40}`);
@@ -929,7 +937,7 @@
     svg.style.setProperty("--road-w", `${width}px`);
     reveal.setAttribute("stroke-width", width * 3);
     // 出だしは動画のぼかしから、終わりは景色の中へ、どちらも少しずつ消す
-    const y0 = pts[0][1];
+    const y0 = Math.min(...pts.map((q) => q[1])) - 30; // 登録後にカードの上へ戻る道も、消えないように
     grad.setAttribute("y1", y0); grad.setAttribute("y2", endY);
     grad.querySelector(".road-in").setAttribute("offset", Math.min(0.2, 90 / (endY - y0)));
     len = reveal.getTotalLength();
@@ -954,6 +962,7 @@
   let t;
   addEventListener("resize", () => { clearTimeout(t); t = setTimeout(build, 150); });
   addEventListener("load", build);
+  document.addEventListener("soto:registered", () => setTimeout(build, 500)); // 登録してカードの高さが変わったら、道を引き直す
   if (document.fonts) document.fonts.ready.then(build);
   build();
 })();
