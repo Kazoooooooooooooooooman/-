@@ -912,30 +912,47 @@
     const startX = v ? v.left + v.width * 0.62 : W * 0.7;
     const startY = v ? v.bottom + scrollY - mainTop - v.height * 0.06 : hero.b - 120; // 動画の下のぼかしの中から出てくる
     // 広い画面：動画の下からまず左の余白へ回り、そのあと右、と交互に走って、節のあいだで渡る。狭い画面：文字に重ならないよう、左のふちだけを下りる
-    const pts = wide ? [
-      [startX, startY],
-      [W * 0.45, hero.b + 10],
-      [L + wob, problem.t + 260], [L - wob, (problem.t + problem.b) / 2], [L + wob, problem.b - 160],
-      [W * 0.5, ink.t + 20],
-      [R - wob, ink.t + 300], [R, ink.b - 200],
-      [W * 0.6, about.t - 30], [W * 0.5, about.t + 60],
-    ] : narrowRoute(W, L, R, hero, about, mainTop);
-    // 登録したあと：広い画面でも、道が「ご紹介のお願い」（10名のあたり）の上を斜めに横切るようにする。
-    // 重なると目が止まり、もう一度見てもらえるため（狭い画面は、もともとカードの上を通る）
+    // 広い画面：動画の下から、「昨日、スマホを何時間見ていましたか。」の見出しの上を斜めに横切って左の余白へ回り、
+    // そのあと右、と交互に走って、節のあいだで渡る。狭い画面：文字に重ならないよう、左のふちだけを下りる
+    const qa = document.querySelector("#problem .sc-ask");
+    const qr = qa && qa.getBoundingClientRect();
+    const q = qr && qr.height ? { l: qr.left, r: qr.right, t: qr.top + scrollY - mainTop, b: qr.bottom + scrollY - mainTop } : null;
+    // 見出しは、真横ではなく斜めに横切る（何文字かだけ重なり、読めるまま目が止まるように）。途中にも点を置いて、まっすぐに保つ
+    const cross = (x1, y1, x2, y2) => [0, 0.5, 1].map((t) => [x1 + (x2 - x1) * t, y1 + (y2 - y1) * t]);
     let routeFade = 90;
     const ask = wide && document.querySelector(".hero-door .done .done-ask");
-    if (ask && ask.offsetParent) {
+    let pts;
+    if (!wide) pts = narrowRoute(W, L, R, hero, about, mainTop);
+    else if (ask && ask.offsetParent) {
+      // 登録したあと：右上（携帯の絵の「電話」のあたり）から、まっすぐ斜めに下りて「ご紹介のお願い」（10名のあたり）を横切り、
+      // 左の余白でゆるく折り返して、見出しの上を左から右へ斜めに横切る。そのあとは右、左、と下りる。
+      // 重なると目が止まり、もう一度見てもらえるため（狭い画面は、もともとカードの上を通る）
       const r = ask.getBoundingClientRect(), at = r.top + scrollY - mainTop;
-      // 右から、10名のあたりの高さでカードに入り、左下へ斜めに抜けて、もとの道に戻る
-      // （もとの「画面の真ん中へ戻る」点は外して、輪にならず、まっすぐ斜めに下りていくようにする）
-      // 右上（携帯の絵の「電話」のあたり）から、まっすぐ斜めに下りてカードを横切り、左の余白へ抜ける
       const ax = r.right + Math.min(520, W * 0.32), ay = at + r.height * 0.18;
       const bx = r.left - 60, by = at + r.height * 0.74;
       const k = (by - ay) / (bx - ax);
       const sx = ax + 260, sy = ay + k * 260;                // 出だしは右上の先から、だんだん見えてくるように
-      // 左の余白に入ったら、大きな弧でゆるく下へ向きを変える（急に曲がると、折れたように見えるため）
-      pts.splice(0, 2, [sx, sy], [ax, ay], [bx, by], [L + wob, by + Math.max(320, (bx - L) * 2.2)]);
+      pts = [[sx, sy], [ax, ay], [bx, by]];
+      if (q) {
+        pts.push([L + wob, Math.max(by + 200, q.t - 420)], ...cross(q.l - 200, q.t - 130, q.r + 200, q.b + 130));
+        const y1 = Math.max(problem.t + 260, q.b + 380);
+        pts.push([R - wob, y1], [R + wob, (y1 + problem.b) / 2], [R - wob, problem.b - 160],
+          [W * 0.5, ink.t + 20],
+          [L + wob, ink.t + 300], [L, ink.b - 200],
+          [W * 0.4, about.t - 30], [W * 0.5, about.t + 60]);
+      } else {
+        pts.push([L + wob, by + Math.max(320, (bx - L) * 2.2)], [L - wob, (problem.t + problem.b) / 2], [L + wob, problem.b - 160],
+          [W * 0.5, ink.t + 20], [R - wob, ink.t + 300], [R, ink.b - 200], [W * 0.6, about.t - 30], [W * 0.5, about.t + 60]);
+      }
       routeFade = 260;
+    } else {
+      pts = [[startX, startY]];
+      if (q) pts.push(...cross(q.r + 200, q.t - 130, q.l - 200, q.b + 130)); else pts.push([W * 0.45, hero.b + 10]);
+      const y1 = q ? Math.max(problem.t + 260, q.b + 380) : problem.t + 260;
+      pts.push([L + wob, y1], [L - wob, (y1 + problem.b) / 2], [L + wob, problem.b - 160],
+        [W * 0.5, ink.t + 20],
+        [R - wob, ink.t + 300], [R, ink.b - 200],
+        [W * 0.6, about.t - 30], [W * 0.5, about.t + 60]);
     }
     const d = wide ? smooth(pts) : sCurve(pts);
     endY = about.t + 60;
