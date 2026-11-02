@@ -838,7 +838,7 @@
   const reveal = svg.querySelector(".road-reveal");
   const grad = svg.querySelector(".road-grad");
   const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let len = 0, top0 = 0, endY = 0;
+  let len = 0, top0 = 0, endY = 0, ys = [];
 
   // 点を通るなめらかな曲線（Catmull-Rom を3次ベジェに直す）
   const smooth = (p) => {
@@ -979,6 +979,8 @@
     grad.setAttribute("y1", y0); grad.setAttribute("y2", endY);
     grad.querySelector(".road-in").setAttribute("offset", Math.min(0.2, routeFade / (endY - y0)));
     len = reveal.getTotalLength();
+    // 道の長さごとの高さを先に調べておく（スクロールのたびに道を測ると、携帯では重くてカクカクするため）
+    ys = Array.from({ length: 801 }, (_, i) => reveal.getPointAtLength((len * i) / 800).y);
     reveal.style.strokeDasharray = `${len} ${len}`;
     top0 = mainTop;
     draw();
@@ -989,16 +991,25 @@
     if (!len) return;
     if (still) { reveal.style.strokeDashoffset = 0; return; }
     const front = scrollY + innerHeight * 0.7 - top0;
-    // 道の長さのうち、front より上にある分を二分探索で求める
-    let lo = 0, hi = len;
-    for (let i = 0; i < 18; i++) { const m = (lo + hi) / 2; if (reveal.getPointAtLength(m).y < front) lo = m; else hi = m; }
-    reveal.style.strokeDashoffset = len - lo;
+    // 道の長さのうち、front より上にある分を、先に調べた表から二分探索で求め、表の点のあいだは比例で補う
+    let lo = 0, hi = ys.length - 1;
+    if (front <= ys[0]) { reveal.style.strokeDashoffset = len; return; }
+    if (front >= ys[hi]) { reveal.style.strokeDashoffset = 0; return; }
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (ys[m] < front) lo = m; else hi = m; }
+    const f = (front - ys[lo]) / Math.max(1e-6, ys[hi] - ys[lo]);
+    reveal.style.strokeDashoffset = len - (len * (lo + f)) / (ys.length - 1);
   };
 
   let raf = 0;
   addEventListener("scroll", () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; draw(); }); }, { passive: true });
   let t;
-  addEventListener("resize", () => { clearTimeout(t); t = setTimeout(build, 150); });
+  // 携帯では、スクロールでアドレスバーが出入りするたびに resize が起きる。幅が変わったときだけ道を引き直す（毎回引き直すと、道が跳ねてカクカクするため）
+  let lastW = document.documentElement.clientWidth;
+  addEventListener("resize", () => {
+    const w = document.documentElement.clientWidth;
+    if (w === lastW) { draw(); return; }
+    lastW = w; clearTimeout(t); t = setTimeout(build, 150);
+  });
   addEventListener("load", build);
   document.addEventListener("soto:registered", () => setTimeout(build, 500)); // 登録してカードの高さが変わったら、道を引き直す
   if (document.fonts) document.fonts.ready.then(build);
