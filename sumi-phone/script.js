@@ -443,7 +443,7 @@
     const url = "https://sotophone.jp/" + (EN ? "en" : "") + "?r=" + myCode();
     const text = EN
       ? "I've joined the pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you'd like to spend less time on your phone.\nThe pre-order is free and only takes your email."
-      : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約に登録しました。\nスマホを触りすぎてしまうのが気になっている方には、合うかもしれません。\n先行予約は無料で、メールアドレスだけで登録できます。";
+      : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約に登録しました。\nスマホをつい触りすぎてしまう人に、よさそうだと思いました。\n先行予約は無料で、メールアドレスだけで登録できます。";
     const card = document.createElement("div");
     card.className = "done";
     card.setAttribute("role", "status");
