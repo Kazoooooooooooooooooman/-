@@ -102,6 +102,7 @@ function doPost(e) {
       sheet.appendRow(row);
       rowIndex = sheet.getLastRow();
     }
+    SpreadsheetApp.flush(); // 書き込みを先に確定させてから、チップに変える（順番が前後すると文字に戻るため）
     emailChip(sheet, rowIndex, email);
     sheet.getRange(rowIndex, CONSENT_COL).setValue(consent);
     // 経路と紹介。登録し直した人は、前の経路と紹介コードをそのまま残す（最初に来た経路のほうが大事なため）
@@ -528,7 +529,7 @@ function refMailJa(n, tiers, next) {
     "このメールは、sotophone.jp で先行予約にご登録いただいた方にお送りしています。",
     "お問い合わせ：" + CONTACT,
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: "Soto Phone | ご紹介いただいた方が、先行予約にご登録くださいました", text: lines.join("\n"), html: toHtml(lines, 0, { en: false }) };
+  return { subject: "Soto Phone | ご紹介いただいた方が、先行予約にご登録くださいました", text: lines.join("\n"), html: refHtml(n, hit, next, false) };
 }
 
 function refMailEn(n, tiers, next) {
@@ -558,7 +559,64 @@ function refMailEn(n, tiers, next) {
     "You're receiving this because you joined the pre-order list at " + SITE_URL + ".",
     "Contact: " + CONTACT,
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: "Soto Phone | Someone you referred has joined", text: lines.join("\n"), html: toHtml(lines, 0, { en: true }) };
+  return { subject: "Soto Phone | Someone you referred has joined", text: lines.join("\n"), html: refHtml(n, hit, next, true) };
+}
+
+// 紹介のご報告メール（HTML）。携帯で読んでも崩れないよう、見出し・人数・御礼・次の御礼までの残り・ひとこと・署名に分けて組む。
+// 日本語は言葉のまとまりごとに折り返す（文の途中で「た。」だけが次の行に残らないように）
+function refHtml(n, hit, next, en) {
+  const ent = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/[^\x00-\x7f]/g, (c) => "&#" + c.codePointAt(0) + ";");
+  const ph = (a) => en ? ent(a.join(" ")) : a.map((t) => '<span style="display:inline-block">' + ent(t) + "</span>").join("");
+  const sans = "'Hiragino Sans','Hiragino Kaku Gothic ProN','Yu Gothic','Meiryo',sans-serif";
+  const serif = "'Hiragino Mincho ProN','Yu Mincho',Georgia,serif";
+  const ink = "#1f1e1c", dim = "#7a6f58", accent = "#a94c2f", line = "#e4e0d6";
+  const label = (t) => '<div style="font-size:11px;letter-spacing:.2em;color:' + dim + ';margin-bottom:8px">' + ent(t) + "</div>";
+  const block = (inner, bg) => '<div style="margin:0 0 18px;padding:18px 18px 16px;border-radius:14px;text-align:center;' + (bg ? "background:" + bg : "border:1px solid " + line) + '">' + inner + "</div>";
+  let html = "";
+  // 見出し
+  html += '<div style="text-align:center;margin:4px 0 22px">' + label(en ? "REFERRAL UPDATE" : "ご紹介のご報告")
+    + '<div style="font-family:' + serif + ';font-size:19px;line-height:1.7;letter-spacing:.06em;color:' + ink + '">'
+    + (en ? ent("Someone you referred has joined.") : ph(["ご紹介いただいた方が、", "ご登録くださいました。"])) + "</div></div>";
+  // これまでの人数
+  html += block(label(en ? "PEOPLE YOU HAVE REFERRED" : "これまでにご紹介いただいた方")
+    + '<div style="font-family:Georgia,serif;font-size:44px;font-weight:600;line-height:1.1;color:' + accent + '">' + n
+    + '<span style="font-family:' + sans + ';font-size:15px;font-weight:500;margin-left:4px;color:' + ink + '">' + ent(en ? (n === 1 ? "person" : "people") : "名") + "</span></div>", "#f3ecdc");
+  // 御礼（届いた段があるときだけ）
+  const gifts = [];
+  if (n === 1) gifts.push([en ? "Priority invite to try the prototype" : "先行体験に、優先してご招待", en ? ["We'll write to this address once the date is set."] : ["開催が決まりましたら、", "このアドレスにご案内をお送りします。"]]);
+  if (hit && !hit.full) gifts.push([en ? hit.t.en.replace(/^a /, "A ") : hit.t.ja + "をお贈りします", en ? ["We'll email you separately to ask for your shipping address."] : ["お届け先をおうかがいするご連絡を、", "改めてお送りします。"]]);
+  if (hit && hit.full) gifts.push([en ? "The first " + hit.t.cap + " spots have been taken" : "先着" + hit.t.cap + "名様の枠が埋まりました", en ? ["We're sorry we couldn't include you this time."] : [hit.t.ja + "は、", "今回はお贈りできません。", "申し訳ございません。"]]);
+  if (gifts.length) html += block(label(en ? "OUR THANKS" : "御礼") + gifts.map((g, i) => '<div style="' + (i ? "margin-top:14px;padding-top:14px;border-top:1px solid " + line + ";" : "") + '">'
+    + '<div style="font-size:16px;line-height:1.6;font-weight:600;color:' + ink + '">' + ent(g[0]) + "</div>"
+    + '<div style="margin-top:4px;font-size:12.5px;line-height:1.8;color:' + dim + '">' + ph(g[1]) + "</div></div>").join(""));
+  // 次の御礼までの残り
+  if (next) {
+    const pct = Math.max(4, Math.min(100, Math.round(n / next.n * 100)));
+    html += block(label(en ? "NEXT THANK-YOU" : "次の御礼まで")
+      + '<div style="font-size:15px;line-height:1.7;color:' + ink + '">' + (en ? ent(next.en.replace(/^a /, "A ")) : ent(next.ja)) + "</div>"
+      + '<div style="margin:4px 0 12px;font-size:13px;color:' + dim + '">' + (en ? ent((next.n - n) + " more to go") : ent("あと ") + '<b style="font-family:Georgia,serif;font-size:20px;color:' + accent + '">' + (next.n - n) + "</b>" + ent(" 名")) + "</div>"
+      + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;border-radius:4px;background:#ece6d6"><tr>'
+      + '<td width="' + pct + '%" style="width:' + pct + '%;height:6px;line-height:6px;font-size:0;border-radius:4px;background:' + accent + '">&nbsp;</td>'
+      + (pct < 100 ? '<td style="height:6px;line-height:6px;font-size:0">&nbsp;</td>' : "") + "</tr></table>"
+      + '<div style="margin-top:6px;font-size:11px;color:' + dim + ';text-align:right">' + n + " / " + next.n + "</div>");
+  }
+  // ひとこと
+  html += '<p style="margin:8px 0 18px;text-align:center;font-size:14px;line-height:2;color:' + ink + '">'
+    + (en ? ent("Every person who wants this phone helps us keep building it. Thank you, truly.")
+          : ph(["「欲しいと思ってくださる方がいる」", "という数字は、"]) + "<br>" + ph(["私たちが開発を進めるうえで、", "何よりの力になります。"]) + "<br>" + ph(["心より御礼申し上げます。"])) + "</p>"
+    + '<p style="margin:0 0 22px;text-align:center;font-size:12.5px;line-height:1.9;color:' + dim + '">'
+    + (en ? ent("We'll let you know here each time someone else joins through your link.") : ph(["次にご登録があった際も、", "このメールでご報告いたします。"])) + "</p>"
+    + '<p style="margin:0;text-align:center;font-size:13px;letter-spacing:.06em;color:' + ink + '">' + ent(en ? "Kazuma Sasaki, Founder, Soto Phone" : "Soto Phone 代表　佐々木 一真") + "</p>";
+  const foot = '<div style="margin-top:30px;padding-top:14px;border-top:1px solid ' + line + ';font-size:11px;line-height:1.8;color:#8a857b">'
+    + (en ? ent("You're receiving this because you joined the pre-order list at ") + '<a href="' + SITE_URL + '" style="color:#8a857b">sotophone.jp</a>.'
+          : ph(["このメールは、sotophone.jp で", "先行予約にご登録いただいた方に", "お送りしています。"]))
+    + "<br>" + ent(en ? "Contact: " : "お問い合わせ：") + '<a href="mailto:' + CONTACT + '" style="color:#8a857b">' + CONTACT + "</a></div>";
+  return '<meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">'
+    + '<style>:root{color-scheme:light only;supported-color-schemes:light only}</style>'
+    + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f4f2ec" style="background:#f4f2ec"><tr><td align="center" style="padding:24px 12px">'
+    + '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="max-width:520px;background:#ffffff;border-radius:16px"><tr><td style="padding:28px 22px">'
+    + '<div style="font-family:' + sans + ';font-size:15px;line-height:1.9;letter-spacing:.02em;color:' + ink + ';max-width:480px">' + html + foot + "</div>"
+    + "</td></tr></table></td></tr></table>";
 }
 
 // 文字だけのメールでは、[[REF]] の行を「ご紹介のお願い」の文に置きかえる
@@ -585,7 +643,7 @@ function refCard(code, en) {
   const share = SITE_URL + "share?c=" + code + (en ? "&l=en" : "");
   const msg = en
     ? "I've joined the pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you'd like to spend less time on your phone.\nThe pre-order is free and only takes your email."
-    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約に登録しました。\nスマホを触りすぎてしまうのが気になっている方には、合うかもしれません。\n先行予約は無料で、メールアドレスだけで登録できます。";
+    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約に登録しました。\nスマホをつい触りすぎてしまう人に、よさそうだと思いました。\n先行予約は無料で、メールアドレスだけで登録できます。";
   const line = "https://line.me/R/share?text=" + encodeURIComponent(msg + "\n" + url);
   // 画像が表示されないメールアプリのための代わりの文（画像の中身と同じ）
   const alt = en
@@ -635,7 +693,8 @@ function checkBounces(sheet) {
       }
       // 自分たちが送ったメールそのもの（送信済み）は飛ばす。届かなかったという通知のメールだけを見る
       if (!/mailer-daemon|postmaster|mail delivery/i.test(m.getFrom())) return;
-      list.split(/[,\s]+/).filter(Boolean).forEach((a) => { failed[a.trim().toLowerCase()] = new Date(m.getDate()); });
+      const why = bounceReason(m.getPlainBody());
+      list.split(/[,\s]+/).filter(Boolean).forEach((a) => { failed[a.trim().toLowerCase()] = { at: new Date(m.getDate()), why: why }; });
     });
     th.addLabel(label);
   });
@@ -645,17 +704,32 @@ function checkBounces(sheet) {
   const rows = sheet.getRange(2, 1, last - 1, HEADERS.length).getValues();
   const book = SpreadsheetApp.getActiveSpreadsheet();
   let out = book.getSheetByName(BOUNCE_SHEET);
-  if (!out) { out = book.insertSheet(BOUNCE_SHEET); out.appendRow(["届かなかった日時"].concat(HEADERS)); out.setFrozenRows(1); }
+  if (!out) { out = book.insertSheet(BOUNCE_SHEET); out.appendRow(["届かなかった日時", "届かなかった理由"].concat(HEADERS)); out.setFrozenRows(1); }
   let moved = 0;
   for (let i = rows.length - 1; i >= 0; i--) {
     const email = String(rows[i][1] || "").trim().toLowerCase();
     if (!email || !failed[email]) continue;
-    out.appendRow([failed[email]].concat(rows[i]));
+    out.appendRow([failed[email].at, failed[email].why].concat(rows[i]));
     sheet.deleteRow(i + 2);
     moved++;
   }
   if (moved) CacheService.getScriptCache().remove("verifiedCount");
   return moved;
+}
+
+// 届かなかった理由を、戻ってきたメールの本文（Status: 5.1.1 などの番号と英文）から読み、日本語の一言にする
+function bounceReason(body) {
+  const b = String(body || "");
+  const code = (/Status:\s*([245]\.\d{1,3}\.\d{1,3})/.exec(b) || /\b([45]\.\d\.\d{1,3})\b/.exec(b) || [])[1] || "";
+  const has = (re) => re.test(b);
+  let why;
+  if (code === "5.1.1" || has(/does not exist|address not found|user unknown|no such user|NoSuchUser/i)) why = "アドレスが存在しない（打ち間違いか、架空のアドレス）";
+  else if (code === "5.1.2" || has(/domain.*(not found|couldn't be found|does not exist)|DNS/i)) why = "@ より後ろ（ドメイン）が存在しない";
+  else if (code === "5.2.2" || has(/mailbox (is )?full|over ?quota|storage/i)) why = "相手の受信箱がいっぱい";
+  else if (/^5\.7\./.test(code) || has(/blocked|spam|policy|rejected/i)) why = "相手の側で受け取りを断られた（迷惑メールの判定など）";
+  else if (/^4\./.test(code) || has(/temporar|try again later|deferred/i)) why = "一時的なエラー（あとで届くこともある）";
+  else why = "その他（Gmail に戻ってきたメールを確認）";
+  return why + (code ? "［" + code + "］" : "");
 }
 
 // 10分ごとに、届かなかったアドレスを確かめる。Apps Script の画面でこの関数を選んで、一度だけ「実行」する
@@ -668,6 +742,7 @@ function checkBouncesJob() {
   const lock = LockService.getScriptLock();
   if (!lock.tryLock(10000)) return;
   try { checkBounces(); } finally { lock.releaseLock(); }
+  try { fixEmailChips(); } catch (e) { console.warn("チップの見直しで失敗：" + e); }
 }
 
 // 確認メールに入れる「ご紹介のお願い」。ほかの段落と同じく、1行を短く区切る。
@@ -950,6 +1025,35 @@ function setupLetterTrigger() {
   letterSheet();
 }
 
+// 10分ごと（checkBouncesJob の中）に、メールアドレスの欄を見直し、チップになっていない行をチップにする。
+// 登録のときにチップにできなかった行や、手で入力した行も、あとからそろう。手で1回実行して、動くか確かめることもできる
+function fixEmailChips() {
+  if (typeof Sheets === "undefined") throw new Error("Apps Script の「サービス」に Google Sheets API を追加してください");
+  const sheet = getSheet();
+  const last = sheet.getLastRow();
+  if (last < 2) return 0;
+  const id = sheet.getParent().getId();
+  const range = "'" + SHEET_NAME + "'!B2:B" + last;
+  const res = Sheets.Spreadsheets.get(id, { ranges: [range], fields: "sheets(data(rowData(values(chipRuns,formattedValue))))" });
+  const rows = (((res.sheets || [])[0] || {}).data || [])[0];
+  const data = (rows && rows.rowData) || [];
+  const requests = [];
+  for (let i = 0; i < last - 1; i++) {
+    const v = (data[i] && data[i].values && data[i].values[0]) || {};
+    const email = String(v.formattedValue || "").trim().toLowerCase();
+    if (!email || (v.chipRuns && v.chipRuns.length)) continue;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) continue;
+    requests.push({ updateCells: {
+      range: { sheetId: sheet.getSheetId(), startRowIndex: i + 1, endRowIndex: i + 2, startColumnIndex: 1, endColumnIndex: 2 },
+      rows: [{ values: [{ userEnteredValue: { stringValue: "@" }, chipRuns: [{ chip: { personProperties: { email: email, displayFormat: "EMAIL" } } }] }] }],
+      fields: "userEnteredValue,chipRuns"
+    } });
+  }
+  if (requests.length) Sheets.Spreadsheets.batchUpdate({ requests: requests }, id);
+  console.log("チップにした行：" + requests.length);
+  return requests.length;
+}
+
 // メールアドレスの欄を、ほかの行と同じ「人のチップ」（丸い枠の表示）にする。
 // Apps Script の「サービス」に「Google Sheets API」（名前 Sheets）を追加したときだけ動く。追加していなければ、ふつうの文字のまま
 function emailChip(sheet, rowIndex, email) {
@@ -961,6 +1065,6 @@ function emailChip(sheet, rowIndex, email) {
       fields: "userEnteredValue,chipRuns"
     } }] }, sheet.getParent().getId());
   } catch (e) {
-    console.warn("チップにできませんでした：" + e); // 登録そのものは済んでいるので、ここで止めない
+    console.warn("チップにできませんでした：" + e); // 登録そのものは済んでいるので、ここで止めない（10分後の fixEmailChips で直る）
   }
 }
