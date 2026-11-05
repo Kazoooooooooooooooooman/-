@@ -10,17 +10,6 @@
         "--executable-path",
         "/opt/pw-browsers/chromium"
       ]
-    },
-    "perplexity-docs": {
-      "type": "http",
-      "url": "https://docs.perplexity.ai/mcp"
-    },
-    "firecrawl": {
-      "type": "http",
-      "url": "https://mcp.firecrawl.dev/v2/mcp",
-      "headers": {
-        "Authorization": "Bearer ${FIRECRAWL_API_KEY}"
-      }
     }
   }
 }
