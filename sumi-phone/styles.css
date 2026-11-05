@@ -748,6 +748,10 @@ h2 .nw { white-space: nowrap; }
 .article-sources { margin-top: 56px; }
 .article-sources h2 { font-size: 17px !important; margin-top: 0 !important; }
 .article-sources li { font-size: 13px !important; line-height: 1.8 !important; color: var(--paper-dim); overflow-wrap: anywhere; }
+.pref-src { margin: 40px 0 0; }
+.legal .pref-src a { display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border: 1px solid var(--paper-line); border-radius: 999px; font-size: 14px; line-height: 1.5; color: var(--paper-dim); text-decoration: none; background: #fff; }
+.legal .pref-src a:hover { color: inherit; border-color: var(--paper-dim); }
+.pref-g { font-family: var(--latin); font-weight: 600; font-size: 13px; width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--paper-line); display: inline-flex; align-items: center; justify-content: center; flex: none; }
 .article-cta { margin: 64px 0 0; padding: 32px 28px; border-radius: 18px; background: #f9f8f4; border: 1px solid var(--paper-line); }
 .article-cta-eyebrow { font-family: var(--latin); font-weight: 500; font-size: 11px; letter-spacing: .32em; text-transform: uppercase; color: var(--paper-dim); }
 .article-cta-h { font-family: var(--serif); font-size: clamp(19px, 2vw, 22px); line-height: 1.6; margin: 8px 0 10px; }

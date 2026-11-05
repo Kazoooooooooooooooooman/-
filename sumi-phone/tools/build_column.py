@@ -207,6 +207,7 @@ def build_article(a, by_slug):
       <p class="article-meta">{dates}・書いた人：{AUTHOR}（Soto Phone 代表）</p>
       {place_toc(body, f'<nav class="article-toc" aria-labelledby="toc-h"><p id="toc-h">この記事の内容</p><ol>{toc_html}</ol></nav>')}
       {src_html}
+      <p class="pref-src"><a href="https://www.google.com/preferences/source?q=sotophone.jp" rel="noopener" target="_blank"><span class="pref-g" aria-hidden="true">G</span>Google で「優先するソース」に追加</a></p>
     </article>
     <aside class="article-cta" aria-label="Soto Phone について">
       <p class="article-cta-eyebrow" lang="en">Soto Phone</p>
@@ -232,6 +233,7 @@ def build_index(arts):
     <h1>コラム</h1>
     <p class="column-lead">スマホとの付き合い方、集中のしかた、画面の外で過ごす時間について書いています。</p>
     <ul class="col-list">{items}</ul>
+    <p class="pref-src"><a href="https://www.google.com/preferences/source?q=sotophone.jp" rel="noopener" target="_blank"><span class="pref-g" aria-hidden="true">G</span>Google で「優先するソース」に追加</a></p>
   </div>
 </main>
 ''' + FOOT
