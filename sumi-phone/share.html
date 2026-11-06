@@ -92,7 +92,7 @@
   const text = { value: "" };
   text.value = en
     ? "I've joined the pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you'd like to spend less time on your phone.\nThe pre-order is free and only takes your email."
-    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約に登録しました。\nスマホをつい触りすぎてしまう人に、よさそうだと思いました。\n先行予約は無料で、メールアドレスだけで登録できます。";
+    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行登録をしました。\nスマホをつい触りすぎてしまう人に、よさそうだと思いました。\n先行登録は無料で、メールアドレスだけで登録できます。";
   $("sh-url").innerHTML = (en ? "Your referral link<br>" : "ご紹介用のリンク<br>") + "<span class='u'>" + url + "</span>";
   const msg = (t) => { $("sh-msg").textContent = t; setTimeout(() => { $("sh-msg").textContent = ""; }, 2500); };
   const lineUrl = () => "https://line.me/R/share?text=" + encodeURIComponent(text.value + "\n" + url);

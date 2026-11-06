@@ -1,12 +1,12 @@
 /** @OnlyCurrentDoc */
-// 先行予約の登録を受け取って、このスプレッドシートに1行ずつ書き込み、登録した人に確認メールを送る Google Apps Script。
+// 先行登録の登録を受け取って、このスプレッドシートに1行ずつ書き込み、登録した人に確認メールを送る Google Apps Script。
 // 1行目の @OnlyCurrentDoc で、触れるスプレッドシートをこの1つだけに限っている。
 // メールは、このスクリプトを動かしている Google アカウント（あなたの Gmail）から送られる。
 // 使い方は README.md の「一般公開して登録を集める」と「登録した人に確認メールを送る」を参照。
 // 同じメールアドレスで2回登録された場合は、行を増やさずに最新の内容で上書きし、メールも送り直さない。
 // メールの最後には、配信停止とデータ削除のリンクが入る（このウェブアプリの URL に、本人だけが使える印を付けたもの）。
 
-const SHEET_NAME = "先行予約";
+const SHEET_NAME = "先行予約"; // シートのタブ名（画面の言葉は「先行登録」に変えたが、タブ名は変えていない）
 const HEADERS = ["登録日時", "メールアドレス", "地域", "言語", "先行体験", "確認メール", "同意", "配信停止", "フォーム", "経路", "参照元", "紹介コード", "紹介した人", "番号",
   "端末", "OS", "ブラウザ", "アプリ内", "画面", "表示域", "端末の言語", "時間帯", "表示モード", "登録した時刻", "登録までの秒数", "utm",
   "配信エラー", "紹介の要確認"];
@@ -506,7 +506,7 @@ function refMailJa(n, tiers, next) {
     "いつも Soto Phone を応援いただき、誠にありがとうございます。",
     "",
     "あなたがご紹介くださったリンクから、",
-    "お一人の方が先行予約にご登録くださいました。",
+    "お一人の方が先行登録をしてくださいました。",
     "これまでにご紹介いただいた方は、合わせて " + n + "名 です。",
     "",
     n === 1 ? "御礼として、試作機の先行体験に優先してご招待いたします。" : null,
@@ -526,10 +526,10 @@ function refMailJa(n, tiers, next) {
     "Soto Phone 代表　佐々木 一真",
     "",
     "――",
-    "このメールは、sotophone.jp で先行予約にご登録いただいた方にお送りしています。",
+    "このメールは、sotophone.jp で先行登録をしていただいた方にお送りしています。",
     "お問い合わせ：" + CONTACT,
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
-  return { subject: "Soto Phone | ご紹介いただいた方が、先行予約にご登録くださいました", text: lines.join("\n"), html: refHtml(n, hit, next, false) };
+  return { subject: "Soto Phone | ご紹介いただいた方が、先行登録をしてくださいました", text: lines.join("\n"), html: refHtml(n, hit, next, false) };
 }
 
 function refMailEn(n, tiers, next) {
@@ -537,7 +537,7 @@ function refMailEn(n, tiers, next) {
   const lines = [
     "Thank you for supporting Soto Phone.",
     "",
-    "Someone you referred has just joined the pre-order list.",
+    "Someone you referred has just joined the waitlist.",
     "You have now referred " + n + (n === 1 ? " person." : " people."),
     "",
     n === 1 ? "As a thank-you, we'll invite you first to try a prototype." : null,
@@ -556,7 +556,7 @@ function refMailEn(n, tiers, next) {
     "Kazuma Sasaki, Founder, Soto Phone",
     "",
     "--",
-    "You're receiving this because you joined the pre-order list at " + SITE_URL + ".",
+    "You're receiving this because you joined the waitlist at " + SITE_URL + ".",
     "Contact: " + CONTACT,
   ].filter((l) => l !== null).filter((l, i, a) => !(l === "" && a[i - 1] === ""));
   return { subject: "Soto Phone | Someone you referred has joined", text: lines.join("\n"), html: refHtml(n, hit, next, true) };
@@ -608,8 +608,8 @@ function refHtml(n, hit, next, en) {
     + (en ? ent("We'll let you know here each time someone else joins through your link.") : ph(["次にご登録があった際も、", "このメールでご報告いたします。"])) + "</p>"
     + '<p style="margin:0;text-align:center;font-size:13px;letter-spacing:.06em;color:' + ink + '">' + ent(en ? "Kazuma Sasaki, Founder, Soto Phone" : "Soto Phone 代表　佐々木 一真") + "</p>";
   const foot = '<div style="margin-top:30px;padding-top:14px;border-top:1px solid ' + line + ';font-size:11px;line-height:1.8;color:#8a857b">'
-    + (en ? ent("You're receiving this because you joined the pre-order list at ") + '<a href="' + SITE_URL + '" style="color:#8a857b">sotophone.jp</a>.'
-          : ph(["このメールは、sotophone.jp で", "先行予約にご登録いただいた方に", "お送りしています。"]))
+    + (en ? ent("You're receiving this because you joined the waitlist at ") + '<a href="' + SITE_URL + '" style="color:#8a857b">sotophone.jp</a>.'
+          : ph(["このメールは、sotophone.jp で", "先行登録をしていただいた方に", "お送りしています。"]))
     + "<br>" + ent(en ? "Contact: " : "お問い合わせ：") + '<a href="mailto:' + CONTACT + '" style="color:#8a857b">' + CONTACT + "</a></div>";
   return '<meta name="color-scheme" content="light only"><meta name="supported-color-schemes" content="light only">'
     + '<style>:root{color-scheme:light only;supported-color-schemes:light only}</style>'
@@ -642,8 +642,8 @@ function refCard(code, en) {
   const url = SITE_URL + (en ? "en" : "") + "?r=" + code;
   const share = SITE_URL + "share?c=" + code + (en ? "&l=en" : "");
   const msg = en
-    ? "I've joined the pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you'd like to spend less time on your phone.\nThe pre-order is free and only takes your email."
-    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約に登録しました。\nスマホをつい触りすぎてしまう人に、よさそうだと思いました。\n先行予約は無料で、メールアドレスだけで登録できます。";
+    ? "I've joined the waitlist for Soto Phone, a phone with no social media and no games.\nIt might suit you if you'd like to spend less time on your phone.\nThe waitlist is free and only takes your email."
+    : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行登録をしました。\nスマホをつい触りすぎてしまう人に、よさそうだと思いました。\n先行登録は無料で、メールアドレスだけで登録できます。";
   const line = "https://line.me/R/share?text=" + encodeURIComponent(msg + "\n" + url);
   // 画像が表示されないメールアプリのための代わりの文（画像の中身と同じ）
   const alt = en
@@ -781,10 +781,10 @@ function canSendNow() {
 }
 
 // 押したボタンの約束に合わせた言葉（サイトの script.js の ticketWords と同じ）。
-// 1枚目のパターン：o は最初の版（先行予約に登録）、c は「料金を最初に知る」、d は「発売のお知らせを受け取る」、それ以外は「完成品を最初に見る」
+// 1枚目のパターン：o は最初の版（先行登録をする）、c は「料金を最初に知る」、d は「発売のお知らせを受け取る」、それ以外は「完成品を最初に見る」
 function promiseJa(variant) {
   const h = String(variant || "").split("-")[0];
-  if (h === "o") return { img: "hatsubai", title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約", line: "発売が決まったら、\nいちばん先にお知らせします。" };
+  if (h === "o") return { img: "hatsubai", title: "先行登録券", sub: "発売のお知らせを、いちばん先に。", stub: "先行登録", line: "発売が決まったら、\nいちばん先にお知らせします。" };
   if (h === "d") return { img: "oshirase", title: "招待券", sub: "発売のお知らせを、いちばん先に。", stub: "Soto Phone", line: "発売が決まったら、\nいちばん先にお知らせします。" };
   if (h === "c") return { img: "ryokin", title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone", line: "料金が決まったら、\nいちばん先にお知らせします。" };
   return { img: "kansei", title: "招待券", sub: "完成品を、いちばん先に。", stub: "Soto Phone", line: "完成したら、いちばん先にお見せします。" };
@@ -834,7 +834,7 @@ function mailEn(trial, link, number, code) {
     number ? "[[TICKET]]" : null,
     number ? "" : null,
     "[[C]]Thank you so much for joining",
-    "the Soto Phone pre-order list.",
+    "the Soto Phone waitlist.",
     "",
     "[[C]]Knowing people are rooting for us",
     "means more than we can say.",
@@ -865,7 +865,7 @@ function mailEn(trial, link, number, code) {
 }
 
 // 文字だけの、落ち着いた見た目の HTML メールにする
-// 番号があるときは、本文の上に「先行予約券」のきっぷを置く（サイトの登録済みカードと同じ見た目）。
+// 番号があるときは、本文の上に「先行登録券」のきっぷを置く（サイトの登録済みカードと同じ見た目）。
 // メールの画面では細かい CSS が効かないことが多いので、表（table）で組み、背景の絵は紙の色に混ぜ済みの画像を使う
 function toHtml(lines, number, w, refHtml) {
   const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");

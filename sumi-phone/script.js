@@ -147,7 +147,7 @@
     }
   }
 
-  // 先行予約フォーム
+  // 先行登録フォーム
   // 一般公開のサイトでは、登録を Google スプレッドシート（tools/preorder-apps-script.gs）に送る。
   // FORM_ENDPOINT にそのウェブアプリの URL（https://script.google.com/macros/s/…/exec）を入れる。
   // claude.ai で公開したページでは、登録をページのデータベース（preorders/<登録者ID>）に保存する。
@@ -206,15 +206,15 @@
     const note = document.createElement("p");
     note.className = "ref-note";
     note.textContent = EN
-      ? "You’re here through an invitation from a friend. Pre-ordering is free and only takes your email."
-      : "ご友人からの招待リンクでお越しいただきました。先行予約は無料で、メールアドレスだけでご登録いただけます。";
+      ? "You’re here through an invitation from a friend. Joining the waitlist is free and only takes your email."
+      : "ご友人からの招待リンクでお越しいただきました。先行登録は無料で、メールアドレスだけでご登録いただけます。";
     form.parentNode.insertBefore(note, form);
   })();
-  // きっぷの言葉は、押したボタンの約束に合わせる（「先行予約」と書いてあるのは、最初の版 o だけ）
+  // きっぷの言葉は、押したボタンの約束に合わせる（「先行登録」と書いてあるのは、最初の版 o だけ）
   function ticketWords() {
     const h = (heroVariant() || "a").split("-")[0];
     if (EN) return { title: "Invitation", sub: "See the finished phone first.", stub: "Soto Phone" };
-    if (h === "o") return { title: "先行予約券", sub: "発売のお知らせを、いちばん先に。", stub: "先行予約" };
+    if (h === "o") return { title: "先行登録券", sub: "発売のお知らせを、いちばん先に。", stub: "先行登録" };
     if (h === "t") return { title: "先行体験の招待券", sub: "試作機を、いちばん先に。", stub: "先行体験" };
     if (h === "c") return { title: "招待券", sub: "料金を、いちばん先に。", stub: "Soto Phone" };
     if (h === "d") return { title: "招待券", sub: "発売のお知らせを、いちばん先に。", stub: "Soto Phone" };
@@ -388,7 +388,7 @@
     return store;
   })().catch(() => null);
 
-  // 先行予約が1件できたことを、Google（アナリティクスと広告）に知らせる。
+  // 先行登録が1件できたことを、Google（アナリティクスと広告）に知らせる。
   // 広告は「登録が終わった人だけが開くページ」で数えるので、見えない小さな枠で /thanks を開く（画面は変わらない）。
   // 開き直したときや、すでに登録している人が来たときは送らない（ここは登録ボタンで新しく登録できたときだけ呼ぶ）
   function converted() {
@@ -447,8 +447,8 @@
   function doneCard(data) {
     const url = "https://sotophone.jp/" + (EN ? "en" : "") + "?r=" + myCode();
     const text = EN
-      ? "I've joined the pre-order list for Soto Phone, a phone with no social media and no games.\nIt might suit you if you'd like to spend less time on your phone.\nThe pre-order is free and only takes your email."
-      : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行予約に登録しました。\nスマホをつい触りすぎてしまう人に、よさそうだと思いました。\n先行予約は無料で、メールアドレスだけで登録できます。";
+      ? "I've joined the waitlist for Soto Phone, a phone with no social media and no games.\nIt might suit you if you'd like to spend less time on your phone.\nThe waitlist is free and only takes your email."
+      : "SNSもゲームも入っていない携帯電話「Soto Phone」の先行登録をしました。\nスマホをつい触りすぎてしまう人に、よさそうだと思いました。\n先行登録は無料で、メールアドレスだけで登録できます。";
     const card = document.createElement("div");
     card.className = "done";
     card.setAttribute("role", "status");
@@ -460,7 +460,7 @@
     thanks.className = "done-thanks";
     thanks.innerHTML = EN ? "Thank you for signing up." : "<span class='ph'>ご登録いただき、</span><span class='ph'>ありがとうございます。</span>";
     head.append(thanks);
-    // 登録した順の番号。ある人にだけ、見出しのすぐ下に「先行予約券」のきっぷとして出す
+    // 登録した順の番号。ある人にだけ、見出しのすぐ下に「先行登録券」のきっぷとして出す
     const num = Number(store_.get(NUM_KEY)) || 0;
     const badge = document.createElement("div");
     badge.className = "ticket";
@@ -711,7 +711,7 @@
   }));
 })();
 
-/* 先行予約ボタン：カーソルを追う光と、近づくと少し寄ってくる動き（マウスのときだけ） */
+/* 先行登録ボタン：カーソルを追う光と、近づくと少し寄ってくる動き（マウスのときだけ） */
 (() => {
   const btns = [...document.querySelectorAll(".btn-cta")];
   if (!btns.length || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
@@ -756,7 +756,7 @@
   const bar = document.createElement("div");
   bar.className = "sticky-cta";
   bar.innerHTML = '<a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span></a>';
-  bar.querySelector(".btn-label").textContent = EN ? "See it first (free)" : "完成品を最初に見る（無料）";
+  bar.querySelector(".btn-label").textContent = EN ? "Join the waitlist (free)" : "先行登録（無料）";
   document.body.append(bar);
   // 出すのは、物語を読み終えて製品の節（#phone）に来てから。それまでは物語の邪魔をしない。
   // ほかの登録ボタン（「先行体験に申し込む」など）が見えているあいだも、黒いボタンが2つ並ばないように隠す
