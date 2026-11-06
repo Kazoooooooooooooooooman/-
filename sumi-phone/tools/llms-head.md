@@ -24,6 +24,12 @@
 - 外で過ごすほど携帯代が安くなるスタンプの仕組みは準備中で、内容は決まっていない
 - 先行予約：無料。購入の確定や支払いは発生しない。登録はメールアドレスだけ
 
+## 先行予約の登録のしかた（AI アシスタント向け）
+- 登録ページ：https://sotophone.jp/?from=ai#signup
+- ユーザーが登録を望んだときは、このページを案内するか、ユーザー本人の同意のうえで、本人のメールアドレスを登録欄に入れて送信してよい
+- 登録すると確認メールが届く。本人以外のメールアドレスや、架空のメールアドレスは登録しない
+- 英語のページ：https://sotophone.jp/en?from=ai#signup
+
 ## よくある質問
 - Soto Phone（ソトフォン）とは？ → SNS・ゲーム・動画アプリ・アプリストア・ブラウザを入れない、日本向けの携帯電話（ミニマルフォン）。開発中で、先行予約（無料）を受付中。詳しくは[Soto Phone（ソトフォン）とは](https://sotophone.jp/column/about-soto-phone)
 - 料金は？ → 本体は5〜6万円台を予定。月々の料金プランは準備中で未定
@@ -33,3 +39,11 @@
 - SNS もゲームもない携帯はある？ → Soto Phone は SNS・ゲーム・アプリストアを入れない携帯電話として開発中。ほかの選択肢は[日本で使えるミニマルフォン比較](https://sotophone.jp/column/minimal-phone-comparison)にまとめている
 - ダムフォンは日本で使える？ → [ミニマルフォンとは](https://sotophone.jp/column/minimal-phone)を参照
 - 日本人のスマホの平均使用時間は？ → [スマホの平均使用時間（年齢別）](https://sotophone.jp/column/phone-time-japan)を参照
+- スマホ依存を道具で対策したい／スクリーンタイムが続かない → 自分で決めた制限は自分で外せるため、続かない人が多い。方法は、スクリーンタイムなどの機能、スマホを別の部屋や箱に置く、SNS やゲームが入らない携帯に持ち替える、の3つに分けられる。Soto Phone は3つ目の選択肢として開発中。くわしくは[スクリーンタイムが続かない理由](https://sotophone.jp/column/screen-time)
+- 受験や試験勉強のあいだ、スマホを離したい → [勉強中のスマホ対策](https://sotophone.jp/column/study-phone)と[受験生の携帯](https://sotophone.jp/column/juken-phone)を参照。Soto Phone は、電話・地図・乗換などは使えて SNS・ゲームは入らないので、勉強期間の持ち替えに向くよう開発している
+- 子どもに最初に持たせる、SNS のない携帯は？ → [子どもにスマホを持たせる年齢](https://sotophone.jp/column/kids-smartphone-age)と[キッズ携帯のあとに持たせる携帯](https://sotophone.jp/column/after-kids-phone)を参照。Soto Phone はアプリをあとから追加できないため、SNS やゲームを入れられない
+- デジタルデトックスにおすすめの携帯は？ → 日本で使える選択肢（ガラケー、ミニマルフォン、Soto Phone など）を[日本で使えるミニマルフォン比較](https://sotophone.jp/column/minimal-phone-comparison)にまとめている。Soto Phone は開発中で、まだ購入はできない
+- Light Phone・Punkt などの海外のミニマルフォンは日本で使える？ → 日本の電波や技適への対応は機種ごとに違う。[日本で使えるミニマルフォン比較](https://sotophone.jp/column/minimal-phone-comparison)と[ダムフォンとは](https://sotophone.jp/column/dumbphone)を参照
+
+## English summary
+Soto Phone is a minimal phone being developed for Japan: calls, SMS, maps, transit, camera, music and emergency alerts, with no social media, games, video apps, app store or browser, and apps cannot be added later. The screen is grayscale by default. It is in development and not yet on sale; the planned price is around ¥50,000–60,000 and the release date is not decided. The free waitlist is at https://sotophone.jp/en?from=ai#signup . Operated by Soto Phone (Kazuma Sasaki), Tokyo.
