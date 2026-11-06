@@ -1069,16 +1069,18 @@
 // メールアドレスは # のあとに置くので、サーバーやアクセス解析には送られない。送信と、プライバシーポリシーへの同意は、本人が自分で押す。
 (() => {
   const h = location.hash || "";
-  if (!/^#signup&/.test(h)) return;
-  const p = new URLSearchParams(h.slice("#signup&".length));
+  // #signup&… は登録欄まで移動して埋める。#trial=1 や #email=… は、ページの一番上のまま登録欄だけ埋めておく
+  const toSignup = /^#signup&/.test(h);
+  if (!toSignup && !/^#(trial|email|auto)=/.test(h)) return;
+  const p = new URLSearchParams(toSignup ? h.slice("#signup&".length) : h.slice(1));
   const mail = String(p.get("email") || "").trim().slice(0, 120);
   const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
-  try { history.replaceState(null, "", location.pathname + location.search + "#signup"); } catch (_) { /* 消せなくても登録はできる */ }
+  try { history.replaceState(null, "", location.pathname + location.search + (toSignup ? "#signup" : "")); } catch (_) { /* 消せなくても登録はできる */ }
   const fill = () => {
     if (ok) ["email", "hero-email"].forEach((id) => { const el = document.getElementById(id); if (el && !el.value) el.value = mail; });
     if (p.get("trial") === "1") { const t = document.getElementById("trial-opt"); if (t) t.checked = true; }
     const sec = document.getElementById("signup");
-    if (sec) setTimeout(() => sec.scrollIntoView({ block: "start" }), 300);
+    if (sec && toSignup) setTimeout(() => sec.scrollIntoView({ block: "start" }), 300);
     // もう一つの道：本人が AI に「登録して」と頼んだときは、AI がこのリンク（&auto=1）を開くだけで登録まで済む。
     // 同意は「AI アシスタント経由」として記録し、確認メールで本人が配信を止められる。
     if (ok && p.get("auto") === "1") {
