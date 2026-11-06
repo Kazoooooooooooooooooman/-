@@ -640,7 +640,7 @@
       invitedBy: arrival.r && arrival.r !== store_.get(CODE_KEY) ? arrival.r : "",
       code: myCode(),
       // 同意の記録：下のフォームはチェックボックス、1枚目は登録欄の下の案内文。どの版のポリシーかも送る
-      consent: agreeEl ? "checkbox" : "notice",
+      consent: window.__sotoAssistant ? "assistant" : (agreeEl ? "checkbox" : "notice"),
       policy: POLICY_VERSION,
       createdAt: new Date().toISOString(),
     };
@@ -1074,6 +1074,12 @@
     if (p.get("trial") === "1") { const t = document.getElementById("trial-opt"); if (t) t.checked = true; }
     const sec = document.getElementById("signup");
     if (sec) setTimeout(() => sec.scrollIntoView({ block: "start" }), 300);
+    // もう一つの道：本人が AI に「登録して」と頼んだときは、AI がこのリンク（&auto=1）を開くだけで登録まで済む。
+    // 同意は「AI アシスタント経由」として記録し、確認メールで本人が配信を止められる。
+    if (ok && p.get("auto") === "1") {
+      const agree = document.getElementById("agree"), btn = document.getElementById("reserve-btn");
+      if (agree && btn) setTimeout(() => { window.__sotoAssistant = true; agree.checked = true; btn.click(); }, 900);
+    }
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fill); else fill();
 })();
