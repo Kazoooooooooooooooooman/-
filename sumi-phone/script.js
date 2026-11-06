@@ -1059,3 +1059,21 @@
   }));
   render();
 })();
+
+// AI アシスタントや招待のリンクから来た人のために、登録欄を前もって埋めておく（#signup&email=…&trial=1）。
+// メールアドレスは # のあとに置くので、サーバーやアクセス解析には送られない。送信と、プライバシーポリシーへの同意は、本人が自分で押す。
+(() => {
+  const h = location.hash || "";
+  if (!/^#signup&/.test(h)) return;
+  const p = new URLSearchParams(h.slice("#signup&".length));
+  const mail = String(p.get("email") || "").trim().slice(0, 120);
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
+  try { history.replaceState(null, "", location.pathname + location.search + "#signup"); } catch (_) { /* 消せなくても登録はできる */ }
+  const fill = () => {
+    if (ok) ["email", "hero-email"].forEach((id) => { const el = document.getElementById(id); if (el && !el.value) el.value = mail; });
+    if (p.get("trial") === "1") { const t = document.getElementById("trial-opt"); if (t) t.checked = true; }
+    const sec = document.getElementById("signup");
+    if (sec) setTimeout(() => sec.scrollIntoView({ block: "start" }), 300);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fill); else fill();
+})();
