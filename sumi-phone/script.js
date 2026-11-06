@@ -173,16 +173,21 @@
   const clean = (v, n) => String(v || "").toLowerCase().replace(/[^a-z0-9._-]/g, "").slice(0, n);
   const arrival = (() => {
     const r = clean(params.get("r"), 12);
-    const from = clean(params.get("from") || params.get("utm_source"), 40) || (r ? "friend" : "");
+    let from = clean(params.get("from") || params.get("utm_source"), 40) || (r ? "friend" : "");
     let site = "";
     try {
       const host = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : "";
       if (host && host !== location.hostname) site = host.slice(0, 60);
     } catch (_) { /* 読めない参照元は空のままでよい */ }
+    // どの AI から来たか：リンクの ?ai=chatgpt か、AI のサイトからのリンク（参照元）で見分けて、経路を ai-chatgpt のようにする
+    const AI_SITES = { "chatgpt.com": "chatgpt", "chat.openai.com": "chatgpt", "perplexity.ai": "perplexity", "claude.ai": "claude", "gemini.google.com": "gemini", "bard.google.com": "gemini", "copilot.microsoft.com": "copilot", "grok.com": "grok", "chat.deepseek.com": "deepseek", "you.com": "you", "phind.com": "phind", "kagi.com": "kagi" };
+    const aiName = clean(params.get("ai"), 20) || AI_SITES[site] || "";
+    if (aiName && /^ai(-direct)?$/.test(from)) from = from + "-" + aiName;
+    else if (aiName && !from && AI_SITES[site]) from = "ai-" + aiName;
     let first = null;
     try { first = JSON.parse(store_.get(FROM_KEY) || "null"); } catch (_) { /* 壊れていたら上書きする */ }
     // チームの声かけのリンク（?from=kazuma など）は、前に別の経路で来ていても、こちらを優先して数える
-    const team = /^(kazuma|kanto|step)(\.[0-9]{1,5})?$/.test(from); // kazuma.12 のように、声かけリストの行番号が付くこともある
+    const team = /^(kazuma|kanto|step)(\.[0-9]{1,5})?$/.test(from) || /^ai(-|$)/.test(from); // AI 経由のリンクも、こちらを優先する // kazuma.12 のように、声かけリストの行番号が付くこともある
     if (!first || team || (!first.from && !first.site && !first.r && (from || site || r))) {
       first = { from, site, r: r || (first && first.r) || "" };
       store_.set(FROM_KEY, JSON.stringify(first));
