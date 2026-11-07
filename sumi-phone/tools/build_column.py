@@ -137,8 +137,13 @@ def load(src=SRC, out=OUT):
 # HTML と CSS で組むので、スマホでも文字が本文と同じ大きさで読める。
 # 色は2つだけ：ふつうの棒は墨の灰色、話の中心の棒（highlight）は朱。値は棒の端に書き、表の代わりにもなる。
 # ラベルの改行は "\n" で入れる
-def fmt(v):
-    return (f"{v:,.1f}" if v % 1 else f"{int(v):,}")
+def fmt(v, en=False):
+    # 日本語版は小数1桁。英語版は、万・億を百万・十億に直して桁がずれるので、元の数字の桁まで出す（最大2桁）
+    if not en:
+        return (f"{v:,.1f}" if v % 1 else f"{int(v):,}")
+    if not v % 1:
+        return f"{int(v):,}"
+    return f"{v:,.2f}".rstrip("0").rstrip(".") if round(v, 1) != v else f"{v:,.1f}"
 
 def chart_html(c, en=False):
     rows, unit, hl = c["rows"], c.get("unit", ""), set(c.get("highlight", []))
@@ -149,9 +154,9 @@ def chart_html(c, en=False):
         pct = max(v / vmax * 100, 1)
         cls = " is-hl" if k in hl else ""
         label = '<span class="ch-sep">・</span><br />'.join(esc(x) for x in k.split("\n"))
-        tip = esc(k.replace("\n", " ")) + (": " if en else "：") + fmt(v) + esc(unit)
+        tip = esc(k.replace("\n", " ")) + (": " if en else "：") + fmt(v, en) + esc(unit)
         items.append(f'<li class="ch-row{cls}" title="{tip}"><span class="ch-label">{label}</span>'
-                     f'<span class="ch-track"><span class="ch-bar" style="--v:{pct:.1f}%"></span><span class="ch-value">{fmt(v)}<small>{esc(unit)}</small></span></span></li>')
+                     f'<span class="ch-track"><span class="ch-bar" style="--v:{pct:.1f}%"></span><span class="ch-value">{fmt(v, en)}<small>{esc(unit)}</small></span></span></li>')
     src = f'<span class="ch-src">{"Source: " if en else "出典："}{esc(c["source"])}</span>' if c.get("source") else ""
     kind = "ch-h" if c["type"] == "hbar" else "ch-c"
     # ラベルが長い横棒は、スマホでラベルを棒の上に置く（横に並べると折り返しで崩れるため）
