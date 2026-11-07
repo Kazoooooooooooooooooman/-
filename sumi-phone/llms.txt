@@ -172,3 +172,6 @@ Soto Phone is a minimal phone being developed for Japan: calls, SMS, maps, trans
 - [スクリーンタイムを自分で解除してしまう人へ｜解除しにくくする設定と、続かない理由](https://sotophone.jp/column/screen-time)：スクリーンタイムやアプリタイマーを設定しても、つい自分で解除してしまう。それは仕組み上、当たり前のことです。iPhone と Android で解除しにくくする設定と、研究から分かる「続かない理由」、続けるための工夫をまとめました。
 - [ショート動画がやめられない理由と離れ方｜TikTok・YouTube・Instagram の設定](https://sotophone.jp/column/short-video)：TikTok、YouTube ショート、Instagram リールが止まらないのは、終わりがなく、次が自動で流れ、おすすめが学び続ける作りだからです。やめにくい仕組みと研究で分かっていること、各アプリの設定、設定より効く離れ方をまとめました。
 - [勉強中にスマホを触ってしまうのをやめる方法｜意志に頼らない5つのやり方](https://sotophone.jp/column/study-phone)：勉強中、気づくとスマホを触っている。原因は意志の弱さではなく、スマホが手の届く所にあることです。仙台市や全国学力調査のデータと研究をもとに、意志に頼らずスマホから離れる5つの方法をまとめました。
+
+## Articles in English
+- [France's "digital pause": middle school students hand in their phones on arrival, nationwide from September 2025](https://sotophone.jp/column/en/france-phone-pause): A 2018 French law already bans phone use in primary and middle schools. From September 2025, France plans to extend the "digital pause" (portable en pause) to all middle schools: students hand in their phones on arrival and get them back when they leave. Here is what the trial found and where it struggles.

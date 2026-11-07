@@ -14,6 +14,10 @@ import html, json, pathlib, re
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SRC, OUT = ROOT / "column-src", ROOT / "column"
+# 英語版：column-src-en/<slug>.html（日本語版と同じ slug・同じ書き方で、中身は英語）→ column/en/<slug>.html
+SRC_EN, OUT_EN = ROOT / "column-src-en", ROOT / "column" / "en"
+AUTHOR_EN = "Kazuma Sasaki"
+EN_SLUGS = set()   # 英語版がある記事（日本語版のページに、英語版への案内を付けるため）
 SITE = "https://sotophone.jp"
 AUTHOR = "佐々木 一真"
 CSS_VER = re.search(r'styles\.css\?v=([0-9a-z]+)', (ROOT / "index.html").read_text()).group(1)
@@ -24,7 +28,22 @@ LOGO = re.search(r'<svg class="logo-mark".*?</svg>', TERMS, re.S).group(0)
 
 def esc(s): return html.escape(s, quote=True)
 
-def head(title, desc, url, extra_ld):
+def alt_links(slug):
+    """日本語版と英語版の両方がある記事は、互いを hreflang で結ぶ"""
+    if slug is None:
+        ja, en = f"{SITE}/column/", f"{SITE}/column/en/"
+    elif slug in EN_SLUGS:
+        ja, en = f"{SITE}/column/{slug}", f"{SITE}/column/en/{slug}"
+    else:
+        return ""
+    return (f'<link rel="alternate" hreflang="ja" href="{ja}" />\n<link rel="alternate" hreflang="en" href="{en}" />\n'
+            f'<link rel="alternate" hreflang="x-default" href="{ja}" />\n')
+
+def head(title, desc, url, extra_ld, slug=None, index=False):
+    if url.startswith(f"{SITE}/column/en/"):
+        return head_en(title, desc, url, extra_ld, slug, index)
+    alts = alt_links(None if index else slug)
+    en_href = (f"/column/en/{slug}" if slug in EN_SLUGS else "/column/en/") if not index else "/column/en/"
     return f'''<!doctype html>
 <html lang="ja">
 <head>
@@ -33,7 +52,7 @@ def head(title, desc, url, extra_ld):
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}" />
 <link rel="canonical" href="{url}" />
-<meta property="og:type" content="article" />
+{alts}<meta property="og:type" content="article" />
 <meta property="og:site_name" content="Soto Phone" />
 <meta property="og:url" content="{url}" />
 <meta property="og:title" content="{esc(title)}" />
@@ -64,7 +83,7 @@ def head(title, desc, url, extra_ld):
     </div>
     <div class="nav-util">
       <a href="/contact">お問い合わせ</a>
-      <span class="nav-lang"><a href="/" hreflang="ja" lang="ja" aria-current="true">JA</a><span aria-hidden="true">/</span><a href="/en" hreflang="en" lang="en">EN</a></span>
+      <span class="nav-lang"><a href="/" hreflang="ja" lang="ja" aria-current="true">JA</a><span aria-hidden="true">/</span><a href="{en_href}" hreflang="en" lang="en">EN</a></span>
     </div>
   </nav>
   <a class="nav-cta" href="/?from=column#signup">最初に見る</a>
@@ -92,9 +111,11 @@ def jdate(d):
 def slugify_id(text, i):
     return f"s{i}"
 
-def load():
+def load(src=SRC, out=OUT):
     arts = []
-    for p in sorted(SRC.glob("*.html")):
+    if not src.exists():
+        return arts
+    for p in sorted(src.glob("*.html")):
         raw = p.read_text()
         m = re.match(r'\s*<!--meta\s+(\{.*?\})\s*-->\s*', raw, re.S)
         if not m:
@@ -103,7 +124,7 @@ def load():
         meta["body"] = raw[m.end():]
         # "draft": true の記事は、出典を元の資料で確かめ終わるまで公開しない（ページも一覧もサイトマップも作らない）
         if meta.get("draft"):
-            (OUT / f"{meta['slug']}.html").unlink(missing_ok=True)
+            (out / f"{meta['slug']}.html").unlink(missing_ok=True)
             continue
         arts.append(meta)
     arts.sort(key=lambda a: a["published"], reverse=True)
@@ -119,7 +140,7 @@ def load():
 def fmt(v):
     return (f"{v:,.1f}" if v % 1 else f"{int(v):,}")
 
-def chart_html(c):
+def chart_html(c, en=False):
     rows, unit, hl = c["rows"], c.get("unit", ""), set(c.get("highlight", []))
     vmax = c.get("max") or max(v for _, v in rows) * (1.0 if c["type"] == "hbar" else 1.08)
     title = esc(c["title"])
@@ -128,19 +149,19 @@ def chart_html(c):
         pct = max(v / vmax * 100, 1)
         cls = " is-hl" if k in hl else ""
         label = '<span class="ch-sep">・</span><br />'.join(esc(x) for x in k.split("\n"))
-        tip = esc(k.replace("\n", " ")) + "：" + fmt(v) + esc(unit)
+        tip = esc(k.replace("\n", " ")) + (": " if en else "：") + fmt(v) + esc(unit)
         items.append(f'<li class="ch-row{cls}" title="{tip}"><span class="ch-label">{label}</span>'
                      f'<span class="ch-track"><span class="ch-bar" style="--v:{pct:.1f}%"></span><span class="ch-value">{fmt(v)}<small>{esc(unit)}</small></span></span></li>')
-    src = f'<span class="ch-src">出典：{esc(c["source"])}</span>' if c.get("source") else ""
+    src = f'<span class="ch-src">{"Source: " if en else "出典："}{esc(c["source"])}</span>' if c.get("source") else ""
     kind = "ch-h" if c["type"] == "hbar" else "ch-c"
     # ラベルが長い横棒は、スマホでラベルを棒の上に置く（横に並べると折り返しで崩れるため）
     if c["type"] == "hbar" and max(max(len(x) for x in k.split("\n")) for k, _ in rows) > 5:
         kind += " ch-stack"
     return f'<figure class="chart {kind}"><figcaption class="ch-title">{title}</figcaption><ul class="ch-rows" role="list">{"".join(items)}</ul>{src}</figure>'
 
-def render_charts(body):
+def render_charts(body, en=False):
     def rep(m):
-        return chart_html(json.loads(html.unescape(m.group(1))))
+        return chart_html(json.loads(html.unescape(m.group(1))), en)
     return re.sub(r"<figure class=\"chart\" data-chart='(.*?)'></figure>", rep, body, flags=re.S)
 
 def place_toc(body, toc):
@@ -200,7 +221,7 @@ def build_article(a, by_slug):
     upd = a.get("updated", a["published"])
     dates = f'<time datetime="{a["published"]}">{jdate(a["published"])}</time>' + (f'（更新：<time datetime="{upd}">{jdate(upd)}</time>）' if upd != a["published"] else "")
     cta_from = "col-" + a["slug"]
-    page = head(a["title"], a["description"], url, ld) + f'''<main id="main" class="legal article">
+    page = head(a["title"], a["description"], url, ld, slug=a["slug"]) + f'''<main id="main" class="legal article">
   <div class="wrap">
     <nav class="crumbs" aria-label="現在の場所"><a href="/">Soto Phone</a><span aria-hidden="true">›</span><a href="/column/">コラム</a></nav>
     <article>
@@ -229,7 +250,7 @@ def build_index(arts):
     ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "コラム｜Soto Phone", "url": url, "inLanguage": "ja"}
     items = "" if arts else '<li class="col-item"><p class="col-desc" style="padding:24px 4px">最初の記事を準備しています。</p></li>'
     items += "".join(f'''<li class="col-item"><a href="/column/{a["slug"]}"><p class="col-date"><time datetime="{a["published"]}">{jdate(a["published"])}</time></p><h2>{esc(a.get("h1") or a["title"])}</h2><p class="col-desc">{esc(a["description"])}</p></a></li>''' for a in arts)
-    page = head("スマホとの付き合い方コラム｜デジタルデトックス・スマホ依存・ミニマルフォン｜Soto Phone", "スマホ依存のセルフチェック、スクリーンタイムが続かない理由、デジタルデトックスのやり方、日本で使えるミニマルフォンまで。データと出典つきで解説する、Soto Phone のコラムです。", url, ld) + f'''<main id="main" class="legal column-index">
+    page = head("スマホとの付き合い方コラム｜デジタルデトックス・スマホ依存・ミニマルフォン｜Soto Phone", "スマホ依存のセルフチェック、スクリーンタイムが続かない理由、デジタルデトックスのやり方、日本で使えるミニマルフォンまで。データと出典つきで解説する、Soto Phone のコラムです。", url, ld, index=True) + f'''<main id="main" class="legal column-index">
   <div class="wrap">
     <h1>コラム</h1>
     <p class="column-lead">スマホとの付き合い方、集中のしかた、画面の外で過ごす時間について書いています。</p>
@@ -239,6 +260,161 @@ def build_index(arts):
 </main>
 ''' + FOOT
     (OUT / "index.html").write_text(page)
+
+# ---------- 英語版 ----------
+def edate(d):
+    import datetime
+    return datetime.date.fromisoformat(d).strftime("%B %-d, %Y")
+
+def head_en(title, desc, url, extra_ld, slug=None, index=False):
+    alts = alt_links(None if index else slug)
+    ja_href = "/column/" if index else f"/column/{slug}"
+    return f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>{esc(title)}</title>
+<meta name="description" content="{esc(desc)}" />
+<link rel="canonical" href="{url}" />
+{alts}<meta property="og:type" content="article" />
+<meta property="og:site_name" content="Soto Phone" />
+<meta property="og:url" content="{url}" />
+<meta property="og:title" content="{esc(title)}" />
+<meta property="og:description" content="{esc(desc)}" />
+<meta property="og:image" content="{SITE}/images/og-en.jpg" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="icon" href="/favicon.ico" sizes="48x48" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="icon" href="/favicon-192.png" type="image/png" sizes="192x192" />
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+<link rel="stylesheet" href="/fonts/fonts.css" />
+<link rel="stylesheet" href="/styles.css?v={CSS_VER}" />
+<script type="application/ld+json">{json.dumps(extra_ld, ensure_ascii=False)}</script>
+<script src="/consent.js?v=2" defer></script>
+</head>
+<body class="legal-page column-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav is-scrolled">
+  <a class="logo" href="/en" aria-label="Soto Phone home">
+    {LOGO}<span class="logo-word">SOTO PHONE</span>
+  </a>
+  <nav class="nav-links" id="site-menu" aria-label="Main menu">
+    <div class="nav-main">
+      <a href="/en#phone">Product</a>
+      <a href="/plans-en">Plans</a>
+      <a href="/column/en/" aria-current="page">Column</a>
+    </div>
+    <div class="nav-util">
+      <a href="/contact-en">Contact</a>
+      <span class="nav-lang"><a href="{ja_href}" hreflang="ja" lang="ja">JA</a><span aria-hidden="true">/</span><a href="/en" hreflang="en" lang="en" aria-current="true">EN</a></span>
+    </div>
+  </nav>
+  <a class="nav-cta" href="/en?from=column-en#signup">Join the waitlist</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Menu" data-close="Close menu"><span></span><span></span></button>
+</header>
+'''
+
+FOOT_EN = '''<footer class="footer">
+  <div class="wrap">
+    <p class="footer-links footer-site"><a href="/en#phone">Product</a><a href="/plans-en">Plans</a><a href="/shop-en">Shop</a><a href="/referral-en">Referral</a><a href="/en#letter">About us</a><a href="/column/en/">Column</a><a href="/login-en">Log in</a></p>
+    <p class="footer-links"><a href="/privacy-en">Privacy</a><a href="/terms-en">Terms &amp; refunds</a><a href="/privacy-en#cookies">Cookies</a><a href="/contact-en">Contact</a></p>
+    <p class="pref-src pref-foot"><a href="https://www.google.com/preferences/source?q=sotophone.jp" rel="noopener" target="_blank"><span class="pref-g" aria-hidden="true">G</span>Add Soto Phone as a preferred source on Google</a></p>
+    <p class="small">Operated by Soto Phone (Founder: Kazuma Sasaki) / <a href="/en">sotophone.jp</a></p>
+  </div>
+</footer>
+<script src="/nav.js?v=''' + CSS_VER + '''" defer></script>
+</body>
+</html>
+'''
+
+def build_article_en(a, by_slug):
+    url = f"{SITE}/column/en/{a['slug']}"
+    body = render_charts(a["body"], en=True)
+    toc = []
+    def add_id(m):
+        attrs, text = m.group(1), m.group(2)
+        hid = re.search(r'id="([^"]+)"', attrs)
+        hid = hid.group(1) if hid else f"s{len(toc) + 1}"
+        toc.append((hid, re.sub(r"<[^>]+>", "", text)))
+        attrs = re.sub(r'\s*id="[^"]+"', "", attrs)
+        return f'<h2 id="{hid}"{attrs}>{text}</h2>'
+    body = re.sub(r"<h2([^>]*)>(.*?)</h2>", add_id, body, flags=re.S)
+    # 本文中の日本語版コラムへのリンクは、英語版があれば英語版に向ける
+    body = re.sub(r'href="/column/([a-z0-9-]+)"', lambda m: f'href="/column/en/{m.group(1)}"' if m.group(1) in by_slug else m.group(0), body)
+    toc_html = "".join(f'<li><a href="#{i}">{esc(t)}</a></li>' for i, t in toc)
+    sources = a.get("sources", [])
+    src_html = ""
+    if sources:
+        src_html = '<section class="article-sources" aria-labelledby="src-h"><h2 id="src-h">Sources</h2><ol>' + "".join(
+            f'<li>{esc(n)}<br /><a href="{esc(u)}" rel="noopener" target="_blank">{esc(u)}</a></li>' for n, u in sources) + "</ol></section>"
+    rel = [by_slug[s] for s in a.get("related", []) if s in by_slug]
+    rel_html = ""
+    if rel:
+        rel_html = '<section class="article-related" aria-labelledby="rel-h"><h2 id="rel-h">Related articles</h2><ul>' + "".join(
+            f'<li><a href="/column/en/{r["slug"]}">{esc(r.get("h1") or r["title"])}</a></li>' for r in rel) + "</ul></section>"
+    ld = {"@context": "https://schema.org", "@graph": [
+        {"@type": "Article", "headline": a.get("h1") or a["title"], "description": a["description"],
+         "datePublished": a["published"], "dateModified": a.get("updated", a["published"]),
+         "author": {"@type": "Person", "name": AUTHOR_EN, "jobTitle": "Founder, Soto Phone", "url": SITE + "/en"},
+         "publisher": {"@type": "Organization", "name": "Soto Phone", "url": SITE + "/en", "logo": {"@type": "ImageObject", "url": SITE + "/favicon-512.png"}},
+         "mainEntityOfPage": url, "image": SITE + "/images/og-en.jpg", "inLanguage": "en"},
+        {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Soto Phone", "item": SITE + "/en"},
+            {"@type": "ListItem", "position": 2, "name": "Column", "item": SITE + "/column/en/"},
+            {"@type": "ListItem", "position": 3, "name": a.get("h1") or a["title"], "item": url}]}]}
+    fm = re.search(r'<h2[^>]*>(?:FAQ|Frequently asked questions)</h2>(.*?)(?=<h2|$)', body, flags=re.S | re.I)
+    if fm:
+        qa = []
+        for q, ans in re.findall(r'<h3[^>]*>(.*?)</h3>(.*?)(?=<h3|$)', fm.group(1), flags=re.S):
+            text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", ans)).strip()
+            if text:
+                qa.append({"@type": "Question", "name": re.sub(r"<[^>]+>", "", q).strip(),
+                           "acceptedAnswer": {"@type": "Answer", "text": text}})
+        if qa:
+            ld["@graph"].append({"@type": "FAQPage", "mainEntity": qa})
+    upd = a.get("updated", a["published"])
+    dates = f'<time datetime="{a["published"]}">{edate(a["published"])}</time>' + (f' (updated <time datetime="{upd}">{edate(upd)}</time>)' if upd != a["published"] else "")
+    cta_from = "col-en-" + a["slug"]
+    page = head_en(a["title"], a["description"], url, ld, slug=a["slug"]) + f'''<main id="main" class="legal article">
+  <div class="wrap">
+    <nav class="crumbs" aria-label="You are here"><a href="/en">Soto Phone</a><span aria-hidden="true">›</span><a href="/column/en/">Column</a></nav>
+    <article>
+      <h1>{esc(a.get("h1") or a["title"])}</h1>
+      <p class="article-meta">{dates} · By {AUTHOR_EN} (Founder, Soto Phone)</p>
+      {place_toc(body, f'<nav class="article-toc" aria-labelledby="toc-h"><p id="toc-h">In this article</p><ol>{toc_html}</ol></nav>')}
+      {src_html}
+      <p class="pref-src"><a href="https://www.google.com/preferences/source?q=sotophone.jp" rel="noopener" target="_blank"><span class="pref-g" aria-hidden="true">G</span>Add Soto Phone as a preferred source on Google</a></p>
+    </article>
+    <aside class="article-cta" aria-label="About Soto Phone">
+      <p class="article-cta-eyebrow">Soto Phone</p>
+      <p class="article-cta-h">We are building a phone with no social media and no games.</p>
+      <p>It carries only the tools you use when you are out: calls, maps, transit, and a camera. Notifications stay quiet when you want to focus. People on the waitlist will hear first when it launches.</p>
+      <a class="btn btn-cta" href="/en?from={cta_from}#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Join the waitlist (free)</span></a>
+    </aside>
+    <div class="col-bar" id="col-bar" hidden aria-hidden="true"><a class="col-bar-link" href="/en?from={cta_from}-bar#signup"><span class="col-bar-text">A phone with no social media or games<span class="col-bar-more">, in development</span></span><span class="col-bar-cta">Join the waitlist</span></a><button class="col-bar-x" type="button" aria-label="Close">×</button></div>
+    <script src="/column-bar.js?v=1" defer></script>
+    {rel_html}
+  </div>
+</main>
+''' + FOOT_EN
+    (OUT_EN / f"{a['slug']}.html").write_text(page)
+
+def build_index_en(arts):
+    url = f"{SITE}/column/en/"
+    ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Column | Soto Phone", "url": url, "inLanguage": "en"}
+    items = "".join(f'''<li class="col-item"><a href="/column/en/{a["slug"]}"><p class="col-date"><time datetime="{a["published"]}">{edate(a["published"])}</time></p><h2>{esc(a.get("h1") or a["title"])}</h2><p class="col-desc">{esc(a["description"])}</p></a></li>''' for a in arts)
+    page = head_en("Living with your phone: data and essays on digital detox in Japan | Soto Phone", "How much time people in Japan spend on their phones, how schools around the world handle phones, and practical ways to use your phone less. Data-driven articles with sources, from Soto Phone.", url, ld, index=True) + f'''<main id="main" class="legal column-index">
+  <div class="wrap">
+    <h1>Column</h1>
+    <p class="column-lead">Notes on living with your phone, staying focused, and the time we spend away from screens, mostly with data from Japan.</p>
+    <ul class="col-list">{items}</ul>
+    <p class="pref-src"><a href="https://www.google.com/preferences/source?q=sotophone.jp" rel="noopener" target="_blank"><span class="pref-g" aria-hidden="true">G</span>Add Soto Phone as a preferred source on Google</a></p>
+  </div>
+</main>
+''' + FOOT_EN
+    (OUT_EN / "index.html").write_text(page)
 
 def changed_on(name):
     """ページの中身を最後に変えた日。CSS・JS の版番号（?v=…）だけが変わった日は数えない（毎回すべてのページが「更新」に見えてしまうため）。
@@ -258,7 +434,7 @@ def changed_on(name):
             return day
     return datetime.date.today().isoformat()
 
-def build_sitemap(arts):
+def build_sitemap(arts, arts_en=()):
     pages = [("/", "index.html", True), ("/en", "en.html", True), ("/column/", "column/index.html", False),
              ("/contact", "contact.html", False), ("/contact-en", "contact-en.html", False),
              ("/shop", "shop.html", False), ("/shop-en", "shop-en.html", False), ("/plans", "plans.html", False), ("/plans-en", "plans-en.html", False), ("/referral", "referral.html", False), ("/referral-en", "referral-en.html", False),
@@ -267,23 +443,46 @@ def build_sitemap(arts):
     base = [(p, changed_on(f), a) for p, f, a in pages]
     alt = '\n    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" />'
     rows = [f'  <url><loc>{SITE}{p}</loc><lastmod>{d}</lastmod>{alt if a else ""}</url>' for p, d, a in base]
-    rows += [f'  <url><loc>{SITE}/column/{a["slug"]}</loc><lastmod>{a.get("updated", a["published"])}</lastmod></url>' for a in arts]
+    def pair(slug):
+        if slug not in EN_SLUGS:
+            return ""
+        return (f'\n    <xhtml:link rel="alternate" hreflang="ja" href="{SITE}/column/{slug}" />'
+                f'<xhtml:link rel="alternate" hreflang="en" href="{SITE}/column/en/{slug}" />')
+    rows += [f'  <url><loc>{SITE}/column/{a["slug"]}</loc><lastmod>{a.get("updated", a["published"])}</lastmod>{pair(a["slug"])}</url>' for a in arts]
+    if arts_en:
+        rows.append(f'  <url><loc>{SITE}/column/en/</loc><lastmod>{max(a.get("updated", a["published"]) for a in arts_en)}</lastmod></url>')
+        rows += [f'  <url><loc>{SITE}/column/en/{a["slug"]}</loc><lastmod>{a.get("updated", a["published"])}</lastmod>{pair(a["slug"])}</url>' for a in arts_en]
     (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' + "\n".join(rows) + "\n</urlset>\n")
 
-def build_llms(arts):
+def build_llms(arts, arts_en=()):
     # AI（ChatGPT・Gemini・Perplexity・Claude など）が読む案内。固定の部分は tools/llms-head.md、記事の一覧は自動で足す
     lines = [(ROOT / "tools" / "llms-head.md").read_text().rstrip(), "", "## 記事（データとコラム）"]
     for a in sorted(arts, key=lambda a: a.get("updated", a["published"]), reverse=True):
         lines.append(f'- [{a["title"]}]({SITE}/column/{a["slug"]})：{a["description"]}')
+    if arts_en:
+        lines += ["", "## Articles in English"]
+        for a in sorted(arts_en, key=lambda a: a.get("updated", a["published"]), reverse=True):
+            lines.append(f'- [{a["title"]}]({SITE}/column/en/{a["slug"]}): {a["description"]}')
     (ROOT / "llms.txt").write_text("\n".join(lines) + "\n")
 
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
+    OUT_EN.mkdir(exist_ok=True)
     arts = load()
     by = {a["slug"]: a for a in arts}
+    arts_en = load(SRC_EN, OUT_EN)
+    for a in arts_en:
+        if a["slug"] not in by:
+            raise SystemExit(f"column-src-en/{a['slug']}.html：同じ slug の日本語版がありません")
+    EN_SLUGS.update(a["slug"] for a in arts_en)
+    by_en = {a["slug"]: a for a in arts_en}
     for a in arts:
         build_article(a, by)
+    for a in arts_en:
+        build_article_en(a, by_en)
     build_index(arts)
-    build_sitemap(arts)
-    build_llms(arts)
-    print(f"{len(arts)} 本の記事を作りました")
+    if arts_en:
+        build_index_en(arts_en)
+    build_sitemap(arts, arts_en)
+    build_llms(arts, arts_en)
+    print(f"{len(arts)} 本の記事（英語版 {len(arts_en)} 本）を作りました")
