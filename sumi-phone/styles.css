@@ -402,6 +402,7 @@ h2 .nw { white-space: nowrap; }
 .reserve-form .btn { grid-column: 1 / -1; justify-self: start; border: 0; cursor: pointer; }
 .reserve-form .btn:disabled { opacity: .6; cursor: wait; transform: none; }
 .form-fine { grid-column: 1 / -1; font-size: 12px; color: var(--paper-dim); }
+.form-perk { grid-column: 1 / -1; margin: -2px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--paper-ink); }
 .form-msg { margin-top: 16px; font-size: 14px; min-height: 1.5em; color: var(--paper-dim); }
 
 /* ---------- フッター ---------- */

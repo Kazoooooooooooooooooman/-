@@ -50,12 +50,13 @@
     box.setAttribute("role", "dialog");
     box.setAttribute("aria-label", en ? "Cookies" : "Cookie について");
     box.innerHTML = en
-      ? '<p>May we use cookies to see how people read this site (how far they scroll, what they tap)? We don’t record names or email addresses. <a href="/privacy-en#cookies">Details</a></p><div><button type="button" data-v="granted">Allow</button><button type="button" data-v="denied">No thanks</button></div>'
-      : '<p>サイトを見やすく直すため、Cookie で「どこまで読まれたか・どこが押されたか」を記録してもよいですか？名前やメールアドレスは記録しません。<a href="/privacy#cookies">詳しく</a></p><div><button type="button" data-v="granted">同意する</button><button type="button" data-v="denied">同意しない</button></div>';
+      ? '<p>May we use cookies to see how this site is read? No names or emails. <a href="/privacy-en#cookies">Details</a></p><div><button type="button" data-v="granted">Allow</button><button type="button" data-v="denied">No</button></div>'
+      : '<p>読まれ方の記録に Cookie を使ってもよいですか？名前やメールは記録しません。<a href="/privacy#cookies">詳しく</a></p><div><button type="button" data-v="granted">同意する</button><button type="button" data-v="denied">しない</button></div>';
     var css = document.createElement("style");
-    css.textContent = "#soto-consent{position:fixed;left:16px;right:16px;bottom:16px;z-index:60;max-width:420px;margin:0 auto;padding:14px 16px;border-radius:14px;background:#fff;color:#1f1e1c;box-shadow:0 10px 30px -10px rgba(31,30,28,.35);border:1px solid rgba(31,30,28,.14);font-size:13px;line-height:1.6}"
-      + "#soto-consent p{margin:0 0 10px}#soto-consent a{color:inherit}"
-      + "#soto-consent div{display:flex;gap:8px}#soto-consent button{flex:1;padding:9px 10px;border-radius:999px;border:1px solid #1f1e1c;background:#fff;color:#1f1e1c;font:inherit;font-weight:600;cursor:pointer}"
+    css.textContent = "#soto-consent{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:60;max-width:440px;margin:0 auto;padding:9px 10px 9px 14px;border-radius:14px;background:#fff;color:#1f1e1c;box-shadow:0 10px 30px -10px rgba(31,30,28,.35);border:1px solid rgba(31,30,28,.14);font-size:11.5px;line-height:1.5;display:flex;align-items:center;gap:10px}"
+      + "#soto-consent p{margin:0;flex:1;min-width:0}#soto-consent a{color:inherit}"
+      + "#soto-consent div{display:flex;gap:6px;flex:none}#soto-consent button{padding:7px 11px;border-radius:999px;border:1px solid #1f1e1c;background:#fff;color:#1f1e1c;font:inherit;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}"
+      + "html.has-consent .sticky-cta{bottom:calc(68px + env(safe-area-inset-bottom))}"
       + "#soto-consent button[data-v=granted]{background:#1f1e1c;color:#fff}"
       + "@media (min-width:821px){#soto-consent{left:24px;right:auto;bottom:24px;margin:0}}";
     document.head.appendChild(css);
@@ -66,8 +67,10 @@
       if (v === "granted") grant();
       else gtag("consent", "update", { analytics_storage: "denied" });
       box.remove();
+      document.documentElement.classList.remove("has-consent");
     });
     document.body.appendChild(box);
+    document.documentElement.classList.add("has-consent");
   }
 
   // まだ選んでいない人にだけ、最初の画面を見終わったころ（少しスクロールしたか、8秒たったら）出す

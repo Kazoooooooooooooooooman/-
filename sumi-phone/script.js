@@ -757,6 +757,15 @@
   bar.className = "sticky-cta";
   bar.innerHTML = '<a class="btn btn-cta" href="#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label"></span></a>';
   bar.querySelector(".btn-label").textContent = EN ? "Join the waitlist (free)" : "先行登録（無料）";
+  // 押したら、登録欄まで動くだけでなく、メールアドレスの欄にそのままカーソルを入れる（キーボードがすぐ開く）。
+  // iPhone では、押した瞬間に focus しないとキーボードが開かないので、ここで同期して呼ぶ
+  bar.querySelector("a").addEventListener("click", (e) => {
+    const em = document.getElementById("email");
+    if (!em) return;
+    e.preventDefault();
+    em.focus();
+    em.scrollIntoView({ block: "center", behavior: "smooth" });
+  });
   document.body.append(bar);
   // 出すのは、物語を読み終えて製品の節（#phone）に来てから。それまでは物語の邪魔をしない。
   // ほかの登録ボタン（「先行体験に申し込む」など）が見えているあいだも、黒いボタンが2つ並ばないように隠す
@@ -1085,7 +1094,7 @@
     // 同意は「AI アシスタント経由」として記録し、確認メールで本人が配信を止められる。
     if (ok && p.get("auto") === "1") {
       const agree = document.getElementById("agree"), btn = document.getElementById("reserve-btn");
-      if (agree && btn) setTimeout(() => { window.__sotoAssistant = true; agree.checked = true; btn.click(); }, 900);
+      if (btn) setTimeout(() => { window.__sotoAssistant = true; if (agree) agree.checked = true; btn.click(); }, 900);
     }
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fill); else fill();
