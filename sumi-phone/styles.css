@@ -1231,3 +1231,35 @@ html:not([data-h="o"]) .hd-media { aspect-ratio: auto; width: min(100%, 600px); 
 .hd-h1 { margin: 0; font: inherit; }
 .hero-door .hd-h1 .hd-copy { display: block; }
 .hd-brand { display: block; font-family: var(--latin); font-size: 11px; font-weight: 500; letter-spacing: .32em; text-transform: uppercase; color: var(--paper-dim); margin: 0 0 10px; }
+
+/* ---------- 4. 場面：こんなときに ---------- */
+.scenes { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(18px, 2.4vw, 36px); }
+.scenes li { display: flex; flex-direction: column; gap: 14px; padding-top: 18px; border-top: 1px solid var(--paper-ink); min-width: 0; }
+.scn-n { font-family: var(--latin); font-weight: 500; font-size: 12px; letter-spacing: .2em; color: var(--accent); }
+.scenes h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.5; letter-spacing: .06em; margin: 0 0 6px; }
+.scenes p { font-size: 14px; line-height: 1.8; color: var(--paper-dim); margin: 0; }
+@media (max-width: 900px) {
+  .scenes { grid-template-columns: 1fr; gap: 0; }
+  .scenes li { flex-direction: row; align-items: baseline; gap: 18px; padding: 18px 0; border-top: 1px solid var(--paper-line); }
+  .scenes li:first-child { border-top: 1px solid var(--paper-ink); }
+  .scenes li:last-child { border-bottom: 1px solid var(--paper-line); }
+  .scn-n { flex: none; width: 2.2em; }
+  .scenes h3 { margin-bottom: 2px; }
+}
+
+/* ---------- 読みやすさ：日本語を文節で折り返し、行末に1文字だけ残さない ---------- */
+p, li, summary, figcaption, dd { text-wrap: pretty; line-break: strict; }
+/* 短い言葉は、文節で折り返す（長い段落は、右端がそろわなくなるので使わない） */
+.body, .scenes p, .scenes h3, .flow .step-b, .hd-fine, .form-perk, .faq-item summary { word-break: auto-phrase; }
+
+/* ---------- スマホ：スタンプの流れは、絵を左・言葉を右にして1列で読む（2列だと言葉が細かく折れるため） ---------- */
+@media (max-width: 600px) {
+  .flow { grid-template-columns: 1fr; gap: 0; margin-bottom: 28px; }
+  .flow li { display: grid; grid-template-columns: 64px minmax(0, 1fr); column-gap: 16px; row-gap: 2px; align-items: start; padding: 18px 0; border-top: 1px solid var(--paper-line); }
+  .flow li:first-child { border-top: 0; padding-top: 4px; }
+  .flow figure { grid-column: 1; grid-row: 1 / span 3; margin: 0; padding: 6px; }
+  .flow .step-n, .flow strong, .flow .step-b { grid-column: 2; }
+  .flow strong { font-size: 17px; }
+  /* 道が、最初の問いかけの文字にかからないように、渡りきるだけの余白をとる */
+  #problem .sc-ask { margin-top: 120px; }
+}

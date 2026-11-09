@@ -291,7 +291,7 @@
     if (!v || !FORM_ENDPOINT || !document.getElementById("hero-form") || !navigator.sendBeacon) return;
     const visit = Array.from(crypto.getRandomValues(new Uint8Array(6)), (n) => n.toString(16).padStart(2, "0")).join("");
     const order = ["top", "problem", "phone", "tools", "points", "faq", "signup"];
-    const names = { top: "1枚目", problem: "はじまり", phone: "製品", tools: "機能", points: "スタンプ", faq: "よくある質問", signup: "登録欄" };
+    const names = { top: "1枚目", problem: "はじまり", phone: "製品", scenes: "場面", tools: "機能", points: "スタンプ", faq: "よくある質問", signup: "登録欄" };
     let shown = 0, since = document.visibilityState === "visible" ? Date.now() : 0, maxPct = 0, deepest = "top", touched = false, pressed = false, done = false, sent = 0;
     const onScroll = () => {
       const h = document.documentElement.scrollHeight - innerHeight;
@@ -897,9 +897,10 @@
       if (i) x = x === L ? R : L;                                   // 余白ごとに、反対側へ
       const gap = a - prevY;
       let y1 = prevY, y2 = a - Math.min(40, gap * 0.2);
-      if (y2 - y1 < span) {
+      const sp = i ? span : span * 0.55;                             // 最初は真ん中から端までなので、半分ほどの長さで足りる
+      if (y2 - y1 < sp) {
         const mid = (y1 + y2) / 2;
-        y1 = Math.max(prevStart + 40, mid - span / 2); y2 = Math.max(y1 + span, y2);
+        y1 = Math.max(prevStart + 40, mid - sp / 2); y2 = Math.max(y1 + sp, y2);
         if (i) pts[pts.length - 1][1] = y1; else pts[0][1] = Math.min(pts[0][1], y1);
       }
       const yEnd = Math.max(b + Math.min(40, gap * 0.2), y2 + 80);
