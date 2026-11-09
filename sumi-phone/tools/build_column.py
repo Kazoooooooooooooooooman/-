@@ -94,6 +94,7 @@ def head(title, desc, url, extra_ld, slug=None, index=False):
 FOOT = '''<footer class="footer">
   <div class="wrap">
     <p class="footer-links footer-site"><a href="/#phone">製品</a><a href="/plans">プラン</a><a href="/shop">ショップ</a><a href="/referral">紹介</a><a href="/#signup">私たちについて</a><a href="/column/">コラム</a><a href="/login">ログイン</a></p>
+    <p class="footer-links footer-social"><a href="https://www.instagram.com/sotophone.jp/" rel="me noopener" target="_blank">Instagram</a><a href="https://note.com/sotophone" rel="me noopener" target="_blank">note</a></p>
     <p class="footer-links"><a href="/column/">コラム</a><a href="/privacy">プライバシーポリシー</a><a href="/terms">利用規約・返金</a><a href="/privacy#cookies">Cookie</a><a href="/contact">お問い合わせ</a></p>
     <p class="pref-src pref-foot"><a href="https://www.google.com/preferences/source?q=sotophone.jp" rel="noopener" target="_blank"><span class="pref-g" aria-hidden="true">G</span>Google で「優先するソース」に追加</a></p>
     <p class="small">運営：Soto Phone（代表 佐々木 一真）／ <a href="/">sotophone.jp</a></p>
@@ -324,6 +325,7 @@ def head_en(title, desc, url, extra_ld, slug=None, index=False):
 FOOT_EN = '''<footer class="footer">
   <div class="wrap">
     <p class="footer-links footer-site"><a href="/en#phone">Product</a><a href="/plans-en">Plans</a><a href="/shop-en">Shop</a><a href="/referral-en">Referral</a><a href="/en#letter">About us</a><a href="/column/en/">Column</a><a href="/login-en">Log in</a></p>
+    <p class="footer-links footer-social"><a href="https://www.instagram.com/sotophone.jp/" rel="me noopener" target="_blank">Instagram</a><a href="https://note.com/sotophone" rel="me noopener" target="_blank">note</a></p>
     <p class="footer-links"><a href="/privacy-en">Privacy</a><a href="/terms-en">Terms &amp; refunds</a><a href="/privacy-en#cookies">Cookies</a><a href="/contact-en">Contact</a></p>
     <p class="pref-src pref-foot"><a href="https://www.google.com/preferences/source?q=sotophone.jp" rel="noopener" target="_blank"><span class="pref-g" aria-hidden="true">G</span>Add Soto Phone as a preferred source on Google</a></p>
     <p class="small">Operated by Soto Phone (Founder: Kazuma Sasaki) / <a href="/en">sotophone.jp</a></p>

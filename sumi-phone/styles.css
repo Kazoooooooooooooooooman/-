@@ -1263,3 +1263,4 @@ p, li, summary, figcaption, dd { text-wrap: pretty; line-break: strict; }
   /* 道が、最初の問いかけの文字にかからないように、渡りきるだけの余白をとる */
   #problem .sc-ask { margin-top: 120px; }
 }
+.footer-social { margin-top: 12px; }
