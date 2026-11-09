@@ -1,22 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <url><loc>https://sotophone.jp/</loc><lastmod>2026-11-08</lastmod>
+  <url><loc>https://sotophone.jp/</loc><lastmod>2026-11-09</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" /></url>
-  <url><loc>https://sotophone.jp/en</loc><lastmod>2026-11-08</lastmod>
+  <url><loc>https://sotophone.jp/en</loc><lastmod>2026-11-09</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" /></url>
-  <url><loc>https://sotophone.jp/column/</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/contact</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/contact-en</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/shop</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/shop-en</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/plans</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/plans-en</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/referral</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/referral-en</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/privacy</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/privacy-en</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/terms</loc><lastmod>2026-11-08</lastmod></url>
-  <url><loc>https://sotophone.jp/terms-en</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://sotophone.jp/column/</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/contact</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/contact-en</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/shop</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/shop-en</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/plans</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/plans-en</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/referral</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/referral-en</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/privacy</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/privacy-en</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/terms</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/terms-en</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/column/awe-walk</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/awe-walk" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/awe-walk" /></url>
+  <url><loc>https://sotophone.jp/column/china-minor-mode</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/china-minor-mode" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/china-minor-mode" /></url>
+  <url><loc>https://sotophone.jp/column/cycling-population</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/cycling-population" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/cycling-population" /></url>
+  <url><loc>https://sotophone.jp/column/forest-bathing</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/forest-bathing" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/forest-bathing" /></url>
+  <url><loc>https://sotophone.jp/column/kids-outdoor-play</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/kids-outdoor-play" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/kids-outdoor-play" /></url>
+  <url><loc>https://sotophone.jp/column/mail-volume-decline</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/mail-volume-decline" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/mail-volume-decline" /></url>
+  <url><loc>https://sotophone.jp/column/notifications-per-day</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/notifications-per-day" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/notifications-per-day" /></url>
+  <url><loc>https://sotophone.jp/column/phone-checks-per-day</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/phone-checks-per-day" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/phone-checks-per-day" /></url>
+  <url><loc>https://sotophone.jp/column/social-media-break-study</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/social-media-break-study" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/social-media-break-study" /></url>
+  <url><loc>https://sotophone.jp/column/uk-school-phone-guidance</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/uk-school-phone-guidance" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/uk-school-phone-guidance" /></url>
   <url><loc>https://sotophone.jp/column/attention-span-myth</loc><lastmod>2026-11-08</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/attention-span-myth" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/attention-span-myth" /></url>
   <url><loc>https://sotophone.jp/column/bookstore-decline</loc><lastmod>2026-11-08</lastmod>
@@ -285,7 +305,27 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/short-video" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/short-video" /></url>
   <url><loc>https://sotophone.jp/column/study-phone</loc><lastmod>2026-10-25</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/study-phone" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/study-phone" /></url>
-  <url><loc>https://sotophone.jp/column/en/</loc><lastmod>2026-11-08</lastmod></url>
+  <url><loc>https://sotophone.jp/column/en/</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/column/en/awe-walk</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/awe-walk" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/awe-walk" /></url>
+  <url><loc>https://sotophone.jp/column/en/china-minor-mode</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/china-minor-mode" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/china-minor-mode" /></url>
+  <url><loc>https://sotophone.jp/column/en/cycling-population</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/cycling-population" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/cycling-population" /></url>
+  <url><loc>https://sotophone.jp/column/en/forest-bathing</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/forest-bathing" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/forest-bathing" /></url>
+  <url><loc>https://sotophone.jp/column/en/kids-outdoor-play</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/kids-outdoor-play" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/kids-outdoor-play" /></url>
+  <url><loc>https://sotophone.jp/column/en/mail-volume-decline</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/mail-volume-decline" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/mail-volume-decline" /></url>
+  <url><loc>https://sotophone.jp/column/en/notifications-per-day</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/notifications-per-day" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/notifications-per-day" /></url>
+  <url><loc>https://sotophone.jp/column/en/phone-checks-per-day</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/phone-checks-per-day" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/phone-checks-per-day" /></url>
+  <url><loc>https://sotophone.jp/column/en/social-media-break-study</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/social-media-break-study" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/social-media-break-study" /></url>
+  <url><loc>https://sotophone.jp/column/en/uk-school-phone-guidance</loc><lastmod>2026-11-09</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/uk-school-phone-guidance" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/uk-school-phone-guidance" /></url>
   <url><loc>https://sotophone.jp/column/en/attention-span-myth</loc><lastmod>2026-11-08</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/attention-span-myth" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/attention-span-myth" /></url>
   <url><loc>https://sotophone.jp/column/en/bookstore-decline</loc><lastmod>2026-11-08</lastmod>
