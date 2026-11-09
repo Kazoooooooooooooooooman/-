@@ -206,7 +206,7 @@ def build_article(a, by_slug):
         {"@type": "Article", "headline": a.get("h1") or a["title"], "description": a["description"],
          "datePublished": a["published"], "dateModified": a.get("updated", a["published"]),
          "author": {"@type": "Person", "name": AUTHOR, "jobTitle": "Soto Phone 代表", "url": SITE + "/"},
-         "publisher": {"@type": "Organization", "name": "Soto Phone", "url": SITE + "/", "logo": {"@type": "ImageObject", "url": SITE + "/favicon-512.png"}},
+         "publisher": {"@type": "Organization", "@id": SITE + "/#org", "name": "Soto Phone", "alternateName": ["SotoPhone", "ソトフォン"], "url": SITE + "/", "logo": {"@type": "ImageObject", "url": SITE + "/favicon-512.png"}},
          "mainEntityOfPage": url, "image": SITE + "/images/og-ja.jpg", "inLanguage": "ja"},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Soto Phone", "item": SITE + "/"},
@@ -239,7 +239,7 @@ def build_article(a, by_slug):
     <aside class="article-cta" aria-label="Soto Phone について">
       <p class="article-cta-eyebrow" lang="en">Soto Phone</p>
       <p class="article-cta-h">SNS もゲームもない携帯電話を、作っています。</p>
-      <p>電話・地図・乗換・カメラなど、外で使う道具だけを入れています。集中したいときは通知が止まります。発売が決まったら、先行登録をした方に最初にお知らせします。</p>
+      <p><a href="/">Soto Phone（ソトフォン）</a>は、電話・地図・乗換・カメラなど、外で使う道具だけを入れた携帯電話です。集中したいときは通知が止まります。発売が決まったら、先行登録をした方に最初にお知らせします。</p>
       <a class="btn btn-cta" href="/?from={cta_from}#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">先行登録をする（無料）</span></a>
     </aside>
     <div class="col-bar" id="col-bar" hidden aria-hidden="true"><a class="col-bar-link" href="/?from={cta_from}-bar#signup"><span class="col-bar-text">SNSもゲームもない携帯<span class="col-bar-more">を開発中</span></span><span class="col-bar-cta">先行登録（無料）</span></a><button class="col-bar-x" type="button" aria-label="閉じる">×</button></div>
@@ -363,7 +363,7 @@ def build_article_en(a, by_slug):
         {"@type": "Article", "headline": a.get("h1") or a["title"], "description": a["description"],
          "datePublished": a["published"], "dateModified": a.get("updated", a["published"]),
          "author": {"@type": "Person", "name": AUTHOR_EN, "jobTitle": "Founder, Soto Phone", "url": SITE + "/en"},
-         "publisher": {"@type": "Organization", "name": "Soto Phone", "url": SITE + "/en", "logo": {"@type": "ImageObject", "url": SITE + "/favicon-512.png"}},
+         "publisher": {"@type": "Organization", "@id": SITE + "/#org", "name": "Soto Phone", "alternateName": ["SotoPhone", "ソトフォン"], "url": SITE + "/", "logo": {"@type": "ImageObject", "url": SITE + "/favicon-512.png"}},
          "mainEntityOfPage": url, "image": SITE + "/images/og-en.jpg", "inLanguage": "en"},
         {"@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Soto Phone", "item": SITE + "/en"},
@@ -395,7 +395,7 @@ def build_article_en(a, by_slug):
     <aside class="article-cta" aria-label="About Soto Phone">
       <p class="article-cta-eyebrow">Soto Phone</p>
       <p class="article-cta-h">We are building a phone with no social media and no games.</p>
-      <p>It carries only the tools you use when you are out: calls, maps, transit, and a camera. Notifications stay quiet when you want to focus. People on the waitlist will hear first when it launches.</p>
+      <p><a href="/en">Soto Phone</a> carries only the tools you use when you are out: calls, maps, transit, and a camera. Notifications stay quiet when you want to focus. People on the waitlist will hear first when it launches.</p>
       <a class="btn btn-cta" href="/en?from={cta_from}#signup"><span class="btn-dot" aria-hidden="true"></span><span class="btn-label">Join the waitlist (free)</span></a>
     </aside>
     <div class="col-bar" id="col-bar" hidden aria-hidden="true"><a class="col-bar-link" href="/en?from={cta_from}-bar#signup"><span class="col-bar-text">A phone with no social media or games<span class="col-bar-more">, in development</span></span><span class="col-bar-cta">Join the waitlist</span></a><button class="col-bar-x" type="button" aria-label="Close">×</button></div>
