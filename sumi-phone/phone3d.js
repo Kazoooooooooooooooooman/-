@@ -32,23 +32,23 @@ async function start(host) {
 
   // ---------- 本体 ----------
   // 正方形。幅・高さ 71mm、厚さ 8mm くらいの比率（1 = 71mm）
-  const W = 1, H = 1, D = 0.095, R = 0.135;
+  const W = 1, H = 1, D = 0.1, R = 0.1;
   const phone = new THREE.Group();
   scene.add(phone);
 
   // 外枠：つや消しのグラファイト色の金属
   const frameMat = new THREE.MeshPhysicalMaterial({ color: 0x2a2a2d, metalness: 0.92, roughness: 0.34, clearcoat: 0.2, clearcoatRoughness: 0.5 });
   // 角を丸めた正方形を押し出し、ふちだけ細く面取りする（前後の面が端まで平らになる）
-  const B = 0.016;
-  const outline = squircle(W - 2 * B, H - 2 * B, 7);
-  const bodyGeo = new THREE.ExtrudeGeometry(outline, { depth: D - 2 * B, bevelEnabled: true, bevelThickness: B, bevelSize: B, bevelSegments: 8, curveSegments: 1 });
+  const B = 0.009;
+  const outline = rrect(W - 2 * B, H - 2 * B, R - B);
+  const bodyGeo = new THREE.ExtrudeGeometry(outline, { depth: D - 2 * B, bevelEnabled: true, bevelThickness: B, bevelSize: B, bevelSegments: 4, curveSegments: 1 });
   bodyGeo.translate(0, 0, -(D - 2 * B) / 2);
   const body = new THREE.Mesh(bodyGeo, frameMat);
   phone.add(body);
 
   // 前面：一枚の黒いガラス。画面のまわりのふちは細く、上下左右で同じ幅
   const front = new THREE.Mesh(
-    squirclePlane(W - 2 * B - 0.004, H - 2 * B - 0.004, 7),
+    rrectPlane(W - 2 * B - 0.004, H - 2 * B - 0.004, R - B - 0.002),
     new THREE.MeshPhysicalMaterial({ color: 0x050506, metalness: 0, roughness: 0.08, clearcoat: 1, clearcoatRoughness: 0.04 })
   );
   front.position.z = D / 2 + 0.0008;
@@ -59,12 +59,12 @@ async function start(host) {
   const screenTex = new THREE.CanvasTexture(drawScreen(lang));
   screenTex.colorSpace = THREE.SRGBColorSpace;
   screenTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  const screen = new THREE.Mesh(squirclePlane(SCR, SCR, 9), new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false }));
+  const screen = new THREE.Mesh(rrectPlane(SCR, SCR, 0.05), new THREE.MeshBasicMaterial({ map: screenTex, toneMapped: false }));
   screen.position.z = D / 2 + 0.0016;
   phone.add(screen);
   // 画面の上のガラスの映り込み
   const glare = new THREE.Mesh(
-    squirclePlane(W - 2 * B - 0.004, H - 2 * B - 0.004, 7),
+    rrectPlane(W - 2 * B - 0.004, H - 2 * B - 0.004, R - B - 0.002),
     new THREE.MeshPhysicalMaterial({ color: 0x000000, transparent: true, opacity: 0.12, roughness: 0.02, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.02, envMapIntensity: 1.6 })
   );
   glare.position.z = D / 2 + 0.0024;
@@ -82,7 +82,7 @@ async function start(host) {
   const backTex = new THREE.CanvasTexture(drawBack());
   backTex.colorSpace = THREE.SRGBColorSpace;
   const back = new THREE.Mesh(
-    squirclePlane(W - 2 * B - 0.004, H - 2 * B - 0.004, 7),
+    rrectPlane(W - 2 * B - 0.004, H - 2 * B - 0.004, R - B - 0.002),
     new THREE.MeshPhysicalMaterial({ map: backTex, color: 0xffffff, metalness: 0.1, roughness: 0.62, clearcoat: 0.3, clearcoatRoughness: 0.6 })
   );
   back.position.z = -D / 2 - 0.0008;
@@ -292,19 +292,17 @@ function roundRect(g, x, y, w, h, r) {
   g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
 }
 
-// 角が自然に続く正方形（スーパー楕円）。n が大きいほど四角に近い
-function squircle(w, h, n, seg = 240) {
-  const sh = new THREE.Shape();
-  for (let i = 0; i <= seg; i++) {
-    const t = (i / seg) * Math.PI * 2, c = Math.cos(t), s = Math.sin(t);
-    const x = (w / 2) * Math.sign(c) * Math.pow(Math.abs(c), 2 / n);
-    const y = (h / 2) * Math.sign(s) * Math.pow(Math.abs(s), 2 / n);
-    if (i === 0) sh.moveTo(x, y); else sh.lineTo(x, y);
-  }
+// 角だけを丸めた四角（辺はまっすぐ）。持ったときに手のひらへ平らに当たる
+function rrect(w, h, r, seg = 12) {
+  const sh = new THREE.Shape(), x = w / 2, y = h / 2;
+  const corner = (cx, cy, a0) => { for (let i = 0; i <= seg; i++) { const a = a0 + (i / seg) * Math.PI / 2; sh.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a)); } };
+  sh.moveTo(x, -y + r);
+  corner(x - r, y - r, 0); corner(-x + r, y - r, Math.PI / 2); corner(-x + r, -y + r, Math.PI); corner(x - r, -y + r, Math.PI * 1.5);
+  sh.closePath();
   return sh;
 }
-function squirclePlane(w, h, n) {
-  const geo = new THREE.ShapeGeometry(squircle(w, h, n));
+function rrectPlane(w, h, r) {
+  const geo = new THREE.ShapeGeometry(rrect(w, h, r));
   const pos = geo.attributes.position, uv = geo.attributes.uv;
   for (let k = 0; k < pos.count; k++) uv.setXY(k, (pos.getX(k) + w / 2) / w, (pos.getY(k) + h / 2) / h);
   return geo;
