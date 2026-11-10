@@ -1396,3 +1396,5 @@ html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
 #signup details.faq-reads > summary.faq-reads-h { margin-bottom: 0; font-size: 12px; letter-spacing: .08em; }
 #signup details.faq-reads[open] > summary.faq-reads-h { margin-bottom: 12px; }
 .ink-text .nb { display: inline-block; }
+/* 墨の場面：スマホでも、どの文も必ず2行に収まるよう少しだけ小さく */
+@media (max-width: 480px) { .ink-text { font-size: min(19px, 4.6vw); letter-spacing: .02em; } }
