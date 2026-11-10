@@ -1395,3 +1395,4 @@ html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
 #signup .faq-reads { max-width: 620px; margin-top: 14px; padding-top: 12px; }
 #signup details.faq-reads > summary.faq-reads-h { margin-bottom: 0; font-size: 12px; letter-spacing: .08em; }
 #signup details.faq-reads[open] > summary.faq-reads-h { margin-bottom: 12px; }
+.ink-text .nb { display: inline-block; }
