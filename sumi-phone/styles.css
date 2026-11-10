@@ -1398,5 +1398,13 @@ html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
 .ink-text .nb { display: inline-block; }
 /* 墨の場面：スマホでも、どの文も必ず2行に収まるよう少しだけ小さく */
 @media (max-width: 480px) { .ink-text { font-size: min(19px, 4.6vw); letter-spacing: .02em; } }
-/* 3D が出るまで写真は見せない（一瞬写真が出てから切り替わるのを防ぐ） */
-html.p3d-wait .hd-media[data-phone3d]:not(.is-3d) .hd-pic { visibility: hidden; }
+
+/* 3D の静止画：最初から同じ位置・同じ角度で見せ、3D が動き出したら入れ替える。3D が使えないときは静止画のまま */
+.p3d-poster { position: absolute; inset: -6% -10% 0; width: 120%; height: 106%; max-width: none; pointer-events: none; }
+.hd-media[data-phone3d] .hd-pic { display: none; }
+.hd-media[data-phone3d]::before { content: ""; display: block; aspect-ratio: 4 / 5; }
+.hd-media[data-phone3d].is-3d .p3d-poster { display: none; }
+.hd-media[data-phone3d] .p3d-canvas { transition: none; }
+@media (max-width: 820px) {
+  html:not([data-h="o"]) .hd-media[data-phone3d] { width: min(78vw, 34svh); margin-top: 64px; }
+}

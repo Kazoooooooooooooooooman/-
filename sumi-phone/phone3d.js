@@ -7,9 +7,7 @@ import { RoundedBoxGeometry } from "/vendor/three/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "/vendor/three/RoomEnvironment.js";
 
 const host = document.querySelector("[data-phone3d]");
-// 3D が使えなかったときだけ、写真を出す
-const showPhoto = () => document.documentElement.classList.remove("p3d-wait");
-if (host) start(host).then((ok) => { if (ok === false) showPhoto(); }).catch(showPhoto); else showPhoto();
+if (host) start(host).catch(() => { /* 静止画のまま見せる */ });
 
 async function start(host) {
   const lang = host.dataset.lang === "en" ? "en" : "ja";

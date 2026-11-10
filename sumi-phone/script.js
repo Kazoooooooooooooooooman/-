@@ -938,7 +938,7 @@
     const wob = wide ? 14 : 3;                          // 縦に走るところの、ゆるい揺れ
     const v = video ? video.getBoundingClientRect() : null;
     const startX = v ? v.left + v.width * 0.62 : W * 0.7;
-    const startY = v ? v.bottom + scrollY - mainTop - v.height * 0.06 : hero.b - 120; // 動画の下のぼかしの中から出てくる
+    const startY = v ? v.bottom + scrollY - mainTop + 24 : hero.b - 120; // 携帯の下の「開発中のデザイン案」より下から出てくる（文字に重ねない）
     // 広い画面：動画の下からまず左の余白へ回り、そのあと右、と交互に走って、節のあいだで渡る。狭い画面：文字に重ならないよう、左のふちだけを下りる
     // 広い画面：動画の下から、「昨日、スマホを何時間見ていましたか。」の見出しの上を斜めに横切って左の余白へ回り、
     // そのあと右、と交互に走って、節のあいだで渡る。狭い画面：文字に重ならないよう、左のふちだけを下りる
