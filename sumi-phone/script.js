@@ -291,7 +291,7 @@
     if (!v || !FORM_ENDPOINT || !document.getElementById("hero-form") || !navigator.sendBeacon) return;
     const visit = Array.from(crypto.getRandomValues(new Uint8Array(6)), (n) => n.toString(16).padStart(2, "0")).join("");
     const order = ["top", "problem", "phone", "tools", "points", "faq", "signup"];
-    const names = { top: "1枚目", problem: "はじまり", phone: "製品", scenes: "場面", tools: "機能", points: "スタンプ", faq: "よくある質問", signup: "登録欄" };
+    const names = { top: "1枚目", problem: "はじまり", phone: "製品", tools: "機能", soto: "Soto Map と Soto Pass", scenes: "場面", points: "スタンプ", faq: "よくある質問", signup: "登録欄" };
     let shown = 0, since = document.visibilityState === "visible" ? Date.now() : 0, maxPct = 0, deepest = "top", touched = false, pressed = false, done = false, sent = 0;
     const onScroll = () => {
       const h = document.documentElement.scrollHeight - innerHeight;
@@ -1100,3 +1100,29 @@
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", fill); else fill();
 })();
+
+// Soto Map / Soto Pass のタブ
+(() => {
+  const tabs = [...document.querySelectorAll('.soto-tabs [role="tab"]')];
+  if (!tabs.length) return;
+  const pick = (t, focus) => {
+    tabs.forEach((b) => {
+      const on = b === t, pane = document.getElementById(b.getAttribute("aria-controls"));
+      b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1;
+      if (pane) { pane.hidden = !on; if (on) { pane.classList.remove("is-swap"); void pane.offsetWidth; pane.classList.add("is-swap"); } }
+    });
+    if (focus) t.focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => pick(t));
+    t.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); pick(tabs[(i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length], true); }
+    });
+  });
+})();
+// スワイプの絵：絵が出てから指を動かす
+document.querySelectorAll(".swipe-art").forEach((f) => {
+  const img = f.querySelector("img");
+  const ok = () => f.classList.add("is-ready");
+  if (!img || (img.complete && img.naturalWidth)) ok(); else img.addEventListener("load", ok, { once: true });
+});
