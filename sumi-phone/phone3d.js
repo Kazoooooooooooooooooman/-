@@ -7,7 +7,9 @@ import { RoundedBoxGeometry } from "/vendor/three/RoundedBoxGeometry.js";
 import { RoomEnvironment } from "/vendor/three/RoomEnvironment.js";
 
 const host = document.querySelector("[data-phone3d]");
-if (host) start(host).catch(() => { /* 写真のまま見せる */ });
+// 3D が使えなかったときだけ、写真を出す
+const showPhoto = () => document.documentElement.classList.remove("p3d-wait");
+if (host) start(host).then((ok) => { if (ok === false) showPhoto(); }).catch(showPhoto); else showPhoto();
 
 async function start(host) {
   const lang = host.dataset.lang === "en" ? "en" : "ja";
@@ -17,7 +19,7 @@ async function start(host) {
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" });
-  } catch (_) { return; }
+  } catch (_) { return false; }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
