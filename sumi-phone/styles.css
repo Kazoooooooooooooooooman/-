@@ -1307,3 +1307,13 @@ html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
   .hd-img.hd-photo { border-radius: 14px; }
 }
 .inline-more { margin-left: .5em; font-size: .92em; color: var(--paper-dim); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
+
+/* ---------- 1枚目：3Dの携帯（指やマウスで回せる）。読み込むまでは写真を見せる ---------- */
+.hd-media[data-phone3d] { position: relative; }
+.p3d-canvas { position: absolute; inset: -6% -10% 0; width: 120%; height: 106%; opacity: 0; transition: opacity .7s ease; cursor: grab; }
+.hd-media.is-grab .p3d-canvas { cursor: grabbing; }
+.hd-media.is-3d .p3d-canvas { opacity: 1; }
+.hd-media.is-3d .hd-pic { visibility: hidden; }
+@media (max-width: 820px) {
+  html:not([data-h="o"]) .hd-media[data-phone3d].is-3d { width: min(78vw, 34svh); margin-top: 64px; }
+}
