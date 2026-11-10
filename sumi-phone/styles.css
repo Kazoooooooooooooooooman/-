@@ -1264,3 +1264,37 @@ p, li, summary, figcaption, dd { text-wrap: pretty; line-break: strict; }
   #problem .sc-ask { margin-top: 120px; }
 }
 .footer-social { margin-top: 12px; }
+
+/* ---------- 縦の長さを減らす：補足は、開いたときだけ見せる ---------- */
+details.why > summary, .form-more > summary, details.faq-reads > summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+details.why > summary::-webkit-details-marker, .form-more > summary::-webkit-details-marker, details.faq-reads > summary::-webkit-details-marker { display: none; }
+details.why > summary::after, .form-more > summary::after, details.faq-reads > summary::after { content: ""; flex: none; width: 7px; height: 7px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .2s; opacity: .7; }
+details.why[open] > summary::after, .form-more[open] > summary::after, details.faq-reads[open] > summary::after { transform: translateY(2px) rotate(-135deg); }
+details.why > summary { margin-bottom: 0; }
+details.why[open] > summary { margin-bottom: 8px; }
+.form-more { grid-column: 1 / -1; font-size: 12px; color: var(--paper-dim); border-top: 1px solid var(--paper-line); padding-top: 12px; }
+.form-more > summary { letter-spacing: .08em; }
+.form-more p { margin-top: 10px; line-height: 1.9; }
+details.faq-reads > summary { margin-bottom: 0; }
+details.faq-reads[open] > summary { margin-bottom: 12px; }
+
+@media (max-width: 600px) {
+  /* 景色のあいだの余白を、言葉が読めるぶんだけにする */
+  .day-panel { min-height: 0; padding: 150px 20px 56px; }
+  /* スタンプの4つの手順は、横に送って読む（縦に並べると4画面ぶんになるため） */
+  .flow { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; margin: 8px calc(-1 * var(--flow-bleed, 36px)) 24px; padding: 0 var(--flow-bleed, 36px) 6px; scrollbar-width: none; }
+  .flow::-webkit-scrollbar { display: none; }
+  .flow li, .flow li:first-child { flex: 0 0 72%; display: flex; flex-direction: column; gap: 6px; scroll-snap-align: start; padding: 16px; border: 0; border-top: 0; background: rgba(255, 255, 255, .55); border-radius: 10px; }
+  .flow figure { background: none; padding: 0; margin: 0 0 4px; width: 96px; }
+  .flow .step-n, .flow strong, .flow .step-b { grid-column: auto; }
+  /* 地域は任意なので、スマホでは出さない（入力を1つ減らす） */
+  #reserve-form .field:has(#pref) { display: none; }
+  .scenes li { padding: 14px 0; }
+}
+@media (max-width: 600px) {
+  /* はじまりの物語：1画面ぶんの高さを固定せず、言葉と絵の大きさに合わせる */
+  .scale { min-height: 0; padding-block: 90px 36px; }
+  #signup .faq-reads { order: 4; }
+  .year-bridge { min-height: 24svh; }
+  .ink-stage { height: auto; min-height: 62svh; padding-block: 72px; }
+}
