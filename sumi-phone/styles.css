@@ -1298,3 +1298,12 @@ details.faq-reads[open] > summary { margin-bottom: 12px; }
   .year-bridge { min-height: 24svh; }
   .ink-stage { height: auto; min-height: 62svh; padding-block: 72px; }
 }
+
+/* ---------- 1枚目：手に持った写真（切り抜きではなく、景色ごと見せる） ---------- */
+.hd-img.hd-photo { mix-blend-mode: normal; border-radius: 18px; box-shadow: 0 24px 48px -24px rgba(31, 30, 28, .45); aspect-ratio: 4 / 5; object-fit: cover; }
+html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
+@media (max-width: 820px) {
+  html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(64vw, 30svh); margin-top: 72px; }
+  .hd-img.hd-photo { border-radius: 14px; }
+}
+.inline-more { margin-left: .5em; font-size: .92em; color: var(--paper-dim); text-decoration: underline; text-underline-offset: 3px; white-space: nowrap; }
