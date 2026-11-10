@@ -1390,3 +1390,8 @@ html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
 .sm-frame { fill: none; stroke: rgba(31, 30, 28, .12); }
 /* 絵が読み込まれるまで、指だけが浮いて見えないようにする */
 .swipe-art:not(.is-ready) .swipe-thumb { visibility: hidden; }
+/* 登録欄の下：「登録について」と「あわせて読みたい」を同じ幅・同じ間隔でそろえる */
+.form-msg:empty { margin: 0; min-height: 0; }
+#signup .faq-reads { max-width: 620px; margin-top: 14px; padding-top: 12px; }
+#signup details.faq-reads > summary.faq-reads-h { margin-bottom: 0; font-size: 12px; letter-spacing: .08em; }
+#signup details.faq-reads[open] > summary.faq-reads-h { margin-bottom: 12px; }
