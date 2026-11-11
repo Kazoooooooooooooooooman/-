@@ -1427,3 +1427,17 @@ html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
   html:not([data-h="o"]) .hd-media[data-phone3d] { width: min(86vw, 38svh); }
 }
 .p3d-debug { position: relative; z-index: 3; margin: 10px 0 0; padding: 10px; max-height: 220px; overflow: auto; font: 11px/1.5 ui-monospace, monospace; white-space: pre-wrap; word-break: break-all; text-align: left; background: #fff; border: 1px solid var(--paper-line); border-radius: 8px; color: #333; }
+
+/* 1枚目をすっきり：携帯の下は「開発中のデザイン案」と、小さな切り替えだけ */
+.hd-copy .nb { display: inline-block; }
+.p3d-pages { gap: 2px; margin-top: 8px; }
+.hd-media > .p3d-pages { padding: 3px; width: max-content; border: 1px solid var(--paper-line); border-radius: 999px; background: rgba(255, 255, 255, .5); }
+.hd-media > .p3d-pages button { border: 0; background: transparent; font-size: 11px; padding: 7px 12px; }
+.hd-media > .p3d-pages button[aria-pressed="true"] { background: var(--paper-ink); color: #fff; }
+.p3d-pages .p3d-zoom { margin-left: 0; width: 30px; height: 30px; padding: 0; display: grid; place-items: center; border-radius: 50%; text-decoration: none; }
+.p3d-zoom svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
+@media (max-width: 820px) {
+  .hd-brand { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .hd-more { display: none; }
+  .hd-media > .p3d-pages { margin-top: 6px; }
+}
