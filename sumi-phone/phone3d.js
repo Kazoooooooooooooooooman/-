@@ -93,12 +93,61 @@ async function start(host) {
   phone.add(model);
   scene.add(phone);
   // ロック画面 → ホーム画面を、数秒ごとに切り替える
-  let page = 0;
-  const flip = () => {
-    page = 1 - page;
-    const t = page ? homeTex : lockTex;
+  const en = host.dataset.lang === "en";
+  const PAGES = [{ tex: lockTex, src: "/images/phone/screen-lock.webp", name: en ? "Lock screen" : "ロック画面" },
+                 { tex: homeTex, src: "/images/phone/screen-home.webp", name: en ? "Home" : "ホーム" }];
+  let page = 0, picked = false;
+  const setPage = (i) => {
+    page = i;
+    const t = PAGES[i].tex;
     screenMat.map = t; screenMat.emissiveMap = t; screenMat.needsUpdate = true;
+    tabs.forEach((b, j) => b.setAttribute("aria-pressed", String(j === i)));
+    wake();
   };
+  const flip = () => { if (!picked) setPage(1 - page); };
+  // 画面の切り替えボタン（ロック画面／ホーム）
+  const bar = document.createElement("div");
+  bar.className = "p3d-pages";
+  bar.setAttribute("role", "group");
+  bar.setAttribute("aria-label", en ? "Screen" : "画面");
+  const tabs = PAGES.map((pg, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = pg.name; b.setAttribute("aria-pressed", String(i === 0));
+    b.addEventListener("click", () => { picked = true; setPage(i); });
+    bar.appendChild(b);
+    return b;
+  });
+  const zoom = document.createElement("button");
+  zoom.type = "button"; zoom.className = "p3d-zoom"; zoom.textContent = en ? "View screen" : "画面を大きく見る";
+  zoom.addEventListener("click", () => openViewer());
+  bar.appendChild(zoom);
+  // 画面を大きく見る（アプリの見た目まで確かめられるように）
+  function openViewer() {
+    const ov = document.createElement("div");
+    ov.className = "p3d-viewer";
+    ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true");
+    ov.setAttribute("aria-label", en ? "Soto Phone screen" : "Soto Phone の画面");
+    const img = document.createElement("img");
+    img.alt = PAGES[page].name; img.src = PAGES[page].src; img.width = 1024; img.height = 1024;
+    const vbar = document.createElement("div"); vbar.className = "p3d-pages";
+    const vtabs = PAGES.map((pg, i) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = pg.name; b.setAttribute("aria-pressed", String(i === page));
+      b.addEventListener("click", (e) => { e.stopPropagation(); picked = true; setPage(i); img.src = pg.src; img.alt = pg.name; vtabs.forEach((x, j) => x.setAttribute("aria-pressed", String(j === i))); });
+      vbar.appendChild(b); return b;
+    });
+    const close = document.createElement("button");
+    close.type = "button"; close.className = "p3d-close"; close.setAttribute("aria-label", en ? "Close" : "閉じる"); close.textContent = "×";
+    const box = document.createElement("div"); box.className = "p3d-viewer-box";
+    box.append(img, vbar);
+    ov.append(close, box);
+    const shut = () => { ov.remove(); document.removeEventListener("keydown", onKey); zoom.focus(); };
+    const onKey = (e) => { if (e.key === "Escape") shut(); };
+    ov.addEventListener("click", (e) => { if (e.target === ov || e.target === close) shut(); });
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(ov);
+    close.focus();
+  }
 
   // 光：右上からのやわらかい光と、ふちを光らせる逆光
   scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3632, 0.5));
@@ -132,18 +181,29 @@ async function start(host) {
   let rotY = -0.45, rotX = 0.02, velY = 0, dragging = false, lastX = 0, lastY = 0, idleAt = 0;
   const startY = performance.now();
   canvas.style.touchAction = "pan-y";
-  canvas.addEventListener("pointerdown", (e) => { dragging = true; lastX = e.clientX; lastY = e.clientY; velY = 0; canvas.setPointerCapture(e.pointerId); host.classList.add("is-grab"); });
+  let downX = 0, downY = 0, downT = 0;
+  canvas.addEventListener("pointerdown", (e) => { dragging = true; lastX = downX = e.clientX; lastY = downY = e.clientY; downT = performance.now(); velY = 0; canvas.setPointerCapture(e.pointerId); host.classList.add("is-grab"); });
   canvas.addEventListener("pointermove", (e) => {
     if (!dragging) return;
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY;
-    velY = dx * 0.012;
+    velY = dx * (e.pointerType === "touch" ? 0.018 : 0.012);
     rotY += velY;
     if (e.pointerType === "mouse") rotX = Math.max(-0.5, Math.min(0.5, rotX + dy * 0.006));
     wake();
   });
   const end = () => { dragging = false; idleAt = performance.now(); host.classList.remove("is-grab"); host.classList.add("is-used"); };
-  canvas.addEventListener("pointerup", end);
+  // 動かさずに携帯の画面をタップしたら、画面を大きく見せる
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+  canvas.addEventListener("pointerup", (e) => {
+    const tap = Math.hypot(e.clientX - downX, e.clientY - downY) < 8 && performance.now() - downT < 450;
+    end();
+    if (!tap) return;
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    if (ray.intersectObject(scr, false).length) openViewer();
+  });
   canvas.addEventListener("pointercancel", end);
 
   // 画面の外にあるとき、タブを見ていないときは止める
@@ -172,6 +232,7 @@ async function start(host) {
     requestAnimationFrame(loop);
   }
   host.classList.add("is-3d");
+  host.appendChild(bar);
   if (!reduce) setInterval(flip, 5000); // 3D が出てから数えはじめる（最初はかならずロック画面）。動きを減らす設定では切り替えない
   // 「回せます」と一度だけ伝え、触ったら消す
   const note = host.querySelector(".hd-note");
