@@ -92,11 +92,11 @@ async function start(host) {
   const phone = new THREE.Group();
   phone.add(model);
   scene.add(phone);
-  // ロック画面 → ホーム画面を、数秒ごとに切り替える
+  // 画面はボタンで切り替える（ロック画面／ホーム）
   const en = host.dataset.lang === "en";
   const PAGES = [{ tex: lockTex, src: "/images/phone/screen-lock.webp", name: en ? "Lock screen" : "ロック画面" },
                  { tex: homeTex, src: "/images/phone/screen-home.webp", name: en ? "Home" : "ホーム" }];
-  let page = 0, picked = false;
+  let page = 0;
   const setPage = (i) => {
     page = i;
     const t = PAGES[i].tex;
@@ -104,7 +104,6 @@ async function start(host) {
     tabs.forEach((b, j) => b.setAttribute("aria-pressed", String(j === i)));
     wake();
   };
-  const flip = () => { if (!picked) setPage(1 - page); };
   // 画面の切り替えボタン（ロック画面／ホーム）
   const bar = document.createElement("div");
   bar.className = "p3d-pages";
@@ -113,7 +112,7 @@ async function start(host) {
   const tabs = PAGES.map((pg, i) => {
     const b = document.createElement("button");
     b.type = "button"; b.textContent = pg.name; b.setAttribute("aria-pressed", String(i === 0));
-    b.addEventListener("click", () => { picked = true; setPage(i); });
+    b.addEventListener("click", () => setPage(i));
     bar.appendChild(b);
     return b;
   });
@@ -133,7 +132,7 @@ async function start(host) {
     const vtabs = PAGES.map((pg, i) => {
       const b = document.createElement("button");
       b.type = "button"; b.textContent = pg.name; b.setAttribute("aria-pressed", String(i === page));
-      b.addEventListener("click", (e) => { e.stopPropagation(); picked = true; setPage(i); img.src = pg.src; img.alt = pg.name; vtabs.forEach((x, j) => x.setAttribute("aria-pressed", String(j === i))); });
+      b.addEventListener("click", (e) => { e.stopPropagation(); setPage(i); img.src = pg.src; img.alt = pg.name; vtabs.forEach((x, j) => x.setAttribute("aria-pressed", String(j === i))); });
       vbar.appendChild(b); return b;
     });
     const close = document.createElement("button");
@@ -233,7 +232,6 @@ async function start(host) {
   }
   host.classList.add("is-3d");
   host.appendChild(bar);
-  if (!reduce) setInterval(flip, 5000); // 3D が出てから数えはじめる（最初はかならずロック画面）。動きを減らす設定では切り替えない
   // 「回せます」と一度だけ伝え、触ったら消す
   const note = host.querySelector(".hd-note");
   if (note && host.dataset.hint) {
