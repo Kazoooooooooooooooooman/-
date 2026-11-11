@@ -9,7 +9,22 @@ import { MeshoptDecoder } from "/vendor/three/meshopt_decoder.module.js";
 import { RoomEnvironment } from "/vendor/three/RoomEnvironment.js";
 
 const host = document.querySelector("[data-phone3d]");
-if (host) start(host).catch(() => { /* 静止画のまま見せる */ });
+// ?debug3d を付けて開くと、3D の読み込みの様子を携帯の下に表示する（実機で原因を調べるため）
+const DEBUG = /[?&]debug3d\b/.test(location.search);
+const logs = [];
+const log = (m) => {
+  logs.push(Math.round(performance.now()) + "ms " + m);
+  if (!DEBUG || !host) return;
+  let pre = host.querySelector(".p3d-debug");
+  if (!pre) { pre = document.createElement("pre"); pre.className = "p3d-debug"; host.appendChild(pre); }
+  pre.textContent = logs.join("\n");
+};
+window.addEventListener("error", (e) => log("error: " + (e.message || e)));
+window.addEventListener("unhandledrejection", (e) => log("rejection: " + (e.reason && (e.reason.message || e.reason))));
+if (host) {
+  log("UA " + navigator.userAgent);
+  start(host).then((r) => log(r === false ? "stopped (no WebGL)" : "ok")).catch((e) => log("failed: " + (e && (e.stack || e.message) || e)));
+}
 
 async function start(host) {
   const canvas = document.createElement("canvas");
@@ -18,7 +33,11 @@ async function start(host) {
   let renderer;
   try {
     renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" });
-  } catch (_) { return false; }
+  } catch (e) { log("WebGL renderer: " + e.message); return false; }
+  log("WebGL" + (renderer.capabilities.isWebGL2 ? "2" : "1") + " ok");
+  // シェーダーが端末で使えなかったときは、軽い材質に切り替える
+  let shaderFailed = false;
+  renderer.debug.onShaderError = (gl, program, vs, fs) => { shaderFailed = true; log("shader error: " + (gl.getProgramInfoLog(program) || "").slice(0, 300)); };
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -38,9 +57,20 @@ async function start(host) {
     t.anisotropy = renderer.capabilities.getMaxAnisotropy();
     return t;
   });
-  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+  // 圧縮した形を読む。読めない端末（WebAssembly が使えないなど）では、圧縮していない形を読む
+  const loadModel = async () => {
+    try {
+      await MeshoptDecoder.ready;
+      const g = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync("/models/soto-phone.glb?v=1");
+      log("model ok (compressed)"); return g;
+    } catch (e) {
+      log("compressed model failed: " + (e && e.message) + " -> plain");
+      const g = await new GLTFLoader().loadAsync("/models/soto-phone-plain.glb?v=1");
+      log("model ok (plain)"); return g;
+    }
+  };
   const [gltf, lockTex, homeTex, hairTex, logoTex] = await Promise.all([
-    loader.loadAsync("/models/soto-phone.glb?v=1"),
+    loadModel(),
     loadTex("/images/phone/screen-lock.webp"), loadTex("/images/phone/screen-home.webp"),
     loadTex("/images/phone/hairline.webp"), loadTex("/images/phone/logo-dark.png"),
   ]);
@@ -230,6 +260,18 @@ async function start(host) {
     renderer.render(scene, camera);
     requestAnimationFrame(loop);
   }
+  // 一度描いてみて、材質が使えなかったら軽い材質に替える
+  renderer.render(scene, camera);
+  if (shaderFailed) {
+    scene.traverse((o) => {
+      if (!o.isMesh || !o.material.isMeshPhysicalMaterial) return;
+      const m = o.material;
+      o.material = new THREE.MeshStandardMaterial({ color: m.color, map: m.map, metalness: m.metalness, roughness: m.roughness,
+        emissive: m.emissive, emissiveMap: m.emissiveMap, emissiveIntensity: m.emissiveIntensity, transparent: m.transparent, flatShading: m.flatShading });
+    });
+    log("switched to standard materials");
+  }
+  log("first frame drawn");
   host.classList.add("is-3d");
   host.appendChild(bar);
   // 「回せます」と一度だけ伝え、触ったら消す
