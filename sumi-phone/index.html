@@ -85,7 +85,7 @@
 [data-h="n"] .ph-svg{display:none} .ph-real{width:min(100%,300px);height:auto;margin:0 auto;filter:drop-shadow(0 22px 30px rgba(40,28,18,.25))} @media (max-width:820px){.ph-real{width:200px}} /* n は2画面目の携帯も、1枚目と同じ立体の携帯にそろえる */
 </style>
 <script src="/consent.js?v=2" defer></script>
-<link rel="modulepreload" href="/phone3d.js?v=8" />
+<link rel="modulepreload" href="/phone3d.js?v=11" />
 <link rel="modulepreload" href="/vendor/three/three.module.min.js" />
 </head>
 <body>
@@ -157,7 +157,7 @@
     <!-- 水彩の Soto Phone の動画（音なし・くり返し）。「動きを減らす」設定のときは、止めて1枚目の絵だけを見せる -->
     <!-- 左半分は本物らしく、右半分は鉛筆の下書き：つくっている途中の Soto Phone。背景は白にしてあり、乗算で紙の色に溶かす。
          最初の版（o）だけは、前の水彩の動画を出す（動画は o のときだけ読み込む） -->
-    <figure class="hd-media" data-phone3d data-lang="ja" data-hint="ドラッグで回せます"><img class="p3d-poster" src="/images/hero-3d-ja.webp" srcset="/images/hero-3d-ja-560.webp 553w, /images/hero-3d-ja.webp 1106w" sizes="(max-width: 820px) 94vw, 552px" width="1106" height="1276" alt="Soto Phone のデザイン案。正方形の本体に、時刻と、電話・地図・乗換・カメラ・Soto Map・Soto Pass が並ぶ画面" fetchpriority="high" decoding="async" />
+    <figure class="hd-media" data-phone3d data-lang="ja" data-hint="ドラッグで回せます"><img class="p3d-poster" src="/images/hero-3d-ja.webp?v=2" srcset="/images/hero-3d-ja-560.webp?v=2 553w, /images/hero-3d-ja.webp?v=2 1106w" sizes="(max-width: 820px) 94vw, 552px" width="1106" height="1276" alt="Soto Phone のデザイン案。シルバーの正方形の本体に、富士山のロック画面が映っている" fetchpriority="high" decoding="async" />
       <picture class="hd-pic"><img class="hd-img hd-photo" src="/images/hero-hand-1200.webp" srcset="/images/hero-hand-720.webp 720w, /images/hero-hand-1200.webp 1200w" sizes="(max-width: 820px) 72vw, 600px" width="1200" height="1500" alt="川沿いの道で、手に持った Soto Phone のデザイン案。正方形の白黒の画面に、時刻と、電話・地図・乗換・カメラが並ぶ" loading="lazy" /></picture><figcaption class="hd-note">開発中のデザイン案</figcaption>
       <video class="hd-video" muted loop playsinline preload="none" aria-hidden="true"><source src="images/hero-road.webm" type="video/webm" /><source src="images/hero-road.mp4" type="video/mp4" /></video>
     </figure>
@@ -491,7 +491,7 @@
   </div>
 </footer>
 
-<script type="module" src="/phone3d.js?v=8"></script>
+<script type="module" src="/phone3d.js?v=11"></script>
 <script src="script.js?v=20261110c"></script>
 <script src="/nav.js?v=20261024e" defer></script>
 <a id="en-pill" href="/en" hreflang="en" lang="en" hidden style="position:fixed;z-index:60;padding:0 11px;height:30px;display:flex;align-items:center;border-radius:999px;border:1px solid currentColor;color:inherit;font:500 12px/1 system-ui,sans-serif;letter-spacing:.04em;text-decoration:none">EN</a>
