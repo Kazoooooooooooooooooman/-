@@ -52,11 +52,23 @@ async function start(host) {
 
   // ---------- 本体（3Dモデルを読み込む） ----------
   const texLoader = new THREE.TextureLoader();
-  const loadTex = (url, srgb = true) => texLoader.loadAsync(url).then((t) => {
-    if (srgb) t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    return t;
-  });
+  // 画像は fetch で受け取ってから貼る（iPhone の Safari で直接読むと失敗することがあるため）。
+  // 1枚読めなくても止めずに、その部分だけ画像なしで描く
+  const loadTex = async (url, srgb = true) => {
+    for (let i = 0; i < 2; i++) {
+      try {
+        const blob = await (await fetch(url, { credentials: "same-origin" })).blob();
+        const obj = URL.createObjectURL(blob);
+        const t = await texLoader.loadAsync(obj);
+        URL.revokeObjectURL(obj);
+        if (srgb) t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        log("texture ok " + url);
+        return t;
+      } catch (e) { log("texture failed " + url + " (" + (e && (e.message || e.type) || e) + ")"); }
+    }
+    return null;
+  };
   // 圧縮した形を読む。読めない端末（WebAssembly が使えないなど）では、圧縮していない形を読む
   const loadModel = async () => {
     try {
@@ -78,7 +90,7 @@ async function start(host) {
   // シルバー：ヘアライン仕上げのステンレス。鏡面のふちとカメラリング
   const M = {
     body: phys({ color: 0xcbc7c0, metalness: 1, roughness: 0.26 }),
-    back: phys({ color: 0xffffff, map: hairTex, metalness: 1, roughness: 0.24, anisotropy: 0.75 }),
+    back: phys({ color: hairTex ? 0xffffff : 0xcbc7c0, map: hairTex, metalness: 1, roughness: 0.24, anisotropy: 0.75 }),
     edge: phys({ color: 0xf4f3f0, metalness: 1, roughness: 0.03 }),
     button: phys({ color: 0xcbc7c0, metalness: 1, roughness: 0.26 }),
     ring: phys({ color: 0xf0efec, metalness: 1, roughness: 0.05 }),
@@ -101,17 +113,19 @@ async function start(host) {
   });
   // 画面（反射をおさえたガラス越しに、画面の絵が光る）
   const SW = 6.54, SR = 0.41;
-  const screenMat = phys({ map: lockTex, emissiveMap: lockTex, emissive: 0xffffff, emissiveIntensity: 0.85,
+  const screenMat = phys({ map: lockTex, emissiveMap: lockTex, emissive: lockTex ? 0xffffff : 0x000000, emissiveIntensity: 0.85,
     roughness: 0.4, clearcoat: 0.45, clearcoatRoughness: 0.28, metalness: 0, envMapIntensity: 0.4 });
   const scr = new THREE.Mesh(roundedPlane(SW, SW, SR), screenMat);
   scr.position.z = 0.7008;
   model.add(scr);
   // 背面のロゴ
+  if (logoTex) {
   const logo = new THREE.Mesh(new THREE.PlaneGeometry(3, 3),
     phys({ map: logoTex, transparent: true, roughness: 0.55, metalness: 0.3, depthWrite: false }));
   logo.rotation.y = Math.PI;
   logo.position.set(-1.7, 0.75, -0.0015);
   model.add(logo);
+  }
   // 大きさをそろえる：幅を 1 にして、真ん中を原点に
   const box = new THREE.Box3().setFromObject(model);
   const ctr = box.getCenter(new THREE.Vector3()), sz = box.getSize(new THREE.Vector3());
@@ -130,7 +144,7 @@ async function start(host) {
   const setPage = (i) => {
     page = i;
     const t = PAGES[i].tex;
-    screenMat.map = t; screenMat.emissiveMap = t; screenMat.needsUpdate = true;
+    screenMat.map = t; screenMat.emissiveMap = t; screenMat.emissive.setHex(t ? 0xffffff : 0x000000); screenMat.needsUpdate = true;
     tabs.forEach((b, j) => b.setAttribute("aria-pressed", String(j === i)));
     wake();
   };
