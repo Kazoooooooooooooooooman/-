@@ -83,7 +83,7 @@ async function start(host) {
   };
   const [gltf, lockTex, homeTex, hairTex, logoTex] = await Promise.all([
     loadModel(),
-    loadTex("/images/phone/screen-lock.webp"), loadTex("/images/phone/screen-home.webp"),
+    loadTex("/images/phone/screen-lock.jpg"), loadTex("/images/phone/screen-home.jpg"),
     loadTex("/images/phone/hairline.webp"), loadTex("/images/phone/logo-dark.png"),
   ]);
   const phys = (o) => new THREE.MeshPhysicalMaterial(o);
@@ -138,8 +138,8 @@ async function start(host) {
   scene.add(phone);
   // 画面はボタンで切り替える（ロック画面／ホーム）
   const en = host.dataset.lang === "en";
-  const PAGES = [{ tex: lockTex, src: "/images/phone/screen-lock.webp", name: en ? "Lock screen" : "ロック画面" },
-                 { tex: homeTex, src: "/images/phone/screen-home.webp", name: en ? "Home" : "ホーム" }];
+  const PAGES = [{ tex: lockTex, src: "/images/phone/screen-lock.jpg", name: en ? "Lock screen" : "ロック画面" },
+                 { tex: homeTex, src: "/images/phone/screen-home.jpg", name: en ? "Home" : "ホーム" }];
   let page = 0;
   const setPage = (i) => {
     page = i;
