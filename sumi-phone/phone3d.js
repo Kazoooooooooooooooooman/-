@@ -269,24 +269,42 @@ async function start(host) {
   new ResizeObserver(size).observe(canvas);
 
   // ---------- 回す ----------
+  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let rotY = -0.45, rotX = 0.02, velY = 0, dragging = false, lastX = 0, lastY = 0, idleAt = 0;
+  // どの向きにも回せる：横に動かすと縦の軸、縦に動かすと横の軸で回る（上から下へ、裏までぐるっと）
+  let velX = 0, velY = 0, dragging = false, lastX = 0, lastY = 0, idleAt = 0, mode = "turn";
   const startY = performance.now();
-  canvas.style.touchAction = "pan-y";
+  phone.quaternion.setFromEuler(new THREE.Euler(0.02, -0.45, 0));
+  const UP = new THREE.Vector3(0, 1, 0), RIGHT = new THREE.Vector3(1, 0, 0), q = new THREE.Quaternion();
+  const turn = (ax, ay) => {
+    phone.quaternion.premultiply(q.setFromAxisAngle(UP, ax));
+    phone.quaternion.premultiply(q.setFromAxisAngle(RIGHT, ay));
+  };
+  canvas.style.touchAction = "none";
+  const hitPhone = (e) => {
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    return ray.intersectObject(phone, true).length > 0;
+  };
   let downX = 0, downY = 0, downT = 0;
-  canvas.addEventListener("pointerdown", (e) => { dragging = true; lastX = downX = e.clientX; lastY = downY = e.clientY; downT = performance.now(); velY = 0; canvas.setPointerCapture(e.pointerId); host.classList.add("is-grab"); });
+  canvas.addEventListener("pointerdown", (e) => {
+    dragging = true; lastX = downX = e.clientX; lastY = downY = e.clientY; downT = performance.now(); velX = velY = 0;
+    // スマホで携帯の外側を触ったときは、回さずにページをスクロールする
+    mode = e.pointerType === "touch" && !hitPhone(e) ? "scroll" : "turn";
+    canvas.setPointerCapture(e.pointerId); if (mode === "turn") host.classList.add("is-grab");
+  });
   canvas.addEventListener("pointermove", (e) => {
     if (!dragging) return;
     const dx = e.clientX - lastX, dy = e.clientY - lastY;
     lastX = e.clientX; lastY = e.clientY;
-    velY = dx * (e.pointerType === "touch" ? 0.018 : 0.012);
-    rotY += velY;
-    if (e.pointerType === "mouse") rotX = Math.max(-0.5, Math.min(0.5, rotX + dy * 0.006));
+    if (mode === "scroll") { window.scrollBy(0, -dy); return; }
+    const k = e.pointerType === "touch" ? 0.014 : 0.01;
+    velX = dx * k; velY = dy * k;
+    turn(velX, velY);
     wake();
   });
   const end = () => { dragging = false; idleAt = performance.now(); host.classList.remove("is-grab"); host.classList.add("is-used"); };
-  // 動かさずに携帯の画面をタップしたら、画面を大きく見せる
-  const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
   canvas.addEventListener("pointerup", (e) => {
     const tap = Math.hypot(e.clientX - downX, e.clientY - downY) < 8 && performance.now() - downT < 450;
     end();
@@ -310,14 +328,12 @@ async function start(host) {
     const dt = Math.min(0.05, (now - t0) / 1000); t0 = now;
     if (!dragging) {
       // 手を離したあとは惰性で少し回り、そのあとゆっくり自転する
-      velY *= 0.94;
-      rotY += velY;
-      if (!reduce && now - idleAt > 1600) rotY += dt * 0.35;
-      rotX += (0.02 - rotX) * 0.03;
+      velX *= 0.94; velY *= 0.94;
+      if (Math.abs(velX) + Math.abs(velY) > 0.0005) turn(velX, velY);
+      if (!reduce && now - idleAt > 1600) turn(dt * 0.35, 0);
     }
     // ふわっと浮いている
     const bob = reduce ? 0 : Math.sin((now - startY) / 1400) * 0.025;
-    phone.rotation.set(rotX, rotY, 0);
     phone.position.y = bob + 0.03;
     shadow.material.opacity = 0.75 - bob * 4;
     renderer.render(scene, camera);
