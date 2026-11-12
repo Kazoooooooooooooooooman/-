@@ -1,22 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <url><loc>https://sotophone.jp/</loc><lastmod>2026-11-10</lastmod>
+  <url><loc>https://sotophone.jp/</loc><lastmod>2026-11-12</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" /></url>
-  <url><loc>https://sotophone.jp/en</loc><lastmod>2026-11-10</lastmod>
+  <url><loc>https://sotophone.jp/en</loc><lastmod>2026-11-12</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/en" /></url>
-  <url><loc>https://sotophone.jp/column/</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/contact</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/contact-en</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/shop</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/shop-en</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/plans</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/plans-en</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/referral</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/referral-en</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/privacy</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/privacy-en</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/terms</loc><lastmod>2026-11-10</lastmod></url>
-  <url><loc>https://sotophone.jp/terms-en</loc><lastmod>2026-11-10</lastmod></url>
+  <url><loc>https://sotophone.jp/column/</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/contact</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/contact-en</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/shop</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/shop-en</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/plans</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/plans-en</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/referral</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/referral-en</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/privacy</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/privacy-en</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/terms</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/terms-en</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/column/brazil-school-phone-ban</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/brazil-school-phone-ban" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/brazil-school-phone-ban" /></url>
+  <url><loc>https://sotophone.jp/column/finland-school-phone-law</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/finland-school-phone-law" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/finland-school-phone-law" /></url>
+  <url><loc>https://sotophone.jp/column/gardening-population</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/gardening-population" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/gardening-population" /></url>
+  <url><loc>https://sotophone.jp/column/handwriting-notes</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/handwriting-notes" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/handwriting-notes" /></url>
+  <url><loc>https://sotophone.jp/column/italy-school-phone-ban</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/italy-school-phone-ban" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/italy-school-phone-ban" /></url>
+  <url><loc>https://sotophone.jp/column/media-multitasking</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/media-multitasking" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/media-multitasking" /></url>
+  <url><loc>https://sotophone.jp/column/phone-on-table-conversation</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/phone-on-table-conversation" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/phone-on-table-conversation" /></url>
+  <url><loc>https://sotophone.jp/column/phubbing</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/phubbing" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/phubbing" /></url>
+  <url><loc>https://sotophone.jp/column/volunteer-rate</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/volunteer-rate" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/volunteer-rate" /></url>
+  <url><loc>https://sotophone.jp/column/zoo-aquarium-visitors</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/zoo-aquarium-visitors" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/zoo-aquarium-visitors" /></url>
   <url><loc>https://sotophone.jp/column/awe-walk</loc><lastmod>2026-11-09</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/awe-walk" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/awe-walk" /></url>
   <url><loc>https://sotophone.jp/column/china-minor-mode</loc><lastmod>2026-11-09</lastmod>
@@ -305,7 +325,27 @@
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/short-video" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/short-video" /></url>
   <url><loc>https://sotophone.jp/column/study-phone</loc><lastmod>2026-10-25</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/study-phone" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/study-phone" /></url>
-  <url><loc>https://sotophone.jp/column/en/</loc><lastmod>2026-11-09</lastmod></url>
+  <url><loc>https://sotophone.jp/column/en/</loc><lastmod>2026-11-12</lastmod></url>
+  <url><loc>https://sotophone.jp/column/en/brazil-school-phone-ban</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/brazil-school-phone-ban" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/brazil-school-phone-ban" /></url>
+  <url><loc>https://sotophone.jp/column/en/finland-school-phone-law</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/finland-school-phone-law" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/finland-school-phone-law" /></url>
+  <url><loc>https://sotophone.jp/column/en/gardening-population</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/gardening-population" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/gardening-population" /></url>
+  <url><loc>https://sotophone.jp/column/en/handwriting-notes</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/handwriting-notes" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/handwriting-notes" /></url>
+  <url><loc>https://sotophone.jp/column/en/italy-school-phone-ban</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/italy-school-phone-ban" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/italy-school-phone-ban" /></url>
+  <url><loc>https://sotophone.jp/column/en/media-multitasking</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/media-multitasking" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/media-multitasking" /></url>
+  <url><loc>https://sotophone.jp/column/en/phone-on-table-conversation</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/phone-on-table-conversation" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/phone-on-table-conversation" /></url>
+  <url><loc>https://sotophone.jp/column/en/phubbing</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/phubbing" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/phubbing" /></url>
+  <url><loc>https://sotophone.jp/column/en/volunteer-rate</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/volunteer-rate" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/volunteer-rate" /></url>
+  <url><loc>https://sotophone.jp/column/en/zoo-aquarium-visitors</loc><lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/zoo-aquarium-visitors" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/zoo-aquarium-visitors" /></url>
   <url><loc>https://sotophone.jp/column/en/awe-walk</loc><lastmod>2026-11-09</lastmod>
     <xhtml:link rel="alternate" hreflang="ja" href="https://sotophone.jp/column/awe-walk" /><xhtml:link rel="alternate" hreflang="en" href="https://sotophone.jp/column/en/awe-walk" /></url>
   <url><loc>https://sotophone.jp/column/en/china-minor-mode</loc><lastmod>2026-11-09</lastmod>
