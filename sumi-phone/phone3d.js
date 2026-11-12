@@ -6,7 +6,6 @@
 import * as THREE from "/vendor/three/three.module.min.js";
 import { GLTFLoader } from "/vendor/three/GLTFLoader.js";
 import { MeshoptDecoder } from "/vendor/three/meshopt_decoder.module.js";
-import { RoomEnvironment } from "/vendor/three/RoomEnvironment.js";
 
 const host = document.querySelector("[data-phone3d]");
 // ?debug3d を付けて開くと、3D の読み込みの様子を携帯の下に表示する（実機で原因を調べるため）
@@ -45,7 +44,24 @@ async function start(host) {
 
   const scene = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  // 撮影スタジオの光：上の大きな面光源と、斜め4方向の細長い光。回すと金属のふちに光の帯が走る
+  const studio = new THREE.Scene();
+  {
+    const cv = document.createElement("canvas"); cv.width = 4; cv.height = 256;
+    const c = cv.getContext("2d"), gr = c.createLinearGradient(0, 0, 0, 256);
+    [[0, "#ffffff"], [0.42, "#eef0f3"], [0.5, "#d7dbe0"], [0.56, "#a9adb3"], [0.75, "#8a8e95"], [1, "#6a6d73"]].forEach(([o, k]) => gr.addColorStop(o, k));
+    c.fillStyle = gr; c.fillRect(0, 0, 4, 256);
+    const gt = new THREE.CanvasTexture(cv); gt.colorSpace = THREE.SRGBColorSpace;
+    studio.add(new THREE.Mesh(new THREE.SphereGeometry(40, 32, 16), new THREE.MeshBasicMaterial({ map: gt, side: THREE.BackSide })));
+    const panel = (w, h, x, y, z, k) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(k, k, k), side: THREE.DoubleSide }));
+      m.position.set(x, y, z); m.lookAt(0, 0, 0); studio.add(m);
+    };
+    panel(16, 7, 0, 14, 0, 3.0);
+    panel(4, 26, -16, 2, 10, 7.0); panel(4, 26, 16, 2, -10, 7.0);
+    panel(4, 26, 16, 2, 10, 5.0); panel(4, 26, -16, 2, -10, 5.0);
+  }
+  scene.environment = pmrem.fromScene(studio, 0.025).texture;
 
   const camera = new THREE.PerspectiveCamera(26, 1, 0.1, 50);
   camera.position.set(0, 0, 5.2);
@@ -81,36 +97,69 @@ async function start(host) {
       log("model ok (plain)"); return g;
     }
   };
-  const [gltf, lockTex, homeTex, hairTex, logoTex] = await Promise.all([
+  const [gltf, lockTex, homeTex, stripTex, backTex, logoTex] = await Promise.all([
     loadModel(),
     loadTex("/images/phone/screen-lock.jpg"), loadTex("/images/phone/screen-home.jpg"),
-    loadTex("/images/phone/hairline.webp"), loadTex("/images/phone/logo-dark.png"),
+    loadTex("/images/phone/hairline-strip.jpg"), loadTex("/images/phone/back-brushed.jpg"), loadTex("/images/phone/logo-light.png"),
   ]);
+  if (stripTex) { stripTex.wrapS = stripTex.wrapT = THREE.RepeatWrapping; stripTex.repeat.set(0.35, 1.6); }
   const phys = (o) => new THREE.MeshPhysicalMaterial(o);
-  // シルバー：ヘアライン仕上げのステンレス。鏡面のふちとカメラリング
+  // 無地の正方形：ヘアラインの金属の枠とボタン、模様のないヘアラインの背面。ネジは見せない
+  const frame = () => phys({ color: 0x5d5e60, map: stripTex, metalness: 0.75, roughness: 0.3, emissive: 0x1a1b1d, envMapIntensity: 0.8 });
   const M = {
-    body: phys({ color: 0xcbc7c0, metalness: 1, roughness: 0.26 }),
-    back: phys({ color: hairTex ? 0xffffff : 0xcbc7c0, map: hairTex, metalness: 1, roughness: 0.24, anisotropy: 0.75 }),
-    edge: phys({ color: 0xf4f3f0, metalness: 1, roughness: 0.03 }),
-    button: phys({ color: 0xcbc7c0, metalness: 1, roughness: 0.26 }),
-    ring: phys({ color: 0xf0efec, metalness: 1, roughness: 0.05 }),
-    screw: phys({ color: 0xeeeeee, metalness: 1, roughness: 0.05 }),
+    body: frame(), edge: frame(), button: frame(),
+    back: phys({ color: 0xc4c6ca, metalness: 1, roughness: 0.3 }),
+    ring: phys({ color: 0xd3d4d6, metalness: 1, roughness: 0.32 }),
     glass: phys({ color: 0x050506, metalness: 0, roughness: 0.04, clearcoat: 1, clearcoatRoughness: 0.02 }),
     display: phys({ color: 0x080808, metalness: 0, roughness: 0.3 }),
     lens: phys({ color: 0x030305, metalness: 0.2, roughness: 0.03, clearcoat: 1, iridescence: 0.6, iridescenceIOR: 1.6 }),
     flash: phys({ color: 0xfff0cf, metalness: 0, roughness: 0.25, emissive: 0x332a18 }),
     black: phys({ color: 0x111111, metalness: 0, roughness: 0.6 }),
     ear: phys({ color: 0x0d0d0e, metalness: 0, roughness: 0.7 }),
-    antenna: phys({ color: 0xb4b2ae, metalness: 0, roughness: 0.45, clearcoat: 0.3 }),
+    antenna: phys({ color: 0x3e3f42, metalness: 0, roughness: 0.6, clearcoat: 0.3 }),
   };
   const model = gltf.scene;
+  const tmp = new THREE.Vector3();
   model.traverse((o) => {
     if (!o.isMesh) return;
-    const m = M[(o.name || "").split("_")[0]];
+    const cat = (o.name || "").split("_")[0];
+    if (cat === "screw") { o.visible = false; return; }
+    const m = M[cat];
     if (!m) return;
-    if (!o.geometry.attributes.normal) m.flatShading = true; // 法線のない部品は、角を立てて見せる
     o.material = m;
+    // 枠・ボタン：面の向きごとに UV を貼り直し、ヘアラインが各辺に沿って流れるようにする
+    if (cat === "body" || cat === "edge" || cat === "button") {
+      const g = o.geometry;
+      if (!g.attributes.normal) g.computeVertexNormals();
+      o.updateMatrix();
+      const p = g.attributes.position, n = g.attributes.normal, uv = new Float32Array(p.count * 2);
+      for (let i = 0; i < p.count; i++) {
+        tmp.fromBufferAttribute(p, i).applyMatrix4(o.matrix);
+        const ax = Math.abs(n.getX(i)), ay = Math.abs(n.getY(i)), az = Math.abs(n.getZ(i));
+        if (az >= ax && az >= ay) { uv[i * 2] = tmp.x; uv[i * 2 + 1] = tmp.y; }
+        else if (ax >= ay) { uv[i * 2] = tmp.y; uv[i * 2 + 1] = tmp.z; }
+        else { uv[i * 2] = tmp.x; uv[i * 2 + 1] = tmp.z; }
+      }
+      g.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
+    } else if (!o.geometry.attributes.normal) m.flatShading = true;
   });
+  // 背面：模様のないヘアライン（写真から）。カメラとフラッシュの穴だけ抜く
+  if (backTex) {
+    const HALF = 3.37, PX = 1024 / (2 * HALF);
+    const am = document.createElement("canvas"); am.width = am.height = 1024;
+    const ac = am.getContext("2d");
+    const toPx = (wx, wy) => [(-wx + HALF) * PX, (HALF - wy) * PX];
+    ac.fillStyle = "#000"; ac.fillRect(0, 0, 1024, 1024);
+    ac.fillStyle = "#fff"; ac.beginPath(); ac.roundRect(0, 0, 1024, 1024, 0.42 * PX); ac.fill();
+    ac.fillStyle = "#000";
+    for (const [hx, hy, r] of [[2.3, 2.3, 0.72], [1.3, 2.3, 0.16]]) {
+      const [x, y] = toPx(hx, hy); ac.beginPath(); ac.arc(x, y, r * PX, 0, Math.PI * 2); ac.fill();
+    }
+    const plate = new THREE.Mesh(new THREE.PlaneGeometry(HALF * 2, HALF * 2),
+      new THREE.MeshBasicMaterial({ map: backTex, alphaMap: new THREE.CanvasTexture(am), alphaTest: 0.5, toneMapped: false }));
+    plate.rotation.y = Math.PI; plate.position.z = -0.004;
+    model.add(plate);
+  }
   // 画面（反射をおさえたガラス越しに、画面の絵が光る）
   const SW = 6.54, SR = 0.41;
   const screenMat = phys({ map: lockTex, emissiveMap: lockTex, emissive: lockTex ? 0xffffff : 0x000000, emissiveIntensity: 0.85,
@@ -123,7 +172,7 @@ async function start(host) {
   const logo = new THREE.Mesh(new THREE.PlaneGeometry(3, 3),
     phys({ map: logoTex, transparent: true, roughness: 0.55, metalness: 0.3, depthWrite: false }));
   logo.rotation.y = Math.PI;
-  logo.position.set(-1.7, 0.75, -0.0015);
+  logo.position.set(-1.7, 0.75, -0.006);
   model.add(logo);
   }
   // 大きさをそろえる：幅を 1 にして、真ん中を原点に
@@ -194,7 +243,6 @@ async function start(host) {
   }
 
   // 光：右上からのやわらかい光と、ふちを光らせる逆光
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x3a3632, 0.5));
   const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(8, 14, 10); scene.add(key);
   const rim = new THREE.DirectionalLight(0xffffff, 0.8); rim.position.set(-10, 4, -12); scene.add(rim);
 

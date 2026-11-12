@@ -1315,7 +1315,7 @@ html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
 .hd-media.is-3d .p3d-canvas { opacity: 1; }
 .hd-media.is-3d .hd-pic { visibility: hidden; }
 @media (max-width: 820px) {
-  html:not([data-h="o"]) .hd-media[data-phone3d].is-3d { width: min(78vw, 34svh); margin-top: 64px; }
+  html:not([data-h="o"]) .hd-media[data-phone3d].is-3d { width: min(86vw, 38svh); margin-top: 64px; }
 }
 
 /* こんなときに：短い札を並べる（スマホは2列） */
@@ -1441,3 +1441,7 @@ html:not([data-h="o"]) .hd-media:has(.hd-photo) { width: min(100%, 460px); }
   .hd-more { display: none; }
   .hd-media > .p3d-pages { margin-top: 6px; }
 }
+/* 切り替えは枠の下に重ねて置く（枠の高さを変えない＝静止画と3Dの大きさがずれない） */
+.hd-media[data-phone3d] { margin-bottom: 46px !important; }
+.hd-media > .p3d-pages { position: absolute; left: 50%; top: calc(100% + 6px); transform: translateX(-50%); margin: 0; }
+@media (max-width: 820px) { .hd-media > .p3d-pages { margin-top: 0; } }
