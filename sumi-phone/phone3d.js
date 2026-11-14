@@ -221,9 +221,9 @@ async function start(host) {
     const c = document.createElement("canvas"); c.width = 1024; c.height = 256; const g = c.getContext("2d");
     g.font = '300 120px SotoInterTight, "Helvetica Neue", Arial, sans-serif'; g.textAlign = "center"; g.textBaseline = "middle";
     if ("letterSpacing" in g) g.letterSpacing = "10px";
-    g.fillStyle = "rgba(214,216,220,0.78)"; g.fillText("Soto Phone", 512, 132);
+    g.fillStyle = "rgba(250,250,247,0.96)"; g.fillText("Soto Phone", 512, 132);
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-    const name = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.55), phys({ map: t, transparent: true, metalness: 0.7, roughness: 0.22, depthWrite: false }));
+    const name = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.55), phys({ map: t, transparent: true, metalness: 0, roughness: 0.5, emissive: 0xffffff, emissiveMap: t, emissiveIntensity: 0.35, depthWrite: false }));
     name.rotation.y = Math.PI; name.position.set(0, -2.2, -0.007); model.add(name);
   }
   // 大きさをそろえる：幅を 1 にして、真ん中を原点に
