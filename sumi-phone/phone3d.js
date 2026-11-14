@@ -97,10 +97,10 @@ async function start(host) {
       log("model ok (plain)"); return g;
     }
   };
-  const [gltf, lockTex, homeTex, stripTex, backTex, logoTex] = await Promise.all([
+  const [gltf, lockTex, homeTex, stripTex, backTex] = await Promise.all([
     loadModel(),
     loadTex("/images/phone/screen-lock.jpg"), loadTex("/images/phone/screen-home.jpg"),
-    loadTex("/images/phone/hairline-strip.jpg"), loadTex("/images/phone/back-brushed.jpg"), loadTex("/images/phone/logo-light.png"),
+    loadTex("/images/phone/hairline-strip.jpg"), loadTex("/images/phone/back-brushed.jpg"),
   ]);
   if (stripTex) { stripTex.wrapS = stripTex.wrapT = THREE.RepeatWrapping; stripTex.repeat.set(0.35, 1.6); }
   const phys = (o) => new THREE.MeshPhysicalMaterial(o);
@@ -167,14 +167,7 @@ async function start(host) {
   const scr = new THREE.Mesh(roundedPlane(SW, SW, SR), screenMat);
   scr.position.z = 0.7008;
   model.add(scr);
-  // 背面のロゴ
-  if (logoTex) {
-  const logo = new THREE.Mesh(new THREE.PlaneGeometry(3, 3),
-    phys({ map: logoTex, transparent: true, roughness: 0.55, metalness: 0.3, depthWrite: false }));
-  logo.rotation.y = Math.PI;
-  logo.position.set(-1.7, 0.75, -0.006);
-  model.add(logo);
-  }
+  // 背面のロゴは未定のため、まだ入れない
   // 大きさをそろえる：幅を 1 にして、真ん中を原点に
   const box = new THREE.Box3().setFromObject(model);
   const ctr = box.getCenter(new THREE.Vector3()), sz = box.getSize(new THREE.Vector3());
