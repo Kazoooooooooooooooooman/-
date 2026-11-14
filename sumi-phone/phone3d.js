@@ -167,7 +167,65 @@ async function start(host) {
   const scr = new THREE.Mesh(roundedPlane(SW, SW, SR), screenMat);
   scr.position.z = 0.7008;
   model.add(scr);
-  // 背面のロゴは未定のため、まだ入れない
+  // ---------- 背面カメラ：保護ガラス / 鏡筒の段 / コーティングされたレンズ / 絞り ----------
+  model.traverse((o) => { if (o.isMesh && /^lens/.test(o.name)) o.visible = false; });
+  {
+    const C = new THREE.Vector3(2.3, 2.3, -0.045), lens = new THREE.Group(); lens.position.copy(C); lens.scale.z = 0.3; model.add(lens);
+    const face = (m) => { m.rotation.y = Math.PI; return m; };
+    // 内側の壁（筒）
+    const well = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.6, 0.12, 96, 1, true), phys({ color: 0x0c0c0d, roughness: 0.55, metalness: 0.2, side: THREE.BackSide }));
+    well.rotation.x = Math.PI / 2; well.position.z = 0.0; lens.add(well);
+    // 鏡筒の段（外から奥へ）
+    const steps = [[0.6, 0.53, -0.035, 0x2a2b2e, 0.35], [0.53, 0.47, -0.01, 0x121214, 0.5], [0.47, 0.41, 0.01, 0x1d1e21, 0.3], [0.41, 0.37, 0.025, 0x0e0e10, 0.6]];
+    for (const [ro, ri, z, c, r] of steps) { const m = face(new THREE.Mesh(new THREE.RingGeometry(ri, ro, 128), phys({ color: c, roughness: r, metalness: 0.6 }))); m.position.z = z; lens.add(m); }
+    // 細い刻印リング（光が当たると細い線が光る）
+    for (const rr of [0.505, 0.44]) { const m = face(new THREE.Mesh(new THREE.RingGeometry(rr - 0.004, rr, 128), phys({ color: 0x9a9ca0, roughness: 0.2, metalness: 1 }))); m.position.z = -0.012 + (rr < 0.47 ? 0.02 : 0); lens.add(m); }
+    // レンズ本体：ふくらんだ面に、多層コーティングの色がうっすら出る
+    const lc = document.createElement('canvas'); lc.width = 8; lc.height = 512; const g = lc.getContext('2d');
+    const gr = g.createLinearGradient(0, 0, 0, 512);
+    gr.addColorStop(0, '#010103'); gr.addColorStop(0.2, '#07051a'); gr.addColorStop(0.34, '#2b1458'); gr.addColorStop(0.44, '#0a0b14');
+    gr.addColorStop(0.62, '#0f2e2a'); gr.addColorStop(0.8, '#141230'); gr.addColorStop(1, '#22222c');
+    g.fillStyle = gr; g.fillRect(0, 0, 8, 512);
+    const lt = new THREE.CanvasTexture(lc); lt.colorSpace = THREE.SRGBColorSpace;
+    const R = 0.5, TH = Math.asin(0.37 / R);
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(R, 96, 48, 0, Math.PI * 2, 0, TH),
+      phys({ map: lt, transparent: true, opacity: 0.78, metalness: 0.2, roughness: 0.04, clearcoat: 1, clearcoatRoughness: 0.01, iridescence: 1, iridescenceIOR: 1.9, iridescenceThicknessRange: [220, 680], envMapIntensity: 2.4, depthWrite: false }));
+    dome.rotation.x = -Math.PI / 2; dome.position.z = R + 0.0; lens.add(dome);
+    // 奥のレンズ群：ガラス越しに、絞りの輪と小さなレンズが重なって見える
+    const iris = document.createElement('canvas'); iris.width = iris.height = 512; const ig = iris.getContext('2d');
+    ig.fillStyle = '#050506'; ig.fillRect(0, 0, 512, 512);
+    for (let r = 250; r > 40; r -= 14) { ig.strokeStyle = r % 28 ? 'rgba(120,124,140,0.22)' : 'rgba(40,42,50,0.9)'; ig.lineWidth = r % 28 ? 1.5 : 6; ig.beginPath(); ig.arc(256, 256, r, 0, Math.PI * 2); ig.stroke(); }
+    const cg = ig.createRadialGradient(256, 256, 0, 256, 256, 90); cg.addColorStop(0, '#000'); cg.addColorStop(1, 'rgba(0,0,0,0)'); ig.fillStyle = cg; ig.beginPath(); ig.arc(256, 256, 90, 0, Math.PI * 2); ig.fill();
+    const it = new THREE.CanvasTexture(iris); it.colorSpace = THREE.SRGBColorSpace;
+    const back = face(new THREE.Mesh(new THREE.CircleGeometry(0.37, 96), phys({ map: it, roughness: 0.3, metalness: 0.5 }))); back.position.z = 0.14; lens.add(back);
+    const R2 = 0.2, inner = new THREE.Mesh(new THREE.SphereGeometry(R2, 64, 32, 0, Math.PI * 2, 0, 1.0),
+      phys({ color: 0x0a0814, metalness: 0.3, roughness: 0.02, clearcoat: 1, iridescence: 1, iridescenceIOR: 2.1, iridescenceThicknessRange: [300, 800], envMapIntensity: 3 }));
+    inner.rotation.x = -Math.PI / 2; inner.position.z = 0.09 + R2; lens.add(inner);
+    // 保護ガラス（ごく薄い反射だけ）
+    const cover = face(new THREE.Mesh(new THREE.CircleGeometry(0.6, 128), phys({ color: 0x0a0d12, transparent: true, opacity: 0.12, roughness: 0.0, metalness: 0, clearcoat: 1, clearcoatRoughness: 0, envMapIntensity: 1.6, depthWrite: false })));
+    cover.position.z = -0.052; lens.add(cover);
+  }
+  { // フラッシュ：黄色い蛍光体の上に、細かいレンズの刻み
+    const fc = document.createElement('canvas'); fc.width = fc.height = 256; const g = fc.getContext('2d');
+    g.fillStyle = '#d8d2c4'; g.beginPath(); g.arc(128, 128, 126, 0, Math.PI * 2); g.fill();
+    const rg = g.createRadialGradient(128, 128, 4, 128, 128, 70); rg.addColorStop(0, '#f2d27a'); rg.addColorStop(1, '#c9a24a');
+    g.fillStyle = rg; g.beginPath(); g.arc(128, 128, 70, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = 'rgba(255,255,255,0.35)'; g.lineWidth = 2; for (let r = 80; r < 126; r += 9) { g.beginPath(); g.arc(128, 128, r, 0, Math.PI * 2); g.stroke(); }
+    const ft = new THREE.CanvasTexture(fc); ft.colorSpace = THREE.SRGBColorSpace;
+    const fl = new THREE.Mesh(new THREE.CircleGeometry(0.13, 64), phys({ map: ft, roughness: 0.15, clearcoat: 1, metalness: 0 }));
+    fl.rotation.y = Math.PI; fl.position.set(1.3, 2.3, -0.008); model.add(fl);
+  }
+  // 背面：ロゴは未定のため、名前だけを細い文字で刻む
+  try { const ff = new FontFace("SotoInterTight", "url(/fonts/inter-tight-300.woff)", { weight: "300" }); document.fonts.add(await ff.load()); } catch (_) {}
+  {
+    const c = document.createElement("canvas"); c.width = 1024; c.height = 256; const g = c.getContext("2d");
+    g.font = '300 120px SotoInterTight, "Helvetica Neue", Arial, sans-serif'; g.textAlign = "center"; g.textBaseline = "middle";
+    if ("letterSpacing" in g) g.letterSpacing = "10px";
+    g.fillStyle = "rgba(214,216,220,0.78)"; g.fillText("Soto Phone", 512, 132);
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const name = new THREE.Mesh(new THREE.PlaneGeometry(2.2, 0.55), phys({ map: t, transparent: true, metalness: 0.7, roughness: 0.22, depthWrite: false }));
+    name.rotation.y = Math.PI; name.position.set(0, -2.2, -0.007); model.add(name);
+  }
   // 大きさをそろえる：幅を 1 にして、真ん中を原点に
   const box = new THREE.Box3().setFromObject(model);
   const ctr = box.getCenter(new THREE.Vector3()), sz = box.getSize(new THREE.Vector3());
