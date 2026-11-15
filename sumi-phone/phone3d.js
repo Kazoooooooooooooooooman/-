@@ -89,7 +89,7 @@ async function start(host) {
   const loadModel = async () => {
     try {
       await MeshoptDecoder.ready;
-      const g = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync("/models/soto-phone.glb?v=1");
+      const g = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync("/models/soto-phone.glb?v=2");
       log("model ok (compressed)"); return g;
     } catch (e) {
       log("compressed model failed: " + (e && e.message) + " -> plain");
