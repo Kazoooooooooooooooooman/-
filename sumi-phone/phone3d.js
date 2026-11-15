@@ -116,7 +116,7 @@ async function start(host) {
     flash: phys({ color: 0xfff0cf, metalness: 0, roughness: 0.25, emissive: 0x332a18 }),
     black: phys({ color: 0x111111, metalness: 0, roughness: 0.6 }),
     ear: phys({ color: 0x0d0d0e, metalness: 0, roughness: 0.7 }),
-    antenna: phys({ color: 0x3e3f42, metalness: 0, roughness: 0.6, clearcoat: 0.3 }),
+    antenna: phys({ color: 0x55565a, metalness: 0.6, roughness: 0.35 }),
   };
   const model = gltf.scene;
   const tmp = new THREE.Vector3();
@@ -137,8 +137,7 @@ async function start(host) {
         tmp.fromBufferAttribute(p, i).applyMatrix4(o.matrix);
         const ax = Math.abs(n.getX(i)), ay = Math.abs(n.getY(i)), az = Math.abs(n.getZ(i));
         if (az >= ax && az >= ay) { uv[i * 2] = tmp.x; uv[i * 2 + 1] = tmp.y; }
-        else if (ax >= ay) { uv[i * 2] = tmp.y; uv[i * 2 + 1] = tmp.z; }
-        else { uv[i * 2] = tmp.x; uv[i * 2 + 1] = tmp.z; }
+        else { uv[i * 2] = Math.atan2(tmp.y, tmp.x) * 4.5; uv[i * 2 + 1] = tmp.z; }
       }
       g.setAttribute("uv", new THREE.BufferAttribute(uv, 2));
     } else if (!o.geometry.attributes.normal) m.flatShading = true;
