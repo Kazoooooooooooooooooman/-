@@ -458,7 +458,7 @@
     // お礼は短くしすぎず、きちんと伝える（言葉のまとまりで折り返す）
     const thanks = document.createElement("span");
     thanks.className = "done-thanks";
-    thanks.innerHTML = EN ? "Thank you for signing up." : "<span class='ph'>ご登録いただき、</span><span class='ph'>ありがとうございます。</span>";
+    thanks.innerHTML = EN ? "You’re on the list. Your first step back outside." : "<span class='ph'>登録しました。</span><span class='ph'>外の時間を取り戻す、</span><span class='ph'>一歩目です。</span>";
     head.append(thanks);
     // 登録した順の番号。ある人にだけ、見出しのすぐ下に「先行登録券」のきっぷとして出す
     const num = Number(store_.get(NUM_KEY)) || 0;
@@ -674,7 +674,7 @@
           console.error("Pre-order not saved:", res.status, out || text.slice(0, 300));
           msg.textContent = out && out.error === "bad_email"
             ? (EN ? "Please check your email address (for example, you@example.com)." : "メールアドレスの形を確認してください（例：you@example.com）。")
-            : (EN ? "Registration didn’t go through. Please try again in a little while." : "登録できませんでした。時間をおいて、もう一度お試しください。");
+            : (EN ? "Registration didn’t go through. Please try again in a little while. If it keeps failing, email hello@sotophone.jp and we’ll add you ourselves." : "登録できませんでした。時間をおいて、もう一度お試しください。何度試してもうまくいかないときは、hello@sotophone.jp に一言ください。こちらで登録します。");
           btn.disabled = false;
           return;
         }
@@ -690,7 +690,7 @@
       } catch (err) {
         // 公開の設定が「全員」でないと、Google のログイン画面に飛ばされてここに来る
         console.error("Pre-order request failed:", err);
-        msg.textContent = (EN ? "Registration didn’t go through. Check your connection and try again." : "登録できませんでした。通信状態を確かめて、もう一度お試しください。");
+        msg.textContent = (EN ? "Registration didn’t go through. Check your connection and try again. If it keeps failing, email hello@sotophone.jp and we’ll add you ourselves." : "登録できませんでした。通信状態を確かめて、もう一度お試しください。何度試してもうまくいかないときは、hello@sotophone.jp に一言ください。こちらで登録します。");
         btn.disabled = false;
       }
       return;
@@ -705,7 +705,7 @@
           ? (EN ? "You can’t register from this view. Please sign in and open the page again." : "この閲覧方法では登録できません。サインインした状態で開き直してください。")
           : code === "quota_exceeded"
           ? (EN ? "Registration is full for now, so it can’t be accepted." : "受付の上限に達したため、いまは登録できません。")
-          : (EN ? "Registration didn’t go through. Check your connection and try again." : "登録できませんでした。通信状態を確かめて、もう一度お試しください。");
+          : (EN ? "Registration didn’t go through. Check your connection and try again. If it keeps failing, email hello@sotophone.jp and we’ll add you ourselves." : "登録できませんでした。通信状態を確かめて、もう一度お試しください。何度試してもうまくいかないときは、hello@sotophone.jp に一言ください。こちらで登録します。");
       btn.disabled = false;
     }
   }));

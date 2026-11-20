@@ -46,7 +46,7 @@
       done.className = "contact-done";
       done.setAttribute("role", "status");
       const a = document.createElement("p");
-      a.textContent = EN ? "Thank you. We’ve received your message." : "送信しました。ありがとうございます。";
+      a.textContent = EN ? "Got it. Thank you for writing." : "受け取りました。ありがとうございます。";
       const b = document.createElement("p");
       b.textContent = EN ? `We’ll reply to ${data.email} within 3 business days.` : `3営業日以内に、${data.email} にお返事します。`;
       done.append(a, b);

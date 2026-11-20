@@ -402,6 +402,7 @@ h2 .nw { white-space: nowrap; }
 .reserve-form .btn { grid-column: 1 / -1; justify-self: start; border: 0; cursor: pointer; }
 .reserve-form .btn:disabled { opacity: .6; cursor: wait; transform: none; }
 .form-fine { grid-column: 1 / -1; font-size: 12px; color: var(--paper-dim); }
+.form-assure { grid-column: 1 / -1; margin: 0; font-size: 13px; line-height: 1.8; color: var(--paper-ink); }
 .form-perk { grid-column: 1 / -1; margin: -2px 0 0; font-size: 13.5px; line-height: 1.7; color: var(--paper-ink); }
 .form-msg { margin-top: 16px; font-size: 14px; min-height: 1.5em; color: var(--paper-dim); }
 
@@ -553,7 +554,7 @@ h2 .nw { white-space: nowrap; }
   flex: 1; min-width: 0; border: 0; background: transparent; padding: 0 18px;
   font: inherit; font-size: 14px; letter-spacing: .04em; color: var(--paper-ink); outline: none;
 }
-.hd-form input::placeholder { color: rgba(31, 30, 28, .45); }
+.hd-form input::placeholder { color: rgba(31, 30, 28, .68); } /* 背景に対して約5:1（読みやすさの目安 4.5:1 以上） */
 .hero-door .hd-form .btn { border: 0; cursor: pointer; white-space: nowrap; padding: 10px 20px; font-size: 13px; }
 .hero-door .hd-form .btn:disabled { opacity: .6; cursor: wait; transform: none; }
 .hd-fine { font-size: 11px; letter-spacing: .06em; color: var(--paper-dim); }
@@ -713,6 +714,7 @@ h2 .nw { white-space: nowrap; }
 }
 .hd-form input[type=email] { font-size: 15px; }
 .hd-form input[type=email]::placeholder, .reserve-form input[type=email]::placeholder, .contact-form input[type=email]::placeholder {
+  color: rgba(31, 30, 28, .68); opacity: 1;
   font-family: var(--sans); font-weight: 400; letter-spacing: .04em;
 }
 @media (max-width: 760px) { .hd-form input[type=email] { font-size: 16px; } }
