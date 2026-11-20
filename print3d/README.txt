@@ -17,3 +17,11 @@ Soto Phone 3Dプリント用ケース（試作）
 印刷のおすすめ
 - 光造形（SLA/DLP）かMJF（ナイロン）。0.15mmの隙間は、FDMだと合わないことがある。
 - 前面フレームは画面側を下にして印刷。
+
+--- 2026-11-20 追加：76×90mm 版（EHUI 3.92インチ AMOLED 用） ---
+soto-front-76x90-8_0mm.stl / soto-back-76x90-8_0mm.stl   厚み8mm
+soto-front-76x90-10_0mm.stl / soto-back-76x90-10_0mm.stl 厚み10mm（部品を入れやすい）
+soto-case-76x90-*.step  CAD で直すとき用
+soto-case-76x90-drawing.pdf  寸法図
+画面窓 65.4×75.1mm は、対角3.92インチと解像度1080×1240から計算した推定値。実物のパネル図面で直すこと。
+作り直し：python3 soto_case.py 10 392
