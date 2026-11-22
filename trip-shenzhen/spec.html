@@ -1,9 +1,9 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Soto Phone — Product Requirements v0.1</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Soto Phone — Product Requirements v0.2</title>
 <style>body{font-family:"Noto Sans","Noto Sans CJK JP",sans-serif;color:#1f1e1c;line-height:1.55;font-size:12.5px;margin:0;padding:24px 28px}
 h1{font-size:22px;margin:0 0 2px}h2{font-size:15px;margin:20px 0 6px;padding-top:8px;border-top:2px solid #1f1e1c}h3{font-size:13px;margin:12px 0 4px}
 table{border-collapse:collapse;width:100%;margin:4px 0}td,th{border:1px solid #bbb;padding:4px 7px;vertical-align:top;text-align:left}th{background:#f1efe9;width:28%}
 .tbd{color:#a94c2f;font-weight:600}.note{color:#555}ul{margin:4px 0 4px 18px;padding:0}@page{size:A4;margin:14mm}</style></head><body>
-<h1>Soto Phone — Product Requirements (v0.1)</h1>
+<h1>Soto Phone — Product Requirements (v0.2)</h1>
 <p class="note">Soto Phone (working name) · Prepared for ODM / design-house discussions, Shenzhen, November 2026 · Contact: Kazuma Sasaki, Founder<br>
 Items marked <span class="tbd">TBD</span> are not decided yet. We welcome your recommendations on every item.</p>
 
@@ -62,7 +62,16 @@ Items marked <span class="tbd">TBD</span> are not decided yet. We welcome your r
 <li>Stage 4: mass production.</li></ul>
 <p>Please propose a timeline for each stage.</p>
 
-<h2>7. Please quote</h2>
+<h2>7. Next milestone: one working engineering handset</h2>
+<p>Before any custom housing or tooling, we want <b>one working engineering unit</b>: your existing Android reference board with the square 3.9–4.0 inch panel and touch controller connected, plus the software build package and flashing tools. We will accept the unit when these tests pass:</p>
+<table>
+<tr><th>A. We control the software</th><td>Our engineers build AOSP from your source package on a clean machine, flash the handset with your tool, and install an OTA update signed with <b>our own keys</b>.</td></tr>
+<tr><th>B. It works as a phone</th><td>Activate an eSIM and test incoming and outgoing calls (VoLTE), SMS and LTE data. <i>Note: in Japan we can only transmit with a Giteki-certified unit, so please tell us how this test can be done legally (for example a certified sample, or testing in China on a local network).</i></td></tr>
+<tr><th>C. It fits</th><td>A <b>dimensioned layout</b> of the panel, a 2,500 mAh battery and the fixed rear camera, showing the minimum body thickness, before we pay for enclosure tooling.</td></tr>
+</table>
+<p>Please quote the cost and lead time of this engineering unit separately.</p>
+
+<h2>8. Please quote</h2>
 <table>
 <tr><th>Development</th><td>NRE (what it covers), ID/MD design fee, tooling (moulds)</td></tr>
 <tr><th>Unit price</th><td>FOB Shenzhen, USD, at 1,000 / 3,000 / 5,000 units, for 4+64 GB and 4+128 GB</td></tr>
@@ -72,7 +81,7 @@ Items marked <span class="tbd">TBD</span> are not decided yet. We welcome your r
 <tr><th>Terms</th><td>MOQ, payment terms, warranty and defect rate, who owns the tooling, PCB design and software changes</td></tr>
 </table>
 
-<h2>8. Questions for you</h2>
+<h2>9. Questions for you</h2>
 <ul><li>Do you already have a board that drives a square 3.9–4.0 inch panel? If yes, which panel and which chipset?</li>
 <li>What is the thinnest body you can achieve with a fixed rear camera and a 2,500 mAh battery?</li>
 <li>Which parts change the price most (screen, memory, battery, NFC, housing material)?</li>
