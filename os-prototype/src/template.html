@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0e1a2b">
+<title>Soto OS 試作</title>
+<style>
+:root{--ink:#f4f2ec;--dim:rgba(244,242,236,.66);--glass:rgba(255,255,255,.14);--line:rgba(255,255,255,.18);--accent:#d27a5c;--ok:#9be3a8;--paper:#f4f2ec;--paper-ink:#1f1e1c}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:#0b0f16;overflow:hidden;font-family:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans CJK JP",system-ui,sans-serif;color:var(--ink);user-select:none;-webkit-user-select:none}
+#stage{position:fixed;inset:0;display:grid;place-items:center}
+#dev{position:relative;width:360px;height:360px;overflow:hidden;transform-origin:center;border-radius:14px;background:#0e1a2b}
+body.full #dev{border-radius:0}
+#dev.mono{filter:grayscale(1)}
+.wall{position:absolute;inset:0;background:linear-gradient(#142e69 0%,#3d5c9e 34%,#8f86b3 52%,#b29bb7 58.5%) top/100% 100% no-repeat}
+.wall::after{content:"";position:absolute;left:0;right:0;bottom:0;height:42%;background:url(WALL) bottom/100% 100% no-repeat}
+.screen{position:absolute;inset:0;display:none;flex-direction:column}
+.screen.on{display:flex}
+/* status bar */
+.sb{height:22px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:11px;font-weight:600;letter-spacing:.02em;position:relative;z-index:5;flex:none}
+.sb .r{display:flex;gap:6px;align-items:center}
+.bars{display:inline-flex;gap:1.5px;align-items:flex-end;height:9px}.bars i{width:2.5px;background:currentColor;border-radius:1px}
+.bat{width:19px;height:9px;border:1.2px solid currentColor;border-radius:2.5px;position:relative;padding:1px}.bat::after{content:"";position:absolute;right:-3px;top:2.5px;width:1.5px;height:3px;background:currentColor;border-radius:1px}.bat i{display:block;height:100%;width:78%;background:currentColor;border-radius:1px}
+.sb .focus-dot{display:none;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+#dev.focusing .sb .focus-dot{display:inline-block}
+/* home bar */
+.hb{position:absolute;left:50%;bottom:5px;width:110px;height:4px;margin-left:-55px;border-radius:3px;background:rgba(255,255,255,.8);z-index:20}
+.light .hb{background:rgba(31,30,28,.55)}
+.hbzone{position:absolute;left:0;right:0;bottom:0;height:22px;z-index:21}
+/* lock */
+#lock .date{text-align:center;font-size:13px;font-weight:600;margin-top:10px}
+#lock .time{text-align:center;font-size:76px;font-weight:200;line-height:1;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+#lock .tag{text-align:center;font-size:12px;letter-spacing:.3em;color:var(--dim);margin-top:4px}
+.widgets{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.wg{background:var(--glass);border:1px solid var(--line);border-radius:12px;padding:7px 10px;display:flex;gap:8px;align-items:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);min-width:112px}
+.wg b{font-size:16px;font-weight:400}.wg small{display:block;font-size:9.5px;color:var(--dim)}
+.ring{width:26px;height:26px}
+#lock .hint{position:absolute;bottom:16px;left:0;right:0;text-align:center;font-size:10.5px;color:var(--dim);letter-spacing:.1em}
+#lock .note{position:absolute;bottom:34px;left:0;right:0;text-align:center;font-size:10px;color:rgba(255,255,255,.55)}
+/* home */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 0;padding:8px 26px 0;flex:none}
+.app{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10.5px;font-weight:500;cursor:pointer}
+.app img{width:52px;height:52px;border-radius:13px;display:block;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+.app:active img{transform:scale(.94)}
+.dock{position:absolute;left:14px;right:14px;bottom:16px;height:58px;border-radius:18px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;justify-content:space-around;align-items:center}
+.dock .app img{width:42px;height:42px;border-radius:11px}
+.dock .app span{display:none}
+/* app shell (paper) */
+.paper{background:var(--paper);color:var(--paper-ink)}
+.paper .sb{color:var(--paper-ink)}
+.ah{display:flex;align-items:center;gap:8px;padding:4px 14px 8px;flex:none}
+.ah h1{font-size:17px;font-weight:700;letter-spacing:.04em;flex:1}
+.ah .back{font-size:12px;color:#6b665e;cursor:pointer;padding:4px 6px 4px 0}
+.ab{flex:1;overflow-y:auto;padding:0 14px 30px;-webkit-overflow-scrolling:touch}
+.ab::-webkit-scrollbar{display:none}
+.row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(31,30,28,.1);font-size:12.5px}
+.row small{color:#77716a;font-size:10.5px}
+.muted{color:#77716a;font-size:11px;line-height:1.6}
+.card{background:#fff;border:1px solid rgba(31,30,28,.08);border-radius:12px;padding:10px 12px;margin:6px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 16px;border-radius:17px;background:var(--paper-ink);color:var(--paper);font-size:12.5px;font-weight:600;cursor:pointer;border:0;font-family:inherit}
+.btn.ghost{background:transparent;color:var(--paper-ink);border:1px solid rgba(31,30,28,.25)}
+.pill{display:inline-block;font-size:9.5px;padding:1px 7px;border-radius:9px;background:rgba(31,30,28,.08);color:#55504a}
+.empty{text-align:center;padding:30px 10px;color:#77716a;font-size:12px;line-height:1.8}
+/* keypad */
+.num{font-size:26px;font-weight:300;text-align:center;height:34px;letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.keys{display:grid;grid-template-columns:repeat(3,52px);gap:8px 26px;justify-content:center;margin-top:4px}
+.key{width:52px;height:52px;border-radius:50%;background:#e6e3db;display:grid;place-items:center;font-size:20px;cursor:pointer}
+.key:active{background:#d4d0c6}
+.call{background:#3f9a5a;color:#fff}
+/* tabs */
+.tabs{display:flex;gap:4px;padding:0 14px 6px;flex:none}
+.tab{font-size:11.5px;padding:4px 10px;border-radius:12px;cursor:pointer;color:#6b665e}
+.tab.on{background:var(--paper-ink);color:var(--paper)}
+/* camera */
+#camera{background:#000;color:#fff}
+#camera .sb{color:#fff}
+.vf{flex:1;position:relative;overflow:hidden;background:linear-gradient(160deg,#3a4f3a,#7c8f6a 45%,#c9b98f)}
+.vf video{width:100%;height:100%;object-fit:cover}
+.vf .grid3{position:absolute;inset:0;background:linear-gradient(90deg,transparent 33%,rgba(255,255,255,.25) 33%,rgba(255,255,255,.25) calc(33% + 1px),transparent calc(33% + 1px),transparent 66%,rgba(255,255,255,.25) 66%,rgba(255,255,255,.25) calc(66% + 1px),transparent calc(66% + 1px)),linear-gradient(transparent 33%,rgba(255,255,255,.25) 33%,rgba(255,255,255,.25) calc(33% + 1px),transparent calc(33% + 1px),transparent 66%,rgba(255,255,255,.25) 66%,rgba(255,255,255,.25) calc(66% + 1px),transparent calc(66% + 1px))}
+.shutter-row{height:72px;display:flex;align-items:center;justify-content:space-around;flex:none;padding-bottom:8px}
+.shutter{width:52px;height:52px;border-radius:50%;border:3px solid #fff;display:grid;place-items:center;cursor:pointer}.shutter i{width:42px;height:42px;border-radius:50%;background:#fff}
+.thumb{width:34px;height:34px;border-radius:8px;background:#333 center/cover;border:1px solid rgba(255,255,255,.4);cursor:pointer}
+.flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .25s}
+/* map */
+.mapc{position:relative;height:170px;border-radius:12px;overflow:hidden;background:#e9e5d8;margin:4px 0}
+.mapc svg{width:100%;height:100%}
+/* clock */
+.big{font-size:44px;font-weight:200;text-align:center;font-variant-numeric:tabular-nums;margin:10px 0 4px}
+/* quick panel */
+#qp{position:absolute;inset:0;background:rgba(10,14,22,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:30;transform:translateY(-100%);transition:transform .28s ease;padding:30px 14px 14px;color:#fff}
+#qp.on{transform:none}
+.qgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.qt{background:rgba(255,255,255,.12);border-radius:14px;padding:9px 4px;text-align:center;font-size:9.5px;cursor:pointer;line-height:1.35}
+.qt b{display:block;font-size:15px;font-weight:400;margin-bottom:2px}
+.qt.on{background:#f4f2ec;color:#1f1e1c}
+.qinfo{margin-top:12px;font-size:11px;color:rgba(255,255,255,.7);line-height:1.7}
+.toast{position:absolute;left:50%;top:30px;transform:translateX(-50%);background:rgba(31,30,28,.92);color:#f4f2ec;font-size:11px;padding:7px 12px;border-radius:14px;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1}
+textarea{width:100%;height:190px;border:0;background:#fff;border-radius:10px;padding:10px;font:inherit;font-size:13px;line-height:1.7;resize:none;color:var(--paper-ink)}
+input.f{width:100%;height:34px;border:1px solid rgba(31,30,28,.15);border-radius:9px;padding:0 10px;font:inherit;font-size:12.5px;background:#fff;margin:3px 0}
+.stampgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:8px 0}
+.st{aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(31,30,28,.25);display:grid;place-items:center;font-size:9px;color:#8a847c;text-align:center;line-height:1.2}
+.st.got{border:2px solid #a94c2f;color:#a94c2f;font-weight:700;transform:rotate(-8deg)}
+.alert{border-left:3px solid #a94c2f;padding:6px 10px;margin:6px 0;background:#fff;border-radius:0 10px 10px 0;font-size:12px}
+.bar{height:4px;border-radius:2px;background:rgba(31,30,28,.12);overflow:hidden}.bar i{display:block;height:100%;background:var(--paper-ink)}
+#boot{position:absolute;inset:0;z-index:50;background:#0e1a2b;display:grid;place-items:center;transition:opacity .6s}
+#boot .m{font-size:28px;border:1.5px solid #f4f2ec;border-radius:7px;width:52px;height:52px;display:grid;place-items:center;font-family:serif}
+#boot p{font-size:10px;letter-spacing:.3em;color:var(--dim);margin-top:10px;text-align:center}
+</style>
+</head>
+<body>
+<div id="stage"><div id="dev">
+  <div class="wall"></div>
+
+  <!-- ロック画面 -->
+  <section class="screen on" id="lock">
+    <div class="sb"><span style="font-family:serif;border:1px solid currentColor;border-radius:3px;padding:0 2px;font-size:10px">外</span><span class="r"><span class="focus-dot"></span>4G <span class="bars"><i style="height:3px"></i><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="date" id="lDate"></div>
+    <div class="time" id="lTime"></div>
+    <div class="tag">今日も、外へ。</div>
+    <div class="widgets">
+      <div class="wg"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><circle cx="8" cy="8" r="3"/><path d="M8 2v1M2 8h1M3.8 3.8l.7.7M12.2 3.8l-.7.7"/><path d="M8 20h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6 1.5A3.3 3.3 0 0 0 8 20z" fill="#fff" stroke="none"/></svg><div><b>18°</b><small>深圳　晴れ</small></div></div>
+      <div class="wg"><svg class="ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="4"/><circle id="ringArc" cx="18" cy="18" r="14" fill="none" stroke="var(--ok)" stroke-width="4" stroke-linecap="round" stroke-dasharray="88" stroke-dashoffset="25" transform="rotate(-90 18 18)"/></svg><div><b id="outTime">2:14</b><small>今日の外時間 / 3h</small></div></div>
+    </div>
+    <div class="note" id="lNote">新しい知らせはありません。外の時間をどうぞ。</div>
+    <div class="hint">上にスワイプして開く</div>
+  </section>
+
+  <!-- ホーム -->
+  <section class="screen" id="home">
+    <div class="sb"><span class="clk"></span><span class="r"><span class="focus-dot"></span>4G <span class="bars"><i style="height:3px"></i><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i></span><span class="bat"><i></i></span></span></div>
+    <div class="grid">
+      <div class="app" data-open="transit"><img src="I_transit" alt=""><span>乗換</span></div>
+      <div class="app" data-open="weather"><img src="I_weather" alt=""><span>天気</span></div>
+      <div class="app" data-open="music"><img src="I_music" alt=""><span>音楽</span></div>
+      <div class="app" data-open="bousai"><img src="I_bousai" alt=""><span>防災</span></div>
+      <div class="app" data-open="clock"><img src="I_clock" alt=""><span>時計</span></div>
+      <div class="app" data-open="memo"><img src="I_memo" alt=""><span>メモ</span></div>
+      <div class="app" data-open="stamp"><img src="I_stamp" alt=""><span>スタンプ</span></div>
+    </div>
+    <div class="dock">
+      <div class="app" data-open="phone"><img src="I_phone" alt="電話"><span>電話</span></div>
+      <div class="app" data-open="message"><img src="I_message" alt="メッセージ"><span>メッセージ</span></div>
+      <div class="app" data-open="map"><img src="I_map" alt="地図"><span>地図</span></div>
+      <div class="app" data-open="camera"><img src="I_camera" alt="カメラ"><span>カメラ</span></div>
+    </div>
+  </section>
+
+  <!-- 電話 -->
+  <section class="screen paper light" id="phone">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>電話</h1></div>
+    <div class="tabs"><span class="tab on" data-t="pad">キーパッド</span><span class="tab" data-t="rec">履歴</span><span class="tab" data-t="con">連絡先</span></div>
+    <div class="ab" data-p="pad"><div class="num" id="dial"></div><div class="keys" id="keys"></div></div>
+    <div class="ab" data-p="rec" hidden>
+      <div class="row"><span>母<br><small>携帯　今日 18:02</small></span><small>2分</small></div>
+      <div class="row"><span>サッカー部 コーチ<br><small>着信　昨日</small></span><small>5分</small></div>
+      <div class="row"><span>090-XXXX-1234<br><small>不在着信　11/20</small></span><small>—</small></div>
+    </div>
+    <div class="ab" data-p="con" hidden>
+      <div class="row"><span>母</span><small>家族</small></div><div class="row"><span>父</span><small>家族</small></div>
+      <div class="row"><span>サッカー部 コーチ</span><small></small></div><div class="row"><span>佐藤</span><small></small></div>
+      <p class="muted" style="margin-top:8px">連絡先の名前はすべて試作用の仮のものです。</p>
+    </div>
+  </section>
+
+  <!-- メッセージ -->
+  <section class="screen paper light" id="message">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>メッセージ</h1></div>
+    <div class="ab">
+      <div class="card"><b style="font-size:12.5px">母</b> <small class="muted">18:10</small><div style="font-size:12.5px;margin-top:3px">夕飯できたよ。何時ごろ帰る？</div></div>
+      <div class="card"><b style="font-size:12.5px">佐藤</b> <small class="muted">昨日</small><div style="font-size:12.5px;margin-top:3px">土曜、9時に駅前で。</div></div>
+      <div class="card"><b style="font-size:12.5px">サッカー部</b> <small class="muted">11/20</small><div style="font-size:12.5px;margin-top:3px">明日の練習は雨のため中止です。</div></div>
+      <p class="muted" style="margin-top:8px">SMS のみ。LINE への対応は準備中です（未定）。</p>
+    </div>
+  </section>
+
+  <!-- 地図 -->
+  <section class="screen paper light" id="map">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>地図</h1></div>
+    <div class="ab">
+      <input class="f" placeholder="どこへ行きますか？">
+      <div class="mapc"><svg viewBox="0 0 330 170"><rect width="330" height="170" fill="#ebe7da"/><path d="M0 120 C80 100 120 140 200 110 S300 90 330 100" stroke="#bcd3e0" stroke-width="16" fill="none"/><rect x="200" y="20" width="90" height="60" rx="8" fill="#cfdcbf"/><text x="245" y="55" font-size="10" text-anchor="middle" fill="#5d6b4f">公園</text><path d="M20 0 L60 170 M0 50 L330 70 M140 0 L120 170" stroke="#fff" stroke-width="6"/><circle cx="118" cy="66" r="6" fill="#a94c2f" stroke="#fff" stroke-width="2"/><text x="118" y="52" font-size="9" text-anchor="middle" fill="#1f1e1c">現在地</text></svg></div>
+      <div class="row"><span>近くの公園<br><small>徒歩 8分</small></span><span class="pill">歩く</span></div>
+      <div class="row"><span>川沿いの道<br><small>徒歩 12分</small></span><span class="pill">歩く</span></div>
+      <p class="muted" style="margin-top:6px">地図のデータ元は未定です（試作の表示）。</p>
+    </div>
+  </section>
+
+  <!-- カメラ -->
+  <section class="screen" id="camera">
+    <div class="sb"><span class="clk"></span><span class="r"><span class="bat"><i></i></span></span></div>
+    <div class="vf"><video id="vid" playsinline muted></video><div class="grid3"></div><div class="flash" id="flash"></div></div>
+    <div class="shutter-row"><div class="thumb" id="thumb"></div><div class="shutter" id="shutter"><i></i></div><div style="width:34px;font-size:10px;text-align:center;opacity:.8" id="camBack">戻る</div></div>
+  </section>
+
+  <!-- 乗換 -->
+  <section class="screen paper light" id="transit">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>乗換</h1></div>
+    <div class="ab">
+      <input class="f" value="吉祥寺"><input class="f" value="鎌倉">
+      <div style="margin:6px 0"><span class="btn" id="tSearch">調べる</span></div>
+      <div id="tRes"></div>
+    </div>
+  </section>
+
+  <!-- 天気 -->
+  <section class="screen paper light" id="weather">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>天気</h1></div>
+    <div class="ab">
+      <div class="big">18°</div><p style="text-align:center;font-size:12px">晴れ　最高 21° / 最低 12°</p>
+      <div class="card"><b style="font-size:12px">外に出るなら</b><div style="font-size:12.5px;margin-top:3px">14時から16時がいちばん暖かく、風も弱い時間です。</div></div>
+      <div class="row"><span>12時</span><span>晴れ　19°</span></div><div class="row"><span>15時</span><span>晴れ　21°</span></div><div class="row"><span>18時</span><span>くもり　16°</span></div>
+      <p class="muted" style="margin-top:6px">表示は試作用の例です。</p>
+    </div>
+  </section>
+
+  <!-- 音楽 -->
+  <section class="screen paper light" id="music">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>音楽</h1></div>
+    <div class="ab" style="text-align:center">
+      <div style="width:120px;height:120px;margin:4px auto 10px;border-radius:14px;background:url(I_music) center/cover"></div>
+      <b style="font-size:14px">散歩の曲</b><p class="muted">ダウンロード済み　12曲</p>
+      <div class="bar" style="margin:12px 10px 4px"><i id="mBar" style="width:0%"></i></div>
+      <div style="display:flex;justify-content:center;gap:22px;align-items:center;margin-top:10px;font-size:20px"><span>⏮</span><span class="btn" id="mPlay" style="width:52px;height:52px;border-radius:50%;padding:0;font-size:18px">▶</span><span>⏭</span></div>
+      <p class="muted" style="margin-top:12px">配信サービスとの連携は未定です。</p>
+    </div>
+  </section>
+
+  <!-- 防災 -->
+  <section class="screen paper light" id="bousai">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>防災</h1></div>
+    <div class="ab">
+      <div class="empty" style="padding:14px 10px">いま出ている警報はありません。</div>
+      <div class="alert"><b>練習用</b>　緊急速報はこのように表示されます。集中モード中でも必ず鳴ります。</div>
+      <div class="row"><span>近くの避難所<br><small>〇〇小学校 体育館</small></span><small>徒歩 6分</small></div>
+      <div class="row"><span>家族への連絡<br><small>災害用伝言ダイヤル 171</small></span><span class="pill">電話</span></div>
+    </div>
+  </section>
+
+  <!-- 時計 -->
+  <section class="screen paper light" id="clock">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>時計</h1></div>
+    <div class="tabs"><span class="tab on" data-t="now">時刻</span><span class="tab" data-t="alarm">アラーム</span><span class="tab" data-t="timer">タイマー</span></div>
+    <div class="ab" data-p="now"><div class="big" id="cNow"></div><p style="text-align:center" class="muted" id="cDate"></p></div>
+    <div class="ab" data-p="alarm" hidden><div class="row"><span style="font-size:20px;font-weight:300">6:30</span><small>平日</small></div><div class="row"><span style="font-size:20px;font-weight:300">8:00</span><small>土日</small></div></div>
+    <div class="ab" data-p="timer" hidden style="text-align:center"><div class="big" id="tm">15:00</div><span class="btn" id="tmGo">開始</span></div>
+  </section>
+
+  <!-- メモ -->
+  <section class="screen paper light" id="memo">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>メモ</h1></div>
+    <div class="ab"><textarea id="memoT" placeholder="思いついたことを、ひとこと。"></textarea><p class="muted" style="margin-top:6px">この端末の中だけに保存されます。</p></div>
+  </section>
+
+  <!-- スタンプ -->
+  <section class="screen paper light" id="stamp">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>スタンプ</h1></div>
+    <div class="ab">
+      <p style="font-size:12.5px">外で過ごした場所が、ここにたまります。</p>
+      <div class="stampgrid" id="stamps"></div>
+      <span class="btn ghost" id="addStamp">この場所を残す（試作）</span>
+      <p class="muted" style="margin-top:8px">提携店でのスタンプや特典は準備中です（未定）。</p>
+    </div>
+  </section>
+
+  <!-- 集中モード -->
+  <section class="screen paper light" id="focus">
+    <div class="sb"><span class="clk"></span><span class="r">4G <span class="bat"><i></i></span></span></div>
+    <div class="ah"><span class="back">‹ ホーム</span><h1>集中モード</h1></div>
+    <div class="ab" style="text-align:center">
+      <div class="big" id="fTime">25:00</div>
+      <p class="muted">通知を止めます。家族からの電話と緊急速報だけは届きます。</p>
+      <div style="display:flex;gap:8px;justify-content:center;margin:12px 0"><span class="btn ghost" data-m="25">25分</span><span class="btn ghost" data-m="60">60分</span><span class="btn ghost" data-m="120">2時間</span></div>
+      <span class="btn" id="fGo">始める</span>
+      <p class="muted" style="margin-top:10px">やり切った時間が記録に残ります。見えるのは時間だけです。</p>
+    </div>
+  </section>
+
+  <div class="hb"></div><div class="hbzone" id="hbzone"></div>
+
+  <!-- クイックパネル（上から下にスワイプ） -->
+  <div id="qp">
+    <div class="qgrid">
+      <div class="qt" id="qFocus"><b>◐</b>集中モード</div>
+      <div class="qt" id="qMono"><b>◑</b>白黒</div>
+      <div class="qt" id="qPlane"><b>✈</b>機内モード</div>
+      <div class="qt" id="qLight"><b>☼</b>ライト</div>
+    </div>
+    <div class="qinfo" id="qInfo">今日の外時間　2時間14分<br>画面を見た時間　28分</div>
+    <div class="qinfo" style="margin-top:14px;font-size:10px">試作版：画面の上の端から下になぞると開き、上になぞると閉じます。</div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div id="boot"><div><div class="m">外</div><p>SOTO OS</p></div></div>
+</div></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const dev=$('#dev');
+// 画面いっぱいに正方形で表示（720x720 の端末なら 360px が 2倍で全面）
+function fit(){const s=Math.min(innerWidth,innerHeight);const k=s/360;dev.style.transform='scale('+k+')';document.body.classList.toggle('full',Math.abs(innerWidth-innerHeight)<4)}
+addEventListener('resize',fit);fit();
+setTimeout(()=>{const b=$('#boot');b.style.opacity=0;setTimeout(()=>b.remove(),600)},900);
+const W=['日','月','火','水','木','金','土'];
+function tick(){const d=new Date(),h=d.getHours(),m=String(d.getMinutes()).padStart(2,'0');
+ $('#lTime').textContent=h+':'+m;$('#lDate').textContent=(d.getMonth()+1)+'月'+d.getDate()+'日 '+W[d.getDay()]+'曜日';
+ $$('.clk').forEach(e=>e.textContent=h+':'+m);const c=$('#cNow');if(c){c.textContent=h+':'+m+':'+String(d.getSeconds()).padStart(2,'0');$('#cDate').textContent=$('#lDate').textContent}}
+setInterval(tick,1000);tick();
+let cur='lock';
+function show(id){$$('.screen').forEach(s=>s.classList.toggle('on',s.id===id));cur=id;if(id==='camera')startCam();else stopCam()}
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1800)}
+// ジェスチャー：下端から上へ＝ホーム（ロック中は解除）、上端から下へ＝クイックパネル
+let sy=null,sx=0,from='';
+function down(x,y){const r=dev.getBoundingClientRect(),k=r.height/360;const ly=(y-r.top)/k;sy=y;sx=x;from=ly>320?'bottom':ly<26?'top':'mid'}
+function up(x,y){if(sy===null)return;const dy=y-sy;const qp=$('#qp');
+ if(qp.classList.contains('on')){if(dy<-30)qp.classList.remove('on');sy=null;return}
+ if(cur==='lock'&&dy<-40){show('home')}
+ else if(from==='bottom'&&dy<-30&&cur!=='lock'){show('home')}
+ else if(from==='top'&&dy>40){qp.classList.add('on')}
+ sy=null}
+dev.addEventListener('touchstart',e=>{const t=e.touches[0];down(t.clientX,t.clientY)},{passive:true});
+dev.addEventListener('touchend',e=>{const t=e.changedTouches[0];up(t.clientX,t.clientY)});
+dev.addEventListener('mousedown',e=>down(e.clientX,e.clientY));
+dev.addEventListener('mouseup',e=>up(e.clientX,e.clientY));
+$('#lock').addEventListener('click',()=>{if(cur==='lock')show('home')});
+$('#hbzone').addEventListener('click',()=>{if(cur!=='lock')show('home')});
+$$('[data-open]').forEach(a=>a.addEventListener('click',()=>show(a.dataset.open)));
+$$('.back').forEach(b=>b.addEventListener('click',()=>show('home')));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'||e.key==='Backspace'&&cur!=='memo')show(cur==='home'?'lock':'home')});
+// タブ
+$$('.tabs').forEach(tb=>tb.addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t)return;const sc=tb.parentElement;tb.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));sc.querySelectorAll('[data-p]').forEach(p=>p.hidden=p.dataset.p!==t.dataset.t)}));
+// 電話のキーパッド
+const keys=['1','2','3','4','5','6','7','8','9','*','0','#'];
+$('#keys').innerHTML=keys.map(k=>'<div class="key">'+k+'</div>').join('')+'<div></div><div class="key call">✆</div><div class="key" id="del">⌫</div>';
+$('#keys').addEventListener('click',e=>{const k=e.target.closest('.key');if(!k)return;const d=$('#dial');
+ if(k.id==='del')d.textContent=d.textContent.slice(0,-1);else if(k.classList.contains('call'))toast(d.textContent?'発信（試作のため実際には発信しません）':'番号を入れてください');else if(d.textContent.length<13)d.textContent+=k.textContent});
+// カメラ
+let stream=null;
+async function startCam(){if(stream||!navigator.mediaDevices)return;try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});const v=$('#vid');v.srcObject=stream;v.play()}catch(e){}}
+function stopCam(){if(stream){stream.getTracks().forEach(t=>t.stop());stream=null}}
+$('#shutter').addEventListener('click',()=>{const f=$('#flash');f.style.opacity=.9;setTimeout(()=>f.style.opacity=0,120);
+ const v=$('#vid');if(v.videoWidth){const c=document.createElement('canvas');c.width=160;c.height=160;const s=Math.min(v.videoWidth,v.videoHeight);c.getContext('2d').drawImage(v,(v.videoWidth-s)/2,(v.videoHeight-s)/2,s,s,0,0,160,160);$('#thumb').style.backgroundImage='url('+c.toDataURL('image/jpeg',.7)+')'}
+ toast('撮影しました。写真を開くと色が戻ります')});
+$('#camBack').addEventListener('click',()=>show('home'));
+// 乗換
+$('#tSearch').addEventListener('click',()=>{$('#tRes').innerHTML='<div class="card"><b style="font-size:13px">10:02 → 11:24</b> <span class="pill">1時間22分</span><div class="muted">JR中央線 → JR横須賀線　乗換1回</div></div><div class="card"><b style="font-size:13px">10:15 → 11:41</b> <span class="pill">1時間26分</span><div class="muted">京王井の頭線 → 小田急線 → 江ノ電　乗換2回</div></div><p class="muted">経路は試作用の例です。</p>'});
+// 音楽
+let mp=0,mt=null;$('#mPlay').addEventListener('click',e=>{const b=e.currentTarget;if(mt){clearInterval(mt);mt=null;b.textContent='▶'}else{b.textContent='❚❚';mt=setInterval(()=>{mp=(mp+0.6)%100;$('#mBar').style.width=mp+'%'},300)}});
+// タイマー
+let tmv=900,tmi=null;$('#tmGo').addEventListener('click',e=>{const b=e.currentTarget;if(tmi){clearInterval(tmi);tmi=null;b.textContent='開始';return}b.textContent='止める';tmi=setInterval(()=>{tmv=Math.max(0,tmv-1);$('#tm').textContent=Math.floor(tmv/60)+':'+String(tmv%60).padStart(2,'0');if(!tmv){clearInterval(tmi);tmi=null;b.textContent='開始';toast('時間です')}},1000)});
+// メモ（端末の中だけに保存）
+const mT=$('#memoT');try{mT.value=localStorage.getItem('soto-memo')||''}catch(e){}
+mT.addEventListener('input',()=>{try{localStorage.setItem('soto-memo',mT.value)}catch(e){}});
+// スタンプ
+const names=['公園','川','山','海','図書館','銭湯','駅前','神社','','','',''];let got=3;
+function drawSt(){$('#stamps').innerHTML=names.map((n,i)=>'<div class="st'+(i<got?' got':'')+'">'+(i<got?n:'')+'</div>').join('')}drawSt();
+$('#addStamp').addEventListener('click',()=>{if(got<8){got++;drawSt();toast('この場所を残しました')}});
+// 集中モード
+let fm=25,fl=0,fi=null;$$('#focus [data-m]').forEach(b=>b.addEventListener('click',()=>{fm=+b.dataset.m;$('#fTime').textContent=fm+':00'}));
+function setFocus(on){dev.classList.toggle('focusing',on);$('#qFocus').classList.toggle('on',on);$('#lNote').textContent=on?'集中モード中。通知は止めています。':'新しい知らせはありません。外の時間をどうぞ。'}
+$('#fGo').addEventListener('click',e=>{const b=e.currentTarget;if(fi){clearInterval(fi);fi=null;b.textContent='始める';setFocus(false);toast('集中モードを終えました');return}
+ fl=fm*60;b.textContent='やめる';setFocus(true);fi=setInterval(()=>{fl--;$('#fTime').textContent=Math.floor(fl/60)+':'+String(fl%60).padStart(2,'0');if(fl<=0){clearInterval(fi);fi=null;b.textContent='始める';setFocus(false);toast('やり切りました。記録に残しました')}},1000)});
+// クイックパネル
+$('#qFocus').addEventListener('click',()=>{$('#qp').classList.remove('on');show('focus')});
+$('#qMono').addEventListener('click',e=>{const on=!dev.classList.contains('mono');dev.classList.toggle('mono',on);e.currentTarget.classList.toggle('on',on);toast(on?'白黒にしました':'色を戻しました')});
+$('#qPlane').addEventListener('click',e=>{e.currentTarget.classList.toggle('on');toast(e.currentTarget.classList.contains('on')?'機内モード（試作の表示のみ）':'機内モードを切りました')});
+$('#qLight').addEventListener('click',e=>{e.currentTarget.classList.toggle('on')});
+$('#qp').addEventListener('click',e=>{if(e.target.id==='qp')e.currentTarget.classList.remove('on')});
+// 写真以外は白黒が基本、という製品の考え方を試すための初期値（URL に ?mono で白黒から始まる）
+if(location.search.includes('mono')){dev.classList.add('mono');$('#qMono').classList.add('on')}
+})();
+</script>
+</body>
+</html>
