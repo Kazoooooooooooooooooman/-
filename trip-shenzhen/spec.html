@@ -1,8 +1,8 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Soto Phone — Product Requirements v0.4</title>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Soto Phone — Product Requirements v0.5</title>
 <style>body{font-family:"Noto Sans","Noto Sans CJK JP",sans-serif;color:#1f1e1c;line-height:1.5;font-size:12px;margin:0;padding:22px 26px}
 h1{font-size:21px;margin:0 0 2px}h2{font-size:14.5px;margin:16px 0 5px;padding-top:7px;border-top:2px solid #1f1e1c}
 ul,ol{margin:3px 0 3px 18px;padding:0}li{margin:1px 0}.tbd{color:#a94c2f;font-weight:600}.note{color:#555}.box{background:#f4f2ec;padding:8px 12px;border-radius:6px}@page{size:A4;margin:13mm}</style></head><body>
-<h1>Soto Phone — Product Requirements (v0.4)</h1>
+<h1>Soto Phone — Product Requirements (v0.5)</h1>
 <p class="note">Soto Phone (working name) · For an initial ODM / design-house feasibility round, Shenzhen, November 2026 · This is not a production order · Contact: Kazuma Sasaki, Founder<br>Items marked <span class="tbd">TBD</span> are not decided yet. We welcome your recommendations on every item.</p>
 <div class="box"><b>What we need first.</b> Please answer with evidence before giving a production quote:
 <ol><li>The exact square panel part number, and evidence of supply at 500 / 1,000 / 3,000 units.</li>
@@ -10,6 +10,12 @@ ul,ol{margin:3px 0 3px 18px;padding:0}li{margin:1px 0}.tbd{color:#a94c2f;font-we
 <li>A written list of what our engineers can build and sign without you.</li>
 <li>Which Japanese mobile plans you have tested, and what voice and eSIM functions you can demonstrate now.</li></ol></div>
 
+<h2>0. Reference device</h2>
+<p>Our current reference is an existing square phone on the Chinese market, the <b>Coolpad 酷派 小方块</b> (3.95-inch square 720 × 720 display, MediaTek Helio G99, body about 78.4 × 78.4 × 8.5 mm). We want a phone built on the <b>same kind of board and panel</b>, with these changes:</p>
+<ul><li>A <b>fixed rear camera</b> built into the back, instead of the flip camera.</li>
+<li><b>Our own housing design</b> and material. We will not copy the reference device's exterior.</li>
+<li><b>Our own operating system</b> (AOSP, no GMS) that we build and update ourselves.</li></ul>
+<p>Do you know which design house made this phone? Can you use the same board and panel (or an equivalent you already produce)? Reusing an existing board and panel is how we hope to start at about 500 units.</p>
 <h2>1. Product summary</h2>
 <p>A compact Android phone with a square screen, sold in Japan. It is designed as a second phone: people carry it when they want to step away from their main smartphone and spend time outside. It has no social media, no games and no app store. It is sold together with a monthly eSIM plan.</p>
 <ul><li>Target users: adults and students in Japan who want less screen time.</li><li>Positioning: a well-made, calm object, not a rugged or budget phone.</li><li>Expected first order: <b>about 500 units</b> if possible (<span class="tbd">TBD</span>). Please tell us your real minimum order, and what changes (price, parts, options) at 500 units.</li></ul>
@@ -20,7 +26,7 @@ ul,ol{margin:3px 0 3px 18px;padding:0}li{margin:1px 0}.tbd{color:#a94c2f;font-we
 <li><b>Body size:</b> Start the design study at about 80 × 80 mm (a 4.0-inch square active area is about 71.8 mm per side). Final size follows the actual panel, flex cable and housing. Thickness target 8.5–10 mm; <b>any design above 10 mm needs our written approval.</b></li>
 <li><b>Rear camera:</b> One fixed camera built into the back (no flip, rotating or pop-up camera). About 13 MP, autofocus, LED flash. Camera bump 1 mm or less if possible.</li>
 <li><b>Front camera:</b> Not planned. Please quote as a separately priced option.</li>
-<li><b>Chipset:</b> MediaTek mid-range 4G. Please propose the platform you already have a board for.</li>
+<li><b>Chipset:</b> MediaTek Helio G99 (as in the reference device) or an equivalent you already have a board for.</li>
 <li><b>Memory:</b> 4 GB + 64 GB baseline; 4 GB + 128 GB option.</li>
 <li><b>Battery:</b> 2,500 mAh <b>minimum rated</b> capacity. USB-C. Printed capacity label. UN38.3 test summary for the actual pack.</li>
 <li><b>Cellular:</b> 4G LTE, Japanese bands B1 / B3 / B8 / B18 / B19 / B26 / B28 (B41 preferred), VoLTE.</li>
@@ -72,7 +78,7 @@ ul,ol{margin:3px 0 3px 18px;padding:0}li{margin:1px 0}.tbd{color:#a94c2f;font-we
 <p>Also: MOQ, payment terms, warranty, defect rate, and ownership and handover of moulds, PCB design files, software changes, factory flashing access and test fixtures.</p>
 
 <h2>9. Questions for you</h2>
-<ul><li>Is the board-and-panel combination already running? Can you show it live?</li>
+<ul><li>Is the board-and-panel combination already running? Can you show it live?</li><li>Do you know who designed the reference device, and can you reuse its board and panel?</li><li>How much thicker does the body become with a fixed autofocus camera inside, compared with the 8.5 mm reference?</li>
 <li>Which Japanese plans and operators have you tested, and with what results?</li>
 <li>What is the thinnest body with a fixed rear camera and a 2,500 mAh battery?</li>
 <li>Which parts change the price most?</li>
