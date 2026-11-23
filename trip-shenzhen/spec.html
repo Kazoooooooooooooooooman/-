@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Soto Phone — Product Requirements v0.5</title>
+<style>body{font-family:"Noto Sans","Noto Sans CJK JP",sans-serif;color:#1f1e1c;line-height:1.5;font-size:12px;margin:0;padding:22px 26px}
+h1{font-size:21px;margin:0 0 2px}h2{font-size:14.5px;margin:16px 0 5px;padding-top:7px;border-top:2px solid #1f1e1c}
+ul,ol{margin:3px 0 3px 18px;padding:0}li{margin:1px 0}.tbd{color:#a94c2f;font-weight:600}.note{color:#555}.box{background:#f4f2ec;padding:8px 12px;border-radius:6px}@page{size:A4;margin:13mm}</style></head><body>
+<h1>Soto Phone — Product Requirements (v0.5)</h1>
+<p class="note">Soto Phone (working name) · For an initial ODM / design-house feasibility round, Shenzhen, November 2026 · This is not a production order · Contact: Kazuma Sasaki, Founder<br>Items marked <span class="tbd">TBD</span> are not decided yet. We welcome your recommendations on every item.</p>
+<div class="box"><b>What we need first.</b> Please answer with evidence before giving a production quote:
+<ol><li>The exact square panel part number, and evidence of supply at 500 / 1,000 / 3,000 units.</li>
+<li>A live demo of Android running on that panel with touch working.</li>
+<li>A written list of what our engineers can build and sign without you.</li>
+<li>Which Japanese mobile plans you have tested, and what voice and eSIM functions you can demonstrate now.</li></ol></div>
+
+<h2>0. Reference device</h2>
+<p>Our current reference is an existing square phone on the Chinese market, the <b>Coolpad 酷派 小方块</b> (3.95-inch square 720 × 720 display, MediaTek Helio G99, body about 78.4 × 78.4 × 8.5 mm). We want a phone built on the <b>same kind of board and panel</b>, with these changes:</p>
+<ul><li>A <b>fixed rear camera</b> built into the back, instead of the flip camera.</li>
+<li><b>Our own housing design</b> and material. We will not copy the reference device's exterior.</li>
+<li><b>Our own operating system</b> (AOSP, no GMS) that we build and update ourselves.</li></ul>
+<p>Do you know which design house made this phone? Can you use the same board and panel (or an equivalent you already produce)? Reusing an existing board and panel is how we hope to start at about 500 units.</p>
+<h2>1. Product summary</h2>
+<p>A compact Android phone with a square screen, sold in Japan. It is designed as a second phone: people carry it when they want to step away from their main smartphone and spend time outside. It has no social media, no games and no app store. It is sold together with a monthly eSIM plan.</p>
+<ul><li>Target users: adults and students in Japan who want less screen time.</li><li>Positioning: a well-made, calm object, not a rugged or budget phone.</li><li>Expected first order: <b>about 500 units</b> if possible (<span class="tbd">TBD</span>). Please tell us your real minimum order, and what changes (price, parts, options) at 500 units.</li></ul>
+
+<h2>2. Hardware</h2>
+<ul>
+<li><b>Display:</b> Square (1:1) touchscreen, about 3.9–4.0 inch, about 720 × 720 or higher. An existing production IPS panel first; AMOLED as an alternate if you can show reliable supply and an acceptable minimum order. Please give the panel part number, mechanical drawing, and what happens if it is discontinued.</li>
+<li><b>Body size:</b> Start the design study at about 80 × 80 mm (a 4.0-inch square active area is about 71.8 mm per side). Final size follows the actual panel, flex cable and housing. Thickness target 8.5–10 mm; <b>any design above 10 mm needs our written approval.</b></li>
+<li><b>Rear camera:</b> One fixed camera built into the back (no flip, rotating or pop-up camera). About 13 MP, autofocus, LED flash. Camera bump 1 mm or less if possible.</li>
+<li><b>Front camera:</b> Not planned. Please quote as a separately priced option.</li>
+<li><b>Chipset:</b> MediaTek Helio G99 (as in the reference device) or an equivalent you already have a board for.</li>
+<li><b>Memory:</b> 4 GB + 64 GB baseline; 4 GB + 128 GB option.</li>
+<li><b>Battery:</b> 2,500 mAh <b>minimum rated</b> capacity. USB-C. Printed capacity label. UN38.3 test summary for the actual pack.</li>
+<li><b>Cellular:</b> 4G LTE, Japanese bands B1 / B3 / B8 / B18 / B19 / B26 / B28 (B41 preferred), VoLTE.</li>
+<li><b>Launch network:</b> <span class="tbd">TBD — a dependency.</span> The launch eSIM plan and its host network are not selected yet. <b>For the first release, only the launch network is required</b> (VoLTE on all four Japanese operators is a later goal, quoted as an option). Final acceptance is tied to the plan we will actually sell.</li>
+<li><b>SIM:</b> eSIM required. One nano-SIM slot as an option.</li>
+<li><b>Wireless:</b> Wi-Fi 2.4/5 GHz, Bluetooth 5.x, GPS (+ QZSS/Michibiki if possible).</li>
+<li><b>NFC:</b> <span class="tbd">TBD</span>. We will define the use (tags, payments or Japanese transit cards) before you quote it.</li>
+<li><b>Sensors:</b> Proximity, ambient light, accelerometer. No fingerprint at launch.</li>
+<li><b>Buttons:</b> Power, volume up, volume down; position flexible.</li>
+<li><b>Audio:</b> Earpiece, loudspeaker, microphone; no headphone jack. <b>Vibration:</b> linear motor preferred.</li></ul>
+
+<h2>3. Housing, material and finish</h2>
+<ul><li>Our own industrial design; we provide 3D data and welcome your ID/MD input.</li>
+<li>Baseline quote: <b>matte textured polycarbonate</b>. Alternates: <b>coated (soft-touch) polycarbonate</b> and <b>anodized aluminium</b>. For aluminium, show an antenna layout and validation plan. For coatings, provide samples and their resistance to sunscreen, sweat and abrasion.</li>
+<li>Matte black first. Logo printed lightly on the back. Our own retail box.</li>
+<li>We would like to visit the factory that will make our housing and see production samples of each material.</li></ul>
+
+<h2>4. Software (most important)</h2>
+<ul><li><b>OS:</b> AOSP, no GMS. State the Android version at first shipment.</li>
+<li><b>Source code:</b> List exactly what you deliver: source code, binary-only components, license or NDA restrictions (for example MediaTek), and which fixes depend on MediaTek or on you.</li>
+<li><b>Keys:</b> We control the boot trust keys, OTA signing keys and recovery authorization. <b>Our engineers generate and keep the private keys.</b> You demonstrate how keys are provisioned without taking custody of them.</li>
+<li><b>Development and retail configurations:</b> Unlockable bootloader on development units; locked on retail units. Flashing tool and procedure.</li>
+<li><b>Updates:</b> An OTA system we operate ourselves. Security maintenance for 3 years from first retail shipment, with patch cadence, response times and responsibility for vendor fixes in writing.</li>
+<li><b>Pre-installed apps:</b> Only our user-facing apps (launcher, phone, SMS, camera, maps, transit, settings) plus an agreed list of required system services. No other apps, no ads.</li>
+<li><b>Notifications without GMS:</b> Share your experience. We do not treat microG as a guarantee; we will choose and test a method we control.</li></ul>
+
+<h2>5. Certification and compliance</h2>
+<ul><li>Giteki and JATE: cost, time, certificate holder, scope, emergency-call testing, and which later hardware or software changes need reassessment.</li><li>RoHS. UN38.3 for the battery.</li></ul>
+
+<h2>6. First deliverable: the engineering handset</h2>
+<p>Before any custom housing or tooling, we want a working engineering handset, quoted separately (cost and lead time). State the board revision, chipset, panel and touch-controller part numbers, Android version, build and flashing requirements, and whether this exact board-and-panel combination already runs or needs integration. A bench-mounted unit is fine.</p>
+<p><b>Number of units:</b> please tell us whether one unit can safely switch between a development (unlocked) and a retail-like (locked) configuration. If not, quote a second unit separately.</p>
+<p>We accept the handset when these tests pass:</p>
+<ul><li><b>A. Display and touch:</b> Android at native resolution; touch works across the full active area.</li>
+<li><b>B. Software control:</b> Our engineers build a complete image on a clean machine and flash the development configuration. The locked retail-like configuration accepts an OTA update signed with our keys.</li>
+<li><b>C. Phone service:</b> On the launch eSIM plan (once selected): profile download, activation, deletion and reinstall; incoming and outgoing VoLTE calls; SMS both ways; LTE data. Before any transmission in Japan we agree a lawful test setup with the carrier and a Japanese test lab. A test in China on a local network shows basic operation only and does not pass this test.</li>
+<li><b>D. Mechanical fit:</b> A dimensioned cross-section using the actual panel, a named battery of at least 2,500 mAh minimum rated capacity, and the fixed rear camera, with their part numbers. Show thickness without the camera bump, maximum thickness with it, clearances, and the battery expansion allowance. Above 10 mm needs our written approval.</li></ul>
+<p><b>No enclosure tooling will be ordered until the handset passes these tests.</b></p>
+
+<h2>7. Samples and schedule</h2>
+<p>Please give dates and dependencies for each stage; payments are tied to each deliverable:</p>
+<ol><li>Engineering handset (section 6)</li><li>Appearance (ID) samples</li><li>Working samples running our software build</li><li>Production-like design with test results</li><li>Pilot batch of about 100 units, with documented approval for use in Japan</li><li>Mass production</li></ol>
+
+<h2>8. Please quote (same format for every supplier)</h2>
+<ul><li><b>One-time:</b> NRE (what it covers), ID/MD design, tooling</li>
+<li><b>Per-unit hardware:</b> FOB Shenzhen, USD, at 500 / 1,000 / 3,000 units; baseline price and each option priced separately</li>
+<li><b>Per-device licenses</b></li><li><b>Yearly software support:</b> OTA operation and security updates</li>
+<li><b>Certification:</b> Giteki, JATE</li><li><b>Engineering handset (and second unit if needed) and samples:</b> cost and lead time</li></ul>
+<p>Also: MOQ, payment terms, warranty, defect rate, and ownership and handover of moulds, PCB design files, software changes, factory flashing access and test fixtures.</p>
+
+<h2>9. Questions for you</h2>
+<ul><li>Is the board-and-panel combination already running? Can you show it live?</li><li>Do you know who designed the reference device, and can you reuse its board and panel?</li><li>How much thicker does the body become with a fixed autofocus camera inside, compared with the 8.5 mm reference?</li>
+<li>Which Japanese plans and operators have you tested, and with what results?</li>
+<li>What is the thinnest body with a fixed rear camera and a 2,500 mAh battery?</li>
+<li>Which parts change the price most?</li>
+<li>Can you arrange a visit to the factory that will make our housing?</li></ul>
+</body></html>
